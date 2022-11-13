@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using FluentValidation;
+
+namespace ComptaClub.Validators
+{
+    public class ExerciceValidator : FluentValidation.AbstractValidator<Models.Exercice>
+    {
+        public ExerciceValidator(MediatR.IMediator mediator)
+        {
+            RuleFor(i => i.Id).Custom((id, ctx) =>
+            {
+                if (id == Guid.Empty)
+                {
+                    ctx.AddFailure(nameof(Models.Account.Id), "Identifiant invalide");
+                }
+            });
+            RuleFor(i => i.Code).CustomAsync(async (code, ctx, cancel) =>
+            {
+                var current = ctx.InstanceToValidate;
+                var existing = await mediator.Send(new Requests.GetExerciceByCode(code));
+                if (existing != null 
+                    && current.Id != existing.Id)
+                {
+                    ctx.AddFailure(nameof(Models.Account.Code), "Ce code est déjà utilisé");
+                }
+            });
+        }
+    }
+}

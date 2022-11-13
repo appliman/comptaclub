@@ -2,11 +2,13 @@
 
 using FluentValidation;
 
+using MediatR;
+
 namespace ComptaClub.Validators
 {
     public class BankValidator : FluentValidation.AbstractValidator<Models.Bank>
     {
-        public BankValidator(Services.AccountingService accountingService)
+        public BankValidator(IMediator mediator)
         {
             RuleFor(i => i.Id).Custom((id, ctx) =>
             {
@@ -15,10 +17,10 @@ namespace ComptaClub.Validators
                     ctx.AddFailure(nameof(Models.Account.Id), "Identifiant invalide");
                 }
             });
-            RuleFor(i => i.Name).CustomAsync(async (name, ctx, cancel) =>
+            RuleFor(i => i.Code).CustomAsync(async (name, ctx, cancel) =>
             {
                 var current = ctx.InstanceToValidate;
-                var existing = await accountingService.GetBankByName(name);
+                var existing = await mediator.Send(new Requests.GetBankByCode(name));
                 if (existing != null && current.Id != existing.Id)
                 {
                     ctx.AddFailure(nameof(Models.Account.Code), "Ce nom de banque est déjà utilisé");
