@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ComptaClub\ComptaClub.csproj" />
+    <ProjectReference Include="..\ComptaClub.Core\ComptaClub.Core.csproj" />
   </ItemGroup>
 
 </Project>

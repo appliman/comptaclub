@@ -11,10 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 namespace ComptaClub.Tests
 {
     [TestClass]
-    public class BankCrudTests
+    public class EntryCrudTests
     {
         [TestMethod]
-        public async Task Bank_Crud()
+        public async Task Entry_Crud()
         {
             var app = await TestHelper.CreateWebApplication();
             var mediator = app.Services.GetRequiredService<MediatR.IMediator>();

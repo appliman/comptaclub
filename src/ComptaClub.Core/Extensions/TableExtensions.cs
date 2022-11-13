@@ -8,7 +8,7 @@ namespace ComptaClub.Extensions
         public static async Task<T?> GetFirstOrDefaultEntity<T>(this TableClient tableClient, Expression<Func<T,bool>> filter)
             where T : class, ITableEntity, new()
         {
-            var page = tableClient.QueryAsync<T>(filter);
+            var page = tableClient.QueryAsync(filter);
             T? data = null;
             await foreach (var item in page)
             {

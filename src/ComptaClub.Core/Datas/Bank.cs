@@ -4,7 +4,7 @@ namespace ComptaClub.Datas
 {
     public class Bank : ITableEntity
     {
-        public DateTime CreationDate { get; set; } = DateTime.UtcNow;
+        public DateTime LastUpdate { get; set; } = DateTime.UtcNow;
         public string? Label { get; set; }
 
         public string PartitionKey { get; set; } = null!;
