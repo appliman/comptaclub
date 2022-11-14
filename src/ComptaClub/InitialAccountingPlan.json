@@ -1,0 +1,440 @@
+[
+	{
+		"Id": "dff4c34b-0267-4e66-ac6a-dbea3fb296af",
+		"Code": "60",
+		"Label": "Achats",
+		"ParentAccountId": null,
+		"Direction": "debit",
+		"CreationDate": 8353,
+		"Children": [
+			{
+				"Id": "81f4ef18-7bce-4ee5-b620-bb5c25ffb022",
+				"Code": "601001",
+				"Label": "Achats Mat. 1\u00E8res (boissons, etc)",
+				"ParentAccountId": "dff4c34b-0267-4e66-ac6a-dbea3fb296af",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "cd5edad6-a034-454a-a6d6-5dfaa3ffaa0e",
+				"Code": "605001",
+				"Label": "Achat de mat\u00E9riel",
+				"ParentAccountId": "dff4c34b-0267-4e66-ac6a-dbea3fb296af",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			}
+		],
+		"Level": 0
+	},
+	{
+		"Id": "edb44053-bb10-4d93-ae10-91a86efd131c",
+		"Code": "61-62",
+		"Label": "Autres charges externes",
+		"ParentAccountId": null,
+		"Direction": "debit",
+		"CreationDate": 8353,
+		"Children": [
+			{
+				"Id": "ff7dc96a-83b6-4a35-92d3-468fe0644e01",
+				"Code": "611001",
+				"Label": "Organisation sous - trait\u00E9es(Traiteur, orchestre...)",
+				"ParentAccountId": "edb44053-bb10-4d93-ae10-91a86efd131c",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "d5c4831f-844f-4411-9d4c-cdbe984d666d",
+				"Code": "613001",
+				"Label": "Locations(mat\u00E9riel et \u00E9quipements)",
+				"ParentAccountId": "edb44053-bb10-4d93-ae10-91a86efd131c",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "2e822c88-d43e-4ea6-b294-28e604d7199f",
+				"Code": "615001",
+				"Label": "Entretien et r\u00E9parations du mat\u00E9riel",
+				"ParentAccountId": "edb44053-bb10-4d93-ae10-91a86efd131c",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "a89240f5-d4d9-4490-9ed3-eb4dd1679964",
+				"Code": "616001",
+				"Label": "Primes d\u0027assurances",
+				"ParentAccountId": "edb44053-bb10-4d93-ae10-91a86efd131c",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "9be5eb36-5d8d-41bd-9221-c34df9c4e169",
+				"Code": "618001",
+				"Label": "Frais de colloques et conf\u00E9rences",
+				"ParentAccountId": "edb44053-bb10-4d93-ae10-91a86efd131c",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "3b529754-66c9-4fdd-914e-7b902a7f9a7e",
+				"Code": "621101",
+				"Label": "Frais d\u0027arbitrage",
+				"ParentAccountId": "edb44053-bb10-4d93-ae10-91a86efd131c",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "d481070c-104b-4ec0-884d-f5c772ea06be",
+				"Code": "623401",
+				"Label": "R\u00E9compenses, cadeaux, dons",
+				"ParentAccountId": "edb44053-bb10-4d93-ae10-91a86efd131c",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "3766e0b2-5e74-4501-8b24-87a0e4f7d90f",
+				"Code": "623701",
+				"Label": "Publications(affiches, programmes, etc)",
+				"ParentAccountId": "edb44053-bb10-4d93-ae10-91a86efd131c",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "e95d2be1-6aa2-447d-a049-f2c505618f04",
+				"Code": "625101",
+				"Label": "Frais de d\u00E9placement",
+				"ParentAccountId": "edb44053-bb10-4d93-ae10-91a86efd131c",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "c08573c7-38bb-41e2-87df-d42ff474343c",
+				"Code": "625201",
+				"Label": "Frais de restauration",
+				"ParentAccountId": "edb44053-bb10-4d93-ae10-91a86efd131c",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "37ec1665-3a2e-4c47-a919-db31e0934957",
+				"Code": "625301",
+				"Label": "Frais d\u0027h\u00E9bergement",
+				"ParentAccountId": "edb44053-bb10-4d93-ae10-91a86efd131c",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "95a204ae-9e71-4bb3-b106-a8555cca7991",
+				"Code": "626001",
+				"Label": "Frais postaux et de t\u00E9l\u00E9phone",
+				"ParentAccountId": "edb44053-bb10-4d93-ae10-91a86efd131c",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "2bc0527e-a4ec-4c44-a6b7-4517ab8f111a",
+				"Code": "627001",
+				"Label": "Services bancaires",
+				"ParentAccountId": "edb44053-bb10-4d93-ae10-91a86efd131c",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			}
+		],
+		"Level": 0
+	},
+	{
+		"Id": "dedb0838-322d-4239-a79e-7b328c52c5a6",
+		"Code": "64",
+		"Label": "Charges de personnel",
+		"ParentAccountId": null,
+		"Direction": "debit",
+		"CreationDate": 8353,
+		"Children": [
+			{
+				"Id": "4acdc31a-60d7-4daf-a175-248c2da39d8b",
+				"Code": "641101",
+				"Label": "Salaires bruts",
+				"ParentAccountId": "dedb0838-322d-4239-a79e-7b328c52c5a6",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "41fae35b-e05a-4c18-892b-6c77c5bbcd21",
+				"Code": "641401",
+				"Label": "Autres frais de personnel(Indemn.Km)",
+				"ParentAccountId": "dedb0838-322d-4239-a79e-7b328c52c5a6",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "c1dfb034-49d9-46b7-8d21-504a0999fc06",
+				"Code": "645001",
+				"Label": "Charges sociales",
+				"ParentAccountId": "dedb0838-322d-4239-a79e-7b328c52c5a6",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			}
+		],
+		"Level": 0
+	},
+	{
+		"Id": "f7625f1f-f630-4f43-b789-25b61e9f7273",
+		"Code": "65",
+		"Label": "Autres charges de gestion courante",
+		"ParentAccountId": null,
+		"Direction": "debit",
+		"CreationDate": 8353,
+		"Children": [
+			{
+				"Id": "f6a83dd4-1d65-45b6-882c-92f2d312d26f",
+				"Code": "651601",
+				"Label": "Frais de SACEM",
+				"ParentAccountId": "f7625f1f-f630-4f43-b789-25b61e9f7273",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "20c710bd-1b41-4979-ac52-b4b655035168",
+				"Code": "656001",
+				"Label": "Cotisations ACSL",
+				"ParentAccountId": "f7625f1f-f630-4f43-b789-25b61e9f7273",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "907d46cf-b598-4231-98e5-74503d8385d9",
+				"Code": "656101",
+				"Label": "Cotisations aux F\u00E9d\u00E9rations",
+				"ParentAccountId": "f7625f1f-f630-4f43-b789-25b61e9f7273",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "757b26a0-d36f-424c-af71-7533a173e99d",
+				"Code": "658001",
+				"Label": "Autres frais de gestion courante",
+				"ParentAccountId": "f7625f1f-f630-4f43-b789-25b61e9f7273",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "8d239d9c-8e29-4490-b0e9-f2fd4188619b",
+				"Code": "658101",
+				"Label": "Achat de licences",
+				"ParentAccountId": "f7625f1f-f630-4f43-b789-25b61e9f7273",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "c476146d-8a60-4faf-9121-056d3c9883eb",
+				"Code": "658201",
+				"Label": "Comp\u00E9titions stages",
+				"ParentAccountId": "f7625f1f-f630-4f43-b789-25b61e9f7273",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "34556c89-ce13-4f23-a232-be4158953790",
+				"Code": "658301",
+				"Label": "Frais de stages de formation",
+				"ParentAccountId": "f7625f1f-f630-4f43-b789-25b61e9f7273",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			}
+		],
+		"Level": 0
+	},
+	{
+		"Id": "5883a08d-2afd-4e71-81c9-af30cf8b477d",
+		"Code": "66",
+		"Label": "Charges financi\u00E8res",
+		"ParentAccountId": null,
+		"Direction": "debit",
+		"CreationDate": 8353,
+		"Children": [
+			{
+				"Id": "7b3db488-3423-4aea-bd67-ec41353cbebf",
+				"Code": "661101",
+				"Label": "Int\u00E9r\u00EAts des emprunts",
+				"ParentAccountId": "5883a08d-2afd-4e71-81c9-af30cf8b477d",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "84781d8d-6d5b-4186-af2b-acf3b5dba49a",
+				"Code": "668001",
+				"Label": "Autres charges financi\u00E8res",
+				"ParentAccountId": "5883a08d-2afd-4e71-81c9-af30cf8b477d",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			}
+		],
+		"Level": 0
+	},
+	{
+		"Id": "8cd07d95-c905-4e85-bcb9-20003c0bf7fe",
+		"Code": "67",
+		"Label": "Charges exceptionnelles",
+		"ParentAccountId": null,
+		"Direction": "debit",
+		"CreationDate": 8353,
+		"Children": [
+			{
+				"Id": "66934c47-0259-4f72-afe1-ec1e89fd291b",
+				"Code": "671201",
+				"Label": "Amendes et p\u00E9nalit\u00E9s",
+				"ParentAccountId": "8cd07d95-c905-4e85-bcb9-20003c0bf7fe",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			}
+		],
+		"Level": 0
+	},
+	{
+		"Id": "5012bc2d-8b1c-44b3-ba30-12043a38d73f",
+		"Code": "68",
+		"Label": "Dotation aux amortissements et provisions",
+		"ParentAccountId": null,
+		"Direction": "debit",
+		"CreationDate": 8353,
+		"Children": [
+			{
+				"Id": "d6bcba1e-bf64-42b0-b0dd-2a5227c64f40",
+				"Code": "6810",
+				"Label": "Amortissements sur charges d\u0027exploitation",
+				"ParentAccountId": "5012bc2d-8b1c-44b3-ba30-12043a38d73f",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "7447800b-511e-4e35-b672-4083cc461bd3",
+				"Code": "6890",
+				"Label": "Engagements \u00E0 r\u00E9aliser sur ressources affect\u00E9es",
+				"ParentAccountId": "5012bc2d-8b1c-44b3-ba30-12043a38d73f",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			}
+		],
+		"Level": 0
+	},
+	{
+		"Id": "6a52e3e7-944e-47e6-a26d-f78853f97e06",
+		"Code": "86",
+		"Label": "Emploi des contributions volontaires",
+		"ParentAccountId": null,
+		"Direction": "debit",
+		"CreationDate": 8353,
+		"Children": [
+			{
+				"Id": "bbfc98dd-e221-4654-acf1-93ce1cd9eb9e",
+				"Code": "860",
+				"Label": "Secours en nature(alimentaires, vestiaires)",
+				"ParentAccountId": "6a52e3e7-944e-47e6-a26d-f78853f97e06",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "8f89cb85-af74-4f74-a852-3c4477be0655",
+				"Code": "861",
+				"Label": "Mise \u00E0 disposition gratuite de biens et prestations",
+				"ParentAccountId": "6a52e3e7-944e-47e6-a26d-f78853f97e06",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			},
+			{
+				"Id": "8b3f1d52-fb42-478e-b08f-98b090d5cae4",
+				"Code": "864",
+				"Label": "Personnels b\u00E9n\u00E9voles",
+				"ParentAccountId": "6a52e3e7-944e-47e6-a26d-f78853f97e06",
+				"Direction": "debit",
+				"CreationDate": 8353,
+				"Children": [],
+				"Level": 1
+			}
+		],
+		"Level": 0
+	},
+	{
+		"Id": "65665161-f5ff-472a-ba0c-772703420bb7",
+		"Code": "Test4652192b-c975-4f16-abf3-18a4124ed5b4",
+		"Label": "77219b5a-2963-45d1-b0c8-6cf9965ceedd6e749a9e-b225-4a20-9e7d-8799abe8a8ad",
+		"ParentAccountId": null,
+		"Direction": "credit",
+		"CreationDate": 8353,
+		"Children": [],
+		"Level": 0
+	},
+	{
+		"Id": "9de02660-317a-4f93-bd3d-97e2be7afce6",
+		"Code": "Testfbf908a8-0761-4b48-bb2d-7120364cdf33",
+		"Label": "6f50620d-c019-4abf-a7a2-4829ccfd4a7a407a9b62-c20f-402a-b98b-0f2360b01364",
+		"ParentAccountId": null,
+		"Direction": "credit",
+		"CreationDate": 8353,
+		"Children": [],
+		"Level": 0
+	}
+]

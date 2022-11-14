@@ -7,10 +7,11 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["ComptaClub/ComptaClub.csproj", "ComptaClub/"]
-RUN dotnet restore "ComptaClub/ComptaClub.csproj"
+COPY ["src/ComptaClub/ComptaClub.csproj", "src/ComptaClub/"]
+COPY ["src/ComptaClub.Core/ComptaClub.Core.csproj", "src/ComptaClub.Core/"]
+RUN dotnet restore "src/ComptaClub/ComptaClub.csproj"
 COPY . .
-WORKDIR "/src/ComptaClub"
+WORKDIR "/src/src/ComptaClub"
 RUN dotnet build "ComptaClub.csproj" -c Release -o /app/build
 
 FROM build AS publish

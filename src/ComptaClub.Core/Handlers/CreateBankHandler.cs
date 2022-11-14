@@ -19,7 +19,7 @@ namespace ComptaClub.Handlers
             result.Id = Guid.NewGuid();
             result.Code = request.Code;
             result.Label = request.Label;
-            result.LastUpdate = DateTime.UtcNow;
+            result.CreationDate = DateTime.Today.ToDayId();
             return Task.FromResult(result);
         }
     }

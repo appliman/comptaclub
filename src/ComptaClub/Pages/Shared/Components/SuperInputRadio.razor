@@ -1,0 +1,47 @@
+﻿@typeparam T
+
+<div class="form-check">
+	<InputRadioGroup TValue="T" Value="Value" ValueChanged="ValueChanged" ValueExpression="ValueExpression" required="@Required">
+	@foreach (var item in ItemList)
+	{
+		var id = Guid.NewGuid();
+		<div @attributes="CatpuredAttributes">
+			<InputRadio id="@id" class="form-check-input" Value="@item.Value" />
+			<label class="form-check-label" for="@id">
+				@item.Text
+			</label>
+		</div>
+	}
+	</InputRadioGroup>
+</div>
+
+@ChildContent
+
+@code {
+	[Parameter]
+	public string? Label { get; set; }
+
+	[Parameter]
+	public string? Description { get; set; }
+
+	[Parameter]
+	public T Value { get; set; } = default(T)!;
+
+	[Parameter]
+	public EventCallback<T> ValueChanged { get; set; }
+
+	[Parameter]
+	public System.Linq.Expressions.Expression<Func<T>>? ValueExpression { get; set; }
+
+	[Parameter]
+	public RenderFragment? ChildContent { get; set; }
+
+	[Parameter]
+	public IEnumerable<ViewModels.RadioValue<T>> ItemList { get; set; }
+
+	[Parameter(CaptureUnmatchedValues = true)]
+	public Dictionary<string, object> CatpuredAttributes { get; set; } = new();
+
+	[Parameter]
+	public bool Required { get; set; }
+}

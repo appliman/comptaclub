@@ -1,10 +1,10 @@
 ﻿namespace ComptaClub.Models
 {
-    public class Bank : IEntityKey, ILastUpdatable
+    public class Bank : IEntityKey
     {
         public Guid Id { get; set; }
         public string Code { get; set; } = null!;
         public string? Label { get; set; }
-        public DateTime LastUpdate { get; set; } = DateTime.UtcNow;
+        public int CreationDate { get; set; }
     }
 }

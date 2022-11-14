@@ -12,13 +12,7 @@ namespace ComptaClub.Validators
     {
         public ExerciceValidator(MediatR.IMediator mediator)
         {
-            RuleFor(i => i.Id).Custom((id, ctx) =>
-            {
-                if (id == Guid.Empty)
-                {
-                    ctx.AddFailure(nameof(Models.Account.Id), "Identifiant invalide");
-                }
-            });
+            RuleFor(i => i.Id).ValidGuid();
             RuleFor(i => i.Code).CustomAsync(async (code, ctx, cancel) =>
             {
                 var current = ctx.InstanceToValidate;
@@ -29,6 +23,10 @@ namespace ComptaClub.Validators
                     ctx.AddFailure(nameof(Models.Account.Code), "Ce code est déjà utilisé");
                 }
             });
+
+            // TODO : Verifier qu'il n'exite pas un exercice qui couvre déjà l'interval
+
+            // TODO :
         }
     }
 }

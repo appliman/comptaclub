@@ -1,0 +1,35 @@
+﻿<div class="form-group">
+	<label class="control-label">@Description</label>
+	<div class="form-check">
+		<InputCheckbox class="form-check-input" Value="Value" ValueChanged="ValueChanged" ValueExpression="ValueExpression"/>
+		<label class="form-check-label">@Label</label>
+		@ChildContent
+	</div>
+</div>
+@code {
+
+    [Parameter]
+    public string Label { get; set; }
+
+    [Parameter]
+    public string Description { get; set; }
+
+    [Parameter]
+    public bool Value { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> ValueChanged { get; set; }
+
+   	[Parameter]
+    public System.Linq.Expressions.Expression<Func<bool>> ValueExpression { get; set; }
+
+	[Parameter]
+	public string PlaceHoder { get; set; }
+
+	[Parameter]
+	public bool Required { get; set; }
+    
+    [Parameter]
+	public RenderFragment ChildContent { get; set; }
+
+}

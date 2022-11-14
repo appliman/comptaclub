@@ -19,8 +19,8 @@ namespace ComptaClub.Handlers
             result.Id = Guid.NewGuid();
             result.Code = request.Code;
             result.Label = request.Label;
-            result.LastUpdate = DateTime.UtcNow;
             result.Direction = request.Direction;
+            result.CreationDate = DateTime.Today.ToDayId();
             return Task.FromResult(result);
         }
     }

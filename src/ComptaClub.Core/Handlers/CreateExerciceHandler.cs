@@ -24,6 +24,7 @@ namespace ComptaClub.Handlers
         {
             var result = _mapper.Map<Models.Exercice>(request);
             result.Id = Guid.NewGuid();
+            result.CreationDate = DateTime.Today.ToDayId();
             return Task.FromResult(result);
         }
     }

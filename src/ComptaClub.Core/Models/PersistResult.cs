@@ -1,7 +1,7 @@
 ﻿
 namespace ComptaClub.Models;
 
-public class PersistResult
+public class CommandResult
 {
     public bool HasError { get; set; }
     public bool HasWarning { get; set; }
@@ -53,9 +53,9 @@ public class PersistResult
         return string.Join(',', WarningBrokenRuleList.Select(r => $"{r.PropertyName}.[{string.Join('|', r.MessageList)}]"));
     }
 
-    public static PersistResult CreateWarningResult(string warning)
+    public static CommandResult CreateWarningResult(string warning)
 	{
-        return new PersistResult
+        return new CommandResult
         {
             HasError = false,
             WarningBrokenRuleList = new List<BrokenRule>
@@ -74,9 +74,9 @@ public class PersistResult
         };
     }
 
-	public static PersistResult CreateInvalidResult(List<BrokenRule> brokenRuleList)
+	public static CommandResult CreateInvalidResult(List<BrokenRule> brokenRuleList)
 	{
-		return new PersistResult
+		return new CommandResult
 		{
 			HasError = false,
 			ErrorBrokenRuleList = new List<BrokenRule>(brokenRuleList)
@@ -84,7 +84,7 @@ public class PersistResult
 	}
 }
 
-public class PersistResult<T> : PersistResult
+public class PersistResult<T> : CommandResult
 {
     public T Id { get; set; } = default(T)!;
     public long AutoInc { get; set; }
@@ -120,5 +120,26 @@ public class PersistResult<T> : PersistResult
 			ErrorBrokenRuleList = new List<BrokenRule>(brokenRuleList)
 		};
 	}
+
+    public static PersistResult<T> CreateInvalidResult(string error)
+    {
+        return new PersistResult<T>
+        {
+            HasError = false,
+            ErrorBrokenRuleList = new List<BrokenRule>()
+            {
+                {
+                    new BrokenRule 
+                    {
+                        PropertyName = "All",
+                        MessageList = new List<string>
+                        {
+                            error
+                        }
+                    }
+                }
+            }
+        };
+    }
 
 }

@@ -1,0 +1,48 @@
+﻿<div class="form-group">
+	<label for="Name" class="control-label">@Label</label>
+	@if (string.IsNullOrWhiteSpace(Prepend))
+	{
+		<div>
+			<InputNumber class="form-control" Value="Value" ValueChanged="ValueChanged" ValueExpression="ValueExpression" placeholder="@PlaceHoder" required="@(Required ? "required" : null)" />
+		</div>
+	}
+	else
+	{
+		<div class="input-group">
+			<span class="input-group-text"><i class="@Prepend"></i></span>
+			<InputNumber class="form-control" Value="Value" ValueChanged="ValueChanged" ValueExpression="ValueExpression" placeholder="@PlaceHoder" required="@(Required ? "required" : null)" />
+		</div>
+	}
+	<small>
+		<ValidationMessage class="invalid-feedback" For="() => Value" />
+	</small>
+	@ChildContent
+</div>
+
+@code {
+
+	[Parameter]
+	public string Label { get; set; }
+
+	[Parameter]
+	public int Value { get; set; }
+
+	[Parameter]
+	public EventCallback<int> ValueChanged { get; set; }
+
+	[Parameter]
+    public System.Linq.Expressions.Expression<Func<int>> ValueExpression { get; set; }
+
+	[Parameter]
+	public string PlaceHoder { get; set; }
+
+	[Parameter]
+	public bool Required { get; set; }
+
+	[Parameter]
+	public string Prepend { get; set; }
+
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+
+}
