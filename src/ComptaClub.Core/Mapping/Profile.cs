@@ -24,5 +24,13 @@ public class Profile : AutoMapper.Profile
             .ReverseMap();
 
         CreateMap<Requests.CreateExercice, Models.Exercice>();
+
+        CreateMap<Datas.Entry, Models.Entry>()
+            .ForMember(d => d.CreationDate, opt => opt.MapFrom(s => s.Timestamp!.Value.LocalDateTime.ToDayId()))
+            .ForMember(d => d.Id, opt => opt.MapFrom(s => s.RowKey));
+
+        CreateMap<Models.Entry, Datas.Entry>()
+            .ForMember(d => d.RowKey, opt => opt.MapFrom(s => s.Id))
+            .ForMember(d => d.PartitionKey, opt => opt.MapFrom(s => s.Id));
     }
 }

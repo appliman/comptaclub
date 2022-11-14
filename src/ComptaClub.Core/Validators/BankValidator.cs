@@ -10,13 +10,7 @@ namespace ComptaClub.Validators
     {
         public BankValidator(IMediator mediator)
         {
-            RuleFor(i => i.Id).Custom((id, ctx) =>
-            {
-                if (id == Guid.Empty)
-                {
-                    ctx.AddFailure(nameof(Models.Account.Id), "Identifiant invalide");
-                }
-            });
+            RuleFor(i => i.Id).ValidGuid();
             RuleFor(i => i.Code).CustomAsync(async (name, ctx, cancel) =>
             {
                 var current = ctx.InstanceToValidate;

@@ -15,5 +15,10 @@
         public string VaultCertificatePath { get; set; } = null!;
         public string VaultTenantId { get; set; } = null!;  
         public string VaultUrl { get; set; } = null!;
+
+        public System.Globalization.CultureInfo CultureInfo { get; init; } 
+            = new System.Globalization.CultureInfo("fr-FR");
+
+        public System.TimeZoneInfo TimeZoneInfo { get; set; } = TimeZoneInfo.Local;
     }
 }

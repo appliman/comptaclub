@@ -11,8 +11,12 @@ public static class StartupExtensions
 {
     public static async Task<Configuration.ComptaClubSettings> ConfigureComptaClub(this WebApplicationBuilder builder)
     {
-        builder.Configuration.AddJsonFile("appSettings.json");
-        builder.Configuration.AddJsonFile($"appSettings.{builder.Environment.EnvironmentName}.json");
+        var currentFolder = System.IO.Path.GetDirectoryName(typeof(StartupExtensions).Assembly.Location);
+        builder.Configuration
+            .AddJsonFile("appSettings.json")
+            .AddJsonFile($"appSettings.{builder.Environment.EnvironmentName}.json")
+            .AddEnvironmentVariables()
+            .SetBasePath(currentFolder!);
 
         var section = builder.Configuration.GetSection("ComptaClub");
         var settings = new Configuration.ComptaClubSettings();
@@ -21,12 +25,15 @@ public static class StartupExtensions
         builder.Services.AddSingleton(settings);
 
         builder.Services.AddScoped<Services.ITableStorageService, Services.TableStorageService>();
+        builder.Services.AddScoped<Services.IAccountingService, Services.AccountingService>();
+
         builder.Services.AddAutoMapper(typeof(StartupExtensions));
         builder.Services.AddMediatR(typeof(StartupExtensions));
 
         builder.Services.AddTransient<IValidator<Models.Bank>, Validators.BankValidator>();
         builder.Services.AddTransient<IValidator<Models.Account>, Validators.AccountValidator>();
         builder.Services.AddTransient<IValidator<Models.Exercice>, Validators.ExerciceValidator>();
+        builder.Services.AddTransient<IValidator<Models.Entry>, Validators.EntryValidator>();
 
         return await Task.FromResult(settings);
     }

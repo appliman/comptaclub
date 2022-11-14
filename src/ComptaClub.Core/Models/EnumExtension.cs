@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace ComptaClub.Models
 {
-    public interface ILastUpdatable
-    {
-        public DateTime LastUpdate { get; set; }
-    }
+	public class EnumExtension
+	{
+		public int Key { get; set; }
+		public string? Name { get; set; } 
+		public string? Description { get; set; }
+	}
 }

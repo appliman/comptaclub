@@ -7,12 +7,13 @@ namespace ComptaClub.Datas
         public string? Label { get; set; } 
         public long InitialAmount { get; set; }
 
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public int StartDate { get; set; }
+        public int EndDate { get; set; }
+        public int CreationDate { get; set; }
 
         public string PartitionKey { get; set; } = null!;
         public string RowKey { get; set; } = null!;
-        public DateTimeOffset? Timestamp { get; set; } = DateTime.Now;
+        public DateTimeOffset? Timestamp { get; set; }
         public ETag ETag { get; set; }
     }
 }

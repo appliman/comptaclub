@@ -13,7 +13,8 @@ namespace ComptaClub.Models
         public string? Label { get; set; }
         public long InitialAmount { get; set; }
 
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public int StartDate { get; set; }
+        public int EndDate { get; set; }
+        public int CreationDate { get; set; }
     }
 }

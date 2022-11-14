@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComptaClub", "src\ComptaClu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComptaClub.Tests", "src\ComptaClub.Tests\ComptaClub.Tests.csproj", "{E15CE1F8-4FCA-4700-868F-E6762F0B9F36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComptaClub.Core", "src\ComptaClub.Core\ComptaClub.Core.csproj", "{7986063B-43C3-4AC3-8DBA-F7CFD1A24202}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComptaClub.Core", "src\ComptaClub.Core\ComptaClub.Core.csproj", "{7986063B-43C3-4AC3-8DBA-F7CFD1A24202}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

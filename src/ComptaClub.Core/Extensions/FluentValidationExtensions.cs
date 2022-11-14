@@ -110,7 +110,7 @@ public static class FluentValidationExtensions
 		};
 	}
 
-	public static Models.PersistResult? ToPersistResult(this ValidationResult validationResult)
+	public static Models.CommandResult? ToPersistResult(this ValidationResult validationResult)
 	{
 		if (validationResult == null)
 		{
@@ -118,7 +118,7 @@ public static class FluentValidationExtensions
 		}
 		var brokenRules = validationResult.ToBrokenRules();
 
-		return new Models.PersistResult
+		return new Models.CommandResult
 		{
 			ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Models.Severity.Error).ToList(),
 			WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Models.Severity.Warning).ToList(),

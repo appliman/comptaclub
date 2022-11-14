@@ -34,12 +34,6 @@ namespace ComptaClub.Services
             var response = await table.GetEntityIfExistsAsync<T>(model.Code, $"{model.Id}");
             string? error = null;
 
-            var lastUpdatable = model as ILastUpdatable;
-            if (lastUpdatable != null)
-            {
-                lastUpdatable.LastUpdate = DateTime.UtcNow;
-            }
-
             if (!response.HasValue)
             {
                 var data = _mapper.Map<T>(model);
