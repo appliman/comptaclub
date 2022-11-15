@@ -22,25 +22,25 @@ namespace ComptaClub.Tests
 
             var settings = app.Services.GetRequiredService<Configuration.ComptaClubSettings>();
 
-            var exercice = await mediator.Send(new Requests.GetExerciceByCode("fake"));
+            var exercice = await mediator.Send(new Requests.GetExerciceByFilterRequest(f => f.PartitionKey == "fake"));
             exercice.Should().BeNull();
 
             var name = $"Ex{Guid.NewGuid()}";
-            exercice = await mediator.Send(new CreateExercice(name, 
+            exercice = await mediator.Send(new CreateExerciceRequest(name, 
                 "test", 
                 new DateTime(DateTime.Now.Year, 1, 1, 0,0,0).ToDayId(),
                 new DateTime(DateTime.Now.Year, 1, 1, 23,59,59).AddYears(1).AddDays(-1).ToDayId(), 
                 100 * 1000000));
 
-            var saveResult = await mediator.Send(new SaveEntity<Models.Exercice>(exercice));
+            var saveResult = await mediator.Send(new SaveEntityRequest<Models.Exercice>(exercice));
             saveResult.HasError.Should().BeFalse();
 
-            exercice = await mediator.Send(new GetExerciceByCode(name));
+            exercice = await mediator.Send(new GetExerciceByFilterRequest(f => f.PartitionKey == name));
             exercice.Should().NotBeNull();
 
             exercice.Label = $"{Guid.NewGuid()}";
 
-            saveResult = await mediator.Send(new SaveEntity<Models.Exercice>(exercice));
+            saveResult = await mediator.Send(new SaveEntityRequest<Models.Exercice>(exercice));
             saveResult.HasError.Should().BeFalse();
         }
     }

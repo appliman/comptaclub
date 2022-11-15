@@ -1,6 +1,9 @@
 ﻿using System.Reflection;
+using System.Text;
 
 using FluentValidation.Results;
+
+using Microsoft.Extensions.Logging;
 
 namespace ComptaClub.Extensions;
 
@@ -124,6 +127,27 @@ public static class FluentValidationExtensions
 			WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Models.Severity.Warning).ToList(),
 			HasError = brokenRules.Count(x => x.Severity == Models.Severity.Error) > 0
 		};
+	}
+
+	public static void LogValidationFailedResult<T>(this ILogger logger, string message, Models.PersistResult<T> validationResult)
+	{
+		if (validationResult == null)
+		{
+			return;
+		}
+		var errorlist = new StringBuilder();
+		errorlist.AppendLine(message);
+		errorlist.AppendLine($"{validationResult.Id}");
+		errorlist.AppendLine($"{validationResult.Code}");
+		foreach (var brokenRule in validationResult.ErrorBrokenRuleList)
+		{
+			errorlist.AppendLine("Property : " + brokenRule.PropertyName);
+            foreach (var error in brokenRule.MessageList)
+            {
+				errorlist.AppendLine("Error Message : " + error);
+			}
+		}
+		logger.LogError(errorlist.ToString());
 	}
 
 }

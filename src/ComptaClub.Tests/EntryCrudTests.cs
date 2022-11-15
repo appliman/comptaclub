@@ -19,13 +19,13 @@ namespace ComptaClub.Tests
             var app = await TestHelper.CreateWebApplication();
             var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
 
-            var entry = await mediator.Send(new Requests.GetEntryById(Guid.NewGuid()));
+            var entry = await mediator.Send(new Requests.GetEntryByIdRequest(Guid.NewGuid()));
             entry.Should().BeNull();
 
-            entry = await mediator.Send(new Requests.CreateEntry());
+            entry = await mediator.Send(new Requests.CreateEntryRequest());
             entry.Should().NotBeNull();
 
-            var saveResult = await mediator.Send(new SaveEntry(entry));
+            var saveResult = await mediator.Send(new SaveEntryRequest(entry));
             saveResult.HasError.Should().BeTrue();  
 
 

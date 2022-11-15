@@ -11,12 +11,12 @@ using MediatR;
 
 namespace ComptaClub.Handlers
 {
-    public class GetExerciceByCode : IRequestHandler<Requests.GetExerciceByCode, Models.Exercice>
+    public class GetExerciceByFilterRequestHandler : IRequestHandler<Requests.GetExerciceByFilterRequest, Models.Exercice>
     {
         private readonly IMapper _mapper;
         private readonly ITableStorageService _tableStorageService;
 
-        public GetExerciceByCode(
+        public GetExerciceByFilterRequestHandler(
             AutoMapper.IMapper mapper,
             ITableStorageService tableStorageService)
         {
@@ -24,11 +24,11 @@ namespace ComptaClub.Handlers
             _tableStorageService = tableStorageService;
         }
 
-        public async Task<Exercice> Handle(Requests.GetExerciceByCode request, CancellationToken cancellationToken)
+        public async Task<Exercice> Handle(Requests.GetExerciceByFilterRequest request, CancellationToken cancellationToken)
         {
             var table = await _tableStorageService.GetTable<Datas.Exercice>();
 
-            var data = await table.GetFirstOrDefaultEntity<Datas.Exercice>(f => f.PartitionKey == request.Code);
+            var data = await table.GetFirstOrDefaultEntity<Datas.Exercice>(request.Filter);
 
             var result = _mapper.Map<Models.Exercice>(data);
             return result;

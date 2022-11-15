@@ -11,10 +11,10 @@ using MediatR;
 
 namespace ComptaClub.Requests
 {
-    public record SaveEntity<T> : IRequest<Models.PersistResult<Guid>>
+    public record SaveEntityRequest<T> : IRequest<Models.PersistResult<Guid>>
         where T : class, IEntityKey
     {
-        public SaveEntity(T entity)
+        public SaveEntityRequest(T entity)
         {
             this.Entity = entity;
         }

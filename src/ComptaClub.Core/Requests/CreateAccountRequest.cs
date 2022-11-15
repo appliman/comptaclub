@@ -10,16 +10,16 @@ using MediatR;
 
 namespace ComptaClub.Requests
 {
-    public record CreateAccount : IRequest<Models.Account>
+    public record CreateAccountRequest : IRequest<Models.Account>
     {
-        public CreateAccount() 
+        public CreateAccountRequest() 
         {
             this.Code = "A completer";
             this.Label = "A completer";
             this.Direction = AccountDirection.Credit;
         }
 
-        public CreateAccount(string code, string label, AccountDirection accountDirection)
+        public CreateAccountRequest(string code, string label, AccountDirection accountDirection)
         {
             this.Code = code;
             this.Label  = label;

@@ -4,6 +4,8 @@ using MediatR;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace ComptaClub;
 
@@ -35,6 +37,14 @@ public static class StartupExtensions
         builder.Services.AddTransient<IValidator<Models.Exercice>, Validators.ExerciceValidator>();
         builder.Services.AddTransient<IValidator<Models.Entry>, Validators.EntryValidator>();
 
-        return await Task.FromResult(settings);
+        builder.Services.AddMemoryCache();
+
+        if (builder.Environment.IsDevelopment())
+        {
+			builder.Logging.AddDebug();
+			builder.Logging.AddConsole();
+		}
+
+		return await Task.FromResult(settings);
     }
 }

@@ -12,12 +12,12 @@ using MediatR;
 
 namespace ComptaClub.Handlers
 {
-	public class GetAllAccountHierarchizedHandler : IRequestHandler<Requests.GetAllAccountHierarchized, IEnumerable<Models.Account>>
+	public class GetAllAccountHierarchizedRequestHandler : IRequestHandler<Requests.GetAllAccountHierarchizedRequest, IEnumerable<Models.Account>>
 	{
 		private readonly IMapper _mapper;
 		private readonly ITableStorageService _tableStorageService;
 
-		public GetAllAccountHierarchizedHandler(
+		public GetAllAccountHierarchizedRequestHandler(
 			AutoMapper.IMapper mapper,
 			ITableStorageService tableStorageService)
 		{
@@ -25,7 +25,7 @@ namespace ComptaClub.Handlers
 			_tableStorageService = tableStorageService;
 		}
 
-		public async Task<IEnumerable<Account>> Handle(GetAllAccountHierarchized request, CancellationToken cancellationToken)
+		public async Task<IEnumerable<Account>> Handle(GetAllAccountHierarchizedRequest request, CancellationToken cancellationToken)
 		{
 			var table = await _tableStorageService.GetTable<Datas.Account>();
 

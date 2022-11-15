@@ -9,7 +9,7 @@ namespace ComptaClub.Pages.Shared.Components;
 public partial class BrokenRuleMessage<TValue> : ComponentBase
 {
     [Parameter]
-    public Expression<Func<TValue>> For { get; set; }
+    public Expression<Func<TValue>>? For { get; set; }
 
     [Parameter]
     public List<BrokenRule> BrokenRuleList { get; set; } = new();
@@ -18,7 +18,7 @@ public partial class BrokenRuleMessage<TValue> : ComponentBase
 
     protected override void OnParametersSet()
     {
-        var memberExpression = For.Body as MemberExpression;
+        var memberExpression = For!.Body as MemberExpression;
         if (memberExpression != null)
         {
 			var memberName = memberExpression.Member.Name;

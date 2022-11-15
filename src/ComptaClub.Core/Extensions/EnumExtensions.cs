@@ -45,7 +45,7 @@ namespace ComptaClub.Extensions
 			foreach (var value in values)
 			{
 				var fi = value.GetType().GetField($"{value}");
-				var attr = fi.GetCustomAttribute<DisplayAttribute>();
+				var attr = fi!.GetCustomAttribute<DisplayAttribute>();
 				if (attr != null)
 				{
 					result.Add(new EnumExtension
@@ -60,7 +60,7 @@ namespace ComptaClub.Extensions
 					result.Add(new EnumExtension
 					{
 						Key = (int)value,
-						Name = fi.Name,
+						Name = fi!.Name,
 						Description = fi.Name
 					});
 				}

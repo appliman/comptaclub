@@ -4,21 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using ComptaClub.Requests;
 using ComptaClub.Models;
+using ComptaClub.Requests;
 
 using MediatR;
 
 namespace ComptaClub.Handlers
 {
-    public class CreateBankHandler : IRequestHandler<Requests.CreateBank, Models.Bank>
+    public class CreateEntryRequestHandler : IRequestHandler<Requests.CreateEntryRequest, Models.Entry>
     {
-        public Task<Models.Bank> Handle(Requests.CreateBank request, CancellationToken cancellationToken)
+        public Task<Entry> Handle(CreateEntryRequest request, CancellationToken cancellationToken)
         {
-            var result = new Models.Bank();
+            var result = new Models.Entry();
             result.Id = Guid.NewGuid();
-            result.Code = request.Code;
-            result.Label = request.Label;
             result.CreationDate = DateTime.Today.ToDayId();
             return Task.FromResult(result);
         }

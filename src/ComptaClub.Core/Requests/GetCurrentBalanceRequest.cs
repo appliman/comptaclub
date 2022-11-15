@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using ComptaClub.Models;
+
 using MediatR;
 
 namespace ComptaClub.Requests
 {
-	public record GetAllAccountHierarchized : IRequest<IEnumerable<Models.Account>> 
+	public record GetCurrentBalanceRequest : IRequest<Balance?>
 	{
 	}
 }

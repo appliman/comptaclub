@@ -8,15 +8,16 @@ using MediatR;
 
 namespace ComptaClub.Requests
 {
-    public record CreateExercice : IRequest<Models.Exercice>
+    public record CreateExerciceRequest : IRequest<Models.Exercice>
     {
-        public CreateExercice(string code, string label, int startDate, int endDate, long initialAmount)
+        public CreateExerciceRequest(string code, string label, int startDate, int endDate, long initialAmount, bool active = true)
         {
             this.Code= code;
             this.Label= label;
             this.StartDate= startDate;
             this.EndDate= endDate;
             this.InitialAmount= initialAmount;
+            this.Active= active;
         }
 
         public string Code { get; init; }
@@ -24,5 +25,6 @@ namespace ComptaClub.Requests
         public int StartDate { get; init; }
         public int EndDate { get; init; }
         public long InitialAmount { get; init; }
+        public bool Active { get; init; }
     }
 }

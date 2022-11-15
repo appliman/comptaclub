@@ -8,9 +8,9 @@ using MediatR;
 
 namespace ComptaClub.Requests
 {
-    public record GetEntryById : IRequest<Models.Entry>
+    public record GetEntryByIdRequest : IRequest<Models.Entry>
     {
-        public GetEntryById(Guid id)
+        public GetEntryByIdRequest(Guid id)
         {
             this.Id = id;
         }

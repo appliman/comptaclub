@@ -8,9 +8,9 @@ using MediatR;
 
 namespace ComptaClub.Requests
 {
-    public record SaveEntry : IRequest<Models.PersistResult<Guid>>
+    public record SaveEntryRequest : IRequest<Models.PersistResult<Guid>>
     {
-        public SaveEntry(Models.Entry entry)
+        public SaveEntryRequest(Models.Entry entry)
         {
             this.Entry = entry;
         }

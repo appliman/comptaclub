@@ -8,9 +8,9 @@ using MediatR;
 
 namespace ComptaClub.Requests
 {
-    public record GetBankByCode : IRequest<Models.Bank>
+    public record GetBankByCodeRequest : IRequest<Models.Bank>
     {
-        public GetBankByCode(string code)
+        public GetBankByCodeRequest(string code)
         {
             Code = code;
         }

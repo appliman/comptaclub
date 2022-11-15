@@ -9,11 +9,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="InitialAccountingPlan.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="..\ComptaClub\appsettings.Development.json" Link="appsettings.Development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="..\ComptaClub\appsettings.json" Link="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="InitialAccountingPlan.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
 

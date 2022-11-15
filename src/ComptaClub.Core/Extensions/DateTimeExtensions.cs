@@ -20,5 +20,17 @@ namespace ComptaClub.Extensions
             var date = new DateTime(2000,0,0).AddDays(dayId);
             return date;
         }
-    }
+
+        public static int FirstDateOfCurrentYear(this DateTime date)
+        {
+            var year = date.Year;   
+            return new DateTime(year,1,1).ToDayId();
+        }
+
+        public static int LastDateOfCurrentYear(this DateTime date)
+        {
+			var year = date.Year;
+			return new DateTime(year, 12, 31, 23, 59, 59).ToDayId();
+		}
+	}
 }

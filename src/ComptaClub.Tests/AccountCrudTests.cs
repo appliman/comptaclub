@@ -26,21 +26,21 @@ namespace ComptaClub.Tests
             var app = await TestHelper.CreateWebApplication();
             var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
 
-            var account = await mediator.Send(new Requests.GetAccountByCode("fake"));
+            var account = await mediator.Send(new Requests.GetAccountByCodeRequest("fake"));
             account.Should().BeNull();   
 
             var code = $"Test{Guid.NewGuid()}";
-            account = await mediator.Send(new Requests.CreateAccount(code, $"{Guid.NewGuid()}", AccountDirection.Credit));
+            account = await mediator.Send(new Requests.CreateAccountRequest(code, $"{Guid.NewGuid()}", AccountDirection.Credit));
 
-            var saveResult = await mediator.Send(new Requests.SaveEntity<Models.Account>(account));
+            var saveResult = await mediator.Send(new Requests.SaveEntityRequest<Models.Account>(account));
             saveResult.HasError.Should().BeFalse();
 
             var label = account.Label = account.Label + $"{Guid.NewGuid()}";
 
-            saveResult = await mediator.Send(new Requests.SaveEntity<Models.Account>(account));
+            saveResult = await mediator.Send(new Requests.SaveEntityRequest<Models.Account>(account));
             saveResult.HasError.Should().BeFalse();
 
-            account = await mediator.Send(new Requests.GetAccountByCode(code));
+            account = await mediator.Send(new Requests.GetAccountByCodeRequest(code));
             account.Should().NotBeNull();
 
             account.Label.Should().Be(label);

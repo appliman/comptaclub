@@ -15,19 +15,19 @@ using MediatR;
 
 namespace ComptaClub.Handlers
 {
-    public class SaveAccountHandler : IRequestHandler<Requests.SaveEntity<Models.Account>, Models.PersistResult<Guid>>
+    public class SaveAccountRequestHandler : IRequestHandler<Requests.SaveEntityRequest<Models.Account>, Models.PersistResult<Guid>>
     {
         private readonly ITableStorageService _tableStorageService;
         private readonly IValidator<Account> _validator;
 
-        public SaveAccountHandler(ITableStorageService tableStorageService,
+        public SaveAccountRequestHandler(ITableStorageService tableStorageService,
             IValidator<Models.Account> validator)
         {
             _tableStorageService = tableStorageService;
             _validator = validator;
         }
 
-        public async Task<PersistResult<Guid>> Handle(SaveEntity<Account> request, CancellationToken cancellationToken)
+        public async Task<PersistResult<Guid>> Handle(SaveEntityRequest<Account> request, CancellationToken cancellationToken)
         {
             var result = await _validator.ValidateAsync(request.Entity);
             if (!result.IsValid)
