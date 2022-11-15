@@ -11,16 +11,16 @@ using MediatR;
 
 namespace ComptaClub.Handlers
 {
-    public class CreateExerciceHandler : IRequestHandler<Requests.CreateExercice, Models.Exercice>
+    public class CreateExerciceRequestHandler : IRequestHandler<Requests.CreateExerciceRequest, Models.Exercice>
     {
         private readonly IMapper _mapper;
 
-        public CreateExerciceHandler(AutoMapper.IMapper mapper)
+        public CreateExerciceRequestHandler(AutoMapper.IMapper mapper)
         {
             _mapper = mapper;
         }
 
-        public Task<Exercice> Handle(CreateExercice request, CancellationToken cancellationToken)
+        public Task<Exercice> Handle(CreateExerciceRequest request, CancellationToken cancellationToken)
         {
             var result = _mapper.Map<Models.Exercice>(request);
             result.Id = Guid.NewGuid();

@@ -19,21 +19,21 @@ namespace ComptaClub.Tests
             var app = await TestHelper.CreateWebApplication();
             var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
 
-            var bank = await mediator.Send(new Requests.GetBankByCode("fake"));
+            var bank = await mediator.Send(new Requests.GetBankByCodeRequest("fake"));
             bank.Should().BeNull();
 
             var name = $"Bank{Guid.NewGuid()}";
-            bank = await mediator.Send(new CreateBank(name, "test"));
+            bank = await mediator.Send(new CreateBankRequest(name, "test"));
 
-            var saveResult = await mediator.Send(new SaveEntity<Models.Bank>(bank));
+            var saveResult = await mediator.Send(new SaveEntityRequest<Models.Bank>(bank));
             saveResult.HasError.Should().BeFalse();
 
-            bank = await mediator.Send(new GetBankByCode(name));
+            bank = await mediator.Send(new GetBankByCodeRequest(name));
             bank.Should().NotBeNull();
 
             bank.Label = $"{Guid.NewGuid()}";
 
-            saveResult = await mediator.Send(new SaveEntity<Models.Bank>(bank));
+            saveResult = await mediator.Send(new SaveEntityRequest<Models.Bank>(bank));
             saveResult.HasError.Should().BeFalse();  
         }
 

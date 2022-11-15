@@ -116,7 +116,7 @@ public class PersistResult<T> : CommandResult
 	{
 		return new PersistResult<T>
 		{
-			HasError = false,
+			HasError = true,
 			ErrorBrokenRuleList = new List<BrokenRule>(brokenRuleList)
 		};
 	}
@@ -125,7 +125,7 @@ public class PersistResult<T> : CommandResult
     {
         return new PersistResult<T>
         {
-            HasError = false,
+            HasError = true,
             ErrorBrokenRuleList = new List<BrokenRule>()
             {
                 {

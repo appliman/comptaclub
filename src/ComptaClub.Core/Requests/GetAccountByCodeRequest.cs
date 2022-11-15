@@ -8,15 +8,13 @@ using MediatR;
 
 namespace ComptaClub.Requests
 {
-    public record CreateBank : IRequest<Models.Bank>
+    public record GetAccountByCodeRequest : IRequest<Models.Account>
     {
-        public CreateBank(string code, string label)
+        public GetAccountByCodeRequest(string code)
         {
-            Code = code;
-            Label = label;
+            this.Code = code;   
         }
 
         public string Code { get; init; } = null!;
-        public string Label { get; init; } = null!;
     }
 }

@@ -2,7 +2,7 @@
 
 <div class="form-check">
 	<InputRadioGroup TValue="T" Value="Value" ValueChanged="ValueChanged" ValueExpression="ValueExpression" required="@Required">
-	@foreach (var item in ItemList)
+	@foreach (var item in ItemList!)
 	{
 		var id = Guid.NewGuid();
 		<div @attributes="CatpuredAttributes">
@@ -37,7 +37,7 @@
 	public RenderFragment? ChildContent { get; set; }
 
 	[Parameter]
-	public IEnumerable<ViewModels.RadioValue<T>> ItemList { get; set; }
+	public IEnumerable<ViewModels.RadioValue<T>>? ItemList { get; set; }
 
 	[Parameter(CaptureUnmatchedValues = true)]
 	public Dictionary<string, object> CatpuredAttributes { get; set; } = new();

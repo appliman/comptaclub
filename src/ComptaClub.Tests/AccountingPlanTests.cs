@@ -25,7 +25,6 @@ namespace ComptaClub.Tests
             var app = await TestHelper.CreateWebApplication();
             var planService = app.Services.GetRequiredService<Services.AccountingService>();
 
-            await planService.CreateOrSynchronize();
         }
 
 		[TestMethod]

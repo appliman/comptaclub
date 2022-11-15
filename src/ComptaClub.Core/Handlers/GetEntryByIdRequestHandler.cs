@@ -12,19 +12,19 @@ using MediatR;
 
 namespace ComptaClub.Handlers
 {
-    public class GetEntryByIdHandler : IRequestHandler<Requests.GetEntryById, Models.Entry>
+    public class GetEntryByIdRequestHandler : IRequestHandler<Requests.GetEntryByIdRequest, Models.Entry>
     {
         private readonly IMapper _mapper;
         private readonly ITableStorageService _tableStorageService;
 
-        public GetEntryByIdHandler(AutoMapper.IMapper mapper,
+        public GetEntryByIdRequestHandler(AutoMapper.IMapper mapper,
             ITableStorageService tableStorageService)
         {
             _mapper = mapper;
             _tableStorageService = tableStorageService;
         }
 
-        public async Task<Entry> Handle(GetEntryById request, CancellationToken cancellationToken)
+        public async Task<Entry> Handle(GetEntryByIdRequest request, CancellationToken cancellationToken)
         {
             var table = await _tableStorageService.GetTable<Datas.Entry>();
 

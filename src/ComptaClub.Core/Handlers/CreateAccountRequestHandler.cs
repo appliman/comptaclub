@@ -11,9 +11,9 @@ using MediatR;
 
 namespace ComptaClub.Handlers
 {
-    public class CreateAccountHandler : IRequestHandler<Requests.CreateAccount, Models.Account>
+    public class CreateAccountRequestHandler : IRequestHandler<Requests.CreateAccountRequest, Models.Account>
     {
-        public Task<Account> Handle(CreateAccount request, CancellationToken cancellationToken)
+        public Task<Account> Handle(CreateAccountRequest request, CancellationToken cancellationToken)
         {
             var result = new Models.Account();
             result.Id = Guid.NewGuid();

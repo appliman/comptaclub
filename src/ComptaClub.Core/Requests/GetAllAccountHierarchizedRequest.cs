@@ -8,8 +8,7 @@ using MediatR;
 
 namespace ComptaClub.Requests
 {
-    public record CreateEntry : IRequest<Models.Entry>
-    {
-
-    }
+	public record GetAllAccountHierarchizedRequest : IRequest<IEnumerable<Models.Account>> 
+	{
+	}
 }

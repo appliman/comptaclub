@@ -9,10 +9,10 @@
 @code {
 
     [Parameter]
-    public string Label { get; set; }
+    public string? Label { get; set; }
 
     [Parameter]
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     [Parameter]
     public bool Value { get; set; }
@@ -21,15 +21,15 @@
     public EventCallback<bool> ValueChanged { get; set; }
 
    	[Parameter]
-    public System.Linq.Expressions.Expression<Func<bool>> ValueExpression { get; set; }
+    public System.Linq.Expressions.Expression<Func<bool>>? ValueExpression { get; set; }
 
 	[Parameter]
-	public string PlaceHoder { get; set; }
+	public string? PlaceHoder { get; set; }
 
 	[Parameter]
 	public bool Required { get; set; }
     
     [Parameter]
-	public RenderFragment ChildContent { get; set; }
+	public RenderFragment? ChildContent { get; set; }
 
 }

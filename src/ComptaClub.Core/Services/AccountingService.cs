@@ -28,30 +28,9 @@ namespace ComptaClub.Services
 
         public async Task<IEnumerable<Models.Account>> GetAccountingPlan()
         {
-            var result = await _mediator.Send(new Requests.GetAllAccountHierarchized());
+            var result = await _mediator.Send(new Requests.GetAllAccountHierarchizedRequest());
             return result;
         }
 
-        public async Task<object> CreateOrSynchronize()
-        {
-            //foreach (var item in plan)
-            //{
-            //    var group = await _mediator.Send(new Requests.CreateAccount(item.code, item.label, item.direction));
-            //    if (group != null)
-            //    {
-            //        var saveResult = await _mediator.Send(new Requests.SaveEntity<Models.Account>(group));
-            //        if (!saveResult.HasError)
-            //        {
-            //            foreach (var subItem in item.children)
-            //            {
-            //                var account = await _mediator.Send(new Requests.CreateAccount(subItem.code, subItem.label, item.direction));
-            //                account.ParentAccountId = group.Id;
-            //                saveResult = await _mediator.Send(new Requests.SaveEntity<Models.Account>(account));
-            //            }
-            //        }
-            //    }
-            //}
-            return null;
-        }
     }
 }

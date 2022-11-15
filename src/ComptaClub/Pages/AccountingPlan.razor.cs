@@ -52,7 +52,7 @@ public partial class AccountingPlan : ComponentBase
 
 		accountToUpdate = null;
 
-		var saveResult = await Mediator!.Send(new Requests.SaveEntity<Models.Account>(account));
+		var saveResult = await Mediator!.Send(new Requests.SaveEntityRequest<Models.Account>(account));
 		if (saveResult!.HasError)
 		{
 			brokenRules = saveResult.ErrorBrokenRuleList;
@@ -76,13 +76,13 @@ public partial class AccountingPlan : ComponentBase
 
 	async Task InsertRow()
 	{
-		accountToInsert = await Mediator!.Send(new Requests.CreateAccount());
+		accountToInsert = await Mediator!.Send(new Requests.CreateAccountRequest());
 		await grid!.InsertRow(accountToInsert);
 	}
 
 	async Task InsertRow(Models.Account account)
 	{
-		accountToInsert = await Mediator!.Send(new Requests.CreateAccount());
+		accountToInsert = await Mediator!.Send(new Requests.CreateAccountRequest());
 		account.Children.Add(accountToInsert);
 		await grid!.SelectRow(accountToInsert);
 		await grid!.EditRow(accountToInsert);

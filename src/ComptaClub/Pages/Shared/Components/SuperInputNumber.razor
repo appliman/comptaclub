@@ -22,7 +22,7 @@
 @code {
 
 	[Parameter]
-	public string Label { get; set; }
+	public string? Label { get; set; }
 
 	[Parameter]
 	public int Value { get; set; }
@@ -31,18 +31,18 @@
 	public EventCallback<int> ValueChanged { get; set; }
 
 	[Parameter]
-    public System.Linq.Expressions.Expression<Func<int>> ValueExpression { get; set; }
+    public System.Linq.Expressions.Expression<Func<int>>? ValueExpression { get; set; }
 
 	[Parameter]
-	public string PlaceHoder { get; set; }
+	public string? PlaceHoder { get; set; }
 
 	[Parameter]
 	public bool Required { get; set; }
 
 	[Parameter]
-	public string Prepend { get; set; }
+	public string? Prepend { get; set; }
 
 	[Parameter]
-	public RenderFragment ChildContent { get; set; }
+	public RenderFragment? ChildContent { get; set; }
 
 }

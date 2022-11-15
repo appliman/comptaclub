@@ -16,5 +16,7 @@ namespace ComptaClub.Models
         public int StartDate { get; set; }
         public int EndDate { get; set; }
         public int CreationDate { get; set; }
+        public Guid? LastEntryId { get; set; }
+        public bool Active { get; set; }
     }
 }
