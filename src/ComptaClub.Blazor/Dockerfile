@@ -10,7 +10,7 @@ WORKDIR /src
 COPY ["ComptaClub.Blazor/ComptaClub.Blazor.csproj", "ComptaClub.Blazor/"]
 RUN dotnet restore "ComptaClub.Blazor/ComptaClub.Blazor.csproj"
 COPY . .
-WORKDIR "/src/ComptaClub.Blazor"
+WORKDIR "/src/src/ComptaClub.Blazor"
 RUN dotnet build "ComptaClub.Blazor.csproj" -c Release -o /app/build
 
 FROM build AS publish
