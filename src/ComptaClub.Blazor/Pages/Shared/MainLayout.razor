@@ -1,0 +1,60 @@
+﻿@inherits LayoutComponentBase
+
+<RadzenDialog />
+<RadzenNotification />
+<RadzenTooltip />
+<RadzenContextMenu />
+
+<PageTitle>ComptaClub</PageTitle>
+
+<RadzenLayout>
+    <RadzenHeader>
+        <ChildContent>
+            <div class="row justify-content-start align-items-center mr-0">
+                <div class="col-md-2 d-flex align-items-center header-logo">
+                    <RadzenSidebarToggle Click="@(args => { sidebarExpanded = !sidebarExpanded; })">
+                    </RadzenSidebarToggle>
+                    <RadzenLabel Text="Compta Club"/>
+                </div>
+                <div class="col-md d-flex align-items-center header-toolbar">
+                    <Toolbar />
+                </div>
+                <div class="col-md-4 text-right">
+                    <div class="d-none d-md-inline-flex align-items-center">
+                        @if (loaderVisible)
+                        {
+                            <div class="spinner-border mx-2" role="status">
+                                <span class="sr-only">Chargement...</span>
+                            </div>
+                        }
+                        <span>User</span>
+                        <a href="/logoff" title="Se déconnecter" class="mx-2 mx-lg-3">Se déconnecter</a>
+                    </div>
+                </div>
+            </div>
+
+        </ChildContent>
+    </RadzenHeader>
+    <RadzenBody @ref="body" @bind-Expanded="sidebarExpanded">
+        <ChildContent>
+            <RadzenContentContainer Name="main">
+                @Body
+            </RadzenContentContainer>
+        </ChildContent>
+    </RadzenBody>
+    <RadzenSidebar @bind-Expanded="sidebarExpanded">
+        <ChildContent>
+            <RadzenPanelMenu Match="NavLinkMatch.Prefix">
+                <RadzenPanelMenuItem Text="Accueil" Path="/" Icon="assessment"/>
+                <RadzenPanelMenuItem Text="Plan" Path="/plan" Icon="assessment"/>
+            </RadzenPanelMenu>
+        </ChildContent>
+    </RadzenSidebar>
+</RadzenLayout>
+
+@code {
+    bool sidebarExpanded = false;
+    bool loaderVisible = false;
+    RadzenBody? body;
+
+}
