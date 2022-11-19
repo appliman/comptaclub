@@ -7,10 +7,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["src/ComptaClub.Blazor/ComptaClub.Blazor.csproj", "src/ComptaClub.Blazor/"]
-RUN dotnet restore "src/ComptaClub.Blazor/ComptaClub.Blazor.csproj"
+COPY ["ComptaClub.Blazor/ComptaClub.Blazor.csproj", "ComptaClub.Blazor/"]
+RUN dotnet restore "ComptaClub.Blazor/ComptaClub.Blazor.csproj"
 COPY . .
-WORKDIR "/src/src/ComptaClub.Blazor"
+WORKDIR "/src/ComptaClub.Blazor"
 RUN dotnet build "ComptaClub.Blazor.csproj" -c Release -o /app/build
 
 FROM build AS publish
