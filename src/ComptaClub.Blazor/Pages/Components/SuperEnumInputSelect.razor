@@ -1,0 +1,38 @@
+﻿<div class="form-group">
+	<label class="control-label">@Label</label>
+	<div>
+		<InputSelect TValue="int" class="form-select" Value="Value" ValueChanged="ValueChanged" ValueExpression="ValueExpression">
+			@foreach (var item in Enumeration!.GetEnumExtensions())
+			{
+				var selected = Value == item.Key;
+				<option value="@item.Key" selected="@selected">@item.Description</option>
+			}
+		</InputSelect>
+		<ValidationMessage For="() => Value"></ValidationMessage>
+	</div>
+</div>
+
+
+@code {
+	[Parameter]
+	public string? Label { get; set; }
+
+	[Parameter]
+	public int Value { get; set; }
+
+	[Parameter]
+	public EventCallback<int> ValueChanged { get; set; }
+
+	[Parameter]
+	public System.Linq.Expressions.Expression<Func<int>>? ValueExpression { get; set; }
+
+	[Parameter]
+	public bool Required { get; set; }
+
+	[Parameter]
+	public RenderFragment? ChildContent { get; set; }
+
+	[Parameter]
+	public Type? Enumeration { get; set; }
+
+}

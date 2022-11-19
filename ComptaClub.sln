@@ -3,11 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComptaClub", "src\ComptaClub\ComptaClub.csproj", "{7EC248CC-98F8-4CA9-8E86-4F9A7C80BF44}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComptaClub.Tests", "src\ComptaClub.Tests\ComptaClub.Tests.csproj", "{E15CE1F8-4FCA-4700-868F-E6762F0B9F36}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComptaClub.Core", "src\ComptaClub.Core\ComptaClub.Core.csproj", "{7986063B-43C3-4AC3-8DBA-F7CFD1A24202}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComptaClub.Blazor", "src\ComptaClub.Blazor\ComptaClub.Blazor.csproj", "{604EEFA4-A880-4507-9311-BE4572BD1251}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{41F2E586-1081-4BFE-A57C-EE5E9EA03775}"
+	ProjectSection(SolutionItems) = preProject
+		azure-pipelines.yml = azure-pipelines.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +20,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7EC248CC-98F8-4CA9-8E86-4F9A7C80BF44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7EC248CC-98F8-4CA9-8E86-4F9A7C80BF44}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7EC248CC-98F8-4CA9-8E86-4F9A7C80BF44}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7EC248CC-98F8-4CA9-8E86-4F9A7C80BF44}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E15CE1F8-4FCA-4700-868F-E6762F0B9F36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E15CE1F8-4FCA-4700-868F-E6762F0B9F36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E15CE1F8-4FCA-4700-868F-E6762F0B9F36}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,6 +28,10 @@ Global
 		{7986063B-43C3-4AC3-8DBA-F7CFD1A24202}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7986063B-43C3-4AC3-8DBA-F7CFD1A24202}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7986063B-43C3-4AC3-8DBA-F7CFD1A24202}.Release|Any CPU.Build.0 = Release|Any CPU
+		{604EEFA4-A880-4507-9311-BE4572BD1251}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{604EEFA4-A880-4507-9311-BE4572BD1251}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{604EEFA4-A880-4507-9311-BE4572BD1251}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{604EEFA4-A880-4507-9311-BE4572BD1251}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
