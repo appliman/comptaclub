@@ -13,7 +13,7 @@ variables:
   dockerRegistryServiceConnection: '4622dff6-2d85-4a32-b34c-259b0ec1037e'
   imageRepository: 'comptaclub'
   containerRegistry: 'comptaclub20221115231703.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/src/ComptaClub.Blazor/Dockerfile'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
 
   # Agent VM image name
