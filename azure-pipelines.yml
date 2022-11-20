@@ -39,6 +39,7 @@ stages:
           $(tag)
 
     - task: AzureWebAppContainer@1
+      displayName: Publish to Azure web app container
       inputs:
         azureSubscription: 'Consommation sur la plateforme Windows Azure(a1fc43e7-369d-4237-b75e-4b01bdb7be04)'
         appName: 'ComptaClub'
