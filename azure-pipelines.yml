@@ -10,7 +10,7 @@ resources:
 
 variables:
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '4622dff6-2d85-4a32-b34c-259b0ec1037e'
+  dockerRegistryServiceConnection: '66875632-a62f-4652-b367-040b4f777d3e'
   imageRepository: 'comptaclub'
   containerRegistry: 'comptaclub20221115231703.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
