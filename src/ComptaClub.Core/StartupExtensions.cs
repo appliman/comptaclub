@@ -15,8 +15,8 @@ public static class StartupExtensions
     {
         var currentFolder = System.IO.Path.GetDirectoryName(typeof(StartupExtensions).Assembly.Location);
         builder.Configuration
-            .AddJsonFile("appSettings.json")
-            .AddJsonFile($"appSettings.{builder.Environment.EnvironmentName}.json")
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json")
             .AddEnvironmentVariables()
             .SetBasePath(currentFolder!);
 
