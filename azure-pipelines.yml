@@ -59,22 +59,22 @@ stages:
           [
             {
               "name": "ComptaClub__KeyVaultTenantId",
-              "value": "$(vaultTenantId)",
+              "value": "6d48cf6a-068a-4cb5-bd68-6d9ed03d7df2",
               "slotSetting": false
             },
             {
               "name": "ComptaClub__KeyVaultClientId",
-              "value": "$(vaultClientId)",
+              "value": "d2fb72aa-95e6-4741-bac3-1464633a1382",
               "slotSetting": false
             },
             {
               "name": "ComptaClub__KeyVaultClientSecret",
-              "value": "$(vaultClientSecret)",
+              "value": "u9V8Q~v-F_6Dx6bMaj1YDekM_3d4Iu_jmG1Fjcxq",
               "slotSetting": false
             },
             {
               "name": "ComptaClub__KeyVaultName",
-              "value": "$(vaultName)",
+              "value": "comptaclubdev",
               "slotSetting": false
             }
           ]
