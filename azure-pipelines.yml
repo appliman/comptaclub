@@ -55,9 +55,9 @@ stages:
         azureSubscription: 'Consommation sur la plateforme Windows Azure(a1fc43e7-369d-4237-b75e-4b01bdb7be04)'
         appName: 'ComptaClub'
         containers: $(containerRegistry)/$(imageRepository):$(tag)
-        appSettings: 
-          ComptaClub__KeyVaultTenantId $(vaultTenantId)
-          ComptaClub__KeyVaultClientId $(vaultTlientId)
-          ComptaClub__KeyVaultClientSecret $(vaultClientSecret)
-          ComptaClub__KeyVaultName $(vaultName)
+        appSettings: |
+          ComptaClub__KeyVaultTenantId "$(vaultTenantId)"
+          ComptaClub__KeyVaultClientId "$(vaultTlientId)"
+          ComptaClub__KeyVaultClientSecret "$(vaultClientSecret)"
+          ComptaClub__KeyVaultName "$(vaultName)"
 
