@@ -59,18 +59,22 @@ stages:
           [
             {
               "name": "KeyVaultTenantId",
-              "value": $(vaultTenantId)
+              "value": "$(vaultTenantId)",
+              "slotSetting": false
             },
             {
               "name": "KeyVaultClientId",
-              "value": $(vaultClientId)
+              "value": "$(vaultClientId)",
+              "slotSetting": false
             },
             {
               "name": "KeyVaultClientSecret",
-              "value": $(vaultClientSecret)
+              "value": "$(vaultClientSecret)",
+              "slotSetting": false
             },
             {
               "name": "KeyVaultName",
-              "value": $(vaultName)
+              "value": "$(vaultName)",
+              "slotSetting": false
             }
           ]
