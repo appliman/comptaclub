@@ -1,4 +1,7 @@
-﻿using FluentValidation;
+﻿using Azure.Core;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using FluentValidation;
 
 using MediatR;
 
@@ -17,14 +20,22 @@ public static class StartupExtensions
         builder.Configuration
             .AddJsonFile("appsettings.json")
             .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json")
+            .AddJsonFile($"appsettings.local.json")
             .AddEnvironmentVariables()
             .SetBasePath(currentFolder!);
 
         var section = builder.Configuration.GetSection("ComptaClub");
         var settings = new Configuration.ComptaClubSettings();
         section.Bind(settings);
-
         builder.Services.AddSingleton(settings);
+
+        var vaultUri = new Uri($"https://{settings.KeyVaultName}.vault.azure.net");
+        var credential = new ClientSecretCredential(settings.KeyVaultTenantId, settings.KeyVaultClientId, settings.KeyVaultClientSecret);
+        var client = new SecretClient(vaultUri,credential);
+
+        var csSecret = await client.GetSecretAsync("AzureStorageConnectionString");
+
+        settings.SetAzureStorageConnectionString(csSecret.Value.Value);
 
         builder.Services.AddScoped<Services.ITableStorageService, Services.TableStorageService>();
         builder.Services.AddScoped<Services.IAccountingService, Services.AccountingService>();

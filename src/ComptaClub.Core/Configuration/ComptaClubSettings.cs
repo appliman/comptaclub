@@ -9,12 +9,14 @@
         public string AzureStorageDocumentsContainerName { get; set; } = "compta-club-documents";
 
 
-        public string AzureStorageConnectionString {get; set; } = null!;
+        public string AzureStorageConnectionString {get; private set; } = null!;
+        public void SetAzureStorageConnectionString(string azureStorageConnectionString) => this.AzureStorageConnectionString = azureStorageConnectionString;
         // Keyvault
-        public string VaultAppId { get; set; } = null!;
-        public string VaultCertificatePath { get; set; } = null!;
-        public string VaultTenantId { get; set; } = null!;  
-        public string VaultUrl { get; set; } = null!;
+
+        public string KeyVaultTenantId { get; set; } = null!;
+        public string KeyVaultClientId { get; set; } = null!;
+        public string KeyVaultClientSecret { get; set; } = null!;
+        public string KeyVaultName { get; set; } = null!;
 
         public System.Globalization.CultureInfo CultureInfo { get; init; } 
             = new System.Globalization.CultureInfo("fr-FR");

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ComptaClub.Core": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ACCESS_TOKEN": "u9V8Q~v-F_6Dx6bMaj1YDekM_3d4Iu_jmG1Fjcxq"
+      }
+    }
+  }
+}

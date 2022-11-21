@@ -15,6 +15,15 @@ variables:
   containerRegistry: 'comptaclub20221115231703.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
+  - group: docker
+  - name: vaultTenantId
+    value: $[variables.vaultTenantId]
+  - name: vaultClientId
+    value: $[variables.vaultClientId]
+  - name: vaultClientSecret
+    value: $[variables.vaultClientSecret]
+  - name: comptaclubdev
+    value: $[variables.comptaclubdev]
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -44,4 +53,9 @@ stages:
         azureSubscription: 'Consommation sur la plateforme Windows Azure(a1fc43e7-369d-4237-b75e-4b01bdb7be04)'
         appName: 'ComptaClub'
         containers: $(containerRegistry)/$(imageRepository):$(tag)
+        appSettings: 
+          ComptaClub__KeyVaultTenantId $(vaultTenantId)
+          ComptaClub__KeyVaultClientId $(vaultTlientId)
+          ComptaClub__KeyVaultClientSecret $(vaultClientSecret)
+          ComptaClub__KeyVaultName $(vaultName)
 
