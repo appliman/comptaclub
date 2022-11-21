@@ -59,25 +59,7 @@ stages:
         appName: 'ComptaClub'
         containers: $(containerRegistry)/$(imageRepository):$(tag)
         appSettings: |
-          [
-            {
-              "name": "ComptaClub__KeyVaultTenantId",
-              "value": "6d48cf6a-068a-4cb5-bd68-6d9ed03d7df2",
-              "slotSetting": false
-            },
-            {
-              "name": "ComptaClub__KeyVaultClientId",
-              "value": "d2fb72aa-95e6-4741-bac3-1464633a1382",
-              "slotSetting": false
-            },
-            {
-              "name": "ComptaClub__KeyVaultClientSecret",
-              "value": "u9V8Q~v-F_6Dx6bMaj1YDekM_3d4Iu_jmG1Fjcxq",
-              "slotSetting": false
-            },
-            {
-              "name": "ComptaClub__KeyVaultName",
-              "value": "comptaclubdev",
-              "slotSetting": false
-            }
-          ]
+           ComptaClub__KeyVaultTenantId "6d48cf6a-068a-4cb5-bd68-6d9ed03d7df2"
+           ComptaClub__KeyVaultClientId "d2fb72aa-95e6-4741-bac3-1464633a1382"
+           ComptaClub__KeyVaultClientSecret "u9V8Q~v-F_6Dx6bMaj1YDekM_3d4Iu_jmG1Fjcxq"
+           ComptaClub__KeyVaultName "comptaclubdev"
