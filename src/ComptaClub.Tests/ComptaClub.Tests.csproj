@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="..\ComptaClub.Blazor\appsettings.local.json" Link="appsettings.local.json" />
     <Content Include="..\ComptaClub\appsettings.Development.json" Link="appsettings.Development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -37,5 +38,14 @@
   <ItemGroup>
     <ProjectReference Include="..\ComptaClub.Core\ComptaClub.Core.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+		<None Update="appsettings.local.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
+		</None>
+	</ItemGroup>
+
 
 </Project>
