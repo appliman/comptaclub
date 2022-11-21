@@ -15,21 +15,23 @@ variables:
   containerRegistry: 'comptaclub20221115231703.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
-  - group: docker
-  - name: vaultTenantId
-    value: $[variables.vaultTenantId]
-  - name: vaultClientId
-    value: $[variables.vaultClientId]
-  - name: vaultClientSecret
-    value: $[variables.vaultClientSecret]
-  - name: comptaclubdev
-    value: $[variables.comptaclubdev]
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
 stages:
 - stage: Build
+  variables:
+    - group: docker
+    - name: vaultTenantId
+      value: $[variables.vaultTenantId]
+    - name: vaultClientId
+      value: $[variables.vaultClientId]
+    - name: vaultClientSecret
+      value: $[variables.vaultClientSecret]
+    - name: comptaclubdev
+      value: $[variables.comptaclubdev]
+
   displayName: Build and push stage
   jobs:
   - job: Build
