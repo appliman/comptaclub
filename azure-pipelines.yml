@@ -56,8 +56,21 @@ stages:
         appName: 'ComptaClub'
         containers: $(containerRegistry)/$(imageRepository):$(tag)
         appSettings: |
-          ComptaClub__KeyVaultTenantId "$(vaultTenantId)"
-          ComptaClub__KeyVaultClientId "$(vaultTlientId)"
-          ComptaClub__KeyVaultClientSecret "$(vaultClientSecret)"
-          ComptaClub__KeyVaultName "$(vaultName)"
-
+          [
+            {
+              "name": "KeyVaultTenantId",
+              "value": $(vaultTenantId)
+            },
+            {
+              "name": "KeyVaultClientId",
+              "value": $(vaultClientId)
+            },
+            {
+              "name": "KeyVaultClientSecret",
+              "value": $(vaultClientSecret)
+            },
+            {
+              "name": "KeyVaultName",
+              "value": $(vaultName)
+            }
+          ]
