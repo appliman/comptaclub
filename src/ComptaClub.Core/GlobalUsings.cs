@@ -1,4 +1,6 @@
-﻿global using Azure.Data.Tables;
+﻿global using System;
+
+global using Azure.Data.Tables;
 
 global using Microsoft.Extensions.DependencyInjection;
 

@@ -7,10 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComptaClub.Tests", "src\Com
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComptaClub.Core", "src\ComptaClub.Core\ComptaClub.Core.csproj", "{7986063B-43C3-4AC3-8DBA-F7CFD1A24202}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComptaClub.Blazor", "src\ComptaClub.Blazor\ComptaClub.Blazor.csproj", "{604EEFA4-A880-4507-9311-BE4572BD1251}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComptaClub.Blazor", "src\ComptaClub.Blazor\ComptaClub.Blazor.csproj", "{604EEFA4-A880-4507-9311-BE4572BD1251}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{41F2E586-1081-4BFE-A57C-EE5E9EA03775}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		azure-pipelines.yml = azure-pipelines.yml
 		Dockerfile = Dockerfile
 	EndProjectSection

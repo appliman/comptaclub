@@ -29,6 +29,9 @@
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "environmentVariables": {
+        "ACCESS_TOKEN": "REDACTED"
+      },
       "publishAllPorts": true,
       "useSSL": true
     }

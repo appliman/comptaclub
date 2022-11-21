@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ComptaClub.Core": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ACCESS_TOKEN": "REDACTED"
+      }
+    }
+  }
+}
