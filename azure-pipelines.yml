@@ -39,6 +39,7 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
+    
     - script: echo 'Variables'
     - script: echo 'TenantId $(vaultTenantId)'
 
