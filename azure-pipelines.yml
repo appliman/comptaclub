@@ -29,8 +29,8 @@ stages:
       value: $[variables.vaultClientId]
     - name: vaultClientSecret
       value: $[variables.vaultClientSecret]
-    - name: comptaclubdev
-      value: $[variables.comptaclubdev]
+    - name: vaultName
+      value: $[variables.vaultName]
 
   displayName: Build and push stage
   jobs:
