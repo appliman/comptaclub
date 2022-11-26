@@ -16,7 +16,7 @@ namespace ComptaClub.Validators
             RuleFor(i => i.Code).CustomAsync(async (code, ctx, cancel) =>
             {
                 var current = ctx.InstanceToValidate;
-                var existing = await mediator.Send(new Requests.GetExerciceByFilterRequest(f => f.PartitionKey == code));
+                var existing = await mediator.Send(new Requests.GetExerciceByFilterRequest(f => f.Code == code));
                 if (existing != null 
                     && current.Id != existing.Id)
                 {

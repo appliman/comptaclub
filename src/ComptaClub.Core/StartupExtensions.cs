@@ -1,6 +1,9 @@
 ﻿using Azure.Core;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+
+using ComptaClub.Datas;
+
 using FluentValidation;
 
 using MediatR;
@@ -14,13 +17,13 @@ namespace ComptaClub;
 
 public static class StartupExtensions
 {
-    public static async Task<Configuration.ComptaClubSettings> ConfigureComptaClub(this WebApplicationBuilder builder)
+    public static async Task<(Configuration.ComptaClubSettings settings, TokenCredential credential)> ConfigureComptaClub(this WebApplicationBuilder builder, string? sqlConnectionString = null)
     {
         var currentFolder = System.IO.Path.GetDirectoryName(typeof(StartupExtensions).Assembly.Location);
         builder.Configuration
             .AddJsonFile("appsettings.json")
             .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json")
-            .AddJsonFile($"appsettings.local.json")
+            .AddJsonFile($"appsettings.local.json", true)
             .AddEnvironmentVariables()
             .SetBasePath(currentFolder!);
 
@@ -34,10 +37,27 @@ public static class StartupExtensions
         var client = new SecretClient(vaultUri,credential);
 
         var csSecret = await client.GetSecretAsync("AzureStorageConnectionString");
-
         settings.SetAzureStorageConnectionString(csSecret.Value.Value);
 
-        builder.Services.AddScoped<Services.ITableStorageService, Services.TableStorageService>();
+        if (string.IsNullOrWhiteSpace(sqlConnectionString))
+        {
+            var cs = await client.GetSecretAsync("SqlConnectionString");
+            settings.SetSqlConnectionString(cs.Value.Value);
+        }
+        else
+        {
+            settings.SetSqlConnectionString(sqlConnectionString);
+        }
+
+        var azureStorageAccountKey = await client.GetSecretAsync("AzureStorageAccountKey");
+        settings.SetAzureStorageAccountKey(azureStorageAccountKey.Value.Value);
+
+        builder.Services.AddComptaClubDbContext(cfg =>
+        {
+            cfg.EnvironmentName = builder.Environment.EnvironmentName;
+            cfg.ConnectionString = settings.SqlConnectionString;
+        });
+
         builder.Services.AddScoped<Services.IAccountingService, Services.AccountingService>();
 
         builder.Services.AddAutoMapper(typeof(StartupExtensions));
@@ -56,6 +76,6 @@ public static class StartupExtensions
 			builder.Logging.AddConsole();
 		}
 
-		return await Task.FromResult(settings);
+		return await Task.FromResult((settings, credential));
     }
 }

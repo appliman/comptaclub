@@ -22,7 +22,7 @@ namespace ComptaClub.Handlers
 
 		public async Task Handle(EntrySavedNotification notification, CancellationToken cancellationToken)
 		{
-			var exercice = await _mediator.Send(new GetExerciceByFilterRequest(i => i.RowKey == $"{notification.ExerciceId}"));
+			var exercice = await _mediator.Send(new GetExerciceByFilterRequest(i => i.Id == notification.ExerciceId));
 			if (exercice == null) 
 			{ 
 				// TODO Log

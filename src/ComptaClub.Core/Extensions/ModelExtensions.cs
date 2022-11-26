@@ -83,4 +83,14 @@ public static class ModelExtensions
 		}
 		return null;
 	}
+
+    internal static string GetSHA256(this string input)
+    {
+        using var crypto = System.Security.Cryptography.SHA256.Create();
+        var buffer = System.Text.Encoding.UTF8.GetBytes(input);
+        var hash = crypto.ComputeHash(buffer);
+        var result = string.Join(string.Empty, from b in hash select b.ToString("X2"));
+        return result;
+    }
+
 }

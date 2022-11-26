@@ -5,29 +5,34 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
+using ComptaClub.Datas;
 using ComptaClub.Models;
 using ComptaClub.Requests;
 using ComptaClub.Services;
 
 using FluentValidation;
-
 using MediatR;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace ComptaClub.Handlers
 {
-    public class SaveAccountRequestHandler : IRequestHandler<Requests.SaveEntityRequest<Models.Account>, Models.PersistResult<Guid>>
+    public class SaveAccountRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Models.Account>, Models.PersistResult<Guid>>
     {
-        private readonly ITableStorageService _tableStorageService;
-        private readonly IValidator<Account> _validator;
+        private readonly IValidator<Models.Account> _validator;
 
-        public SaveAccountRequestHandler(ITableStorageService tableStorageService,
-            IValidator<Models.Account> validator)
+        public SaveAccountRequestHandler(
+            IValidator<Models.Account> validator,
+            IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+            ILogger<SaveAccountRequestHandler> logger,
+            IMapper mapper)
+            : base(dbContextFactory, logger, mapper)
         {
-            _tableStorageService = tableStorageService;
             _validator = validator;
         }
 
-        public async Task<PersistResult<Guid>> Handle(SaveEntityRequest<Account> request, CancellationToken cancellationToken)
+        public async Task<PersistResult<Guid>> Handle(SaveEntityRequest<Models.Account> request, CancellationToken cancellationToken)
         {
             var result = await _validator.ValidateAsync(request.Entity);
             if (!result.IsValid)
@@ -35,7 +40,7 @@ namespace ComptaClub.Handlers
                 return result.ToPersistResult<Guid>()!;
             }
 
-            return await _tableStorageService.SaveEntity<Datas.Account>(request.Entity);
+            return await SaveEntity<Datas.Account>(request.Entity);
         }
     }
 }

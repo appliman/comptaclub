@@ -36,7 +36,7 @@ namespace ComptaClub.Validators
 			RuleFor(i => i.Label).NotNull().NotEmpty().WithMessage("Un compte doit avoir un libellé");
             RuleFor(i => i.Direction).Custom((direction, ctx) =>
             {
-                var directions = Enum.GetValues<Datas.AccountDirection>();
+                var directions = Enum.GetValues<Models.AccountDirection>();
                 if (!directions.Any(i => i == direction))
                 {
                     ctx.AddFailure(nameof(Models.Account.Direction), "Le sens doit etre indiqué");

@@ -6,31 +6,34 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
+using ComptaClub.Datas;
 using ComptaClub.Models;
 using ComptaClub.Requests;
 using ComptaClub.Services;
 
 using MediatR;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace ComptaClub.Handlers
 {
     public class GetAccountByCodeRequestHandler : IRequestHandler<Requests.GetAccountByCodeRequest, Models.Account>
     {
         private readonly IMapper _mapper;
-        private readonly ITableStorageService _tableStorageService;
+        private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
 
         public GetAccountByCodeRequestHandler(AutoMapper.IMapper mapper,
-            ITableStorageService tableStorageService)
+            IDbContextFactory<ComptaClubDbContext> dbContextFactory)
         {
             _mapper = mapper;
-            _tableStorageService = tableStorageService;
+            _dbContextFactory = dbContextFactory;
         }
 
-        public async Task<Account> Handle(GetAccountByCodeRequest request, CancellationToken cancellationToken)
+        public async Task<Models.Account> Handle(GetAccountByCodeRequest request, CancellationToken cancellationToken)
         {
-            var bankTable = await _tableStorageService.GetTable<Datas.Account>();
+            var db = await _dbContextFactory.CreateDbContextAsync();
 
-            var data = await bankTable.GetFirstOrDefaultEntity<Datas.Account>(f => f.PartitionKey == request.Code);
+            var data = await db.Accounts.FirstOrDefaultAsync(f => f.Code == request.Code);
 
             var result = _mapper.Map<Models.Account>(data);
             return result;
