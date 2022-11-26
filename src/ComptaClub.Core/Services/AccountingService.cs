@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 
 using Azure;
 
-using ComptaClub.Datas;
-
 using MediatR;
 
 using static Azure.Core.HttpHeader;

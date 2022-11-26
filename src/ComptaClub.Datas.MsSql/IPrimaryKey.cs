@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ComptaClub.Models
+namespace ComptaClub.Datas;
+
+public interface IPrimaryKey
 {
-    public interface IEntityKey
-    {
-        public Guid Id { get; set; }
-    }
+    public Guid Id { get; set; }
 }

@@ -7,35 +7,35 @@ using System.Threading.Tasks;
 
 using Azure.Core;
 
+using ComptaClub.Datas;
 using ComptaClub.Models;
 using ComptaClub.Requests;
 using ComptaClub.Services;
 
 using FluentValidation;
-
 using MediatR;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace ComptaClub.Handlers
 {
-    public class SaveEntryRequestHandler : IRequestHandler<Requests.SaveEntryRequest, Models.PersistResult<Guid>>
+    public class SaveEntryRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntryRequest, Models.PersistResult<Guid>>
     {
-        private readonly ITableStorageService _tableStorageService;
         private readonly IValidator<Models.Entry> _validator;
-		private readonly ILogger<SaveEntryRequestHandler> _logger;
-		private readonly IMediator _mediator;
+        private readonly IMediator _mediator;
 
-		public SaveEntryRequestHandler(ITableStorageService tableStorageService,
+        public SaveEntryRequestHandler(
             IValidator<Models.Entry> validator,
+            IDbContextFactory<ComptaClubDbContext> dbContextFactory,
             ILogger<SaveEntryRequestHandler> logger,
+            IMapper mapper,
             MediatR.IMediator mediator)
+            : base(dbContextFactory, logger, mapper)
         {
-            _tableStorageService = tableStorageService;
             _validator = validator;
-			_logger = logger;
-			_mediator = mediator;
-		}
+            _mediator = mediator;
+        }
 
         public async Task<PersistResult<Guid>> Handle(Requests.SaveEntryRequest request, CancellationToken cancellationToken)
         {
@@ -45,7 +45,7 @@ namespace ComptaClub.Handlers
                 return result.ToPersistResult<Guid>()!;
             }
 
-            var saveResult = await _tableStorageService.SaveEntity<Datas.Entry>(request.Entry, $"{request.Entry.Id}", request.Entry.Id);
+            var saveResult = await SaveEntity<Datas.Entry>(request.Entry);
             if (!saveResult.HasError)
             {
                 await _mediator.Publish(new Notifications.EntrySavedNotification() 

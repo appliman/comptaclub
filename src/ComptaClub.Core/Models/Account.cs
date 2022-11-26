@@ -1,6 +1,4 @@
-﻿using ComptaClub.Datas;
-
-namespace ComptaClub.Models
+﻿namespace ComptaClub.Models
 {
     public class Account : IEntityKey
     {

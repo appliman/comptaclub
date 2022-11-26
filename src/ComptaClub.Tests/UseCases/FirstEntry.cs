@@ -39,7 +39,7 @@ public class FirstEntry
 		var app = await TestHelper.CreateWebApplication();
 		var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
 
-		var exercice = await mediator.Send(new GetExerciceByFilterRequest(f => f.PartitionKey == "Exercice 2022"));
+		var exercice = await mediator.Send(new GetExerciceByFilterRequest(f => f.Code == "Exercice 2022"));
 		if (exercice == null)
 		{
 			exercice = await mediator.Send(new Requests.CreateExerciceRequest("Exercice 2022", "Exercice 2022", DateTime.Now.FirstDateOfCurrentYear(), DateTime.Now.LastDateOfCurrentYear(), 100 * 1000000, true));
@@ -72,7 +72,7 @@ public class FirstEntry
 		entry.ExerciceId = exercice.Id;
 		entry.Amount = 40 * 1000000;
 		entry.AccountDirection = account.Direction;
-		entry.PaymentType = PaymentType.CreditCard;
+		entry.PaymentType = Models.PaymentType.CreditCard;
 
 		var balance = await mediator.Send(new Requests.ApplyBalanceForEntryRequest(entry));
 		balance.Should().NotBeNull();

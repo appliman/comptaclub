@@ -1,23 +1,28 @@
 ﻿using ComptaClub.Configuration;
+using ComptaClub.Datas;
 using ComptaClub.Models;
 using ComptaClub.Requests;
 using ComptaClub.Services;
 
 using FluentValidation;
-
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+
+using Microsoft.Extensions.Logging;
 
 namespace ComptaClub.Handlers
 {
-    public class SaveBankRequestHandler : IRequestHandler<Requests.SaveEntityRequest<Models.Bank>, Models.PersistResult<Guid>>
+    public class SaveBankRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Models.Bank>, Models.PersistResult<Guid>>
     {
-        private readonly ITableStorageService _tableStorageService;
-        private readonly IValidator<Bank> _validator;
+        private readonly IValidator<Models.Bank> _validator;
 
-        public SaveBankRequestHandler(ITableStorageService tableStorageService,
-            IValidator<Models.Bank> validator)
+        public SaveBankRequestHandler(
+            IValidator<Models.Bank> validator,
+            IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+            ILogger<SaveBankRequestHandler> logger,
+            IMapper mapper)
+            : base(dbContextFactory, logger, mapper)
         {
-            _tableStorageService = tableStorageService;
             _validator = validator;
         }
 
@@ -29,7 +34,7 @@ namespace ComptaClub.Handlers
                 return result.ToPersistResult<Guid>()!;
             }
 
-            return await _tableStorageService.SaveEntity<Datas.Bank>(request.Entity);
+            return await SaveEntity<Datas.Bank>(request.Entity);
         }
     }
 }

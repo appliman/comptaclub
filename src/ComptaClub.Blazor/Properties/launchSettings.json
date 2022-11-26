@@ -24,16 +24,6 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
-    },
-    "Docker": {
-      "commandName": "Docker",
-      "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-      "environmentVariables": {
-        "ACCESS_TOKEN": "u9V8Q~v-F_6Dx6bMaj1YDekM_3d4Iu_jmG1Fjcxq"
-      },
-      "publishAllPorts": true,
-      "useSSL": true
     }
   },
   "iisSettings": {

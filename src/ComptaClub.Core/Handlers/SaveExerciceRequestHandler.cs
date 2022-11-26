@@ -1,23 +1,27 @@
 ﻿using ComptaClub.Configuration;
+using ComptaClub.Datas;
 using ComptaClub.Models;
 using ComptaClub.Requests;
 using ComptaClub.Services;
 
 using FluentValidation;
-
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+
+using Microsoft.Extensions.Logging;
 
 namespace ComptaClub.Handlers
 {
-    public class SaveExerciceRequestHandler : IRequestHandler<Requests.SaveEntityRequest<Models.Exercice>, Models.PersistResult<Guid>>
+    public class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Models.Exercice>, Models.PersistResult<Guid>>
     {
-        private readonly ITableStorageService _tableStorageService;
         private readonly IValidator<Models.Exercice> _validator;
 
-        public SaveExerciceRequestHandler(ITableStorageService tableStorageService,
-            IValidator<Models.Exercice> validator)
+        public SaveExerciceRequestHandler(
+            IValidator<Models.Exercice> validator, IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+            ILogger<SaveBankRequestHandler> logger,
+            IMapper mapper)
+            : base(dbContextFactory, logger, mapper)
         {
-            _tableStorageService = tableStorageService;
             _validator = validator;
         }
 
@@ -29,7 +33,7 @@ namespace ComptaClub.Handlers
                 return result.ToPersistResult<Guid>()!;
             }
 
-            return await _tableStorageService.SaveEntity<Datas.Exercice>(request.Entity);
+            return await SaveEntity<Datas.Exercice>(request.Entity);
         }
     }
 }

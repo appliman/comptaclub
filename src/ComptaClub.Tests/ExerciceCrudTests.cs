@@ -22,7 +22,7 @@ namespace ComptaClub.Tests
 
             var settings = app.Services.GetRequiredService<Configuration.ComptaClubSettings>();
 
-            var exercice = await mediator.Send(new Requests.GetExerciceByFilterRequest(f => f.PartitionKey == "fake"));
+            var exercice = await mediator.Send(new Requests.GetExerciceByFilterRequest(f => f.Code == "fake"));
             exercice.Should().BeNull();
 
             var name = $"Ex{Guid.NewGuid()}";
@@ -35,7 +35,7 @@ namespace ComptaClub.Tests
             var saveResult = await mediator.Send(new SaveEntityRequest<Models.Exercice>(exercice));
             saveResult.HasError.Should().BeFalse();
 
-            exercice = await mediator.Send(new GetExerciceByFilterRequest(f => f.PartitionKey == name));
+            exercice = await mediator.Send(new GetExerciceByFilterRequest(f => f.Code == name));
             exercice.Should().NotBeNull();
 
             exercice.Label = $"{Guid.NewGuid()}";

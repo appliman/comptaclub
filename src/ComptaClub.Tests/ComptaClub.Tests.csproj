@@ -13,7 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\ComptaClub.Blazor\appsettings.local.json" Link="appsettings.local.json" />
+    <Content Include="..\ComptaClub.Blazor\appsettings.local.json" Link="appsettings.local.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\ComptaClub\appsettings.Development.json" Link="appsettings.Development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

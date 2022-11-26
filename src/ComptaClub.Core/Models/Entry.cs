@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using ComptaClub.Datas;
-
 namespace ComptaClub.Models
 {
-    public class Entry 
+    public class Entry : IEntityKey
     {
         public Guid Id { get; set; }
         public string PartNumber { get; set; } = null!;
@@ -20,7 +18,7 @@ namespace ComptaClub.Models
         public Guid? MemberId { get; set; }
         public int CreationDate { get; set; }
         public Balance? Balance { get; set; }
-        public Datas.PaymentType PaymentType { get; set; }
+        public PaymentType PaymentType { get; set; }
 		public AccountDirection AccountDirection { get; set; }
 		public string? ExtraInfos { get; set; }
         public long Amount { get; set; }
