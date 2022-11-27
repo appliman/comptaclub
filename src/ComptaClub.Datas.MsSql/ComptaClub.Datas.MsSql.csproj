@@ -8,11 +8,29 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Scripts\ComptaClub\0001-CreateTables.sql" />
+    <None Remove="Scripts\ComptaClub\0001-CreateTable-Accounts.sql" />
+    <None Remove="Scripts\ComptaClub\0002-CreateTable-Banks.sql" />
+    <None Remove="Scripts\ComptaClub\0003-CreateTable-Documents.sql" />
+    <None Remove="Scripts\ComptaClub\0004-CreateTable-Entries.sql" />
+    <None Remove="Scripts\ComptaClub\0005-CreateTable-Exercices.sql" />
+    <None Remove="Scripts\ComptaClub\0006-CreateTable-Members.sql" />
+    <None Remove="Scripts\ComptaClub\0007-CreateTable-RolesByUsers.sql" />
+    <None Remove="Scripts\ComptaClub\0008-CreateTable-Roles.sql" />
+    <None Remove="Scripts\ComptaClub\0008-CreateTable-Users.sql" />
+    <None Remove="Scripts\ComptaClub\0009-CreateTable-DocumentByEntities.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\ComptaClub\0001-CreateTables.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0008-CreateTable-Roles.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0009-CreateTable-DocumentByEntities.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0008-CreateTable-Users.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0007-CreateTable-RolesByUsers.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0006-CreateTable-Members.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0005-CreateTable-Exercices.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0004-CreateTable-Entries.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0003-CreateTable-Documents.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0002-CreateTable-Banks.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0001-CreateTable-Accounts.sql" />
   </ItemGroup>
 
   <ItemGroup>

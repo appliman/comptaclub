@@ -8,7 +8,7 @@ using MediatR;
 
 namespace ComptaClub.Requests
 {
-    public record CreateAccountRequest : IRequest<Models.Account>
+    public record CreateAccountRequest : IRequest<Datas.AccountData>
     {
         public CreateAccountRequest() 
         {

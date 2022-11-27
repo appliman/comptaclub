@@ -8,13 +8,13 @@ using MediatR;
 
 namespace ComptaClub.Requests
 {
-	public record ImportAccountingPlanRequest : IRequest<Models.CommandResult>
+	public record ImportAccountingPlanRequest : IRequest<Results.CommandResult>
 	{
-		public ImportAccountingPlanRequest(List<Models.Account> plan)
+		public ImportAccountingPlanRequest(List<Datas.AccountData> plan)
 		{
 			this.HierarchizedAccountingPlan = plan;
 		}
 
-		public List<Models.Account> HierarchizedAccountingPlan { get; init; }
+		public List<Datas.AccountData> HierarchizedAccountingPlan { get; init; }
 	}
 }

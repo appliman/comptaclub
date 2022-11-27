@@ -26,7 +26,7 @@ public class CustomValidator : ComponentBase
         CurrentEditContext!.NotifyValidationStateChanged();
     }
 
-    public void DisplayErrors(Models.CommandResult validationResult)
+    public void DisplayErrors(Results.CommandResult validationResult)
     {
         foreach (var brokenRule in validationResult.ErrorBrokenRuleList)
         {
@@ -38,7 +38,7 @@ public class CustomValidator : ComponentBase
         CurrentEditContext!.NotifyValidationStateChanged();
     }
 
-    public void DisplayErrors(IList<Models.BrokenRule> brokenRuleList)
+    public void DisplayErrors(IList<Results.BrokenRule> brokenRuleList)
     {
         foreach (var brokenRule in brokenRuleList)
         {

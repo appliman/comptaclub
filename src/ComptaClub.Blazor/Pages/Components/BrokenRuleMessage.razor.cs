@@ -12,7 +12,7 @@ public partial class BrokenRuleMessage<TValue> : ComponentBase
     public Expression<Func<TValue>>? For { get; set; }
 
     [Parameter]
-    public List<BrokenRule> BrokenRuleList { get; set; } = new();
+    public List<Results.BrokenRule> BrokenRuleList { get; set; } = new();
 
     IEnumerable<string> errors = new List<string>();
 
@@ -22,7 +22,7 @@ public partial class BrokenRuleMessage<TValue> : ComponentBase
         if (memberExpression != null)
         {
 			var memberName = memberExpression.Member.Name;
-            errors = BrokenRuleList.Where(i => i.PropertyName == memberName && i.Severity == Severity.Error)
+            errors = BrokenRuleList.Where(i => i.PropertyName == memberName && i.Severity == Results.Severity.Error)
                     .SelectMany(i => i.MessageList);
 			if (errors.Any())
             {

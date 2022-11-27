@@ -10,13 +10,13 @@ using MediatR;
 
 namespace ComptaClub.Requests
 {
-    public record GetExerciceByFilterRequest : IRequest<Models.Exercice>
+    public record GetExerciceByFilterRequest : IRequest<Datas.ExerciceData?>
     {
-        public GetExerciceByFilterRequest(Expression<Func<Datas.Exercice, bool>> filter)
+        public GetExerciceByFilterRequest(Expression<Func<Datas.ExerciceData, bool>> filter)
         {
             this.Filter = filter;
         }
 
-        public Expression<Func<Datas.Exercice, bool>> Filter { get; init; }
+        public Expression<Func<Datas.ExerciceData, bool>> Filter { get; init; }
     }
 }

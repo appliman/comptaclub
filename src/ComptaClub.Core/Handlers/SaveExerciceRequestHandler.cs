@@ -1,39 +1,25 @@
-﻿using ComptaClub.Configuration;
-using ComptaClub.Datas;
-using ComptaClub.Models;
-using ComptaClub.Requests;
-using ComptaClub.Services;
+﻿namespace ComptaClub.Handlers;
 
-using FluentValidation;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-
-using Microsoft.Extensions.Logging;
-
-namespace ComptaClub.Handlers
+public class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Datas.ExerciceData>, Results.PersistResult<Guid>>
 {
-    public class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Models.Exercice>, Models.PersistResult<Guid>>
+    private readonly IValidator<Datas.ExerciceData> _validator;
+
+    public SaveExerciceRequestHandler(IValidator<Datas.ExerciceData> validator, 
+        IDbContextFactory<ComptaClubDbContext> dbContextFactory, 
+        ILogger<SaveBankRequestHandler> logger) 
+        : base(dbContextFactory, logger)
     {
-        private readonly IValidator<Models.Exercice> _validator;
+        _validator = validator;
+    }
 
-        public SaveExerciceRequestHandler(
-            IValidator<Models.Exercice> validator, IDbContextFactory<ComptaClubDbContext> dbContextFactory,
-            ILogger<SaveBankRequestHandler> logger,
-            IMapper mapper)
-            : base(dbContextFactory, logger, mapper)
+    public async Task<Results.PersistResult<Guid>> Handle(Requests.SaveEntityRequest<Datas.ExerciceData> request, CancellationToken cancellationToken)
+    {
+        var result = await _validator.ValidateAsync(request.Entity);
+        if (!result.IsValid)
         {
-            _validator = validator;
+            return result.ToPersistResult<Guid>()!;
         }
 
-        public async Task<PersistResult<Guid>> Handle(Requests.SaveEntityRequest<Models.Exercice> request, CancellationToken cancellationToken)
-        {
-            var result = await _validator.ValidateAsync(request.Entity);
-            if (!result.IsValid)
-            {
-                return result.ToPersistResult<Guid>()!;
-            }
-
-            return await SaveEntity<Datas.Exercice>(request.Entity);
-        }
+        return await SaveEntity<Datas.ExerciceData>(request.Entity);
     }
 }

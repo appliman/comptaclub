@@ -4,19 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using ComptaClub.Models;
-
 using MediatR;
 
 namespace ComptaClub.Requests
 {
 	public record ApplyBalanceForEntryRequest : IRequest<Balance>
 	{
-		public ApplyBalanceForEntryRequest(Models.Entry entry)
+		public ApplyBalanceForEntryRequest(Datas.EntryData entry)
 		{
 			this.Entry = entry;
 		}
 
-		public Models.Entry Entry { get; init; }
+		public Datas.EntryData Entry { get; init; }
 	}
 }

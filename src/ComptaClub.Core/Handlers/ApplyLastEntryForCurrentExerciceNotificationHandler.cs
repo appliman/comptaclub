@@ -28,7 +28,8 @@ namespace ComptaClub.Handlers
 				// TODO Log
 			}
 			exercice!.LastEntryId = notification.EntryId;
-			await _mediator.Send(new SaveEntityRequest<Models.Exercice>(exercice!));	
+			exercice!.BalanceAmount = notification.BalanceAmount;
+			await _mediator.Send(new SaveEntityRequest<Datas.ExerciceData>(exercice!));	
 		}
 	}
 }

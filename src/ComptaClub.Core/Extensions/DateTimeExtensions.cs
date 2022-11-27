@@ -21,6 +21,13 @@ namespace ComptaClub.Extensions
             return date;
         }
 
+        public static DateTime FromDayId(this uint dayId)
+        {
+            var date = new DateTime(2000, 0, 0).AddDays(dayId);
+            return date;
+        }
+
+
         public static int FirstDateOfCurrentYear(this DateTime date)
         {
             var year = date.Year;   
