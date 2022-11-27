@@ -1,69 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using ComptaClub.Datas;
-using ComptaClub.Models;
-using ComptaClub.Requests;
-using ComptaClub.Services;
-using MediatR;
-
-using Microsoft.EntityFrameworkCore;
-
-namespace ComptaClub.Handlers
+﻿namespace ComptaClub.Handlers
 {
-	internal class ImportAccountingPlanRequestHandler : IRequestHandler<Requests.ImportAccountingPlanRequest, Models.CommandResult>
+	internal class ImportAccountingPlanRequestHandler : IRequestHandler<Requests.ImportAccountingPlanRequest, Results.CommandResult>
 	{
-		private readonly IMapper _mapper;
         private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
         private readonly IMediator _mediator;
 
 		public ImportAccountingPlanRequestHandler(
-			AutoMapper.IMapper mapper,
             IDbContextFactory<ComptaClubDbContext> dbContextFactory,
 			MediatR.IMediator mediator)
 		{
-			_mapper = mapper;
 			_dbContextFactory = dbContextFactory;
 			_mediator = mediator;
 		}
 
-		public async Task<CommandResult> Handle(ImportAccountingPlanRequest request, CancellationToken cancellationToken)
+		public async Task<Results.CommandResult> Handle(Requests.ImportAccountingPlanRequest request, CancellationToken cancellationToken)
 		{
-			var list = ToFlatList(request.HierarchizedAccountingPlan);
+			var list = new List<Datas.AccountData>(); // ToFlatList(request.HierarchizedAccountingPlan);
 			foreach (var account in list)
 			{
-				var saveResult = await _mediator.Send(new Requests.SaveEntityRequest<Models.Account>(account));
+				var saveResult = await _mediator.Send(new Requests.SaveEntityRequest<Datas.AccountData>(account));
 				if (saveResult.HasError)
 				{
-					throw new Exception();
+					return new Results.CommandResult
+					{
+						HasError = true,
+						ErrorBrokenRuleList = saveResult.ErrorBrokenRuleList
+					};
 				}
 			}
 
-			return new CommandResult();
+			return new Results.CommandResult();
 		}
 
-		private List<Models.Account> ToFlatList(List<Models.Account> plan)
-		{
-			var result = new List<Models.Account>();
-			while (true)
-			{
-				var item = plan.FirstOrDefault();
-				if (item == null)
-				{
-					break;
-				}
-				plan.Remove(item);
-				result.Add(item);
-				if (item.Children.Any())
-				{
-					var flat = ToFlatList(item.Children);
-					result.AddRange(flat);
-				}
-			}
-			return result;
-		}
+
 	}
 }

@@ -26,12 +26,14 @@ public class ComptaClubDbContext : DbContext
         optionsBuilder.UseSqlServer(_dbConfiguration.ConnectionString);
     }
 
-    public DbSet<Account> Accounts { get; set; }
-    public DbSet<Bank> Banks { get; set; }
-    public DbSet<Document> Documents { get; set; }
-    public DbSet<Entry> Entries { get; set; }
-    public DbSet<Exercice> Exercices { get; set; }
-    public DbSet<Member> Members { get; set; }
-    public DbSet<RoleByUser> RolesByUsers { get; set; }
-    public DbSet<User> Users { get; set; }
+    public DbSet<AccountData> Accounts { get; set; }
+    public DbSet<BankData> Banks { get; set; }
+    public DbSet<DocumentData> Documents { get; set; }
+    public DbSet<DocumentByEntityData> DocumentsByEntities { get; set; }
+    public DbSet<EntryData> Entries { get; set; }
+    public DbSet<ExerciceData> Exercices { get; set; }
+    public DbSet<MemberData> Members { get; set; }
+    public DbSet<RoleData> Roles { get; set; }
+    public DbSet<RoleByUserData> RolesByUsers { get; set; }
+    public DbSet<UserData> Users { get; set; }
 }

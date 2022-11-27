@@ -23,6 +23,8 @@ var migration = new DbMigration()
     EmbededTypeReference = typeof(ComptaClub.Datas.StartupExtensions)
 };
 
+builder.Services.AddAutoMapper(typeof(Program));
+
 await migration.Start();
 
 builder.Services.AddScoped<Radzen.DialogService>();

@@ -8,7 +8,7 @@ using MediatR;
 
 namespace ComptaClub.Requests
 {
-    public record CreateBankRequest : IRequest<Models.Bank>
+    public record CreateBankRequest : IRequest<Datas.BankData>
     {
         public CreateBankRequest(string code, string label)
         {

@@ -17,18 +17,15 @@ namespace ComptaClub.Handlers
     {
         private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
         private readonly ILogger _logger;
-        private readonly IMapper _mapper;
 
         protected SaveRequestHandlerBase(IDbContextFactory<ComptaClubDbContext> dbContextFactory,
-            ILogger<SaveRequestHandlerBase> logger,
-            AutoMapper.IMapper mapper)
+            ILogger<SaveRequestHandlerBase> logger)
         {
             _logger = logger;
             _dbContextFactory = dbContextFactory;
-            _mapper = mapper;
         }
 
-        public virtual async Task<PersistResult<Guid>> SaveEntity<T>(Models.IEntityKey model)
+        public virtual async Task<Results.PersistResult<Guid>> SaveEntity<T>(Datas.IPrimaryKey model)
             where T : class, new()
         {
             var db = await _dbContextFactory.CreateDbContextAsync();
@@ -42,21 +39,19 @@ namespace ComptaClub.Handlers
             if (data == null)
             {
                 _logger.LogTrace("Try to insert new entity {Id} in table {Name}", model.Id, typeof(T).Name);
-                data = _mapper.Map<T>(model);
-                db.Set<T>().Add(data);
-                db.Entry(data).State = EntityState.Added;
+                db.Set<T>().Add((T)model);
+                db.Entry(model).State = EntityState.Added;
             }
             else
             {
                 _logger.LogTrace("Try to update new entity {Id} in table {Name}", model.Id, typeof(T).Name);
-                data = _mapper.Map(model, data);
-                db.Set<T>().Attach(data);
-                db.Entry(data).State = EntityState.Modified;
+                db.Set<T>().Attach((T)model);
+                db.Entry(model).State = EntityState.Modified;
             }
 
             var changeCount = await db.SaveChangesAsync();
 
-            var pResult = new Models.PersistResult<Guid>();
+            var pResult = new Results.PersistResult<Guid>();
             var id = data as Datas.IPrimaryKey;
             if (id != null) 
             {
@@ -68,9 +63,9 @@ namespace ComptaClub.Handlers
             if (error != null)
             {
                 pResult.HasError = true;
-                pResult.ErrorBrokenRuleList = new List<Models.BrokenRule>
+                pResult.ErrorBrokenRuleList = new List<Results.BrokenRule>
                 {
-                    { new Models.BrokenRule("all", error!) }
+                    { new Results.BrokenRule("all", error!) }
                 };
                 _logger.LogValidationFailedResult("Failed to save entity", pResult);
             }

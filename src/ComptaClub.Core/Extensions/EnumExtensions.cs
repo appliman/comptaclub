@@ -27,7 +27,7 @@ namespace ComptaClub.Extensions
 			return attribute == null ? $"{value}" : attribute.Name!;
 		}
 
-		public static List<EnumExtension> GetEnumExtensions<T>()
+		public static List<Models.EnumExtension> GetEnumExtensions<T>()
 			where T : struct
 		{
 			return GetEnumExtensions(typeof(T));

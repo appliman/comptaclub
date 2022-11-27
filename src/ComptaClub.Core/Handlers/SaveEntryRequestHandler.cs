@@ -1,60 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace ComptaClub.Handlers;
 
-using Azure.Core;
-
-using ComptaClub.Datas;
-using ComptaClub.Models;
-using ComptaClub.Requests;
-using ComptaClub.Services;
-
-using FluentValidation;
-using MediatR;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-
-namespace ComptaClub.Handlers
+public class SaveEntryRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Datas.EntryData>, Results.PersistResult<Guid>>
 {
-    public class SaveEntryRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntryRequest, Models.PersistResult<Guid>>
-    {
-        private readonly IValidator<Models.Entry> _validator;
-        private readonly IMediator _mediator;
+    private readonly IValidator<Datas.EntryData> _validator;
+    private readonly IMediator _mediator;
 
-        public SaveEntryRequestHandler(
-            IValidator<Models.Entry> validator,
-            IDbContextFactory<ComptaClubDbContext> dbContextFactory,
-            ILogger<SaveEntryRequestHandler> logger,
-            IMapper mapper,
-            MediatR.IMediator mediator)
-            : base(dbContextFactory, logger, mapper)
+    public SaveEntryRequestHandler(
+        IValidator<Datas.EntryData> validator,
+        IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+        ILogger<SaveEntryRequestHandler> logger,
+        MediatR.IMediator mediator)
+        : base(dbContextFactory, logger)
+    {
+        _validator = validator;
+        _mediator = mediator;
+    }
+
+    public async Task<Results.PersistResult<Guid>> Handle(Requests.SaveEntityRequest<Datas.EntryData> request, CancellationToken cancellationToken)
+    {
+        var result = await _validator.ValidateAsync(request.Entity);
+        if (!result.IsValid)
         {
-            _validator = validator;
-            _mediator = mediator;
+            return result.ToPersistResult<Guid>()!;
         }
 
-        public async Task<PersistResult<Guid>> Handle(Requests.SaveEntryRequest request, CancellationToken cancellationToken)
+        var saveResult = await SaveEntity<Datas.EntryData>(request.Entity);
+        if (!saveResult.HasError)
         {
-            var result = await _validator.ValidateAsync(request.Entry);
-            if (!result.IsValid)
+            var entry = await _mediator.Send(new Requests.GetEntryByFilterRequest(i => i.Id == request.Entity.Id));
+            await _mediator.Publish(new Notifications.EntrySavedNotification()
             {
-                return result.ToPersistResult<Guid>()!;
-            }
-
-            var saveResult = await SaveEntity<Datas.Entry>(request.Entry);
-            if (!saveResult.HasError)
-            {
-                await _mediator.Publish(new Notifications.EntrySavedNotification() 
-                { 
-                    EntryId = request.Entry.Id, 
-                    ExerciceId = request.Entry.ExerciceId 
-                });
-            }
-            return saveResult;
+                EntryId = request.Entity.Id,
+                ExerciceId = request.Entity.ExerciceId,
+                BalanceAmount = entry!.BalanceValue
+            });
+        }
+        return saveResult;
 		}
 	}
-}

@@ -58,15 +58,12 @@ public static class StartupExtensions
             cfg.ConnectionString = settings.SqlConnectionString;
         });
 
-        builder.Services.AddScoped<Services.IAccountingService, Services.AccountingService>();
-
-        builder.Services.AddAutoMapper(typeof(StartupExtensions));
         builder.Services.AddMediatR(typeof(StartupExtensions));
 
-        builder.Services.AddTransient<IValidator<Models.Bank>, Validators.BankValidator>();
-        builder.Services.AddTransient<IValidator<Models.Account>, Validators.AccountValidator>();
-        builder.Services.AddTransient<IValidator<Models.Exercice>, Validators.ExerciceValidator>();
-        builder.Services.AddTransient<IValidator<Models.Entry>, Validators.EntryValidator>();
+        builder.Services.AddTransient<IValidator<Datas.BankData>, Validators.BankValidator>();
+        builder.Services.AddTransient<IValidator<Datas.AccountData>, Validators.AccountValidator>();
+        builder.Services.AddTransient<IValidator<Datas.ExerciceData>, Validators.ExerciceValidator>();
+        builder.Services.AddTransient<IValidator<Datas.EntryData>, Validators.EntryValidator>();
 
         builder.Services.AddMemoryCache();
 

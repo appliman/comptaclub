@@ -8,7 +8,7 @@ using FluentValidation;
 
 namespace ComptaClub.Validators
 {
-    public class EntryValidator : FluentValidation.AbstractValidator<Models.Entry>
+    public class EntryValidator : FluentValidation.AbstractValidator<Datas.EntryData>
     {
         public EntryValidator()
         {

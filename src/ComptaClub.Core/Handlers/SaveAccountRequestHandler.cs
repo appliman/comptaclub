@@ -1,38 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-
-using ComptaClub.Datas;
-using ComptaClub.Models;
-using ComptaClub.Requests;
-using ComptaClub.Services;
-
-using FluentValidation;
-using MediatR;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-
-namespace ComptaClub.Handlers
+﻿namespace ComptaClub.Handlers
 {
-    public class SaveAccountRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Models.Account>, Models.PersistResult<Guid>>
+    public class SaveAccountRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Datas.AccountData>, Results.PersistResult<Guid>>
     {
-        private readonly IValidator<Models.Account> _validator;
+        private readonly IValidator<Datas.AccountData> _validator;
 
         public SaveAccountRequestHandler(
-            IValidator<Models.Account> validator,
+            IValidator<Datas.AccountData> validator,
             IDbContextFactory<ComptaClubDbContext> dbContextFactory,
-            ILogger<SaveAccountRequestHandler> logger,
-            IMapper mapper)
-            : base(dbContextFactory, logger, mapper)
+            ILogger<SaveAccountRequestHandler> logger)
+            : base(dbContextFactory, logger)
         {
             _validator = validator;
         }
 
-        public async Task<PersistResult<Guid>> Handle(SaveEntityRequest<Models.Account> request, CancellationToken cancellationToken)
+        public async Task<Results.PersistResult<Guid>> Handle(Requests.SaveEntityRequest<Datas.AccountData> request, CancellationToken cancellationToken)
         {
             var result = await _validator.ValidateAsync(request.Entity);
             if (!result.IsValid)
@@ -40,7 +21,7 @@ namespace ComptaClub.Handlers
                 return result.ToPersistResult<Guid>()!;
             }
 
-            return await SaveEntity<Datas.Account>(request.Entity);
+            return await SaveEntity<Datas.AccountData>(request.Entity);
         }
     }
 }

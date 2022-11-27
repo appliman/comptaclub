@@ -12,5 +12,6 @@ namespace ComptaClub.Notifications
 	{
 		public Guid EntryId { get; set; }
 		public Guid ExerciceId { get; set; }
+		public long BalanceAmount { get; set; }
 	}
 }

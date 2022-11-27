@@ -11,11 +11,11 @@ using MediatR;
 
 namespace ComptaClub.Handlers
 {
-    public class CreateAccountRequestHandler : IRequestHandler<Requests.CreateAccountRequest, Models.Account>
+    public class CreateAccountRequestHandler : IRequestHandler<Requests.CreateAccountRequest, Datas.AccountData>
     {
-        public Task<Account> Handle(CreateAccountRequest request, CancellationToken cancellationToken)
+        public Task<Datas.AccountData> Handle(CreateAccountRequest request, CancellationToken cancellationToken)
         {
-            var result = new Models.Account();
+            var result = new Datas.AccountData();
             result.Id = Guid.NewGuid();
             result.Code = request.Code;
             result.Label = request.Label;

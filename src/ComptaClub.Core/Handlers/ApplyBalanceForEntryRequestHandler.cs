@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using ComptaClub.Models;
-using ComptaClub.Requests;
-using ComptaClub.Services;
-
-using MediatR;
-
-namespace ComptaClub.Handlers
+﻿namespace ComptaClub.Handlers
 {
 	public class ApplyBalanceForEntryRequestHandler : IRequestHandler<Requests.ApplyBalanceForEntryRequest, Models.Balance>
 	{
@@ -21,9 +9,9 @@ namespace ComptaClub.Handlers
 			_mediator = mediator;
 		}
 
-		public async Task<Balance> Handle(ApplyBalanceForEntryRequest request, CancellationToken cancellationToken)
+		public async Task<Balance> Handle(Requests.ApplyBalanceForEntryRequest request, CancellationToken cancellationToken)
 		{
-			var currentBalance = await _mediator.Send(new GetCurrentBalanceRequest());
+			var currentBalance = await _mediator.Send(new Requests.GetCurrentBalanceRequest());
 			if (currentBalance == null)
 			{
 				throw new Exception("Balance is not applicable");
@@ -31,7 +19,7 @@ namespace ComptaClub.Handlers
 
 			var direction = request.Entry.AccountDirection == AccountDirection.Debit ? -1 : 1;
 			var balance = new Balance(currentBalance.Amount + (request.Entry.Amount * direction));
-			request.Entry.Balance = balance;
+			request.Entry.BalanceValue = balance.Amount;
 			return balance;
 		}
 	}

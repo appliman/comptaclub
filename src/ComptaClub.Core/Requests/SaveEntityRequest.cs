@@ -11,8 +11,8 @@ using MediatR;
 
 namespace ComptaClub.Requests
 {
-    public record SaveEntityRequest<T> : IRequest<Models.PersistResult<Guid>>
-        where T : class, IEntityKey
+    public record SaveEntityRequest<T> : IRequest<Results.PersistResult<Guid>>
+        where T : class, Datas.IPrimaryKey
     {
         public SaveEntityRequest(T entity)
         {

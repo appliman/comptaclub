@@ -8,7 +8,7 @@ using MediatR;
 
 namespace ComptaClub.Requests
 {
-    public record CreateExerciceRequest : IRequest<Models.Exercice>
+    public record CreateExerciceRequest : IRequest<Datas.ExerciceData>
     {
         public CreateExerciceRequest(string code, string label, int startDate, int endDate, long initialAmount, bool active = true)
         {

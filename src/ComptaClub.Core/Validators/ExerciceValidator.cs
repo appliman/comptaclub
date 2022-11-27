@@ -8,7 +8,7 @@ using FluentValidation;
 
 namespace ComptaClub.Validators
 {
-    public class ExerciceValidator : FluentValidation.AbstractValidator<Models.Exercice>
+    public class ExerciceValidator : FluentValidation.AbstractValidator<Datas.ExerciceData>
     {
         public ExerciceValidator(MediatR.IMediator mediator)
         {
@@ -20,7 +20,7 @@ namespace ComptaClub.Validators
                 if (existing != null 
                     && current.Id != existing.Id)
                 {
-                    ctx.AddFailure(nameof(Models.Account.Code), "Ce code est déjà utilisé");
+                    ctx.AddFailure(nameof(Datas.ExerciceData.Code), "Ce code est déjà utilisé");
                 }
             });
 

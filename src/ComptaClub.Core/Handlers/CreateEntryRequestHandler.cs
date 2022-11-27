@@ -11,11 +11,11 @@ using MediatR;
 
 namespace ComptaClub.Handlers
 {
-    public class CreateEntryRequestHandler : IRequestHandler<Requests.CreateEntryRequest, Models.Entry>
+    public class CreateEntryRequestHandler : IRequestHandler<Requests.CreateEntryRequest, Datas.EntryData>
     {
-        public Task<Entry> Handle(CreateEntryRequest request, CancellationToken cancellationToken)
+        public Task<Datas.EntryData> Handle(CreateEntryRequest request, CancellationToken cancellationToken)
         {
-            var result = new Models.Entry();
+            var result = new Datas.EntryData();
             result.Id = Guid.NewGuid();
             result.CreationDate = DateTime.Today.ToDayId();
             return Task.FromResult(result);
