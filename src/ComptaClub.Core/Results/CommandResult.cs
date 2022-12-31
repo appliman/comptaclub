@@ -77,8 +77,30 @@ public class CommandResult
     {
         return new CommandResult
         {
-            HasError = false,
+            HasError = true,
             ErrorBrokenRuleList = new List<BrokenRule>(brokenRuleList)
         };
     }
+
+    public static CommandResult CreateInvalidResult(string failReason)
+    {
+        return new CommandResult
+        {
+            HasError = true,
+            ErrorBrokenRuleList = new List<BrokenRule>
+            {
+                {
+                    new BrokenRule
+                    {
+                        PropertyName = "All",
+                        MessageList = new List<string>
+                        {
+                            failReason
+                        },
+                    }
+                }
+            }
+        };
+    }
+
 }

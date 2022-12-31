@@ -13,7 +13,7 @@ public static class StartupExtensions
         var cfg = new DbConfiguration();
         dbConfiguration.Invoke(cfg);
 
-		services.AddDbContextFactory<ComptaClubDbContext>(options => { }, ServiceLifetime.Singleton);
+		services.AddDbContextFactory<ComptaClubDbContext>(lifetime: ServiceLifetime.Singleton);
 		services.AddSingleton<ModelRegister>();
 		services.AddSingleton(cfg);
 		return services;

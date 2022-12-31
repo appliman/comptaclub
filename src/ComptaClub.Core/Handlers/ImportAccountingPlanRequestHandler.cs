@@ -15,7 +15,7 @@
 
 		public async Task<Results.CommandResult> Handle(Requests.ImportAccountingPlanRequest request, CancellationToken cancellationToken)
 		{
-			var list = new List<Datas.AccountData>(); // ToFlatList(request.HierarchizedAccountingPlan);
+			var list = request.HierarchizedAccountingPlan.ToFlatList();
 			foreach (var account in list)
 			{
 				var saveResult = await _mediator.Send(new Requests.SaveEntityRequest<Datas.AccountData>(account));

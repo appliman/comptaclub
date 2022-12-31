@@ -53,6 +53,7 @@ public class FirstEntry
 		var plan = System.Text.Json.JsonSerializer.Deserialize<List<Datas.AccountData>>(planFileContent, ComptaClub.JsonSerializer.Options);	
 
 		var importResult = await mediator.Send(new ImportAccountingPlanRequest(plan!));
+		importResult.HasError.Should().BeFalse();
 
 		var bank = await mediator.Send(new GetBankByFilterRequest(i => i.Code == "MyBank"));
 		if (bank == null)
@@ -63,6 +64,7 @@ public class FirstEntry
 		}
 
 		var account = await mediator.Send(new GetAccountByFilterRequest(i => i.Code == "605001"));
+		account.Should().NotBeNull();
 
 		var entry = await mediator.Send(new CreateEntryRequest());
 		entry.PartNumber = $"{Guid.NewGuid()}";
@@ -81,8 +83,8 @@ public class FirstEntry
 		var saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
 		saveEntryResult.HasError.Should().BeFalse();
 
-		exercice = await mediator.Send(new GetExerciceByFilterRequest(i => i.Id == entry.ExerciceId));
-		exercice!.BalanceAmount.Should().Be(60 * 1000000);
-		exercice!.LastEntryId.Should().Be(entry.Id);
+		exercice = await mediator.Send(new GetExerciceByFilterRequest(i => i.Id == entry.ExerciceId))!;
+		exercice.BalanceAmount.Should().Be(60 * 1000000);
+		exercice.LastEntryId.Should().Be(entry.Id);
 	}
 }

@@ -20,8 +20,6 @@ namespace ComptaClub.Tests.Cruds
             var app = await TestHelper.CreateWebApplication();
             var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
 
-            var settings = app.Services.GetRequiredService<Configuration.ComptaClubSettings>();
-
             var exercice = await mediator.Send(new GetExerciceByFilterRequest(f => f.Code == "fake"));
             exercice.Should().BeNull();
 

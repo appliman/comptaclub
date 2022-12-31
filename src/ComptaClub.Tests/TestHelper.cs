@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using ComptaClub.Requests;
+
 using EFScriptableMigration;
+
+using MediatR;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -42,6 +46,29 @@ namespace ComptaClub.Tests
             var app = builder.Build();
 
             return app;
+        }
+
+        public async static Task<List<Datas.AccountData>> GetOrCreatePlan(IMediator mediator)
+        {
+            var planFile = System.IO.Path.Combine(System.Environment.CurrentDirectory, "InitialAccountingPlan.json");
+            var planFileContent = System.IO.File.ReadAllText(planFile);
+
+            var plan = System.Text.Json.JsonSerializer.Deserialize<List<Datas.AccountData>>(planFileContent, ComptaClub.JsonSerializer.Options);
+
+            await mediator.Send(new ImportAccountingPlanRequest(plan!));
+
+            return plan!;
+        }
+
+        public async static Task<Datas.BankData> GetOrCreateBank(string bankName, IMediator mediator)
+        {
+            var bank = await mediator.Send(new GetBankByFilterRequest(i => i.Code == bankName));
+            if (bank == null)
+            {
+                bank = await mediator.Send(new CreateBankRequest("MyBank", "My Bank"));
+                await mediator.Send(new SaveEntityRequest<Datas.BankData>(bank));
+            }
+            return bank;
         }
     }
 }

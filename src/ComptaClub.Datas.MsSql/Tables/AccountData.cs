@@ -10,4 +10,8 @@ public class AccountData : IPrimaryKey
     public string Label { get; set; } = null!;
     public int CreationDate { get; set; }
     public Guid? ParentAccountId { get; set; }
+    [NotMapped]
+    public List<AccountData> Children { get; set; } = new();
+    [NotMapped]
+    public int Level { get; set; } = -1;
 }

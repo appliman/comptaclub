@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace ComptaClub.Models
 {
-	public class EnumExtension
+	public class EnumExtension<E>
 	{
-		public int Key { get; set; }
-		public string? Name { get; set; } 
+		public E Key { get; set; } = default!;
+		public string Name { get; set; } = null!;
 		public string? Description { get; set; }
 	}
 }
