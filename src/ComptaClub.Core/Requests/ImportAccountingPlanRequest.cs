@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+namespace ComptaClub.Requests;
 
-using MediatR;
-
-namespace ComptaClub.Requests
+public record ImportAccountingPlanRequest : IRequest<Results.CommandResult>
 {
-	public record ImportAccountingPlanRequest : IRequest<Results.CommandResult>
+	public ImportAccountingPlanRequest(List<Datas.AccountData> plan)
 	{
-		public ImportAccountingPlanRequest(List<Datas.AccountData> plan)
-		{
-			this.HierarchizedAccountingPlan = plan;
-		}
-
-		public List<Datas.AccountData> HierarchizedAccountingPlan { get; init; }
+		this.HierarchizedAccountingPlan = plan;
 	}
+
+	public List<Datas.AccountData> HierarchizedAccountingPlan { get; init; }
 }

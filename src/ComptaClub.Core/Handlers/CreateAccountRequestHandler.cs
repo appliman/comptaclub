@@ -21,6 +21,7 @@ namespace ComptaClub.Handlers
             result.Label = request.Label;
             result.Direction = request.Direction;
             result.CreationDate = DateTime.Today.ToDayId();
+            result.ParentAccountId = request.ParentId;
             return Task.FromResult(result);
         }
     }

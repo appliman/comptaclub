@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using MediatR;
-
+﻿
 namespace ComptaClub.Requests
 {
     public record CreateExerciceRequest : IRequest<Datas.ExerciceData>
     {
+        public CreateExerciceRequest()
+        {
+            Code = "A completer";
+            Label = "A completer";
+        }
+
         public CreateExerciceRequest(string code, string label, int startDate, int endDate, long initialAmount, bool active = true)
         {
             this.Code= code;

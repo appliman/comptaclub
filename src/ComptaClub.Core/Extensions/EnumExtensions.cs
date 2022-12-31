@@ -27,20 +27,11 @@ namespace ComptaClub.Extensions
 			return attribute == null ? $"{value}" : attribute.Name!;
 		}
 
-		public static List<Models.EnumExtension> GetEnumExtensions<T>()
-			where T : struct
+		public static List<Models.EnumExtension<E>> GetEnumExtensions<E>()
+			where E : struct
 		{
-			return GetEnumExtensions(typeof(T));
-		}
-
-		public static List<EnumExtension> GetEnumExtensions(this Type enumeration)
-		{
-			var result = new List<EnumExtension>();
-			if (enumeration == null)
-			{
-				return result;
-			}
-			var values = Enum.GetValues(enumeration);
+			var result = new List<EnumExtension<E>>();
+			var values = Enum.GetValues(typeof(E));
 
 			foreach (var value in values)
 			{
@@ -48,18 +39,18 @@ namespace ComptaClub.Extensions
 				var attr = fi!.GetCustomAttribute<DisplayAttribute>();
 				if (attr != null)
 				{
-					result.Add(new EnumExtension
+					result.Add(new EnumExtension<E>
 					{
-						Key = (int)value,
-						Name = attr.Name,
+						Key = (E)value,
+						Name = attr.Name ?? $"{value}",
 						Description = attr.Description ?? attr.Name
 					});
 				}
 				else
 				{
-					result.Add(new EnumExtension
+					result.Add(new EnumExtension<E>
 					{
-						Key = (int)value,
+						Key = (E)value,
 						Name = fi!.Name,
 						Description = fi.Name
 					});

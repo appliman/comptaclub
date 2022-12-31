@@ -8,6 +8,7 @@ public class EntryData : IPrimaryKey
     public string PartNumber { get; set; } = null!;
     public string Label { get; set; } = null!;
     public int CreationDate { get; set; }
+    public int ValueDate { get; set; }
     public long BalanceValue { get; set; }
     public long Amount { get; set; }
     public AccountDirection AccountDirection { get; set; }

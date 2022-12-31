@@ -18,6 +18,7 @@ namespace ComptaClub.Handlers
             var result = new Datas.EntryData();
             result.Id = Guid.NewGuid();
             result.CreationDate = DateTime.Today.ToDayId();
+            result.ValueDate = DateTime.Today.ToDayId();    
             return Task.FromResult(result);
         }
     }

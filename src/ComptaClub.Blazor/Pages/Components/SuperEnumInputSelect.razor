@@ -1,11 +1,16 @@
-﻿<div class="form-group">
-	<label class="control-label">@Label</label>
+﻿@typeparam E where E : struct
+
+<div class="form-group">
+	@if (!string.IsNullOrWhiteSpace(Label))
+	{
+		<label class="control-label">@Label</label>
+	}
 	<div>
-		<InputSelect TValue="int" class="form-select" Value="Value" ValueChanged="ValueChanged" ValueExpression="ValueExpression">
-			@foreach (var item in Enumeration!.GetEnumExtensions())
+		<InputSelect TValue="E" class="form-select" Value="Value" ValueChanged="ValueChanged" ValueExpression="ValueExpression">
+			@foreach (var item in ComptaClub.Extensions.EnumExtensions.GetEnumExtensions<E>())
 			{
-				var selected = Value == item.Key;
-				<option value="@item.Key" selected="@selected">@item.Description</option>
+				var selected = Value.Equals(item.Key);
+				<option value="@item.Key" selected="@selected" title="@item.Description">@item.Name</option>
 			}
 		</InputSelect>
 		<ValidationMessage For="() => Value"></ValidationMessage>
@@ -15,24 +20,21 @@
 
 @code {
 	[Parameter]
-	public string? Label { get; set; }
+	public string Label { get; set; } = null!;
 
 	[Parameter]
-	public int Value { get; set; }
+	public E Value { get; set; } = default!;
 
 	[Parameter]
-	public EventCallback<int> ValueChanged { get; set; }
+	public EventCallback<E> ValueChanged { get; set; }
 
 	[Parameter]
-	public System.Linq.Expressions.Expression<Func<int>>? ValueExpression { get; set; }
+	public System.Linq.Expressions.Expression<Func<E>> ValueExpression { get; set; } = default!;
 
 	[Parameter]
 	public bool Required { get; set; }
 
 	[Parameter]
-	public RenderFragment? ChildContent { get; set; }
-
-	[Parameter]
-	public Type? Enumeration { get; set; }
+	public RenderFragment ChildContent { get; set; } = default!;
 
 }

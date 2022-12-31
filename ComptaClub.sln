@@ -12,8 +12,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{41F2E586-1081-4BFE-A57C-EE5E9EA03775}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		Dockerfile = Dockerfile
 		azure-pipelines-docker.yml = azure-pipelines-docker.yml
+		Doc\BILAN TRIATHLON .xlsx = Doc\BILAN TRIATHLON .xlsx
+		Doc\Compta Club.emmx = Doc\Compta Club.emmx
+		Doc\RLV_001_76093130_40_20200131.pdf = Doc\RLV_001_76093130_40_20200131.pdf
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComptaClub.Datas.MsSql", "src\ComptaClub.Datas.MsSql\ComptaClub.Datas.MsSql.csproj", "{8360445B-C642-402D-AAA8-4077ECF8A50F}"

@@ -24,5 +24,8 @@ public class Profile : AutoMapper.Profile
 
         CreateMap<ViewModels.Entry, Datas.EntryData>()
             .ForMember(d => d.BalanceValue, opt => opt.MapFrom(s => s.Balance!.Amount));
+
+        CreateMap<ViewModels.AccountDirection, Datas.AccountDirection>()
+             .ReverseMap();
     }
 }

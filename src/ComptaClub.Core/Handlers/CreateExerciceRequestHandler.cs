@@ -18,6 +18,12 @@ namespace ComptaClub.Handlers
             var result = new Datas.ExerciceData();
             result.Id = Guid.NewGuid();
             result.CreationDate = DateTime.Today.ToDayId();
+            result.Code = request.Code;
+            result.Label = request.Label;
+            result.StartDate = request.StartDate;
+            result.EndDate = request.EndDate;
+            result.InitialAmount = request.InitialAmount;
+            result.Active = request.Active;
             return Task.FromResult(result);
         }
     }

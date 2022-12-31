@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using ComptaClub.Datas;
+using ComptaClub.Requests;
 
 using FluentAssertions;
 
@@ -44,6 +45,13 @@ namespace ComptaClub.Tests.Cruds
             account.Should().NotBeNull();
 
             account!.Label.Should().Be(label);
+
+            var commandResult = await mediator.Send(new DeleteAccountRequest(account.Id));
+            commandResult.HasError.Should().BeFalse();
+            commandResult.ChangeCount.Should().Be(1);
+
+            account = await mediator.Send(new Requests.GetAccountByFilterRequest(i => i.Code == code));
+            account.Should().BeNull();
         }
 
     }

@@ -7,44 +7,58 @@ using Radzen;
 using Radzen.Blazor;
 using Microsoft.Extensions.Azure;
 using ComptaClub.Blazor.Extensions;
+using ComptaClub.Requests;
+using ComptaClub.Blazor.Pages.Shared;
+using System.Reflection.Metadata.Ecma335;
+using Microsoft.AspNetCore.Mvc.Localization;
+using System.Collections.Generic;
 
 namespace ComptaClub.Blazor.Pages;
 
 public partial class AccountingPlan : ComponentBase
 {
-    IEnumerable<ViewModels.Account> accounts = new List<ViewModels.Account>();
+	[Inject]
+	MediatR.IMediator Mediator { get; set; } = default!;
+
+    [Inject]
+	AutoMapper.IMapper Mapper { get; set; } = default!;
+
+    [Inject]
+	NotificationService NotificationService { get; set; } = default!;
+
+	[Inject]
+	DialogService DialogService { get; set; } = default!;
+
+
+    IEnumerable<ViewModels.Account> accountList = new List<ViewModels.Account>();
     RadzenDataGrid<ViewModels.Account>? grid;
     ViewModels.Account? accountToUpdate;
     ViewModels.Account? accountToInsert;
-	List<Results.BrokenRule> brokenRules = new();
+    List<Results.BrokenRule> brokenRules = new();
 
-	[Inject]
-	MediatR.IMediator? Mediator { get; set; }
-
-	[Inject]
-	AutoMapper.IMapper? Mapper { get; set; }
-
-	protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
 	{
-		var request = new Requests.GetEntityPagedListRequest<Models.AccountListFilter, Datas.AccountData>(f =>
-		{
-			f.PageSize = int.MaxValue;
-		});
-
-        var datas = await Mediator!.Send(request);
-		var list = new List<ViewModels.Account>();
-        foreach (var data in datas.List)
-        {
-            var account = Mapper!.Map<ViewModels.Account>(data)!;
-            account.Level = account.ParentAccountId == null ? 0 : -1;
-            list.Add(account);
-        }
-
-        list.Levelize();
-        list.Hierarchize();
-
-		accounts = list;
+		await LoadDatas();
     }
+
+	async Task LoadDatas()
+	{
+        var dataPlan = await Mediator!.Send(new GetPlan());
+        var list = MapPlan(dataPlan);
+        accountList = list;
+    }
+
+    List<ViewModels.Account> MapPlan(List<Datas.AccountData> list)
+	{
+        var result = new List<ViewModels.Account>();
+		foreach (var item in list)
+		{
+			var account = Mapper!.Map<ViewModels.Account>(item);
+            account.Children = MapPlan(item.Children);
+			result.Add(account);
+		}
+		return result;
+	}
 
     void RowRender(RowRenderEventArgs<ViewModels.Account> args)
 	{
@@ -103,11 +117,40 @@ public partial class AccountingPlan : ComponentBase
 
 	async Task InsertRow(ViewModels.Account account)
 	{
-		var data = await Mediator!.Send(new Requests.CreateAccountRequest());
+		var data = await Mediator!.Send(new Requests.CreateAccountRequest() 
+		{ 
+			Direction = (Datas.AccountDirection)account.Direction,
+			ParentId = account.Id
+		});
         accountToInsert = Mapper!.Map<ViewModels.Account>(data);
         account.Children.Add(accountToInsert);
 		await grid!.SelectRow(accountToInsert);
 		await grid!.EditRow(accountToInsert);
 		await grid!.ExpandRow(account);
 	}
+
+    async Task DeleteRow(ViewModels.Account account)
+    {
+		var confirm = await DialogService.Confirm("Confirmez vous la suppression de ce compte", "Suppression");
+        if (!confirm.GetValueOrDefault(false))
+		{
+			return;
+		}
+        var result = await Mediator!.Send(new Requests.DeleteAccountRequest(account.Id));
+		if (result.HasError)
+		{
+			NotificationService.NotifyError(result);
+		}
+		else
+		{
+            await LoadDatas();
+            await grid!.Reload();
+			NotificationService.Notify(new NotificationMessage
+			{
+				Severity = NotificationSeverity.Info,
+				Summary = $"Ce compte ({account.Code}) vient d'etre supprimé"
+            });
+		}
+    }
+
 }
