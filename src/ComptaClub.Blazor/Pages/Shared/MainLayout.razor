@@ -33,8 +33,10 @@
     <RadzenSidebar @bind-Expanded="sidebarExpanded">
         <RadzenPanelMenu Match="NavLinkMatch.Prefix">
             <RadzenPanelMenuItem Text="Accueil" Path="/" Icon="assessment" />
-            <RadzenPanelMenuItem Text="Plan" Path="/plan" Icon="dynamic_feed" />
+            <RadzenPanelMenuItem Text="Ecritures" Path="/ecritures" Icon="settings" />
+            <RadzenPanelMenuItem Text="Plan comptable" Path="/plan" Icon="dynamic_feed" />
             <RadzenPanelMenuItem Text="Exercices" Path="/exercices" Icon="settings" />
+            <RadzenPanelMenuItem Text="Banques" Path="/banques" Icon="settings" />
         </RadzenPanelMenu>
     </RadzenSidebar>
     <RadzenBody @ref="body" @bind-Expanded="sidebarExpanded">

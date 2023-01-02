@@ -17,16 +17,9 @@ namespace ComptaClub.Extensions
 
         public static DateTime FromDayId(this int dayId)
         {
-            var date = new DateTime(2000,0,0).AddDays(dayId);
+            var date = new DateTime(2000,1,1).AddDays(dayId);
             return date;
         }
-
-        public static DateTime FromDayId(this uint dayId)
-        {
-            var date = new DateTime(2000, 0, 0).AddDays(dayId);
-            return date;
-        }
-
 
         public static int FirstDateOfCurrentYear(this DateTime date)
         {

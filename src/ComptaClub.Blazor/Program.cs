@@ -23,7 +23,10 @@ var migration = new DbMigration()
     EmbededTypeReference = typeof(ComptaClub.Datas.StartupExtensions)
 };
 
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<ComptaClub.Blazor.Mapping.Profile>();
+});
 
 await migration.Start();
 
@@ -76,6 +79,7 @@ builder.Services.AddDataProtection()
         .PersistKeysToAzureBlobStorage(blobClient)
         .SetDefaultKeyLifetime(TimeSpan.FromDays(400));
 
+builder.Services.AddLocalization();
 
 var app = builder.Build();
 
@@ -83,10 +87,9 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+app.UseRequestLocalization("fr-FR");
 
 app.UseStaticFiles();
 

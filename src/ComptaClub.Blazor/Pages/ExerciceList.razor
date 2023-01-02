@@ -1,0 +1,29 @@
+﻿@page "/exercices"
+
+<PageTitle>Exercices</PageTitle>
+
+<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Ajouter un exercice" Click="@InsertRow" />
+
+<RadzenDataGrid @ref="grid" AllowFiltering="true" AllowSorting="true" AllowColumnResize="true"
+                Data="@exerciceList" TItem="ViewModels.Exercice">
+    <Columns>
+        <RadzenDataGridColumn TItem="ViewModels.Exercice" Property="Code" Title="Code Exercice" Width="120px" Filterable="false">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Exercice" Property="Label" Title="Libellé" Width="120px" Filterable="false">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Exercice" Property="InitialAmount" Title="Solde de départ" Width="120px" Filterable="false">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Exercice" Property="StartDate" Title="Date de départ" Width="120px" Filterable="false">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Exercice" Property="EndDate" Title="Date de fin" Width="120px" Filterable="false">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Exercice" Context="exercice" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+            <Template Context="exercice">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(exercice))" @onclick:stopPropagation="true" title="Editer cet exercice">
+                </RadzenButton>
+                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(exercice))" @onclick:stopPropagation="true" title="Supprimer cet exercice">
+                </RadzenButton>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>

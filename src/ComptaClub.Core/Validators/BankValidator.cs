@@ -18,6 +18,23 @@ namespace ComptaClub.Validators
                     ctx.AddFailure(nameof(Datas.BankData.Code), "Ce nom de banque est déjà utilisé");
                 }
             });
+            RuleFor(i => i.Code).Custom((code, ctx) =>
+            {
+                if (code != null
+                    && code.Equals("a completer", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    ctx.AddFailure("Vous devez indiquer un code valide");
+                }
+            });
+            RuleFor(i => i.Label).Custom((label, ctx) =>
+            {
+                if (label != null
+                    && label.Equals("a completer", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    ctx.AddFailure("Vous devez indiquer un libellé valide");
+                }
+            });
+
         }
     }
 }

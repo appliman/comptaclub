@@ -5,7 +5,8 @@
 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Ajouter un compte" Click="@InsertRow" Disabled=@(accountToInsert != null || accountToUpdate != null) />
 
 <RadzenDataGrid @ref="grid" AllowFiltering="true" AllowSorting="true" AllowColumnResize="true" ExpandMode="DataGridExpandMode.Single"
-                    Data="@accountList" TItem="ViewModels.Account" RowRender="@RowRender" LoadChildData="@LoadChildData">
+                    Data="@accountList" TItem="ViewModels.Account" RowRender="@RowRender" LoadChildData="@LoadChildData"
+                GridLines="DataGridGridLines.Both">
     <Columns>
         <RadzenDataGridColumn TItem="ViewModels.Account" Property="Code" Title="Code Compta" Width="120px" Filterable="false">
             <EditTemplate Context="account">
