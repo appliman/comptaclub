@@ -5,11 +5,13 @@ namespace ComptaClub.Requests
     {
         public CreateExerciceRequest()
         {
-            Code = "A completer";
-            Label = "A completer";
-        }
+            this.Code = "A completer";
+            this.Label = "A completer";
+            this.StartDate = DateTime.Today.FirstDateOfCurrentYear();
+			this.EndDate = DateTime.Today.LastDateOfCurrentYear();
+		}
 
-        public CreateExerciceRequest(string code, string label, int startDate, int endDate, long initialAmount, bool active = true)
+		public CreateExerciceRequest(string code, string label, int startDate, int endDate, long initialAmount, bool active = true)
         {
             this.Code= code;
             this.Label= label;

@@ -3,6 +3,12 @@ namespace ComptaClub.Requests;
 
 public record CreateBankRequest : IRequest<Datas.BankData>
 {
+    public CreateBankRequest()
+    {
+        Code = "A Completer";
+        Label = "A Completer";
+    }
+
     public CreateBankRequest(string code, string label)
     {
         Code = code;

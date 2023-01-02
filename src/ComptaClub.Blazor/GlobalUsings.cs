@@ -15,3 +15,6 @@ global using Microsoft.JSInterop;
 global using Microsoft.Extensions.DependencyInjection;
 
 global using ComptaClub.Extensions;
+
+global using Radzen;
+global using Radzen.Blazor;

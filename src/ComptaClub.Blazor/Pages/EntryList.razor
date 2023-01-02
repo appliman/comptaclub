@@ -1,0 +1,23 @@
+﻿@page "/ecritures"
+
+<PageTitle>Ecritures</PageTitle>
+
+<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Ajouter une ecriture" Click="@InsertRow" />
+
+<RadzenDataGrid @ref="grid" AllowFiltering="true" AllowSorting="true" AllowColumnResize="true"
+                LoadData="@LoadDatas" TItem="ViewModels.Entry">
+    <Columns>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="PartNumber" Title="Code Exercice" Width="120px" Filterable="false">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="Label" Title="Libellé" Width="120px" Filterable="false">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Context="entry" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+            <Template Context="entry">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(entry))" @onclick:stopPropagation="true" title="Editer cette ecriture">
+                </RadzenButton>
+                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(entry))" @onclick:stopPropagation="true" title="Supprimer cette ecriture">
+                </RadzenButton>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>

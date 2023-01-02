@@ -1,0 +1,39 @@
+﻿@page "/banques"
+
+<PageTitle>Banques</PageTitle>
+
+<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Ajouter une banque" Click="@InsertRow" />
+
+<RadzenDataGrid @ref="grid" AllowFiltering="true" AllowSorting="true" AllowColumnResize="true" 
+                Data="@bankList" TItem="ViewModels.Bank" EditMode="DataGridEditMode.Single" >
+    <Columns>
+        <RadzenDataGridColumn TItem="ViewModels.Bank" Property="Code" Title="Code Banque" Width="120px" Filterable="false">
+            <EditTemplate Context="bank">
+                <RadzenTextBox @bind-Value="bank.Code" Style="width:100%" />
+                <BrokenRuleMessage For="() => bank.Code" BrokenRuleList="brokenRules" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Bank" Property="Label" Title="Libellé" Width="120px" Filterable="false">
+            <EditTemplate Context="bank">
+                <RadzenTextBox @bind-Value="bank.Label" Style="width:100%" />
+                <BrokenRuleMessage For="() => bank.Label" BrokenRuleList="brokenRules" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Bank" Context="bank" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+            <Template Context="bank">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(bank))" @onclick:stopPropagation="true" title="Editer cette banque">
+                </RadzenButton>
+                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(bank))" @onclick:stopPropagation="true" title="Supprimer cette banque">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="bank">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(bank))">
+                </RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelEdit(bank))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+

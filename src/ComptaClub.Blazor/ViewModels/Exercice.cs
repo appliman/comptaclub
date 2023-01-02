@@ -11,14 +11,14 @@ namespace ComptaClub.Blazor.ViewModels
         public Guid Id { get; set; }
         public string Code { get; set; } = null!;
         public string? Label { get; set; }
-        public long InitialAmount { get; set; }
+        public decimal InitialAmount { get; set; }
+		public decimal BalanceAmount { get; set; }
 
-        public int StartDate { get; set; }
-        public int EndDate { get; set; }
-        public int CreationDate { get; set; }
-        public int ClosedDate { get; set; }
+		public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public DateTime CreationDate { get; set; }
+        public DateTime ClosedDate { get; set; }
         public Guid? LastEntryId { get; set; }
-        public long BalanceAmount { get; set; }
         public bool Active { get; set; }
     }
 }
