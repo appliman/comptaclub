@@ -58,13 +58,15 @@ public class OfxImportTests
         saveBankResult.HasError.Should().BeFalse();
 
         var fileName = System.IO.Path.Combine(System.Environment.CurrentDirectory, @"..\..\..\..\..\Doc\2022-11-11_14h53-releve_COMPTE_CHEQUES_1.ofx");
-        var importedTransactionList = Import.OfxParser.Parse(fileName);
+        var ms = new MemoryStream(await System.IO.File.ReadAllBytesAsync(fileName));
+        var importedTransactionList = await mediator.Send(new ImportEntryListFromStreamRequest(ms));
+
         var importCount = importedTransactionList.Count();
 
         foreach (var import in importedTransactionList)
         {
-            var importItem = await mediator.Send(new CreateEntryFromOfxImportRequest(import));
-            importItem.Should().NotBeNull();
+            var saveItemResult = await mediator.Send(new Requests.SaveEntityRequest<Datas.EntryData>(import));
+            saveItemResult.HasError.Should().BeFalse();
         }
 
         var entries = await mediator.Send(new GetPagedEntityListRequest<Models.EntryListFilter, Datas.EntryData>(f =>
