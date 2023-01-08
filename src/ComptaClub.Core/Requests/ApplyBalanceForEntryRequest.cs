@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ComptaClub.Requests;
 
-public record ApplyBalanceForEntryRequest : IRequest<Balance>
+public record ApplyBalanceForEntryRequest : IRequest<long>
 {
 	public ApplyBalanceForEntryRequest(Datas.EntryData entry)
 	{

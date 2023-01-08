@@ -25,6 +25,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\ComptaClub.Datas.MsSql\ComptaClub.Datas.MsSql.csproj" />
+	  <ProjectReference Include="..\ComptaClub.Import\ComptaClub.Import.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

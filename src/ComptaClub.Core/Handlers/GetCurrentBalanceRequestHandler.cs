@@ -2,7 +2,7 @@
 
 namespace ComptaClub.Handlers;
 
-public class GetCurrentBalanceRequestHandler : IRequestHandler<Requests.GetCurrentBalanceRequest, Models.Balance?>
+public class GetCurrentBalanceRequestHandler : IRequestHandler<Requests.GetCurrentBalanceRequest, long?>
 {
      private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
      private readonly IMediator _mediator;
@@ -15,7 +15,7 @@ public class GetCurrentBalanceRequestHandler : IRequestHandler<Requests.GetCurre
         _mediator = mediator;
 	}
 
-	public async Task<Models.Balance?> Handle(Requests.GetCurrentBalanceRequest request, CancellationToken cancellationToken)
+	public async Task<long?> Handle(Requests.GetCurrentBalanceRequest request, CancellationToken cancellationToken)
 	{
         var db = await _dbContextFactory.CreateDbContextAsync();
 		var exercice = await db.Exercices.FirstOrDefaultAsync(i => i.Active);
@@ -26,7 +26,7 @@ public class GetCurrentBalanceRequestHandler : IRequestHandler<Requests.GetCurre
 
 		if (!exercice.LastEntryId.HasValue)
 		{
-			return new Balance(exercice.InitialAmount);
+			return exercice.InitialAmount;
 		}
 
 		var lastEntry = await _mediator.Send(new GetEntryByFilterRequest(i => i.Id == exercice.LastEntryId.Value));
@@ -35,9 +35,6 @@ public class GetCurrentBalanceRequestHandler : IRequestHandler<Requests.GetCurre
 			throw new Exception("Ne devrait pas arriver");
 		}
 
-		return new Balance
-		{
-			Amount = lastEntry.BalanceValue
-        };
+		return lastEntry.BalanceValue;
 	}
 }

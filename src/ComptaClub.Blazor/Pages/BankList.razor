@@ -19,6 +19,18 @@
                 <BrokenRuleMessage For="() => bank.Label" BrokenRuleList="brokenRules" />
             </EditTemplate>
         </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Bank" Title="Actif" Width="90px" Filterable="false">
+            <Template Context="bank">
+                @if (bank.Active)
+                {
+                    <input type="radio" checked @onchange="@((args) => ChangeActiveBank(args, bank))" />
+                }
+                else
+                {
+                    <input type="radio" @onchange="@((args) => ChangeActiveBank(args, bank))" />
+                }
+            </Template>
+        </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Bank" Context="bank" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
             <Template Context="bank">
                 <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(bank))" @onclick:stopPropagation="true" title="Editer cette banque">

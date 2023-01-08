@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ComptaClub.Requests;
 
-public class GetPlan : IRequest<List<AccountData>>
+public record GetActiveBankRequest : IRequest<Datas.BankData?>
 {
-    
+
 }

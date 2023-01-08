@@ -28,7 +28,7 @@ namespace ComptaClub.Validators
 				if (code != null
 					&& code.Equals("a completer", StringComparison.InvariantCultureIgnoreCase))
 				{
-					ctx.AddFailure("Vous devez indiquer un code valide");
+					ctx.AddFailure(nameof(Datas.ExerciceData.Code), "Vous devez indiquer un code valide");
 				}
 			});
 			RuleFor(i => i.Label).Custom((label, ctx) =>
@@ -36,19 +36,30 @@ namespace ComptaClub.Validators
 				if (label != null
 					&& label.Equals("a completer", StringComparison.InvariantCultureIgnoreCase))
 				{
-					ctx.AddFailure("Vous devez indiquer un libellé valide");
+					ctx.AddFailure(nameof(Datas.ExerciceData.Label), "Vous devez indiquer un libellé valide");
 				}
 			});
 			RuleFor(i => i.StartDate).Custom((startDate, ctx) =>
 			{
 				if (startDate < 0)
 				{
-					ctx.AddFailure("Vous devez indiquer une date à partir de 2000");
+					ctx.AddFailure(nameof(Datas.ExerciceData.StartDate), "Vous devez indiquer une date à partir de 2000");
 				}
-				var s = startDate.FromDayId();
 				if (startDate >= ctx.InstanceToValidate.EndDate)
 				{
-					ctx.AddFailure("La date de début d'exercice doit etre supérieure à la date de fin");
+					ctx.AddFailure(nameof(Datas.ExerciceData.StartDate), "La date de début d'exercice doit etre supérieure à la date de fin");
+				}
+			});
+			RuleFor(i => i.Active).CustomAsync(async (active, ctx, cancel) =>
+			{
+				if (active)
+				{
+					var alreadyActiveExercice = await mediator.Send(new Requests.GetActiveExerciceRequest());
+					if (alreadyActiveExercice != null
+					    && alreadyActiveExercice.Id != ctx.InstanceToValidate.Id)
+					{
+						ctx.AddFailure(nameof(Datas.ExerciceData.Active), "Vous ne pouvez pas avoir 2 exercices actifs en cours");
+					}
 				}
 			});
 

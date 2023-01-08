@@ -1,6 +1,6 @@
 ﻿namespace ComptaClub.Handlers
 {
-	public class ApplyBalanceForEntryRequestHandler : IRequestHandler<Requests.ApplyBalanceForEntryRequest, Models.Balance>
+	public class ApplyBalanceForEntryRequestHandler : IRequestHandler<Requests.ApplyBalanceForEntryRequest, long>
 	{
 		private readonly IMediator _mediator;
 
@@ -9,17 +9,16 @@
 			_mediator = mediator;
 		}
 
-		public async Task<Balance> Handle(Requests.ApplyBalanceForEntryRequest request, CancellationToken cancellationToken)
+		public async Task<long> Handle(Requests.ApplyBalanceForEntryRequest request, CancellationToken cancellationToken)
 		{
 			var currentBalance = await _mediator.Send(new Requests.GetCurrentBalanceRequest());
-			if (currentBalance == null)
+			if (!currentBalance.HasValue)
 			{
 				throw new Exception("Balance is not applicable");
 			}
 
-			var direction = request.Entry.AccountDirection == AccountDirection.Debit ? -1 : 1;
-			var balance = new Balance(currentBalance.Amount + (request.Entry.Amount * direction));
-			request.Entry.BalanceValue = balance.Amount;
+			var balance = currentBalance.Value + (Math.Abs(request.Entry.Amount) * (int)request.Entry.AccountDirection);
+			request.Entry.BalanceValue = balance;
 			return balance;
 		}
 	}

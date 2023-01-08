@@ -3,23 +3,46 @@
 public class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Datas.ExerciceData>, Results.PersistResult<Guid>>
 {
     private readonly IValidator<Datas.ExerciceData> _validator;
+	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
 
-    public SaveExerciceRequestHandler(IValidator<Datas.ExerciceData> validator, 
+	public SaveExerciceRequestHandler(IValidator<Datas.ExerciceData> validator, 
         IDbContextFactory<ComptaClubDbContext> dbContextFactory, 
         ILogger<SaveBankRequestHandler> logger) 
         : base(dbContextFactory, logger)
     {
         _validator = validator;
-    }
+		_dbContextFactory = dbContextFactory;
+	}
 
     public async Task<Results.PersistResult<Guid>> Handle(Requests.SaveEntityRequest<Datas.ExerciceData> request, CancellationToken cancellationToken)
     {
-        var result = await _validator.ValidateAsync(request.Entity);
-        if (!result.IsValid)
+        var valid = await _validator.ValidateAsync(request.Entity);
+        if (!valid.IsValid)
         {
-            return result.ToPersistResult<Guid>()!;
+            return valid.ToPersistResult<Guid>()!;
         }
 
-        return await SaveEntity<Datas.ExerciceData>(request.Entity);
+        var db = await _dbContextFactory.CreateDbContextAsync();
+        var exerciceCount = await db.Exercices.CountAsync();
+
+        // S'il n'y a aucun exercice, le nouveau doit etre actif
+        if (exerciceCount == 0)
+        {
+            request.Entity.Active = true;
+        }
+
+        var result = await SaveEntity<Datas.ExerciceData>(request.Entity);
+        if (!result.HasError)
+        {
+			exerciceCount = await db.Exercices.CountAsync();
+            // Si c'est le seul exercice, il doit etre actif impérativement
+            if (exerciceCount == 1
+                && !request.Entity.Active)
+            {
+                request.Entity.Active = true;
+				result = await SaveEntity<Datas.ExerciceData>(request.Entity);
+			}
+		}
+        return result;
     }
 }

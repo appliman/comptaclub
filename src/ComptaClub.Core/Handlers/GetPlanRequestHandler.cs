@@ -8,7 +8,7 @@ using ComptaClub.Requests;
 
 namespace ComptaClub.Handlers;
 
-public class GetPlanRequestHandler : IRequestHandler<GetPlan, List<Datas.AccountData>>
+public class GetPlanRequestHandler : IRequestHandler<GetPlanRequest, List<Datas.AccountData>>
 {
     private readonly IMediator _mediator;
 
@@ -16,12 +16,14 @@ public class GetPlanRequestHandler : IRequestHandler<GetPlan, List<Datas.Account
     {
         _mediator = mediator;
     }
-    public async Task<List<AccountData>> Handle(GetPlan request, CancellationToken cancellationToken)
+    public async Task<List<AccountData>> Handle(GetPlanRequest request, CancellationToken cancellationToken)
     {
-        var page = await _mediator.Send(new GetEntityPagedListRequest<Models.AccountListFilter, Datas.AccountData>(f =>
+        var requestFilter = new GetPagedEntityListRequest<Models.AccountListFilter, Datas.AccountData>(f =>
         {
             f.PageSize = int.MaxValue;
-        }));
+        });
+
+		var page = await _mediator.Send(requestFilter);
 
         var list = new List<Datas.AccountData>();
         foreach (var data in page.List)

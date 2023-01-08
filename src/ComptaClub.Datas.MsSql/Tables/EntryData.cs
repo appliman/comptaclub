@@ -19,4 +19,5 @@ public class EntryData : IPrimaryKey
     public Guid? MemberId { get; set; }
     public PaymentType PaymentType { get; set; }
     public string? ExtraInfos { get; set; }
+    public string? ImportId { get; set; }
 }

@@ -42,6 +42,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ComptaClub.Core\ComptaClub.Core.csproj" />
+    <ProjectReference Include="..\ComptaClub.Import\ComptaClub.Import.csproj" />
   </ItemGroup>
 
 	<ItemGroup>

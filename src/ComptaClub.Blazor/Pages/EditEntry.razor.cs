@@ -1,4 +1,9 @@
+using ComptaClub.Blazor.Extensions;
 using ComptaClub.Blazor.Pages.Components;
+using ComptaClub.Blazor.ViewModels;
+using ComptaClub.Requests;
+
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ComptaClub.Blazor.Pages;
 
@@ -6,6 +11,9 @@ public partial class EditEntry : ComponentBase
 {
 	[Parameter]
 	public Guid? EntryId { get; set; }
+
+	[Parameter]
+	public string Direction { get; set; } = null!;
 
 	[Inject]
 	AutoMapper.IMapper Mapper { get; set; } = default!;
@@ -19,6 +27,10 @@ public partial class EditEntry : ComponentBase
 
 	ViewModels.Entry entry = new();
 	CustomValidator? customValidator;
+	List<SelectOption<Guid>> bankOptionList = new();
+	List<SelectOption<Guid>> accountOptionList = new();
+	List<SelectOption<Guid>> exerciceOptionList = new();
+	Datas.AccountDirection direction;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -36,10 +48,53 @@ public partial class EditEntry : ComponentBase
 				entry = Mapper.Map<ViewModels.Entry>(data);
 			}
 		}
+
+		if (Direction == "charge")
+		{
+			direction = Datas.AccountDirection.Debit;
+		}
+		else if (Direction == "produit")
+		{
+			direction = Datas.AccountDirection.Credit;
+		}
+		else
+		{
+			direction = entry.AccountDirection;
+		}
+
+		var bankList = await Mediator.Send(new Requests.GetAllBanksRequest());
+		bankOptionList = bankList.ToSelectOptionList(k => k.Id, t => $"({t.Code}) {t.Label}", i => i.Id == entry.BankId);
+		if (entry.BankId == Guid.Empty
+			&& bankOptionList.Any())
+		{
+			entry.BankId = bankList.First().Id;
+			bankOptionList.First().Selected = true;
+		}
+
+		var accountList = await Mediator.Send(new Requests.GetPlanRequest());
+		accountList = accountList.GetLeafList().ToList();
+		if (direction == Datas.AccountDirection.Debit)
+		{
+			accountList.RemoveAll(i => i.Direction == Datas.AccountDirection.Credit);
+		}
+		else
+		{
+			accountList.RemoveAll(i => i.Direction == Datas.AccountDirection.Debit);
+		}
+		accountOptionList = accountList.ToSelectOptionList(i => i.Id, t => $"({t.Code}) {t.Label}", i => i.Id == entry.AccountId);
+
+		var exercices = await Mediator.Send(new GetAllExercicesRequest());
+		exerciceOptionList = exercices.ToSelectOptionList(i => i.Id, t => $"({t.Code}) {t.Label}", i => i.Id == entry.ExerciceId);
+		if (exercices.Any()
+			&& entry.ExerciceId == Guid.Empty)
+		{
+			entry.ExerciceId = exercices.Single(i => i.Active).Id;
+		}
 	}
 
 	async Task ValidateAndSave()
 	{
+		entry.AccountDirection = direction;
 		var data = Mapper.Map<Datas.EntryData>(entry);
 		var saveResult = await Mediator!.Send(new Requests.SaveEntityRequest<Datas.EntryData>(data));
 		if (saveResult!.HasError)

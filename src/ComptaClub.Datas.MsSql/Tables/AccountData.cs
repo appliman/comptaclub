@@ -1,7 +1,7 @@
 ﻿namespace ComptaClub.Datas;
 
 [Table("Accounts")]
-public class AccountData : IPrimaryKey
+public class AccountData : IPrimaryKey, ICloneable
 {
     [Key]
     public Guid Id { get; set; }
@@ -14,4 +14,10 @@ public class AccountData : IPrimaryKey
     public List<AccountData> Children { get; set; } = new();
     [NotMapped]
     public int Level { get; set; } = -1;
+
+    public object Clone()
+    {
+        var clone = this.MemberwiseClone();
+        return clone;
+    }
 }

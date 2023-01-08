@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -155,6 +156,23 @@ public static class ModelExtensions
             }
         }
         return null;
+    }
+
+    public static IEnumerable<Datas.AccountData> GetLeafList(this IList<Datas.AccountData> list)
+    {
+        var result = new List<Datas.AccountData>();
+        foreach (var item in list)
+        {
+            if (!item.Children.Any())
+            {
+                result.Add((Datas.AccountData) item.Clone());
+            }
+            else
+            {
+                result.AddRange(item.Children.GetLeafList());
+            }
+        }
+        return result;
     }
 
 

@@ -1,7 +1,7 @@
 ﻿namespace ComptaClub.Datas;
 
 [Table("Exercices")]
-public class ExerciceData : IPrimaryKey
+public class ExerciceData : IPrimaryKey, IActivable
 {
     [Key]
     public Guid Id { get; set; }
@@ -13,6 +13,7 @@ public class ExerciceData : IPrimaryKey
 
     public int StartDate { get; set; }
     public int EndDate { get; set; }
+    public int? ClosedDate { get; set; }
     public int CreationDate { get; set; }
     public Guid? LastEntryId { get; set; }
     public bool Active { get; set; } = false;
