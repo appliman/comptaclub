@@ -1,6 +1,6 @@
 ﻿
 namespace ComptaClub.Requests;
 
-public record GetCurrentBalanceRequest : IRequest<Balance?>
+public record GetCurrentBalanceRequest : IRequest<long?>
 {
 }

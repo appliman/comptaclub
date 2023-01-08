@@ -11,14 +11,13 @@ namespace ComptaClub.Requests
 			this.EndDate = DateTime.Today.LastDateOfCurrentYear();
 		}
 
-		public CreateExerciceRequest(string code, string label, int startDate, int endDate, long initialAmount, bool active = true)
+		public CreateExerciceRequest(string code, string label, int startDate, int endDate, long initialAmount)
         {
             this.Code= code;
             this.Label= label;
             this.StartDate= startDate;
             this.EndDate= endDate;
             this.InitialAmount= initialAmount;
-            this.Active= active;
         }
 
         public string Code { get; init; }
@@ -26,6 +25,6 @@ namespace ComptaClub.Requests
         public int StartDate { get; init; }
         public int EndDate { get; init; }
         public long InitialAmount { get; init; }
-        public bool Active { get; init; }
+        public bool Active { get; init; } = false;
     }
 }

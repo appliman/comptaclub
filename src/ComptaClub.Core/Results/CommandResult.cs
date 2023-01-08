@@ -57,6 +57,7 @@ public class CommandResult
         return new CommandResult
         {
             HasError = false,
+            HasWarning = true,
             WarningBrokenRuleList = new List<BrokenRule>
             {
                 {

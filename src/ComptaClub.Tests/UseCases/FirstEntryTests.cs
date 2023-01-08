@@ -20,7 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace ComptaClub.Tests.UseCases;
 
 [TestClass]
-public class FirstEntry
+public class FirstEntryTests
 {
 	/// <summary>
 	/// Ecriture de la première entrée
@@ -42,7 +42,7 @@ public class FirstEntry
 		var exercice = await mediator.Send(new GetExerciceByFilterRequest(f => f.Code == "Exercice 2022"));
 		if (exercice == null)
 		{
-			exercice = await mediator.Send(new Requests.CreateExerciceRequest("Exercice 2022", "Exercice 2022", DateTime.Now.FirstDateOfCurrentYear(), DateTime.Now.LastDateOfCurrentYear(), 100 * 1000000, true));
+			exercice = await mediator.Send(new Requests.CreateExerciceRequest("Exercice 2022", "Exercice 2022", DateTime.Now.FirstDateOfCurrentYear(), DateTime.Now.LastDateOfCurrentYear(), 100 * 1000000));
 			var saveResult = await mediator.Send(new SaveEntityRequest<Datas.ExerciceData>(exercice));
 			saveResult.HasError.Should().BeFalse();
 		}
@@ -77,8 +77,7 @@ public class FirstEntry
 		entry.PaymentType = Datas.PaymentType.CreditCard;
 
 		var balance = await mediator.Send(new Requests.ApplyBalanceForEntryRequest(entry));
-		balance.Should().NotBeNull();
-		balance.Amount.Should().Be(60 * 1000000);
+		balance.Should().Be(60 * 1000000);
 
 		var saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
 		saveEntryResult.HasError.Should().BeFalse();

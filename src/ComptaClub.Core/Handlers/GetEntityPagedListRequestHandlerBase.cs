@@ -2,7 +2,7 @@
 
 namespace ComptaClub.Handlers;
 
-public abstract class GetEntityPagedListRequestHandlerBase<F,D> : IRequestHandler<Requests.GetEntityPagedListRequest<F,D>, Models.PagedList<IEnumerable<D>>>
+public abstract class GetEntityPagedListRequestHandlerBase<F,D> : IRequestHandler<Requests.GetPagedEntityListRequest<F,D>, Models.PagedList<IEnumerable<D>>>
     where F : class, IListFilter, new()
     where D : class, Datas.IPrimaryKey, new()
 {
@@ -13,5 +13,5 @@ public abstract class GetEntityPagedListRequestHandlerBase<F,D> : IRequestHandle
 
     public IDbContextFactory<ComptaClubDbContext> DbContextFactory { get; }
 
-    public abstract Task<PagedList<IEnumerable<D>>> Handle(GetEntityPagedListRequest<F, D> request, CancellationToken cancellationToken);
+    public abstract Task<PagedList<IEnumerable<D>>> Handle(GetPagedEntityListRequest<F, D> request, CancellationToken cancellationToken);
 }

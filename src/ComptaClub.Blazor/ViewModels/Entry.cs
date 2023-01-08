@@ -4,11 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using ComptaClub.Datas;
+
 namespace ComptaClub.Blazor.ViewModels
 {
-    public class Entry : IEntityKey
+    public class Entry : IMetaEntity
     {
+        public int RowIndex { get; set; }
         public Guid Id { get; set; }
+        public MetaEntity MetaEntity => MetaEntity.Entry;
         public string PartNumber { get; set; } = null!;
         public string Label { get; set; } = null!;
         public Guid BankId { get; set; }
@@ -16,11 +20,12 @@ namespace ComptaClub.Blazor.ViewModels
         public Guid AccountId { get; set; }
         public Guid? UserCreatorId { get; set; }
         public Guid? MemberId { get; set; }
-        public int CreationDate { get; set; }
-        public Models.Balance? Balance { get; set; }
+        public DateTime CreationDate { get; set; }
+        public DateTime ValueDate { get; set; }
         public Datas.PaymentType PaymentType { get; set; }
-		public AccountDirection AccountDirection { get; set; }
+		public Datas.AccountDirection AccountDirection { get; set; }
 		public string? ExtraInfos { get; set; }
-        public long Amount { get; set; }
+		public decimal Balance { get; set; }
+		public decimal Amount { get; set; }
     }
 }

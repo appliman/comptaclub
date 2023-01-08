@@ -1,4 +1,6 @@
-﻿namespace ComptaClub.Blazor.Extensions;
+﻿using System.Linq.Expressions;
+
+namespace ComptaClub.Blazor.Extensions;
 
 public static class ViewModelsExtensions
 {
@@ -22,4 +24,15 @@ public static class ViewModelsExtensions
         }
         return result;
     }
+
+    public static List<ViewModels.SelectOption<K>> ToSelectOptionList<K,T>(this IEnumerable<T> items, Func<T, K> keySelector, Func<T, string> textSelector, Func<T, bool> selected)
+    {
+        var result = new List<ViewModels.SelectOption<K>>();
+        foreach (var item in items)
+        {
+            var so = new ViewModels.SelectOption<K>(keySelector(item), textSelector(item), selected(item));
+			result.Add(so);
+        }
+        return result;
+	}
 }

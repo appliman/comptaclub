@@ -43,7 +43,7 @@ public partial class AccountingPlan : ComponentBase
 
 	async Task LoadDatas()
 	{
-        var dataPlan = await Mediator!.Send(new GetPlan());
+        var dataPlan = await Mediator!.Send(new GetPlanRequest());
         var list = MapPlan(dataPlan);
         accountList = list;
     }
@@ -53,7 +53,7 @@ public partial class AccountingPlan : ComponentBase
         var result = new List<ViewModels.Account>();
 		foreach (var item in list)
 		{
-			var account = Mapper!.Map<ViewModels.Account>(item);
+			var account = Mapper.Map<ViewModels.Account>(item);
             account.Children = MapPlan(item.Children);
 			result.Add(account);
 		}
@@ -152,5 +152,6 @@ public partial class AccountingPlan : ComponentBase
             });
 		}
     }
+
 
 }

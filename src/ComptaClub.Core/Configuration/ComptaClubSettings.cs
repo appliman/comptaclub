@@ -2,6 +2,8 @@
 {
     public class ComptaClubSettings
     {
+        public readonly static Guid ImportAccount = new Guid("6c7f8ba2-8b49-4ec0-b96e-63a073bae5d6");
+
         public string ApplicationName { get; set; } = "comptaclubapp";
 
         // Azure Storage

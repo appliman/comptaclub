@@ -24,7 +24,7 @@ public class DeleteAccountRequestHandler : IRequestHandler<DeleteAccountRequest,
     public async Task<CommandResult> Handle(DeleteAccountRequest request, CancellationToken cancellationToken)
     {
         // Recherche des entrées associées
-        var entriesRequest = new Requests.GetEntityPagedListRequest<Models.EntryListFilter, Datas.EntryData>(f =>
+        var entriesRequest = new Requests.GetPagedEntityListRequest<Models.EntryListFilter, Datas.EntryData>(f =>
         {
             f.PageSize = 1;
             f.AccountIdList = new List<Guid>{ request.AccountId };
@@ -37,7 +37,7 @@ public class DeleteAccountRequestHandler : IRequestHandler<DeleteAccountRequest,
 
         // Recherche des enfants
 
-        var plan = await _mediator.Send(new GetPlan());
+        var plan = await _mediator.Send(new GetPlanRequest());
         var account = plan.DeepFind(request.AccountId);
         if (account == null)
         {

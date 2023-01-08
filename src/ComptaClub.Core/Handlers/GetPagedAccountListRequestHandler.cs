@@ -10,7 +10,7 @@ public class GetPagedAccountListRequestHandler : GetEntityPagedListRequestHandle
 
     }
 
-    public override async Task<PagedList<IEnumerable<AccountData>>> Handle(GetEntityPagedListRequest<AccountListFilter, AccountData> request, CancellationToken cancellationToken)
+    public override async Task<PagedList<IEnumerable<AccountData>>> Handle(GetPagedEntityListRequest<AccountListFilter, AccountData> request, CancellationToken cancellationToken)
     {
         var filter = new AccountListFilter();
         request.Filter?.Invoke(filter);

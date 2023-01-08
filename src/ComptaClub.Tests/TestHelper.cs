@@ -11,7 +11,9 @@ using EFScriptableMigration;
 using MediatR;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ComptaClub.Tests
 {
@@ -69,6 +71,24 @@ namespace ComptaClub.Tests
                 await mediator.Send(new SaveEntityRequest<Datas.BankData>(bank));
             }
             return bank;
+        }
+
+        public async static Task CleanupDatabase(this IServiceProvider serviceProvider)
+        {
+            var dbContextFactory = serviceProvider.GetRequiredService<IDbContextFactory<Datas.ComptaClubDbContext>>();
+            var db = await dbContextFactory.CreateDbContextAsync();
+
+            await db.Database.BeginTransactionAsync();
+            await db.Accounts.ExecuteDeleteAsync();
+            await db.Banks.ExecuteDeleteAsync();
+            await db.DocumentsByEntities.ExecuteDeleteAsync();
+            await db.Documents.ExecuteDeleteAsync();
+            await db.Exercices.ExecuteDeleteAsync();
+            await db.Members.ExecuteDeleteAsync();
+            await db.RolesByUsers.ExecuteDeleteAsync();
+            await db.Roles.ExecuteDeleteAsync();
+            await db.Users.ExecuteDeleteAsync();
+            await db.Database.CommitTransactionAsync();
         }
     }
 }

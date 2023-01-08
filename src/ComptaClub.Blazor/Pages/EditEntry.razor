@@ -1,4 +1,4 @@
-﻿@page "/ecriture/ajout"
+﻿@page "/ecriture/ajout/{direction}"
 @page "/ecriture/edition/{EntryId:guid}"
 
 <PageTitle>Exercice</PageTitle>
@@ -9,8 +9,14 @@
 		<DataAnnotationsValidator />
 		<CustomValidator @ref="customValidator"></CustomValidator>
 		<div class="row">
+			<SuperInputDate @bind-Value="entry.CreationDate" PlaceHoder="Date" Required="true" Label="Date :" />
 			<SuperInputText @bind-Value="entry.PartNumber" PlaceHoder="Code" Required="true" Label="N° Pièce :" />
 			<SuperInputText @bind-Value="entry.Label" PlaceHoder="Libellé" Required="true" Label="Libellé :" />
+			<SuperInputSelect @bind-Value="entry.BankId" ItemList="@bankOptionList" Required="true" Label="Banque :" />
+			<SuperInputSelect @bind-Value="entry.AccountId" ItemList="@accountOptionList" Required="true" Label="Compte :" />
+			<SuperEnumInputSelect @bind-Value="entry.PaymentType" Required="true" Label="Mode de règlement :" />
+			<SuperInputCurrency @bind-Value="entry.Amount" PlaceHoder="Montant" Label="Montant :"/>
+			<SuperInputArea @bind-Value="entry.ExtraInfos" PlaceHoder="Informations supplémentaires" Label="Informations supplémentaires :"/>
 		</div>
 		<div class="form-group" style="margin-top:10px">
 			<button type="submit" class="btn btn-primary">Enregistrer</button>

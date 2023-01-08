@@ -20,19 +20,26 @@ public partial class EntryList : ComponentBase
     IEnumerable<ViewModels.Entry> entryList = new List<ViewModels.Entry>();
     RadzenDataGrid<ViewModels.Entry>? grid;
 
-    async Task LoadDatas(LoadDataArgs args)
+    protected override async Task OnInitializedAsync()
     {
-        var datas = await Mediator!.Send(new GetEntityPagedListRequest<Models.EntryListFilter, Datas.EntryData>(f =>
-        {
-            f.PageSize = int.MaxValue;
-        }));
-        var page = Mapper.Map<Models.PagedList<IEnumerable<ViewModels.Entry>>>(datas);
-        entryList = page.List;
+        await LoadDatas();
     }
 
-    void InsertRow()
+    async Task LoadDatas()
     {
-        NavigationManager.NavigateTo("/ecriture/ajout");
+        var request = new GetPagedEntityListRequest<Models.EntryListFilter, Datas.EntryData>(f =>
+        {
+            f.PageSize = int.MaxValue;
+        });
+
+		var dataPage = await Mediator!.Send(request);
+        var list = Mapper.Map<IEnumerable<ViewModels.Entry>>(dataPage.List);
+        entryList = list;
+    }
+
+    void InsertRow(string direction)
+    {
+        NavigationManager.NavigateTo($"/ecriture/ajout/{direction}");
     }
 
     void EditRow(ViewModels.Entry entry)
@@ -43,5 +50,10 @@ public partial class EntryList : ComponentBase
     async Task DeleteRow(ViewModels.Entry entry)
     {
 
+    }
+
+    void Import()
+    {
+        NavigationManager.NavigateTo("/importation-ecritures");
     }
 }

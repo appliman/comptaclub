@@ -1,0 +1,18 @@
+﻿.price {
+    font-size : 15px;
+    font-weight : bold;
+    text-align : right;
+}
+
+.price-color-default {
+    color: blue;
+}
+
+.price-color-green {
+    color: green;
+}
+
+.price-color-red {
+    color: red;
+}
+

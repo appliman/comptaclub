@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace ComptaClub.Blazor.ViewModels
 {
-    public interface IEntityKey
+    public interface IMetaEntity
     {
+        public int RowIndex { get; set; }
         public Guid Id { get; set; }
+        public Datas.MetaEntity MetaEntity { get; }
     }
 }

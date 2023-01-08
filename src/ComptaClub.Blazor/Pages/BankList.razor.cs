@@ -1,3 +1,4 @@
+using ComptaClub.Blazor.Extensions;
 using ComptaClub.Requests;
 
 namespace ComptaClub.Blazor.Pages;
@@ -84,5 +85,20 @@ public partial class BankList : ComponentBase
     {
 
     }
+
+    async Task ChangeActiveBank(ChangeEventArgs args, ViewModels.Bank bank)
+    {
+        var changeResult = await Mediator.Send(new ChangeActiveBankRequest($"{args.Value}" == "on", bank.Id));
+        if (changeResult.HasError)
+        {
+            NotificationService.NotifyError(changeResult);
+        }
+        else if (changeResult.HasWarning)
+        {
+            NotificationService.NotifyWarning(changeResult);
+        }
+        await LoadDatas();
+    }
+
 
 }

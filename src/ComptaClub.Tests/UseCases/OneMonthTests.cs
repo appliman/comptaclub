@@ -20,7 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace ComptaClub.Tests.UseCases;
 
 [TestClass]
-public class OneMonth
+public class OneMonthTests
 {
     /// <summary>
     /// Ecriture de la première entrée
@@ -48,8 +48,7 @@ public class OneMonth
                 $"{Guid.NewGuid()}", 
                 new DateTime(2021,1,1).FirstDateOfCurrentYear(),
                 new DateTime(2021, 1, 1).LastDateOfCurrentYear(), 
-                startAmount, 
-                true));
+                startAmount));
             var saveResult = await mediator.Send(new SaveEntityRequest<Datas.ExerciceData>(exercice));
             saveResult.HasError.Should().BeFalse();
         }

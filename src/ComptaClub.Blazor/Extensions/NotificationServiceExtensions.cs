@@ -28,4 +28,24 @@ public static class NotificationServiceExtensions
 
         notificationService.Notify(notificationMessage);
     }
+
+	public static void NotifyWarning(this NotificationService notificationService, CommandResult commandResult)
+	{
+		var notificationMessage = new NotificationMessage
+		{
+			Severity = NotificationSeverity.Warning,
+			Summary = "Attention"
+		};
+
+		var detail = new StringBuilder();
+		foreach (var rule in commandResult.WarningBrokenRuleList)
+		{
+			foreach (var error in rule.MessageList)
+			{
+				detail.AppendLine($"{rule.PropertyName} {error.ToString()}");
+			}
+		}
+
+		notificationService.Notify(notificationMessage);
+	}
 }

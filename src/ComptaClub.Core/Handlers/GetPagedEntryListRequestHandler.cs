@@ -10,7 +10,7 @@ public class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandlerB
 
     }
 
-    public override async Task<PagedList<IEnumerable<EntryData>>> Handle(GetEntityPagedListRequest<EntryListFilter, EntryData> request, CancellationToken cancellationToken)
+    public override async Task<PagedList<IEnumerable<EntryData>>> Handle(GetPagedEntityListRequest<EntryListFilter, EntryData> request, CancellationToken cancellationToken)
     {
         var filter = new EntryListFilter();
         request.Filter?.Invoke(filter);
