@@ -21,14 +21,9 @@ public partial class ExerciceList : ComponentBase
     NavigationManager NavigationManager { get; set; } = default!;
 
 
-	List<ViewModels.Exercice> exerciceList = new();
+	List<ViewModels.Exercice>? exerciceList;
     RadzenDataGrid<ViewModels.Exercice>? grid;
     List<Results.BrokenRule> brokenRules = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadDatas();
-    }
 
     async Task LoadDatas()
     {

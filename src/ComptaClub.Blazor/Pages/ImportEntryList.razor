@@ -4,3 +4,60 @@
 
 <InputFile OnChange="LoadFile" />
 
+<RadzenDataGrid @ref="grid" 
+    AllowFiltering="true" 
+    AllowSorting="true" 
+    AllowColumnResize="true"
+    Data="@entryList" 
+    TItem="ViewModels.Entry"
+    ColumnWidth="80px">
+    <Columns>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="RowIndex" Title="#" Width="50px" Filterable="false" FormatString="">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="CreationDate" Title="Date" Width="100px" Filterable="false" FormatString="{0:dd/MM/yy}">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="PartNumber" Title="N°" Width="300px" Filterable="false">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="Label" Title="Libellé" Width="120px" Filterable="false">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Banque" Width="200px" Filterable="false">
+            <Columns>
+                <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Débit" Width="70px" Filterable="false">
+                    <Template Context="entry">
+                        @if (entry.AccountDirection == Datas.AccountDirection.Debit)
+                        {
+                            <PriceLabel Value="@entry.Amount" />
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Crédit" Width="70px" Filterable="false">
+                    <Template Context="entry">
+                        @if (entry.AccountDirection == Datas.AccountDirection.Credit)
+                        {
+                            <PriceLabel Value="@entry.Amount" />
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Compte" Width="300px">
+            <Template Context="entry">
+                @if (entry.AccountDirection == Datas.AccountDirection.Debit)
+                {
+                    <RadzenDropDown @bind-Value="entry.AccountId" Data="@debitAccountOptionList" TextProperty="CodeAndLabel" ValueProperty="Id" />
+                }
+                else if (entry.AccountDirection == Datas.AccountDirection.Credit)
+                {
+                    <RadzenDropDown @bind-Value="entry.AccountId" Data="@creditAccountOptionList" TextProperty="CodeAndLabel" ValueProperty="Id" />
+                }
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Context="entry" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
+            <Template Context="entry">
+                <RadzenButton Icon="save" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => SaveRow(entry))" @onclick:stopPropagation="true" title="Editer cette ecriture">
+                </RadzenButton>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+

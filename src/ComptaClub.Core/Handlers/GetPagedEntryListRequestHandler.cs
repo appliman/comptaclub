@@ -22,7 +22,8 @@ public class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandlerB
         var query = from entry in db.Entries
                     select entry;
 
-        if (filter.AccountIdList.Any())
+        if (filter.AccountIdList != null
+            && filter.AccountIdList.Any())
         {
             query = query.Where(i => filter.AccountIdList.Contains(i.AccountId));
         }
@@ -31,6 +32,25 @@ public class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandlerB
         {
             query = query.Where(i => EF.Functions.Like($"{i.ExtraInfos}", $"%{filter.Search}%")
                                     || EF.Functions.Like($"{i.Label}", $"%{filter.Search}%"));
+        }
+
+        if (filter.ExerciceId.HasValue)
+        {
+            query = query.Where(i => i.ExerciceId == filter.ExerciceId.Value);
+        }
+
+        switch (filter.Options.DeletedState)
+        {
+            case DeletedState.Undeleted:
+                query = query.Where(i => i.DeletedDate == null);
+                break;
+            case DeletedState.Delete:
+                query = query.Where(i => i.DeletedDate != null);
+                break;
+            case DeletedState.Both:
+                break;
+            default:
+                break;
         }
 
         var page = await query.GetPagedDataList(i => i.CreationDate, filter);

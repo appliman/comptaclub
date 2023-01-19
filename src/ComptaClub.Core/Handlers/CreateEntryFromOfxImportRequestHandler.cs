@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,8 +52,10 @@ public class CreateEntryFromOfxImportRequestHandler : IRequestHandler<Requests.C
         entry.ExtraInfos = request.OfxTransactionImport.Memo;
         entry.PaymentType = ConvertToPaymentType(request.OfxTransactionImport.TransType);
         entry.ValueDate = request.OfxTransactionImport.FundAvaliabilityDate.ToDayId();
-
-        await _mediator.Send(new Requests.ApplyBalanceForEntryRequest(entry));
+        if (entry.ValueDate < 0)
+        {
+            entry.ValueDate = entry.CreationDate;
+        }
 
         return entry;
     }

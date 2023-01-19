@@ -7,8 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <Reference Include="SgmlReader.Logic">
+		  <HintPath>lib\SgmlReader.Logic.dll</HintPath>
+	  </Reference>
+  </ItemGroup>
+
+	<ItemGroup>
     <ProjectReference Include="..\..\..\..\..\Libs\ForkedOFXNet\OFXNet\OFXNet.csproj" />
     <ProjectReference Include="..\ComptaClub.Datas.MsSql\ComptaClub.Datas.MsSql.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="lib\" />
+	</ItemGroup>
 
 </Project>

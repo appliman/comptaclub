@@ -103,7 +103,7 @@ namespace ComptaClub.Tests.Cruds
 
             exercice1 = await mediator.Send(new GetExerciceByFilterRequest(f => f.Id == exercice1.Id));
             exercice1.Should().NotBeNull();
-            exercice1.Active.Should().BeFalse();
+            exercice1!.Active.Should().BeFalse();
 		}
 	}
 }

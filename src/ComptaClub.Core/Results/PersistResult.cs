@@ -38,7 +38,7 @@ public class PersistResult<T> : CommandResult
 		};
 	}
 
-    public static PersistResult<T> CreateInvalidResult(string error)
+    public new static PersistResult<T> CreateInvalidResult(string error)
     {
         return new PersistResult<T>
         {

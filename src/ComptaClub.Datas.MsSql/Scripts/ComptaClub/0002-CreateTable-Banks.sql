@@ -6,6 +6,7 @@ CREATE TABLE [Banks] (
     [Code] nvarchar(50) NOT NULL,
     [Label] nvarchar(1024) NULL,
     [CreationDate] int NOT NULL,
+    [Active] bit not null,
     CONSTRAINT [PK_Banks] PRIMARY KEY ([Id])
 );
 End

@@ -9,6 +9,7 @@ namespace ComptaClub.Blazor.ViewModels
         public MetaEntity MetaEntity => MetaEntity.Account;
         public string Code { get; set; } = null!;
         public string Label { get; set; } = null!;
+        public string CodeAndLabel => $"{Code} {Label}";
         public Guid? ParentAccountId { get; set; }
         public Datas.AccountDirection Direction { get; set; }
         public int CreationDate { get; set; }

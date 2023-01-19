@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using ComptaClub.Extensions;
 using ComptaClub.Requests;
 
 using EFScriptableMigration;
@@ -50,7 +51,7 @@ namespace ComptaClub.Tests
             return app;
         }
 
-        public async static Task<List<Datas.AccountData>> GetOrCreatePlan(IMediator mediator)
+        public async static Task<List<Datas.AccountData>> GetOrCreatePlan(this IMediator mediator)
         {
             var planFile = System.IO.Path.Combine(System.Environment.CurrentDirectory, "InitialAccountingPlan.json");
             var planFileContent = System.IO.File.ReadAllText(planFile);
@@ -59,10 +60,12 @@ namespace ComptaClub.Tests
 
             await mediator.Send(new ImportAccountingPlanRequest(plan!));
 
+            plan = await mediator.Send(new GetPlanRequest());
+
             return plan!;
         }
 
-        public async static Task<Datas.BankData> GetOrCreateBank(string bankName, IMediator mediator)
+        public async static Task<Datas.BankData> GetOrCreateBank(this IMediator mediator, string bankName)
         {
             var bank = await mediator.Send(new GetBankByFilterRequest(i => i.Code == bankName));
             if (bank == null)
@@ -72,6 +75,18 @@ namespace ComptaClub.Tests
             }
             return bank;
         }
+
+        public async static Task<Datas.ExerciceData> GetOrCreateExercice(this MediatR.IMediator mediator, string code)
+        {
+            var exercice = await mediator.Send(new GetExerciceByFilterRequest(i => i.Code == code));
+            if (exercice == null)
+            {
+                exercice = await mediator.Send(new CreateExerciceRequest(code, "test", DateTime.Today.FirstDateOfCurrentYear(), DateTime.Today.LastDateOfCurrentYear(), 0));
+                await mediator.Send(new SaveEntityRequest<Datas.ExerciceData>(exercice));
+            }
+            return exercice;
+        }
+
 
         public async static Task CleanupDatabase(this IServiceProvider serviceProvider)
         {
