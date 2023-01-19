@@ -1,18 +1,23 @@
-﻿namespace ComptaClub.Handlers;
+﻿using ComptaClub.Requests;
+
+namespace ComptaClub.Handlers;
 
 public class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Datas.ExerciceData>, Results.PersistResult<Guid>>
 {
     private readonly IValidator<Datas.ExerciceData> _validator;
 	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IMediator _mediator;
 
-	public SaveExerciceRequestHandler(IValidator<Datas.ExerciceData> validator, 
+    public SaveExerciceRequestHandler(IValidator<Datas.ExerciceData> validator, 
         IDbContextFactory<ComptaClubDbContext> dbContextFactory, 
-        ILogger<SaveBankRequestHandler> logger) 
+        ILogger<SaveBankRequestHandler> logger,
+        IMediator mediator) 
         : base(dbContextFactory, logger)
     {
         _validator = validator;
 		_dbContextFactory = dbContextFactory;
-	}
+        _mediator = mediator;
+    }
 
     public async Task<Results.PersistResult<Guid>> Handle(Requests.SaveEntityRequest<Datas.ExerciceData> request, CancellationToken cancellationToken)
     {
@@ -31,6 +36,12 @@ public class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHandle
             request.Entity.Active = true;
         }
 
+        if (request.Entity.Active)
+        {
+            var balance = await _mediator.Send(new GetCurrentBalanceRequest());
+            request.Entity.BalanceAmount = balance;
+        }
+
         var result = await SaveEntity<Datas.ExerciceData>(request.Entity);
         if (!result.HasError)
         {
@@ -43,6 +54,10 @@ public class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHandle
 				result = await SaveEntity<Datas.ExerciceData>(request.Entity);
 			}
 		}
+
+
+
+
         return result;
     }
 }

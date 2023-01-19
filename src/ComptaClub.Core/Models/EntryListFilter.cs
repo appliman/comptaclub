@@ -17,6 +17,14 @@ namespace ComptaClub.Models
         public ListSortDirection SortDirection { get; set; }
         public string? Search { get; set; }
         public ComputeRowCount ComputeRowCount { get; set; } = ComputeRowCount.OnlyInFirstPage;
-        public List<Guid> AccountIdList { get; set; } = new();
+        public List<Guid>? AccountIdList { get; set; }
+        public Guid? ExerciceId { get; set; }
+        public EntryListFilterOptions Options { get; set; } = new();
+
+        public void GetById(Guid entryId)
+        {
+            KeyIdList.PropertyName = "Id";
+            KeyIdList.KeyList.Add(entryId);
+        }
     }
 }

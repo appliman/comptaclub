@@ -4,10 +4,13 @@ namespace ComptaClub.Requests;
 
 public record GetEntryByFilterRequest : IRequest<Datas.EntryData?>
 {
-    public GetEntryByFilterRequest(Expression<Func<Datas.EntryData, bool>> filter)
+    public GetEntryByFilterRequest(Action<Models.EntryListFilter> filter)
     {
-        this.Filter = filter;
+        var defaultFilter = new Models.EntryListFilter();
+        defaultFilter.Options.DeletedState = DeletedState.Undeleted;
+        filter(defaultFilter);
+        Filter = filter;
     }
 
-    public Expression<Func<Datas.EntryData, bool>> Filter { get; init; }
+    public Action<Models.EntryListFilter> Filter { get; init; }
 }

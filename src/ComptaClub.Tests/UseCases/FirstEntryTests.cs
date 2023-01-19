@@ -76,14 +76,11 @@ public class FirstEntryTests
 		entry.AccountDirection = account.Direction;
 		entry.PaymentType = Datas.PaymentType.CreditCard;
 
-		var balance = await mediator.Send(new Requests.ApplyBalanceForEntryRequest(entry));
-		balance.Should().Be(60 * 1000000);
-
 		var saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
 		saveEntryResult.HasError.Should().BeFalse();
 
 		exercice = await mediator.Send(new GetExerciceByFilterRequest(i => i.Id == entry.ExerciceId))!;
-		exercice.BalanceAmount.Should().Be(60 * 1000000);
-		exercice.LastEntryId.Should().Be(entry.Id);
+		exercice!.BalanceAmount.Should().Be(60 * 1000000);
+		exercice!.LastEntryId.Should().Be(entry.Id);
 	}
 }

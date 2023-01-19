@@ -32,6 +32,15 @@ namespace ComptaClub.Validators
                 {
                     ctx.AddFailure(nameof(Datas.EntryData.AccountId), "Il n'est pas possible d'associer un compte général à une ecriture");
                 }
+                else
+                {
+                    var account = leafList.Single(i => i.Id == accountId);
+                    if (ctx.InstanceToValidate.AccountDirection != account.Direction)
+                    {
+                        ctx.AddFailure(nameof(Datas.EntryData.AccountDirection), "Il n'est pas possible d'associer un sens d'ecriture different du compte associé");
+                    }
+                }
+
             });
             RuleFor(i => i.ExerciceId).CustomAsync(async (exerciceId, ctx, cancel) =>
             {
@@ -40,19 +49,42 @@ namespace ComptaClub.Validators
                 {
                     ctx.AddFailure(nameof(Datas.EntryData.ExerciceId), "Cet écriture ne peut pas etre associée à un exercice inexistant");
                 }
-                var exercice = exerciceList.Single(i => i.Id == exerciceId);
-                if (exercice.ClosedDate.HasValue)
+                else
                 {
-                    ctx.AddFailure(nameof(Datas.EntryData.ExerciceId), "Il n'est pas possible de modifier une écriture sur un exercice déjà clos");
-                }
-                if (!exercice.Active)
-                {
-                    ctx.AddFailure(new FluentValidation.Results.ValidationFailure
+                    var exercice = exerciceList.Single(i => i.Id == exerciceId);
+                    if (exercice.ClosedDate.HasValue)
                     {
-                        Severity = Severity.Warning,
-                        PropertyName = nameof(Datas.EntryData.ExerciceId),
-                        ErrorMessage = "Attention cette écriture n'est pas associée à l'exercice en cours"
-                    });
+                        ctx.AddFailure(nameof(Datas.EntryData.ExerciceId), "Il n'est pas possible de modifier une écriture sur un exercice déjà clos");
+                    }
+                    if (!exercice.Active)
+                    {
+                        ctx.AddFailure(new FluentValidation.Results.ValidationFailure
+                        {
+                            Severity = Severity.Warning,
+                            PropertyName = nameof(Datas.EntryData.ExerciceId),
+                            ErrorMessage = "Attention cette écriture n'est pas associée à l'exercice en cours"
+                        });
+                    }
+
+                    if (ctx.InstanceToValidate.CreationDate < exercice.StartDate)
+                    {
+                        ctx.AddFailure(nameof(Datas.EntryData.CreationDate), "La date de creation de l'ecriture doit correspondre à l'interval de date de l'exercice");
+                    }
+
+                    if (ctx.InstanceToValidate.ValueDate < exercice.StartDate)
+                    {
+                        ctx.AddFailure(nameof(Datas.EntryData.CreationDate), "La date de valeur de l'ecriture doit correspondre à l'interval de date de l'exercice");
+                    }
+
+                    if (ctx.InstanceToValidate.CreationDate > exercice.EndDate)
+                    {
+                        ctx.AddFailure(nameof(Datas.EntryData.CreationDate), "La date de creation de l'ecriture doit correspondre à l'interval de date de l'exercice");
+                    }
+
+                    if (ctx.InstanceToValidate.ValueDate > exercice.EndDate)
+                    {
+                        ctx.AddFailure(nameof(Datas.EntryData.CreationDate), "La date de valeur de l'ecriture doit correspondre à l'interval de date de l'exercice");
+                    }
                 }
             });
             RuleFor(i => i.PartNumber).NotNull().NotEmpty().WithMessage("Une écriture doit comporter un numéro de pièce");

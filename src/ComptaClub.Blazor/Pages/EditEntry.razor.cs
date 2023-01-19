@@ -42,7 +42,7 @@ public partial class EditEntry : ComponentBase
 		}
 		else
 		{
-			var data = await Mediator.Send(new Requests.GetEntryByFilterRequest(f => f.Id == EntryId.Value));
+			var data = await Mediator.Send(new Requests.GetEntryByFilterRequest(f => f.GetById(EntryId.Value)));
 			if (data != null)
 			{
 				entry = Mapper.Map<ViewModels.Entry>(data);

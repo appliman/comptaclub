@@ -4,8 +4,13 @@
 
 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Ajouter une banque" Click="@InsertRow" />
 
-<RadzenDataGrid @ref="grid" AllowFiltering="true" AllowSorting="true" AllowColumnResize="true" 
-                Data="@bankList" TItem="ViewModels.Bank" EditMode="DataGridEditMode.Single" >
+<RadzenDataGrid @ref="grid" 
+    AllowFiltering="true" 
+    AllowSorting="true" 
+    AllowColumnResize="true" 
+    Data="@bankList" 
+    TItem="ViewModels.Bank" 
+    EditMode="DataGridEditMode.Single" >
     <Columns>
         <RadzenDataGridColumn TItem="ViewModels.Bank" Property="Code" Title="Code Banque" Width="120px" Filterable="false">
             <EditTemplate Context="bank">

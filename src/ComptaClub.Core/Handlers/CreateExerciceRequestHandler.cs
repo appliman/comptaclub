@@ -23,6 +23,7 @@ namespace ComptaClub.Handlers
             result.StartDate = request.StartDate;
             result.EndDate = request.EndDate;
             result.InitialAmount = request.InitialAmount;
+            result.BalanceAmount = request.InitialAmount;
             result.Active = request.Active;
             return Task.FromResult(result);
         }

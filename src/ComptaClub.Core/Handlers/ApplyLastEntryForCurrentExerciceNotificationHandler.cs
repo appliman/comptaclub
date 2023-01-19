@@ -14,22 +14,27 @@ namespace ComptaClub.Handlers
 	public class ApplyLastEntryForCurrentExerciceNotificationHandler : INotificationHandler<Notifications.EntrySavedNotification>
 	{
 		private readonly IMediator _mediator;
+        private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
 
-		public ApplyLastEntryForCurrentExerciceNotificationHandler(MediatR.IMediator mediator)
+        public ApplyLastEntryForCurrentExerciceNotificationHandler(MediatR.IMediator mediator,
+			IDbContextFactory<Datas.ComptaClubDbContext> dbContextFactory)
 		{
 			this._mediator = mediator;
-		}
+            _dbContextFactory = dbContextFactory;
+        }
 
 		public async Task Handle(EntrySavedNotification notification, CancellationToken cancellationToken)
 		{
-			var exercice = await _mediator.Send(new GetExerciceByFilterRequest(i => i.Id == notification.ExerciceId));
+			var exercice = await _mediator.Send(new GetExerciceByFilterRequest(i => i.Id == notification.ExerciceId))!;
 			if (exercice == null) 
-			{ 
-				// TODO Log
+			{
+				// Ne doit pas arriver
+				return;
 			}
 			exercice!.LastEntryId = notification.EntryId;
-			exercice!.BalanceAmount = notification.BalanceAmount;
-			await _mediator.Send(new SaveEntityRequest<Datas.ExerciceData>(exercice!));	
+			var currentBalance = await _mediator.Send(new GetCurrentBalanceRequest());
+            exercice.BalanceAmount = currentBalance;
+            await _mediator.Send(new SaveEntityRequest<Datas.ExerciceData>(exercice!));	
 		}
 	}
 }

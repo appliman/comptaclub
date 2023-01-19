@@ -18,23 +18,24 @@ public class SaveEntryRequestHandler : SaveRequestHandlerBase, IRequestHandler<R
 
     public async Task<Results.PersistResult<Guid>> Handle(Requests.SaveEntityRequest<Datas.EntryData> request, CancellationToken cancellationToken)
     {
-        var result = await _validator.ValidateAsync(request.Entity);
-        if (!result.IsValid)
+        if (!request.BypassRules)
         {
-            return result.ToPersistResult<Guid>()!;
+            var result = await _validator.ValidateAsync(request.Entity);
+            if (!result.IsValid)
+            {
+                return result.ToPersistResult<Guid>()!;
+            }
         }
 
         var saveResult = await SaveEntity<Datas.EntryData>(request.Entity);
         if (!saveResult.HasError)
         {
-            var entry = await _mediator.Send(new Requests.GetEntryByFilterRequest(i => i.Id == request.Entity.Id));
             await _mediator.Publish(new Notifications.EntrySavedNotification()
             {
                 EntryId = request.Entity.Id,
                 ExerciceId = request.Entity.ExerciceId,
-                BalanceAmount = entry!.BalanceValue
             });
         }
         return saveResult;
-		}
 	}
+}

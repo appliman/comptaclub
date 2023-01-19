@@ -16,6 +16,7 @@
 		public async Task<Results.CommandResult> Handle(Requests.ImportAccountingPlanRequest request, CancellationToken cancellationToken)
 		{
 			var list = request.HierarchizedAccountingPlan.ToFlatList();
+			var itemCount = 0;
 			foreach (var account in list)
 			{
 				var saveResult = await _mediator.Send(new Requests.SaveEntityRequest<Datas.AccountData>(account));
@@ -27,9 +28,17 @@
 						ErrorBrokenRuleList = saveResult.ErrorBrokenRuleList
 					};
 				}
+				else
+				{
+					itemCount++;
+				}
 			}
 
-			return new Results.CommandResult();
+			return new Results.CommandResult()
+			{
+				HasError = false,
+				ChangeCount = itemCount
+			};
 		}
 
 

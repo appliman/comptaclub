@@ -34,13 +34,11 @@ public class Profile : AutoMapper.Profile
         CreateMap<Requests.CreateExerciceRequest, ViewModels.Exercice>();
 
         CreateMap<Datas.EntryData, ViewModels.Entry>()
-            .ForMember(d => d.Balance, opt => opt.MapFrom(s => s.BalanceValue / 1000000m))
             .ForMember(d => d.Amount, opt => opt.MapFrom(s => s.Amount / 1000000m))
             .ForMember(d => d.CreationDate, opt => opt.MapFrom(s => s.CreationDate.FromDayId()))
             .ForMember(d => d.ValueDate, opt => opt.MapFrom(s => s.ValueDate.FromDayId()));
 
 		CreateMap<ViewModels.Entry, Datas.EntryData>()
-            .ForMember(d => d.BalanceValue, opt => opt.MapFrom(s => s.Balance * 1000000))
             .ForMember(d => d.Amount, opt => opt.MapFrom(s => Convert.ToInt64(s.Amount * 1000000)))
 			.ForMember(d => d.ValueDate, opt => opt.MapFrom(s => s.ValueDate.ToDayId()))
 			.ForMember(d => d.CreationDate, opt => opt.MapFrom(s => s.CreationDate.ToDayId()));
