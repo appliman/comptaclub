@@ -2,11 +2,11 @@
 
 public class CommandResult
 {
-    public bool HasError { get; set; }
-    public bool HasWarning { get; set; }
+    public bool HasError { get; set; } = false;
+    public bool HasWarning { get; set; } = false;
 
-    public List<BrokenRule> ErrorBrokenRuleList { get; set; } = new List<BrokenRule>();
-    public List<BrokenRule> WarningBrokenRuleList { get; set; } = new List<BrokenRule>();
+    public List<BrokenRule> ErrorBrokenRuleList { get; set; } = new();
+    public List<BrokenRule> WarningBrokenRuleList { get; set; } = new();
     public string? ErrorCode { get; set; }
     public int? ChangeCount { get; set; }
 
