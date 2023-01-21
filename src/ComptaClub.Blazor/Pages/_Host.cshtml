@@ -1,7 +1,15 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Components.Web
+@using Microsoft.Extensions.Caching.Memory;
+@using ComptaClub.Blazor.Extensions;
+
+@inject IMemoryCache Cache
 @namespace ComptaClub.Blazor.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    await HttpContext.TrySignIn(Cache);
+    await HttpContext.TryLogout();
+}
 
 <!DOCTYPE html>
 <html lang="en">

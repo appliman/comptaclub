@@ -30,6 +30,7 @@ public class EntryCrudTests
         var exercice = await mediator.GetOrCreateExercice($"{Guid.NewGuid()}");
         var bank = await mediator.GetOrCreateBank($"{Guid.NewGuid()}");
         var plan = await mediator.GetOrCreatePlan()!;
+        var user = await mediator.GetOrCreateUser($"{Guid.NewGuid()}@email.com");
         var leafList = plan.GetLeafList();
 
         var entry = await mediator.Send(new GetEntryByFilterRequest(i => i.GetById(Guid.NewGuid())));
@@ -46,6 +47,7 @@ public class EntryCrudTests
         entry.BankId = bank.Id;
         entry.Amount = 10 * 1000000;
         entry.AccountId = firstAccount.Id;
+        entry.UserCreatorId = user.Id;
         entry.AccountDirection = firstAccount.Direction;
         var partNumber = entry.PartNumber = $"{Guid.NewGuid()}";
         var label = entry.Label = $"{Guid.NewGuid()}";
@@ -68,6 +70,7 @@ public class EntryCrudTests
         entry.AccountDirection.Should().Be(firstAccount.Direction);
         entry.ImportId.Should().BeNull();
         entry.PaymentType.Should().Be(paymentType);
+        entry.UserCreatorId.Should().Be(user.Id);
 
         entry.Amount = 20 * 1000000;
         entry.ExtraInfos = "Test";

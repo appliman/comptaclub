@@ -11,24 +11,16 @@ using Microsoft.AspNetCore.DataProtection;
 using Azure.Storage;
 using EFScriptableMigration;
 using System.Data;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var cfg = await builder.ConfigureComptaClub();
 
-var migration = new DbMigration()
-{
-    ConnectionString = cfg.settings.SqlConnectionString,
-    SchemaName = "ComptaClub",
-    EmbededTypeReference = typeof(ComptaClub.Datas.StartupExtensions)
-};
-
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<ComptaClub.Blazor.Mapping.Profile>();
 });
-
-await migration.Start();
 
 builder.Services.AddScoped<Radzen.DialogService>();
 builder.Services.AddScoped<Radzen.NotificationService>();
@@ -47,15 +39,6 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
     });
-
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.Cookie.Name = cfg.settings.CookieName;
-                    options.SlidingExpiration = true;
-                    options.ExpireTimeSpan = TimeSpan.FromDays(15);
-                    options.Cookie.HttpOnly = true;
-                });
 
 var rootUri = new Uri($"https://{cfg.settings.AzureStorageAccountName}.blob.core.windows.net");
 var storageCredential = new StorageSharedKeyCredential(cfg.settings.AzureStorageAccountName, cfg.settings.AzureStorageAccountKey);
@@ -81,6 +64,31 @@ builder.Services.AddDataProtection()
 
 builder.Services.AddLocalization();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+		.AddCookie(options =>
+		{
+			options.Cookie.Name = "ComptaClub";
+			options.SlidingExpiration = true;
+			options.ExpireTimeSpan = TimeSpan.FromDays(15);
+			options.Cookie.HttpOnly = true;
+		});
+
+var rootFolder = System.IO.Path.GetDirectoryName(typeof(Program).Assembly.Location)!;
+var emailTemplatesFolder = System.IO.Path.Combine(rootFolder, @$"Pages\EmailTemplates");
+var outputEmails = System.IO.Path.Combine(rootFolder, @$"emailout");
+if (!System.IO.Directory.Exists(outputEmails))
+{
+    System.IO.Directory.CreateDirectory(outputEmails);
+}
+
+builder.Services.AddFluentEmail("test@email.com")
+    .AddRazorRenderer(emailTemplatesFolder)
+    .AddSmtpSender(new System.Net.Mail.SmtpClient()
+    {
+        DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.SpecifiedPickupDirectory,
+        PickupDirectoryLocation = outputEmails
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -95,8 +103,23 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
+var migration = new DbMigration()
+{
+	ConnectionString = cfg.settings.SqlConnectionString,
+	SchemaName = "ComptaClub",
+	EmbededTypeReference = typeof(ComptaClub.Datas.StartupExtensions)
+};
+
+await migration.Start();
+
+var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
+await mediator.Send(new ComptaClub.Requests.WarmupRequest());
 
 app.Run();

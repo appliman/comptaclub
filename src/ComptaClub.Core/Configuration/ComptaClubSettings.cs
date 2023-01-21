@@ -15,6 +15,7 @@
         public string AzureStorageDocumentsContainerName { get; set; } = "compta-club-documents";
         public string CookieName { get; set; } = "comptaclub";
 
+        public string? AdminUserEmail { get; set; }
 
         public string AzureStorageConnectionString {get; private set; } = null!;
         public void SetAzureStorageConnectionString(string azureStorageConnectionString) => this.AzureStorageConnectionString = azureStorageConnectionString;

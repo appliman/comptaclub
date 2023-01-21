@@ -1,6 +1,9 @@
+using System.Security.Claims;
+
 using ComptaClub.Blazor.Extensions;
 using ComptaClub.Blazor.Pages.Components;
 using ComptaClub.Blazor.ViewModels;
+using ComptaClub.Extensions;
 using ComptaClub.Requests;
 
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -9,7 +12,10 @@ namespace ComptaClub.Blazor.Pages;
 
 public partial class EditEntry : ComponentBase
 {
-	[Parameter]
+	[CascadingParameter]
+	Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
+    [Parameter]
 	public Guid? EntryId { get; set; }
 
 	[Parameter]
@@ -90,6 +96,12 @@ public partial class EditEntry : ComponentBase
 		{
 			entry.ExerciceId = exercices.Single(i => i.Active).Id;
 		}
+
+		var userId = (await AuthenticationState).User.GetUserId();
+		if (userId != null)
+		{
+			entry.UserCreatorId = userId!;
+        }
 	}
 
 	async Task ValidateAndSave()

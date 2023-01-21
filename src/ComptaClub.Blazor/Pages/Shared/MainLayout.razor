@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
 
 <RadzenDialog />
 <RadzenNotification />
@@ -26,7 +27,7 @@
                     </div>
                 }
                 <span>User</span>
-                <a href="/logoff" title="Se déconnecter" class="mx-2 mx-lg-3">Se déconnecter</a>
+                <button title="Se déconnecter" class="mx-2 mx-lg-3" @onclick="Logout">Se déconnecter</button>
             </div>
         </div>
     </RadzenHeader>
@@ -40,7 +41,14 @@
         </RadzenPanelMenu>
     </RadzenSidebar>
     <RadzenBody @ref="body" @bind-Expanded="sidebarExpanded">
-        @Body
+        <AuthorizeView>
+            <Authorized>
+                @Body   
+            </Authorized>
+            <NotAuthorized>
+                <LoginPartial />
+            </NotAuthorized>
+        </AuthorizeView>
     </RadzenBody>
 </RadzenLayout>
 
@@ -48,4 +56,10 @@
     bool sidebarExpanded = false;
     bool loaderVisible = false;
     RadzenBody? body;
+
+    void Logout()
+    {
+        NavigationManager.NavigateTo("/?logout=true", true);
+    }
+}
 }

@@ -9,6 +9,8 @@ using ComptaClub.Requests;
 
 using EFScriptableMigration;
 
+using FluentAssertions.Equivalency;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Builder;
@@ -87,6 +89,16 @@ namespace ComptaClub.Tests
             return exercice;
         }
 
+        public async static Task<Datas.UserData> GetOrCreateUser(this IMediator mediator, string email)
+        {
+            var user = await mediator.Send(new GetUserByFilterRequest(i => i.Email = email));
+            if (user == null)
+            {
+                user = await mediator.Send(new CreateUserRequest($"{Guid.NewGuid()}", email));
+                await mediator.Send(new SaveEntityRequest<Datas.UserData>(user));
+            }
+            return user;
+        }
 
         public async static Task CleanupDatabase(this IServiceProvider serviceProvider)
         {
