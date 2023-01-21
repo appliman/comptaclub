@@ -89,6 +89,7 @@ namespace ComptaClub.Validators
             });
             RuleFor(i => i.PartNumber).NotNull().NotEmpty().WithMessage("Une écriture doit comporter un numéro de pièce");
             RuleFor(i => i.Label).NotNull().NotEmpty().WithMessage("Une écriture doit comporter un libellé");
+            RuleFor(i => i.UserCreatorId).NotEmpty();
         }
     }
 }

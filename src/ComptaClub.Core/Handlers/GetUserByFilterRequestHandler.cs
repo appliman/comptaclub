@@ -1,21 +1,23 @@
-﻿namespace ComptaClub.Handlers;
+﻿using ComptaClub.Requests;
+
+namespace ComptaClub.Handlers;
 
 public class GetUserByFilterRequestHandler : IRequestHandler<Requests.GetUserByFilterRequest, Datas.UserData?>
 {
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IMediator _mediator;
 
     public GetUserByFilterRequestHandler(
-        IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+        IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+        IMediator mediator)
     {
         _dbContextFactory = dbContextFactory;
+        _mediator = mediator;
     }
 
     public async Task<Datas.UserData?> Handle(Requests.GetUserByFilterRequest request, CancellationToken cancellationToken)
     {
-        var db = await _dbContextFactory.CreateDbContextAsync();
-
-        var data = await db.Users.FirstOrDefaultAsync(request.Filter);
-
-        return data;
+        var page = await _mediator.Send(new GetPagedEntityListRequest<Models.UserListFilter, Datas.UserData>(request.Filter));
+        return page.List.SingleOrDefault();
     }
 }

@@ -5,6 +5,8 @@ CREATE TABLE [Users] (
     [Id] uniqueidentifier NOT NULL,
     [Name] varchar(100) NOT NULL,
     [Email] varchar(200) NOT NULL,
+    [CreationDate] int NOT NULL,
+    [DisableDate] int NULL,
     CONSTRAINT [PK_Users] PRIMARY KEY ([Id])
 );
 End

@@ -31,14 +31,14 @@ public partial class BankList : ComponentBase
 
     async Task LoadDatas()
     {
-        var datas = await Mediator!.Send(new GetAllBanksRequest());
+        var datas = await Mediator.Send(new GetAllBanksRequest());
         var result = Mapper.Map<List<ViewModels.Bank>>(datas);
         bankList = result;
     }
 
     async Task InsertRow()
     {
-        var data = await Mediator!.Send(new Requests.CreateBankRequest());
+        var data = await Mediator.Send(new Requests.CreateBankRequest());
         bankToInsert = Mapper.Map<ViewModels.Bank>(data);
         await grid!.InsertRow(bankToInsert);
     }
@@ -58,8 +58,8 @@ public partial class BankList : ComponentBase
         bankToUpdate = null;
 
         var data = Mapper!.Map<Datas.BankData>(bank);
-        var saveResult = await Mediator!.Send(new Requests.SaveEntityRequest<Datas.BankData>(data));
-        if (saveResult!.HasError)
+        var saveResult = await Mediator.Send(new Requests.SaveEntityRequest<Datas.BankData>(data));
+        if (saveResult.HasError)
         {
             brokenRules = saveResult.ErrorBrokenRuleList;
             return;

@@ -3,10 +3,20 @@
 <PageTitle>Plan</PageTitle>
 
 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Ajouter un compte" Click="@InsertRow" Disabled=@(accountToInsert != null || accountToUpdate != null) />
+<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="file_download" Class="mt-2 mb-4" Text="Exporter" Click="@ExportToJson" />
 
-<RadzenDataGrid @ref="grid" AllowFiltering="true" AllowSorting="true" AllowColumnResize="true" ExpandMode="DataGridExpandMode.Single"
-                    Data="@accountList" TItem="ViewModels.Account" RowRender="@RowRender" LoadChildData="@LoadChildData"
-                GridLines="DataGridGridLines.Both">
+<RadzenDataGrid @ref="grid" 
+    AllowFiltering="false" 
+    AllowSorting="false" 
+    AllowColumnResize="true" 
+    ExpandMode="DataGridExpandMode.Multiple"
+    Data="@accountList" 
+    TItem="ViewModels.Account" 
+    RowRender="@RowRender" 
+    LoadChildData="@LoadChildData"
+    GridLines="DataGridGridLines.Both"
+    ColumnWidth="100px"
+    AllGroupsExpanded="true">
     <Columns>
         <RadzenDataGridColumn TItem="ViewModels.Account" Property="Code" Title="Code Compta" Width="120px" Filterable="false">
             <EditTemplate Context="account">
@@ -33,7 +43,7 @@
                 }
             </EditTemplate>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Account" Context="account" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+        <RadzenDataGridColumn TItem="ViewModels.Account" Context="account" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" >
             <Template Context="account">
                 <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(account))" @onclick:stopPropagation="true" title="Editer ce compte">
                 </RadzenButton>

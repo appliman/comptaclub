@@ -29,6 +29,9 @@ public partial class AccountingPlan : ComponentBase
 	[Inject]
 	DialogService DialogService { get; set; } = default!;
 
+	[Inject]
+	NavigationManager NavigationManager { get; set; }
+
 
     IEnumerable<ViewModels.Account> accountList = new List<ViewModels.Account>();
     RadzenDataGrid<ViewModels.Account>? grid;
@@ -153,5 +156,19 @@ public partial class AccountingPlan : ComponentBase
 		}
     }
 
+	async Task ExportToJson()
+	{
+		var fileName = $"{Guid.NewGuid()}.json";
+		var path = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        var request = new Requests.ExportPlanToJsonFileRequest(System.IO.Path.Combine(path, fileName));
+		var result = await Mediator.Send(request);
+		if (result.HasError)
+		{
+            NotificationService.NotifyError(result);
+			return;
+        }
+
+		NavigationManager.NavigateTo($"/api/client/dlexport/{fileName}", true);
+	}
 
 }

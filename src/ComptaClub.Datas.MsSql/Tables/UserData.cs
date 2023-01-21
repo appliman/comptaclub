@@ -8,4 +8,5 @@ public class UserData : IPrimaryKey
     public string Name { get; set; } = null!;
     public string Email { get; set; } = null!;
     public int CreationDate { get; set; }
+    public int? DisableDate { get; set; }
 }

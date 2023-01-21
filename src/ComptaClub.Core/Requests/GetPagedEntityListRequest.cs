@@ -5,10 +5,10 @@ public record GetPagedEntityListRequest<F, D> : IRequest<Models.PagedList<IEnume
     where F : class, IListFilter, new()
     where D : class, Datas.IPrimaryKey, new()
 {
-    public GetPagedEntityListRequest(Action<F>? filter = null)
+    public GetPagedEntityListRequest(Action<F> filter)
     {
         this.Filter = filter;
     }
 
-    public Action<F>? Filter { get; set; }
+    public Action<F> Filter { get; set; }
 }
