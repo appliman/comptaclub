@@ -51,8 +51,8 @@ public class OneMonthTests
 		var plan = await mediator.GetOrCreatePlan();
         var leafPlan = plan.GetLeafList();
 
-        var licenceAccount = leafPlan.Single(i => i.Code == "658101");
-        var bankFeeAccount = leafPlan.Single(i => i.Code == "627001");
+        var licenceAccount = leafPlan.Single(i => i.Code == "756001");
+        var bankFeeAccount = leafPlan.Single(i => i.Code == "61/62");
 
         var entry = await mediator.Send(new CreateEntryRequest());
         entry.CreationDate = entry.ValueDate = new DateTime(DateTime.Now.Year, 2, 1).ToDayId();
@@ -85,5 +85,26 @@ public class OneMonthTests
         saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
         saveEntryResult.HasError.Should().BeFalse();
 
+        var balance = exercice.BalanceAmount - entry.Amount;
+        exercice = await mediator.Send(new GetExerciceByFilterRequest(i => i.Id == exercice.Id));
+        exercice!.BalanceAmount.Should().Be(balance);
+
+        entry = await mediator.Send(new CreateEntryRequest());
+        entry.CreationDate = entry.ValueDate = new DateTime(DateTime.Now.Year, 2, 3).ToDayId();
+        entry.Label = "REM CHQ 3730053 0536 010 CHQ";
+        entry.PartNumber = "REM CHQ 3730053 0536 010 CHQ";
+        entry.BankId = bank.Id;
+        entry.AccountId = licenceAccount!.Id;
+        entry.ExerciceId = exercice.Id;
+        entry.Amount = Convert.ToInt64(1209 * 1000000);
+        entry.AccountDirection = licenceAccount.Direction;
+        entry.PaymentType = Datas.PaymentType.Check;
+
+        saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
+        saveEntryResult.HasError.Should().BeFalse();
+
+        balance = exercice.BalanceAmount + entry.Amount;
+        exercice = await mediator.Send(new GetExerciceByFilterRequest(i => i.Id == exercice.Id));
+        exercice!.BalanceAmount.Should().Be(balance);
     }
 }

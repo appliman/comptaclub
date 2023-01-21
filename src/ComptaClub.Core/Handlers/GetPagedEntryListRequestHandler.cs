@@ -17,7 +17,7 @@ public class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandlerB
 
         filter.EnsureGoodFilter();
 
-        var db = await DbContextFactory.CreateDbContextAsync();
+        var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
 
         var query = from entry in db.Entries
                     select entry;

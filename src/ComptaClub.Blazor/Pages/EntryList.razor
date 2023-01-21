@@ -13,13 +13,13 @@
     Data="@entryList"
     LoadData="@LoadDatas"
     TItem="ViewModels.Entry"
-    ColumnWidth="300px">
+    ColumnWidth="100px">
     <Columns>
-        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="RowIndex" Title="#" Width="60px" Filterable="false" FormatString="">
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="RowIndex" Title="#" Width="60px" Filterable="false" FormatString="" Frozen="true">
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="CreationDate" Title="Date" Width="100px" Filterable="false" FormatString="{0:dd/MM/yy}">
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="CreationDate" Title="Date" Width="100px" Filterable="false" FormatString="{0:dd/MM/yy}" Frozen="true">
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="PartNumber" Title="N°" Width="180px" Filterable="false">
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="PartNumber" Title="N°" Width="180px" Filterable="false" Frozen="true">
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Property="Label" Title="Libellé" Width="180px" Filterable="false">
         </RadzenDataGridColumn>

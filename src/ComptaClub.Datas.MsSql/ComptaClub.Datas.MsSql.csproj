@@ -26,9 +26,13 @@
     <None Remove="Scripts\ComptaClub\0015-AlterTable-Entries.sql" />
     <None Remove="Scripts\ComptaClub\0016-AlterTable-Entries.sql" />
     <None Remove="Scripts\ComptaClub\0017-AlterTable-Entries.sql" />
+    <None Remove="Scripts\ComptaClub\0018-AlterTable-Entries.sql" />
+    <None Remove="Scripts\ComptaClub\0019-AlterTable-Users.sql" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\ComptaClub\0019-AlterTable-Users.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0018-AlterTable-Entries.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0017-AlterTable-Entries.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0016-AlterTable-Entries.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0015-AlterTable-Entries.sql" />

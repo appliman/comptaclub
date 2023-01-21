@@ -13,7 +13,7 @@ CREATE TABLE [Entries] (
     [BankId] uniqueidentifier NOT NULL,
     [AccountId] uniqueidentifier NOT NULL,
     [ExerciceId] uniqueidentifier NOT NULL,
-    [UserCreatorId] uniqueidentifier NULL,
+    [UserCreatorId] uniqueidentifier NOT NULL,
     [MemberId] uniqueidentifier NULL,
     [PaymentType] int NOT NULL,
     [ExtraInfos] nvarchar(max) NULL,

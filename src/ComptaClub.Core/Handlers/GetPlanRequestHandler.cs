@@ -18,7 +18,7 @@ public class GetPlanRequestHandler : IRequestHandler<GetPlanRequest, List<Datas.
     }
     public async Task<List<AccountData>> Handle(GetPlanRequest request, CancellationToken cancellationToken)
     {
-        var requestFilter = new GetPagedEntityListRequest<Models.AccountListFilter, Datas.AccountData>(f =>
+        var requestFilter = new GetPagedEntityListRequest<Models.AccountListFilter, Datas.AccountData>(f => 
         {
             f.PageSize = int.MaxValue;
         });

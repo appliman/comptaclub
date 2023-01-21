@@ -45,7 +45,7 @@ public class CreateEntryFromOfxImportRequestHandler : IRequestHandler<Requests.C
             entry.AccountDirection = AccountDirection.Debit;
         }
         entry.AccountId = ComptaClubSettings.ImportAccount;
-        entry.Amount = Convert.ToInt64(request.OfxTransactionImport.Amount * 1000000);
+        entry.Amount = Math.Abs(Convert.ToInt64(request.OfxTransactionImport.Amount * 1000000));
         entry.BankId = activeBank!.Id;
         entry.CreationDate = request.OfxTransactionImport.Date.ToDayId();
         entry.ExerciceId = activeExercice!.Id;

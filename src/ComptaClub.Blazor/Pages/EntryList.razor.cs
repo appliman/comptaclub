@@ -3,6 +3,8 @@ using ComptaClub.Configuration;
 using ComptaClub.Handlers;
 using ComptaClub.Requests;
 
+using Microsoft.AspNetCore.Components.Routing;
+
 namespace ComptaClub.Blazor.Pages;
 
 public partial class EntryList : ComponentBase
@@ -62,7 +64,7 @@ public partial class EntryList : ComponentBase
         {
             item.RowIndex = rowIndex--;
             item.Balance = balance;
-            balance = balance + (item.Amount * (int)item.AccountDirection);
+            balance = balance - (item.Amount * (int)item.AccountDirection);
         }
         entryList = list;
     }
@@ -99,5 +101,10 @@ public partial class EntryList : ComponentBase
     void Import()
     {
         NavigationManager.NavigateTo("/importation-ecritures");
+    }
+
+    async Task OnBeforeInternalNavigation(LocationChangingContext ctx)
+    {
+        ctx.PreventNavigation();
     }
 }

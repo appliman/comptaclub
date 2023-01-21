@@ -4,10 +4,13 @@ namespace ComptaClub.Requests;
 
 public record GetUserByFilterRequest : IRequest<Datas.UserData?>
 {
-    public GetUserByFilterRequest(Expression<Func<Datas.UserData, bool>> filter)
+    public GetUserByFilterRequest(Action<Models.UserListFilter> filter)
     {
-        this.Filter = filter;
+        var defaultFilter = new Models.UserListFilter();
+        defaultFilter.Options.DeletedState = DeletedState.Undeleted;
+        filter(defaultFilter);
+        Filter = filter;
     }
 
-    public Expression<Func<Datas.UserData, bool>> Filter { get; init; }
+    public Action<Models.UserListFilter> Filter { get; init; }
 }
