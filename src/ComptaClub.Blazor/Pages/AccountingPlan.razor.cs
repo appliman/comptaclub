@@ -17,7 +17,10 @@ namespace ComptaClub.Blazor.Pages;
 
 public partial class AccountingPlan : ComponentBase
 {
-	[Inject]
+    [CascadingParameter]
+    Shared.MainLayout MainLayout { get; set; } = default!;
+
+    [Inject]
 	MediatR.IMediator Mediator { get; set; } = default!;
 
     [Inject]
@@ -30,23 +33,36 @@ public partial class AccountingPlan : ComponentBase
 	DialogService DialogService { get; set; } = default!;
 
 	[Inject]
-	NavigationManager NavigationManager { get; set; }
+	NavigationManager NavigationManager { get; set; } = default!;
 
 
     IEnumerable<ViewModels.Account> accountList = new List<ViewModels.Account>();
-    RadzenDataGrid<ViewModels.Account>? grid;
+    RadzenDataGrid<ViewModels.Account>? grid = default!;
     ViewModels.Account? accountToUpdate;
     ViewModels.Account? accountToInsert;
     List<Results.BrokenRule> brokenRules = new();
 
     protected override async Task OnInitializedAsync()
 	{
-		await LoadDatas();
+        MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarButton
+        {
+            OnClick = InsertRow,
+            IconName = "add_circle_outline",
+            Text = "Ajouter un compte",
+			Disabled = (accountToInsert != null || accountToUpdate != null)
+		}).AddItem(new ViewModels.Toolbar.ToolbarButton
+        {
+            OnClick = ExportToJson,
+            IconName = "file_download",
+            Text = "Exporter"
+		}).Display();
+
+        await LoadDatas();
     }
 
 	async Task LoadDatas()
 	{
-        var dataPlan = await Mediator!.Send(new GetPlanRequest());
+        var dataPlan = await Mediator.Send(new GetPlanRequest());
         var list = MapPlan(dataPlan);
         accountList = list;
     }
@@ -76,7 +92,7 @@ public partial class AccountingPlan : ComponentBase
 	async Task EditRow(ViewModels.Account account)
 	{
 		accountToUpdate = account;
-		await grid!.EditRow(account);
+		await grid.EditRow(account);
 	}
 
 	async Task SaveRow(ViewModels.Account account)
@@ -88,15 +104,16 @@ public partial class AccountingPlan : ComponentBase
 
 		accountToUpdate = null;
 
-		var data = Mapper!.Map<Datas.AccountData>(account);
-		var saveResult = await Mediator!.Send(new Requests.SaveEntityRequest<Datas.AccountData>(data));
-		if (saveResult!.HasError)
+		var data = Mapper.Map<Datas.AccountData>(account);
+		var saveResult = await Mediator.Send(new Requests.SaveEntityRequest<Datas.AccountData>(data));
+		if (saveResult.HasError)
 		{
 			brokenRules = saveResult.ErrorBrokenRuleList;
 			return;
 		}
 
-		await grid!.UpdateRow(account);
+		await grid.UpdateRow(account);
+		brokenRules.Clear();
 	}
 
 	void CancelEdit(ViewModels.Account account)
@@ -113,23 +130,23 @@ public partial class AccountingPlan : ComponentBase
 
 	async Task InsertRow()
 	{
-		var data = await Mediator!.Send(new Requests.CreateAccountRequest());
-        accountToInsert = Mapper!.Map<ViewModels.Account>(data);
-        await grid!.InsertRow(accountToInsert);
+		var data = await Mediator.Send(new Requests.CreateAccountRequest());
+        accountToInsert = Mapper.Map<ViewModels.Account>(data);
+        await grid.InsertRow(accountToInsert);
 	}
 
 	async Task InsertRow(ViewModels.Account account)
 	{
-		var data = await Mediator!.Send(new Requests.CreateAccountRequest() 
+		await grid.ExpandRow(account);
+		var data = await Mediator.Send(new Requests.CreateAccountRequest() 
 		{ 
-			Direction = (Datas.AccountDirection)account.Direction,
+			Direction = account.Direction,
 			ParentId = account.Id
 		});
-        accountToInsert = Mapper!.Map<ViewModels.Account>(data);
+        accountToInsert = Mapper.Map<ViewModels.Account>(data);
         account.Children.Add(accountToInsert);
-		await grid!.SelectRow(accountToInsert);
-		await grid!.EditRow(accountToInsert);
-		await grid!.ExpandRow(account);
+		await grid.SelectRow(accountToInsert);
+		await grid.EditRow(accountToInsert);
 	}
 
     async Task DeleteRow(ViewModels.Account account)
@@ -147,7 +164,7 @@ public partial class AccountingPlan : ComponentBase
 		else
 		{
             await LoadDatas();
-            await grid!.Reload();
+            await grid.Reload();
 			NotificationService.Notify(new NotificationMessage
 			{
 				Severity = NotificationSeverity.Info,

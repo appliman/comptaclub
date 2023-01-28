@@ -33,7 +33,6 @@ public class ComptaClubDbContext : DbContext
     public DbSet<EntryData> Entries { get; set; }
     public DbSet<ExerciceData> Exercices { get; set; }
     public DbSet<MemberData> Members { get; set; }
-    public DbSet<RoleData> Roles { get; set; }
     public DbSet<RoleByUserData> RolesByUsers { get; set; }
     public DbSet<UserData> Users { get; set; }
 }

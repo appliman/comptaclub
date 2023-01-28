@@ -14,7 +14,7 @@ using MediatR;
 
 namespace ComptaClub.Handlers;
 
-public class CreateEntryFromOfxImportRequestHandler : IRequestHandler<Requests.CreateEntryFromOfxImportRequest, Datas.EntryData>
+internal class CreateEntryFromOfxImportRequestHandler : IRequestHandler<Requests.CreateEntryFromOfxImportRequest, Datas.EntryData>
 {
     private readonly IMediator _mediator;
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;

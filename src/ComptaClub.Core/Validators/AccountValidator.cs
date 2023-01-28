@@ -1,6 +1,6 @@
 ﻿namespace ComptaClub.Validators;
 
-public class AccountValidator : FluentValidation.AbstractValidator<Datas.AccountData>
+internal class AccountValidator : FluentValidation.AbstractValidator<Datas.AccountData>
 {
     public AccountValidator(MediatR.IMediator mediator)
     {

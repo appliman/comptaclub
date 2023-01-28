@@ -11,7 +11,7 @@ using ComptaClub.Results;
 
 namespace ComptaClub.Handlers;
 
-public class ChangeActiveExerciceRequestHandler : IRequestHandler<Requests.ChangeActiveExerciceRequest, CommandResult>
+internal class ChangeActiveExerciceRequestHandler : IRequestHandler<Requests.ChangeActiveExerciceRequest, CommandResult>
 {
 	private readonly IMediator _mediator;
 	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;

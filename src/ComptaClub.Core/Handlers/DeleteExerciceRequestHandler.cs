@@ -9,7 +9,7 @@ using ComptaClub.Results;
 
 namespace ComptaClub.Handlers;
 
-public class DeleteExerciceRequestHandler : IRequestHandler<Requests.DeleteExerciceRequest, CommandResult>
+internal class DeleteExerciceRequestHandler : IRequestHandler<Requests.DeleteExerciceRequest, CommandResult>
 {
 	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
 

@@ -9,7 +9,7 @@ using ComptaClub.Results;
 
 namespace ComptaClub.Handlers;
 
-public class SaveUserRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Datas.UserData>, Results.PersistResult<Guid>>
+internal class SaveUserRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Datas.UserData>, Results.PersistResult<Guid>>
 {
     private readonly IValidator<Datas.UserData> _validator;
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;

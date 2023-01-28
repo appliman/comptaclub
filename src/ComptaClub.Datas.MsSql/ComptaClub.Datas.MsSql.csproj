@@ -15,7 +15,6 @@
     <None Remove="Scripts\ComptaClub\0005-CreateTable-Exercices.sql" />
     <None Remove="Scripts\ComptaClub\0006-CreateTable-Members.sql" />
     <None Remove="Scripts\ComptaClub\0007-CreateTable-RolesByUsers.sql" />
-    <None Remove="Scripts\ComptaClub\0008-CreateTable-Roles.sql" />
     <None Remove="Scripts\ComptaClub\0008-CreateTable-Users.sql" />
     <None Remove="Scripts\ComptaClub\0009-CreateTable-DocumentByEntities.sql" />
     <None Remove="Scripts\ComptaClub\0010-AlterTable-Entries.sql" />
@@ -43,7 +42,6 @@
     <EmbeddedResource Include="Scripts\ComptaClub\0012-AlterTable-Exercice.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0011-AlterTable-Exercice.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0010-AlterTable-Entries.sql" />
-    <EmbeddedResource Include="Scripts\ComptaClub\0008-CreateTable-Roles.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0009-CreateTable-DocumentByEntities.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0008-CreateTable-Users.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0007-CreateTable-RolesByUsers.sql" />

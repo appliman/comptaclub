@@ -10,28 +10,36 @@
 
 <RadzenLayout>
     <RadzenHeader>
-        <div class="col-md-2 d-flex align-items-center header-logo">
-            <RadzenSidebarToggle Click="@(args => { sidebarExpanded = !sidebarExpanded; })">
-            </RadzenSidebarToggle>
-            <RadzenLabel Text="Compta Club"/>
-        </div>
-        <div class="col-md d-flex align-items-center header-toolbar">
-            <Toolbar />
-        </div>
-        <div class="col-md-4 text-right">
-            <div class="d-none d-md-inline-flex align-items-center">
-                @if (loaderVisible)
-                {
-                    <div class="spinner-border mx-2" role="status">
-                        <span class="sr-only">Chargement...</span>
-                    </div>
-                }
-                <span>User</span>
-                <button title="Se déconnecter" class="mx-2 mx-lg-3" @onclick="Logout">Se déconnecter</button>
-            </div>
-        </div>
+        <ChildContent>
+            <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start" Gap="0px">
+                <RadzenColumn Size="2">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+                        <RadzenSidebarToggle Click="@(args => { sidebarExpanded = !sidebarExpanded; })">
+                        </RadzenSidebarToggle>
+                        <RadzenLabel Text="Compta Club" />
+                    </RadzenStack>
+                </RadzenColumn>
+                <RadzenColumn Size="7">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start">
+                        <Toolbar @ref="toolbar" />
+                    </RadzenStack>
+                </RadzenColumn>
+                <RadzenColumn Size="3">
+                    <RadzenStack  Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
+                        @if (loaderVisible)
+                        {
+                            <div class="spinner-border mx-2" role="status">
+                                <span class="sr-only">Chargement...</span>
+                            </div>
+                        }
+                        <UserInfo/>
+                        <ConnectionButton/>
+                    </RadzenStack>
+                </RadzenColumn>
+            </RadzenRow>
+        </ChildContent>
     </RadzenHeader>
-    <RadzenSidebar @bind-Expanded="sidebarExpanded">
+    <RadzenSidebar @bind-Expanded="sidebarExpanded" Visible="@user!.IsAuthenticated">
         <RadzenPanelMenu Match="NavLinkMatch.Prefix">
             <RadzenPanelMenuItem Text="Accueil" Path="/" Icon="assessment" />
             <RadzenPanelMenuItem Text="Ecritures" Path="/ecritures" Icon="settings" />
@@ -43,7 +51,9 @@
     <RadzenBody @ref="body" @bind-Expanded="sidebarExpanded">
         <AuthorizeView>
             <Authorized>
-                @Body   
+                <CascadingValue Value="this">
+                    @Body   
+                </CascadingValue>
             </Authorized>
             <NotAuthorized>
                 <LoginPartial />
@@ -51,15 +61,3 @@
         </AuthorizeView>
     </RadzenBody>
 </RadzenLayout>
-
-@code {
-    bool sidebarExpanded = false;
-    bool loaderVisible = false;
-    RadzenBody? body;
-
-    void Logout()
-    {
-        NavigationManager.NavigateTo("/?logout=true", true);
-    }
-}
-}

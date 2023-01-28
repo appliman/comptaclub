@@ -77,15 +77,35 @@ namespace ComptaClub.Extensions
 
 		public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> query, string memberName)
 		{
-			return InternalOrderBy(query, memberName, "OrderBy");
-		}
+            var split = memberName.Split(' ');
+			if (split.Length == 1)
+			{
+				return InternalOrderBy(query, memberName, "OrderBy");
+			}
+			else
+			{
+				if (split[1].Equals("desc", StringComparison.InvariantCultureIgnoreCase))
+				{
+                    return InternalOrderBy(query, split[0], "OrderByDescending");
+                }
+                else
+				{
+                    return InternalOrderBy(query, split[0], "OrderBy");
+                }
+            }
+        }
 
 		public static IOrderedQueryable<T> ThenOrderBy<T>(this IQueryable<T> query, string memberName)
 		{
 			return InternalOrderBy(query, memberName, "ThenBy");
 		}
 
-		public static IOrderedQueryable<T> OrderByDescending<T>(this IQueryable<T> query, string memberName)
+        public static IOrderedQueryable<T> OrderByAscending<T>(this IQueryable<T> query, string memberName)
+        {
+            return InternalOrderBy(query, memberName, "OrderBy");
+        }
+
+        public static IOrderedQueryable<T> OrderByDescending<T>(this IQueryable<T> query, string memberName)
 		{
 			return InternalOrderBy(query, memberName, "OrderByDescending");
 		}

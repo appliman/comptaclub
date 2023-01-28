@@ -2,7 +2,7 @@
 
 namespace ComptaClub.Handlers;
 
-public abstract class GetEntityPagedListRequestHandlerBase<F,D> : IRequestHandler<Requests.GetPagedEntityListRequest<F,D>, Models.PagedList<IEnumerable<D>>>
+internal abstract class GetEntityPagedListRequestHandlerBase<F,D> : IRequestHandler<Requests.GetPagedEntityListRequest<F,D>, Models.PagedList<IEnumerable<D>>>
     where F : class, IListFilter, new()
     where D : class, Datas.IPrimaryKey, new()
 {

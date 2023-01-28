@@ -8,7 +8,7 @@ using ComptaClub.Requests;
 
 namespace ComptaClub.Handlers;
 
-public class GetActiveExerciceRequestHandler : IRequestHandler<Requests.GetActiveExerciceRequest, Datas.ExerciceData?>
+internal class GetActiveExerciceRequestHandler : IRequestHandler<Requests.GetActiveExerciceRequest, Datas.ExerciceData?>
 {
 	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
 

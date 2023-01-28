@@ -2,7 +2,7 @@
 
 namespace ComptaClub.Handlers;
 
-public class GetCurrentBalanceRequestHandler : IRequestHandler<Requests.GetCurrentBalanceRequest, long>
+internal class GetCurrentBalanceRequestHandler : IRequestHandler<Requests.GetCurrentBalanceRequest, long>
 {
      private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
      private readonly IMediator _mediator;

@@ -8,7 +8,7 @@ using ComptaClub.Requests;
 
 namespace ComptaClub.Handlers;
 
-public class GetPagedUserListRequestHandler : GetEntityPagedListRequestHandlerBase<Models.UserListFilter, Datas.UserData>
+internal class GetPagedUserListRequestHandler : GetEntityPagedListRequestHandlerBase<Models.UserListFilter, Datas.UserData>
 {
     public GetPagedUserListRequestHandler(IDbContextFactory<Datas.ComptaClubDbContext> dbContextFactory)
     : base(dbContextFactory)

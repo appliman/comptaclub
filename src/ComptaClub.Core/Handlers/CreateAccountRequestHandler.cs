@@ -9,20 +9,19 @@ using ComptaClub.Models;
 
 using MediatR;
 
-namespace ComptaClub.Handlers
+namespace ComptaClub.Handlers;
+
+internal class CreateAccountRequestHandler : IRequestHandler<Requests.CreateAccountRequest, Datas.AccountData>
 {
-    public class CreateAccountRequestHandler : IRequestHandler<Requests.CreateAccountRequest, Datas.AccountData>
+    public Task<Datas.AccountData> Handle(CreateAccountRequest request, CancellationToken cancellationToken)
     {
-        public Task<Datas.AccountData> Handle(CreateAccountRequest request, CancellationToken cancellationToken)
-        {
-            var result = new Datas.AccountData();
-            result.Id = Guid.NewGuid();
-            result.Code = request.Code;
-            result.Label = request.Label;
-            result.Direction = request.Direction;
-            result.CreationDate = DateTime.Today.ToDayId();
-            result.ParentAccountId = request.ParentId;
-            return Task.FromResult(result);
-        }
+        var result = new Datas.AccountData();
+        result.Id = Guid.NewGuid();
+        result.Code = request.Code;
+        result.Label = request.Label;
+        result.Direction = request.Direction;
+        result.CreationDate = DateTime.Today.ToDayId();
+        result.ParentAccountId = request.ParentId;
+        return Task.FromResult(result);
     }
 }

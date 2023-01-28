@@ -2,7 +2,7 @@
 
 namespace ComptaClub.Handlers;
 
-public class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandlerBase<Models.EntryListFilter, Datas.EntryData>
+internal class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandlerBase<Models.EntryListFilter, Datas.EntryData>
 {
     public GetPagedEntryListRequestHandler(IDbContextFactory<Datas.ComptaClubDbContext> dbContextFactory)
         : base(dbContextFactory)

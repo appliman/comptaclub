@@ -2,7 +2,7 @@
 
 namespace ComptaClub.Handlers;
 
-public class GetPagedAccountListRequestHandler : GetEntityPagedListRequestHandlerBase<Models.AccountListFilter, Datas.AccountData>
+internal class GetPagedAccountListRequestHandler : GetEntityPagedListRequestHandlerBase<Models.AccountListFilter, Datas.AccountData>
 {
     public GetPagedAccountListRequestHandler(IDbContextFactory<Datas.ComptaClubDbContext> dbContextFactory)
         : base(dbContextFactory)

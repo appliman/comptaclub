@@ -25,7 +25,7 @@ public static class NotificationServiceExtensions
                 detail.AppendLine($"{rule.PropertyName} {error.ToString()}");
             }
         }
-
+        notificationMessage.Detail = detail.ToString();
         notificationService.Notify(notificationMessage);
     }
 

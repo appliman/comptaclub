@@ -46,8 +46,9 @@ public static class HttpExtensions
 		var claims = new List<Claim>();
 		claims.Add(new Claim(ClaimTypes.Email, loginForm!.User!.Email));
 		claims.Add(new Claim(ClaimTypes.NameIdentifier, $"{loginForm!.User.Id}"));
+        claims.Add(new Claim(ClaimTypes.Name, $"{loginForm!.User.Name}"));
 
-		var claimsIdentity = new ClaimsIdentity(
+        var claimsIdentity = new ClaimsIdentity(
 			claims, CookieAuthenticationDefaults.AuthenticationScheme);
 		var userPrincipal = new ClaimsPrincipal(claimsIdentity);
 

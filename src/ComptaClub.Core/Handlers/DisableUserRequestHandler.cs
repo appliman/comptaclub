@@ -9,7 +9,7 @@ using ComptaClub.Results;
 
 namespace ComptaClub.Handlers;
 
-public class DisableUserRequestHandler : IRequestHandler<Requests.DisableUserRequest, Results.CommandResult>
+internal class DisableUserRequestHandler : IRequestHandler<Requests.DisableUserRequest, Results.CommandResult>
 {
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
     private readonly IMediator _mediator;

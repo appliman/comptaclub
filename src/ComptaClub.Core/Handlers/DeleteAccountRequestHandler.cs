@@ -9,7 +9,7 @@ using ComptaClub.Results;
 
 namespace ComptaClub.Handlers;
 
-public class DeleteAccountRequestHandler : IRequestHandler<DeleteAccountRequest, CommandResult>
+internal class DeleteAccountRequestHandler : IRequestHandler<DeleteAccountRequest, CommandResult>
 {
     private readonly IMediator _mediator;
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
