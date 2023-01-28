@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 
 namespace ComptaClub.Handlers;
 
-public class ExportPlanToJsonRequestHandler : IRequestHandler<Requests.ExportPlanToJsonFileRequest, CommandResult>
+internal class ExportPlanToJsonRequestHandler : IRequestHandler<Requests.ExportPlanToJsonFileRequest, CommandResult>
 {
     private readonly IMediator _mediator;
 

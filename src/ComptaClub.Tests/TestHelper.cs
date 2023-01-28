@@ -113,7 +113,6 @@ namespace ComptaClub.Tests
             await db.Exercices.ExecuteDeleteAsync();
             await db.Members.ExecuteDeleteAsync();
             await db.RolesByUsers.ExecuteDeleteAsync();
-            await db.Roles.ExecuteDeleteAsync();
             await db.Users.ExecuteDeleteAsync();
             await db.Database.CommitTransactionAsync();
         }

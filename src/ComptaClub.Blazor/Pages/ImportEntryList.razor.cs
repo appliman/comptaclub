@@ -14,6 +14,9 @@ namespace ComptaClub.Blazor.Pages;
 
 public partial class ImportEntryList : ComponentBase
 {
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
     [Inject]
     IMediator Mediator { get; set; } = default!;
 
@@ -24,13 +27,14 @@ public partial class ImportEntryList : ComponentBase
     NotificationService NotificationService { get; set; } = default!;
 
     IEnumerable<ViewModels.Entry> entryList = new List<ViewModels.Entry>();
-    RadzenDataGrid<ViewModels.Entry>? grid;
-    List<ViewModels.Account> creditAccountOptionList = new();
-    List<ViewModels.Account> debitAccountOptionList = new();
+    RadzenDataGrid<ViewModels.Entry> grid = default!;
+    List<Datas.AccountData> accountList = new();
+    List<ViewModels.Account>? creditAccountOptionList;
+    List<ViewModels.Account>? debitAccountOptionList;
 
     protected override async Task OnInitializedAsync()
     {
-        var accountList = await Mediator.Send(new Requests.GetPlanRequest());
+        accountList = await Mediator.Send(new Requests.GetPlanRequest());
         accountList = accountList.GetLeafList().ToList();
         accountList.Insert(0,new Datas.AccountData()
         {
@@ -39,15 +43,6 @@ public partial class ImportEntryList : ComponentBase
             Label = "Import",
             Direction = Datas.AccountDirection.Import
         });
-
-        creditAccountOptionList = Mapper.Map<List<ViewModels.Account>>(accountList.Where(i => i.Direction == Datas.AccountDirection.Credit 
-                                    || i.Direction == Datas.AccountDirection.Import)
-                                    .ToList());
-
-        debitAccountOptionList = Mapper.Map<List<ViewModels.Account>>(accountList.Where(i => i.Direction == Datas.AccountDirection.Debit 
-                                    || i.Direction == Datas.AccountDirection.Import)
-                                    .ToList());
-
     }
 
     async Task LoadFile(InputFileChangeEventArgs args)
@@ -65,6 +60,8 @@ public partial class ImportEntryList : ComponentBase
 
     async Task SaveRow(ViewModels.Entry entry)
     {
+        var currentUser = (await AuthenticationState).User.GetUserInfos();
+        entry.UserCreatorId = currentUser!.Id;
         var data = Mapper.Map<Datas.EntryData>(entry);
         var saveResult = await Mediator!.Send(new Requests.SaveEntityRequest<Datas.EntryData>(data));
         if (saveResult!.HasError)
@@ -73,5 +70,35 @@ public partial class ImportEntryList : ComponentBase
             return;
         }
         NotificationService.Notify(NotificationSeverity.Success, "Sauvegarde", "Cette écriture est bien importée");
+    }
+
+    void LoadDebitAccountList(LoadDataArgs args)
+    {
+        debitAccountOptionList = Mapper.Map<List<ViewModels.Account>>(accountList.Where(i => i.Direction == Datas.AccountDirection.Debit
+                            || i.Direction == Datas.AccountDirection.Import)
+                            .ToList());
+
+        if (!string.IsNullOrWhiteSpace(args.Filter))
+        {
+            debitAccountOptionList = (from account in debitAccountOptionList
+                                      where account.CodeAndLabel.IndexOf(args.Filter, StringComparison.InvariantCultureIgnoreCase) != -1
+                                       select account).ToList();
+        }
+        InvokeAsync(StateHasChanged);
+    }
+
+    void LoadCreditAccountList(LoadDataArgs args)
+    {
+        creditAccountOptionList = Mapper.Map<List<ViewModels.Account>>(accountList.Where(i => i.Direction == Datas.AccountDirection.Credit
+                                    || i.Direction == Datas.AccountDirection.Import)
+                                    .ToList());
+
+        if (!string.IsNullOrWhiteSpace(args.Filter))
+        {
+            creditAccountOptionList = (from account in creditAccountOptionList
+                                       where account.CodeAndLabel.IndexOf(args.Filter, StringComparison.InvariantCultureIgnoreCase) != -1
+                                      select account).ToList();
+        }
+        InvokeAsync(StateHasChanged);
     }
 }

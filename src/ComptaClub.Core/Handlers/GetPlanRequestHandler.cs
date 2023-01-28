@@ -8,7 +8,7 @@ using ComptaClub.Requests;
 
 namespace ComptaClub.Handlers;
 
-public class GetPlanRequestHandler : IRequestHandler<GetPlanRequest, List<Datas.AccountData>>
+internal class GetPlanRequestHandler : IRequestHandler<GetPlanRequest, List<Datas.AccountData>>
 {
     private readonly IMediator _mediator;
 

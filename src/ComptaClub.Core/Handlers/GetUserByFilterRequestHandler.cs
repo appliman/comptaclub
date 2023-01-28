@@ -2,7 +2,7 @@
 
 namespace ComptaClub.Handlers;
 
-public class GetUserByFilterRequestHandler : IRequestHandler<Requests.GetUserByFilterRequest, Datas.UserData?>
+internal class GetUserByFilterRequestHandler : IRequestHandler<Requests.GetUserByFilterRequest, Datas.UserData?>
 {
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
     private readonly IMediator _mediator;

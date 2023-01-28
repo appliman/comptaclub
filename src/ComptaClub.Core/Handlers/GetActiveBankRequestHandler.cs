@@ -8,7 +8,7 @@ using ComptaClub.Requests;
 
 namespace ComptaClub.Handlers;
 
-public class GetActiveBankRequestHandler : IRequestHandler<Requests.GetActiveBankRequest, Datas.BankData?>
+internal class GetActiveBankRequestHandler : IRequestHandler<Requests.GetActiveBankRequest, Datas.BankData?>
 {
 	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
 

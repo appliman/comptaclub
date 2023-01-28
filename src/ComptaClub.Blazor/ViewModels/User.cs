@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ComptaClub.Models
+namespace ComptaClub.Blazor.ViewModels
 {
     public  class User
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
         public string Email { get; set; } = null!;
+        public bool IsAuthenticated { get; set; } = false;
     }
 }

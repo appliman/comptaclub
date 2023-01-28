@@ -2,7 +2,7 @@
 
 namespace ComptaClub.Handlers;
 
-public class GetAllBanksRequestHander : IRequestHandler<GetAllBanksRequest, List<Datas.BankData>>
+internal class GetAllBanksRequestHander : IRequestHandler<GetAllBanksRequest, List<Datas.BankData>>
 {
     private readonly IMediator _mediator;
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;

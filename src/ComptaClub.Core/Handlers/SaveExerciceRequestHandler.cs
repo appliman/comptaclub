@@ -2,7 +2,7 @@
 
 namespace ComptaClub.Handlers;
 
-public class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Datas.ExerciceData>, Results.PersistResult<Guid>>
+internal class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Datas.ExerciceData>, Results.PersistResult<Guid>>
 {
     private readonly IValidator<Datas.ExerciceData> _validator;
 	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;

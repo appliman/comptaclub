@@ -2,15 +2,12 @@
 
 <PageTitle>Plan</PageTitle>
 
-<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Ajouter un compte" Click="@InsertRow" Disabled=@(accountToInsert != null || accountToUpdate != null) />
-<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="file_download" Class="mt-2 mb-4" Text="Exporter" Click="@ExportToJson" />
-
 <RadzenDataGrid @ref="grid" 
     AllowFiltering="false" 
     AllowSorting="false" 
     AllowColumnResize="true" 
     ExpandMode="DataGridExpandMode.Multiple"
-    Data="@accountList" 
+    Data="@accountList"
     TItem="ViewModels.Account" 
     RowRender="@RowRender" 
     LoadChildData="@LoadChildData"

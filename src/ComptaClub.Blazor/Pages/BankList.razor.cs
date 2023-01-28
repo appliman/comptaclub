@@ -1,11 +1,15 @@
 using ComptaClub.Blazor.Extensions;
+using ComptaClub.Blazor.Pages.Shared;
 using ComptaClub.Requests;
 
 namespace ComptaClub.Blazor.Pages;
 
 public partial class BankList : ComponentBase
 {
-    [Inject]
+	[CascadingParameter]
+	Shared.MainLayout MainLayout { get; set; } = default!;
+
+	[Inject]
     MediatR.IMediator Mediator { get; set; } = default!;
 
     [Inject]
@@ -26,7 +30,15 @@ public partial class BankList : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadDatas();
+		MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarButton
+		{
+			OnClick = InsertRow,
+			IconName = "add_circle_outline",
+			Text = "Ajouter une banque",
+			Disabled = (bankToUpdate != null || bankToInsert != null)
+		}).Display();
+
+		await LoadDatas();
     }
 
     async Task LoadDatas()

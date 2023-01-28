@@ -2,7 +2,7 @@
 
 namespace ComptaClub.Handlers;
 
-public class GetBankByCodeRequestHandler : IRequestHandler<Requests.GetBankByFilterRequest, Datas.BankData?>
+internal class GetBankByCodeRequestHandler : IRequestHandler<Requests.GetBankByFilterRequest, Datas.BankData?>
 {
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
 

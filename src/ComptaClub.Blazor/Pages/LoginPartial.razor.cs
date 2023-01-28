@@ -35,7 +35,7 @@ public partial class LoginPartial : ComponentBase
 	IFluentEmail FluentEmail { get; set; } = default!;
 
 	LoginForm loginForm = new();
-	Components.CustomValidator customValidator = new();
+	Components.CustomValidator? customValidator = new();
 	string submitMessage = "Envoyer le code d'accès";
 
 	public async Task Validate()
@@ -110,7 +110,7 @@ public partial class LoginPartial : ComponentBase
 
 		if (errors.Any())
 		{
-			customValidator.DisplayErrors(errors);
+			customValidator!.DisplayErrors(errors);
 			return;
 		}
 
@@ -138,11 +138,14 @@ public partial class LoginPartial : ComponentBase
 		var emailTemplatesFolder = Path.GetDirectoryName(typeof(Program).Assembly.Location)!;
 		emailTemplatesFolder = Path.Combine(emailTemplatesFolder, @$"Pages\EmailTemplates\digicode.cshtml");
 
+
 		var email = FluentEmail.SetFrom("compta@compta.com", "Compta");
 		email.To(loginForm.Email);
 		email.Subject("Votre code d'accès");
 		email.UsingTemplateFromFile(emailTemplatesFolder, loginForm);
 		email.Tag("workaround");
+
+		var html = email.Data.Body;
 
 		var errorMessage = string.Empty;
 		try

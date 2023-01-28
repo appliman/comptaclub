@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ComptaClub.Validators;
 
-public class UserValidator : FluentValidation.AbstractValidator<Datas.UserData>
+internal class UserValidator : FluentValidation.AbstractValidator<Datas.UserData>
 {
 	public UserValidator(MediatR.IMediator mediator)
 	{

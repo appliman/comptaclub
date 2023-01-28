@@ -1,6 +1,6 @@
 ﻿namespace ComptaClub.Handlers;
 
-public class CreateUserRequestHandler : IRequestHandler<Requests.CreateUserRequest, Datas.UserData>
+internal class CreateUserRequestHandler : IRequestHandler<Requests.CreateUserRequest, Datas.UserData>
 {
     public Task<Datas.UserData> Handle(Requests.CreateUserRequest request, CancellationToken cancellationToken)
     {

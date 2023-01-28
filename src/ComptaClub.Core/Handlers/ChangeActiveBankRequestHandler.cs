@@ -11,7 +11,7 @@ using ComptaClub.Results;
 
 namespace ComptaClub.Handlers;
 
-public class ChangeActiveBankRequestHandler : IRequestHandler<Requests.ChangeActiveBankRequest, CommandResult>
+internal class ChangeActiveBankRequestHandler : IRequestHandler<Requests.ChangeActiveBankRequest, CommandResult>
 {
 	private readonly IMediator _mediator;
 	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;

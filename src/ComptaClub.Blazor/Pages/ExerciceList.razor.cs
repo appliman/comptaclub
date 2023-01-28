@@ -8,7 +8,10 @@ namespace ComptaClub.Blazor.Pages;
 
 public partial class ExerciceList : ComponentBase
 {
-    [Inject]
+	[CascadingParameter]
+	Shared.MainLayout MainLayout { get; set; } = default!;
+
+	[Inject]
     MediatR.IMediator Mediator { get; set; } = default!;
 
     [Inject]
@@ -27,14 +30,16 @@ public partial class ExerciceList : ComponentBase
 
     async Task LoadDatas()
     {
-        var datas = await Mediator!.Send(new GetAllExercicesRequest());
+		MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarLink
+		{
+			IconName = "add_circle_outline",
+			Text = "Ajouter un exercice",
+            Url = "/exercice/ajout"
+		}).Display();
+
+		var datas = await Mediator!.Send(new GetAllExercicesRequest());
         exerciceList = Mapper.Map<List<ViewModels.Exercice>>(datas);
         StateHasChanged();
-    }
-
-    void InsertRow()
-    {
-        NavigationManager.NavigateTo("/exercice/ajout");
     }
 
     void EditRow(ViewModels.Exercice exercice)

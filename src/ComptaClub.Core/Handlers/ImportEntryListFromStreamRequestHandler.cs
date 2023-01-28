@@ -8,7 +8,7 @@ using ComptaClub.Requests;
 
 namespace ComptaClub.Handlers;
 
-public class ImportEntryListFromStreamRequestHandler : IRequestHandler<Requests.ImportEntryListFromStreamRequest, IEnumerable<Datas.EntryData>>
+internal class ImportEntryListFromStreamRequestHandler : IRequestHandler<Requests.ImportEntryListFromStreamRequest, IEnumerable<Datas.EntryData>>
 {
     private readonly IMediator _mediator;
 

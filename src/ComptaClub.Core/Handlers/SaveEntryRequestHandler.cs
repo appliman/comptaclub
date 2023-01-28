@@ -1,6 +1,6 @@
 ﻿namespace ComptaClub.Handlers;
 
-public class SaveEntryRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Datas.EntryData>, Results.PersistResult<Guid>>
+internal class SaveEntryRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Datas.EntryData>, Results.PersistResult<Guid>>
 {
     private readonly IValidator<Datas.EntryData> _validator;
     private readonly IMediator _mediator;

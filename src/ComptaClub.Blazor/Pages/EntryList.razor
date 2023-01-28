@@ -2,91 +2,62 @@
 
 <PageTitle>Ecritures</PageTitle>
 
-<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Ajouter une dépense" Click="@(() => InsertRow("charge"))" />
-<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Ajouter une rentrée" Click="@(() => InsertRow("produit"))" />
-<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Import" Click="Import" />
-
 <RadzenDataGrid @ref="grid" 
     AllowFiltering="true" 
     AllowSorting="true" 
-    AllowColumnResize="true"
+    AllowColumnResize="false"
     Data="@entryList"
     LoadData="@LoadDatas"
     TItem="ViewModels.Entry"
-    ColumnWidth="100px">
+    ColumnWidth="90px"
+    GridLines="DataGridGridLines.Both" 
+    FilterMode="FilterMode.Simple">
     <Columns>
-        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="RowIndex" Title="#" Width="60px" Filterable="false" FormatString="" Frozen="true">
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="RowIndex" Title="#" Width="60px" Filterable="false" FormatString="" Frozen="true" SortOrder="SortOrder.Ascending">
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="CreationDate" Title="Date" Width="100px" Filterable="false" FormatString="{0:dd/MM/yy}" Frozen="true">
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="CreationDate" Title="Date" Width="100px" Filterable="true" FormatString="{0:dd/MM/yy}" Frozen="true">
+
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="PartNumber" Title="N°" Width="180px" Filterable="false" Frozen="true">
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="PartNumber" Title="N°" Width="200px" Filterable="true" Frozen="true">
+            <Template Context="data">
+                <div class="w-100">
+                    @data.PartNumber<br/>
+                    @data.Label
+                </div>
+            </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="Label" Title="Libellé" Width="180px" Filterable="false">
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="AccountId" Title="Compte" Width="250px" Filterable="true">
+            <Template Context="data">
+                <div class="w-100">@leafAccountList.Single(i => data.AccountId == i.Id).CodeAndLabel</div>
+            </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Banque">
-            <Columns>
-                <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Débit" Width="90px" Filterable="false">
-                    <Template Context="entry">
-                        @if (entry.AccountDirection == Datas.AccountDirection.Debit)
-                        {
-                            <PriceLabel Value="@entry.Amount" />
-                        }
-                    </Template>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Crédit" Width="90px" Filterable="false">
-                    <Template Context="entry">
-                        @if (entry.AccountDirection == Datas.AccountDirection.Credit)
-                        {
-                            <PriceLabel Value="@entry.Amount" />
-                        }
-                    </Template>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Solde" Width="90px" Filterable="false">
-                    <Template Context="entry">
-                        <PriceLabel Value="@entry.Balance" />
-                    </Template>
-                </RadzenDataGridColumn>
-            </Columns>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Règlement" Filterable="true" Width="120px">
+            <Template Context="entry">
+                @entry.PaymentType
+            </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Crédit">
-            <Columns>
-                @foreach (var item in creditAccountOptionList)
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Débit" Filterable="true">
+            <Template Context="entry">
+                @if (entry.AccountDirection == Datas.AccountDirection.Debit)
                 {
-                    <RadzenDataGridColumn TItem="ViewModels.Entry" Width="90px" Filterable="false">
-                        <HeaderTemplate>
-                            @item.Code<br />
-                            @item.Label
-                        </HeaderTemplate>
-                        <Template Context="entry">
-                            @if (item.Id == entry.AccountId)
-                            {
-                                <PriceLabel Value="@entry.Amount" />
-                            }
-                        </Template>
-                    </RadzenDataGridColumn>
+                    <PriceLabel Value="@entry.Amount" />
                 }
-            </Columns>
+            </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Debit">
-            <Columns>
-                @foreach (var item in debitAccountOptionList)
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Crédit" Filterable="true">
+            <Template Context="entry">
+                @if (entry.AccountDirection == Datas.AccountDirection.Credit)
                 {
-                    <RadzenDataGridColumn TItem="ViewModels.Entry" Width="90px" Filterable="false">
-                        <HeaderTemplate>
-                            @item.Code<br/>
-                            @item.Label
-                        </HeaderTemplate>
-                        <Template Context="entry">
-                            @if (item.Id == entry.AccountId)
-                            {
-                                <PriceLabel Value="@entry.Amount" />
-                            }
-                        </Template>
-                    </RadzenDataGridColumn>
+                    <PriceLabel Value="@entry.Amount" />
                 }
-            </Columns>
+            </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Entry" Context="entry" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Solde" Filterable="false">
+            <Template Context="entry">
+                <PriceLabel Value="@entry.Balance" />
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Context="entry" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="100px">
             <Template Context="entry">
                 <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(entry))" @onclick:stopPropagation="true" title="Editer cette ecriture">
                 </RadzenButton>

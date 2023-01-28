@@ -1,7 +1,7 @@
 ﻿
 namespace ComptaClub.Handlers;
 
-public class CreateBankRequestHandler : IRequestHandler<Requests.CreateBankRequest, Datas.BankData>
+internal class CreateBankRequestHandler : IRequestHandler<Requests.CreateBankRequest, Datas.BankData>
 {
     public Task<Datas.BankData> Handle(Requests.CreateBankRequest request, CancellationToken cancellationToken)
     {

@@ -1,6 +1,6 @@
 ﻿namespace ComptaClub.Handlers;
 
-public class GetAccountByFilterRequestHandler : IRequestHandler<Requests.GetAccountByFilterRequest, Datas.AccountData?>
+internal class GetAccountByFilterRequestHandler : IRequestHandler<Requests.GetAccountByFilterRequest, Datas.AccountData?>
 {
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
 

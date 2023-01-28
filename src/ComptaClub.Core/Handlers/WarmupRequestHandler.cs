@@ -10,7 +10,7 @@ using ComptaClub.Results;
 
 namespace ComptaClub.Handlers;
 
-public class WarmupRequestHandler : IRequestHandler<Requests.WarmupRequest, Results.CommandResult>
+internal class WarmupRequestHandler : IRequestHandler<Requests.WarmupRequest, Results.CommandResult>
 {
 	private readonly IMediator _mediator;
 	private readonly ComptaClubSettings _settings;

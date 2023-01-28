@@ -3,12 +3,17 @@ using ComptaClub.Configuration;
 using ComptaClub.Handlers;
 using ComptaClub.Requests;
 
+using System.Linq.Dynamic.Core;
+
 using Microsoft.AspNetCore.Components.Routing;
 
 namespace ComptaClub.Blazor.Pages;
 
 public partial class EntryList : ComponentBase
 {
+    [CascadingParameter]
+    Shared.MainLayout MainLayout { get; set; } = default!;
+
     [Inject]
     MediatR.IMediator Mediator { get; set; } = default!;
 
@@ -26,26 +31,36 @@ public partial class EntryList : ComponentBase
 
     IEnumerable<ViewModels.Entry>? entryList;
     RadzenDataGrid<ViewModels.Entry>? grid;
-    List<ViewModels.Account> creditAccountOptionList = new();
-    List<ViewModels.Account> debitAccountOptionList = new();
+    List<ViewModels.Account> leafAccountList = new();
     ViewModels.Exercice activeExercice = new();
+    decimal currentBalance = 0;
 
 
     protected override async Task OnInitializedAsync()
     {
         var exercice = await Mediator.Send(new GetActiveExerciceRequest());
         activeExercice = Mapper.Map<ViewModels.Exercice>(exercice);
+        currentBalance = activeExercice.BalanceAmount;
 
         var accountList = await Mediator.Send(new Requests.GetPlanRequest());
-        accountList = accountList.GetLeafList().ToList();
-        creditAccountOptionList = Mapper.Map<List<ViewModels.Account>>(accountList.Where(i => i.Direction == Datas.AccountDirection.Credit
-                                    || i.Direction == Datas.AccountDirection.Import)
-                                    .ToList());
+        leafAccountList = Mapper.Map<List<ViewModels.Account>>(accountList.GetLeafList().ToList());
 
-        debitAccountOptionList = Mapper.Map<List<ViewModels.Account>>(accountList.Where(i => i.Direction == Datas.AccountDirection.Debit
-                                    || i.Direction == Datas.AccountDirection.Import)
-                                    .ToList());
-
+        MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarButton
+        {
+            OnClick = () => InsertRow("charge"),
+            IconName = "remove_circle_outline",
+            Text = "Ajouter une dépense"
+        }).AddItem(new ViewModels.Toolbar.ToolbarButton
+        {
+            OnClick = () => InsertRow("charge"),
+            IconName = "add_circle_outline",
+            Text = "Ajouter une rentrée"
+        }).AddItem(new ViewModels.Toolbar.ToolbarLink
+        {
+            Url = "/importation-ecritures",
+            IconName = "cloud_upload",
+            Text = "Import"
+        }).Display();
     }
 
     async Task LoadDatas(LoadDataArgs args)
@@ -59,24 +74,33 @@ public partial class EntryList : ComponentBase
 		var dataPage = await Mediator!.Send(request);
         var list = Mapper.Map<IEnumerable<ViewModels.Entry>>(dataPage.List);
         int rowIndex = dataPage.List.Count();
-        var balance = activeExercice.BalanceAmount;
+        var balance = currentBalance;
         foreach (var item in list.OrderByDescending(i => i.CreationDate))
         {
             item.RowIndex = rowIndex--;
             item.Balance = balance;
             balance = balance - (item.Amount * (int)item.AccountDirection);
         }
-        entryList = list;
+        if (!string.IsNullOrEmpty(args.OrderBy))
+        {
+            entryList = list.AsQueryable().OrderBy(args.OrderBy);
+        }
+        else
+        {
+            entryList = list;
+        }
     }
 
-    void InsertRow(string direction)
+    Task InsertRow(string direction)
     {
         NavigationManager.NavigateTo($"/ecriture/ajout/{direction}");
+        return Task.CompletedTask;
     }
 
-    void EditRow(ViewModels.Entry entry)
+    Task EditRow(ViewModels.Entry entry)
     {
         NavigationManager.NavigateTo($"/ecriture/edition/{entry.Id}");
+        return Task.CompletedTask;
     }
 
     async Task DeleteRow(ViewModels.Entry entry)
@@ -98,13 +122,4 @@ public partial class EntryList : ComponentBase
         await grid!.Reload();
     }
 
-    void Import()
-    {
-        NavigationManager.NavigateTo("/importation-ecritures");
-    }
-
-    async Task OnBeforeInternalNavigation(LocationChangingContext ctx)
-    {
-        ctx.PreventNavigation();
-    }
 }
