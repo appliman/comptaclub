@@ -63,7 +63,7 @@ public class FirstEntryTests
 			saveResult.HasError.Should().BeFalse();
 		}
 
-		var account = await mediator.Send(new GetAccountByFilterRequest(i => i.Code == "605001"));
+		var account = await mediator.Send(new GetAccountByFilterRequest(i => i.Code = "605001"));
 		account.Should().NotBeNull();
 
 		var entry = await mediator.Send(new CreateEntryRequest());

@@ -16,7 +16,7 @@
                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
                         <RadzenSidebarToggle Click="@(args => { sidebarExpanded = !sidebarExpanded; })">
                         </RadzenSidebarToggle>
-                        <RadzenLabel Text="Compta Club" />
+                        <RadzenLabel Text="Compta Club" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" />
                     </RadzenStack>
                 </RadzenColumn>
                 <RadzenColumn Size="7">
@@ -42,11 +42,15 @@
     <RadzenSidebar @bind-Expanded="sidebarExpanded" Visible="@user!.IsAuthenticated">
         <RadzenPanelMenu Match="NavLinkMatch.Prefix">
             <RadzenPanelMenuItem Text="Accueil" Path="/" Icon="assessment" />
-            <RadzenPanelMenuItem Text="Ecritures" Path="/ecritures" Icon="settings" />
+            <RadzenPanelMenuItem Text="Ecritures" Path="/ecritures" Icon="receipt" />
             <RadzenPanelMenuItem Text="Plan comptable" Path="/plan" Icon="dynamic_feed" />
-            <RadzenPanelMenuItem Text="Exercices" Path="/exercices" Icon="settings" />
-            <RadzenPanelMenuItem Text="Banques" Path="/banques" Icon="settings" />
+            <RadzenPanelMenuItem Text="Exercices" Path="/exercices" Icon="cases" />
+            <RadzenPanelMenuItem Text="Banques" Path="/banques" Icon="account_balance" />
+            <RadzenPanelMenuItem Text="Membres" Path="/membres" Icon="group" />
         </RadzenPanelMenu>
+        <div class="text-center d-none d-sm-block">
+            <small>Version : @version</small><br />
+        </div>
     </RadzenSidebar>
     <RadzenBody @ref="body" @bind-Expanded="sidebarExpanded">
         <AuthorizeView>

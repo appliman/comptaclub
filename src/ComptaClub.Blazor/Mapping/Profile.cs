@@ -43,5 +43,10 @@ public class Profile : AutoMapper.Profile
 			.ForMember(d => d.ValueDate, opt => opt.MapFrom(s => s.ValueDate.ToDayId()))
 			.ForMember(d => d.CreationDate, opt => opt.MapFrom(s => s.CreationDate.ToDayId()));
 
-	}
+        CreateMap<Datas.MemberData, ViewModels.Member>()
+            .ForMember(d => d.CreationDate, opt => opt.MapFrom(s => s.CreationDate.FromDayId()));
+
+        CreateMap<ViewModels.Member, Datas.MemberData>()
+            .ForMember(d => d.CreationDate, opt => opt.MapFrom(s => s.CreationDate.ToDayId()));
+    }
 }

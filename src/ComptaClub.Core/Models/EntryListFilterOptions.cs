@@ -9,4 +9,5 @@ namespace ComptaClub.Models;
 public class EntryListFilterOptions
 {
     public DeletedState DeletedState { get; set; } = DeletedState.Undeleted;
+    public bool WithAssociatedMemberInfo { get; set; } = false;
 }

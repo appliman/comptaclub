@@ -14,6 +14,7 @@ namespace ComptaClub.Blazor.Pages.Shared
         RadzenBody? body;
         Toolbar? toolbar;
         ViewModels.User? user = new();
+        string version = $"{typeof(Program).Assembly.GetName()?.Version}";
 
         protected override async Task OnInitializedAsync()
         {

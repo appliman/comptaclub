@@ -27,7 +27,7 @@ namespace ComptaClub.Tests.Cruds
             var app = await TestHelper.CreateWebApplication();
             var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
 
-            var account = await mediator.Send(new Requests.GetAccountByFilterRequest(i => i.Code == "fake"));
+            var account = await mediator.Send(new Requests.GetAccountByFilterRequest(i => i.Code = "fake"));
             account.Should().BeNull();
 
             var code = $"Test{Guid.NewGuid()}";
@@ -41,7 +41,7 @@ namespace ComptaClub.Tests.Cruds
             saveResult = await mediator.Send(new Requests.SaveEntityRequest<Datas.AccountData>(account));
             saveResult.HasError.Should().BeFalse();
 
-            account = await mediator.Send(new Requests.GetAccountByFilterRequest(i => i.Code == code));
+            account = await mediator.Send(new Requests.GetAccountByFilterRequest(i => i.Code = code));
             account.Should().NotBeNull();
 
             account!.Label.Should().Be(label);
@@ -50,7 +50,7 @@ namespace ComptaClub.Tests.Cruds
             commandResult.HasError.Should().BeFalse();
             commandResult.ChangeCount.Should().Be(1);
 
-            account = await mediator.Send(new Requests.GetAccountByFilterRequest(i => i.Code == code));
+            account = await mediator.Send(new Requests.GetAccountByFilterRequest(i => i.Code = code));
             account.Should().BeNull();
         }
 

@@ -14,7 +14,6 @@ CREATE TABLE [Entries] (
     [AccountId] uniqueidentifier NOT NULL,
     [ExerciceId] uniqueidentifier NOT NULL,
     [UserCreatorId] uniqueidentifier NOT NULL,
-    [MemberId] uniqueidentifier NULL,
     [PaymentType] int NOT NULL,
     [ExtraInfos] nvarchar(max) NULL,
     CONSTRAINT [PK_Entries] PRIMARY KEY ([Id])

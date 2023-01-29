@@ -2,7 +2,7 @@
 
 namespace ComptaClub.Models;
 
-public class AccountListFilter : IListFilter
+public class MemberListFilter : IListFilter
 {
     public KeyIdList KeyIdList { get; } = new();
     public int PageIndex { get; set; }
@@ -12,8 +12,10 @@ public class AccountListFilter : IListFilter
     public ListSortDirection SortDirection { get; set; }
     public string? Search { get; set; }
     public ComputeRowCount ComputeRowCount { get; set; } = ComputeRowCount.OnlyInFirstPage;
-    public Guid? ParentAccountId { get; set; }
-    public string? Code { get; set; }
+    public string? Name { get; set; }
+    public string? LicenseNumber { get; set; }
+    public string? Email { get; set; }
+    public List<Guid> EntryIdList { get; set; } = new();
 
     public void GetById(Guid entryId)
     {

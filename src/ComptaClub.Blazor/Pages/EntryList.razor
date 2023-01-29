@@ -5,7 +5,7 @@
 <RadzenDataGrid @ref="grid" 
     AllowFiltering="true" 
     AllowSorting="false" 
-    AllowColumnResize="false"
+    AllowColumnResize="true"
     Data="@entryList"
     LoadData="@LoadDatas"
     TItem="ViewModels.Entry"
@@ -24,7 +24,8 @@
             <Template Context="data">
                 <div class="w-100">
                     @data.PartNumber<br/>
-                    @data.Label
+                    @data.Label<br/>
+                    <small>@data.ExtraInfos</small>
                 </div>
             </Template>
             <FooterTemplate>

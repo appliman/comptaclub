@@ -55,9 +55,6 @@ internal class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHand
 			}
 		}
 
-
-
-
         return result;
     }
 }
