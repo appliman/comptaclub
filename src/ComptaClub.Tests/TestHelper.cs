@@ -106,6 +106,7 @@ namespace ComptaClub.Tests
             var db = await dbContextFactory.CreateDbContextAsync();
 
             await db.Database.BeginTransactionAsync();
+
             await db.Accounts.ExecuteDeleteAsync();
             await db.Banks.ExecuteDeleteAsync();
             await db.DocumentsByEntities.ExecuteDeleteAsync();
@@ -114,6 +115,8 @@ namespace ComptaClub.Tests
             await db.Members.ExecuteDeleteAsync();
             await db.RolesByUsers.ExecuteDeleteAsync();
             await db.Users.ExecuteDeleteAsync();
+            await db.AssociatedMemberListByEntries.ExecuteDeleteAsync();
+
             await db.Database.CommitTransactionAsync();
         }
     }

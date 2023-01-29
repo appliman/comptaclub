@@ -55,7 +55,19 @@ public partial class AccountingPlan : ComponentBase
             OnClick = ExportToJson,
             IconName = "file_download",
             Text = "Exporter"
-		}).Display();
+		}).AddItem(new ViewModels.Toolbar.ToolbarButton
+        {
+            OnClick = async () =>
+			{
+				foreach (var row in accountList)
+				{
+					await grid!.ExpandRow(row);
+				}
+			},
+            IconName = "expand_content",
+            Text = "Déployer",
+			Title = "Voir tous les comptes"
+        }).Display();
 
         await LoadDatas();
     }

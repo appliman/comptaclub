@@ -30,8 +30,8 @@ public partial class EntryList : ComponentBase
     [Inject]
     DialogService DialogService { get; set; } = default!;
 
-    IEnumerable<ViewModels.Entry>? entryList;
-    RadzenDataGrid<ViewModels.Entry> grid = new();
+    List<ViewModels.Entry>? entryList;
+    RadzenDataGrid<ViewModels.Entry>? grid = new();
     List<ViewModels.Account> leafAccountList = new();
     ViewModels.Exercice activeExercice = new();
     decimal currentBalance = 0;
@@ -73,7 +73,7 @@ public partial class EntryList : ComponentBase
         var request = new GetPagedEntityListRequest<Models.EntryListFilter, Datas.EntryData>(filter);
 
 		var dataPage = await Mediator!.Send(request);
-        var list = Mapper.Map<IEnumerable<ViewModels.Entry>>(dataPage.List);
+        var list = Mapper.Map<List<ViewModels.Entry>>(dataPage.List);
         int rowIndex = dataPage.List.Count();
         var balance = currentBalance;
         foreach (var item in list.OrderByDescending(i => i.CreationDate))
@@ -84,7 +84,7 @@ public partial class EntryList : ComponentBase
         }
         if (!string.IsNullOrEmpty(args.OrderBy))
         {
-            entryList = list.AsQueryable().OrderBy(args.OrderBy);
+            entryList = list.AsQueryable().OrderBy(args.OrderBy).ToList();
         }
         else
         {
@@ -95,7 +95,7 @@ public partial class EntryList : ComponentBase
     async Task ApplyFilter()
     {
         filter.PageIndex = 0;
-        grid.Reset(true, true);
+        grid!.Reset(true, true);
         if (grid.CurrentPage == 0)
         {
             await grid.Reload();

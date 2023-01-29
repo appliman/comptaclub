@@ -1,0 +1,41 @@
+﻿@page "/membres"
+
+@if (displayUpload)
+{
+    <div class="mb-3">
+        <label class="form-label">Veuillez indiquer le fichier excel (.xlsx)</label>
+        <InputFile class="form-control" OnChange="LoadFile" />
+    </div>
+}
+
+<RadzenDataGrid @ref="grid" 
+    AllowFiltering="true" 
+    AllowSorting="true" 
+    AllowColumnResize="true"
+    Data="@memberList" 
+    LoadData="LoadDatas"
+    TItem="ViewModels.Member"
+    ColumnWidth="100px" 
+    GridLines="DataGridGridLines.Both"
+    FilterMode="FilterMode.Simple">
+    <Columns>
+        <RadzenDataGridColumn TItem="ViewModels.Member" Property="RowIndex" Title="#" Width="30px" Filterable="false" FormatString="" Frozen="true">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Member" Property="Name" Title="Nom" Width="120px" Filterable="false" Frozen="true">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Member" Property="Email" Title="Email" Width="100px" Filterable="false" FormatString="{0:dd/MM/yy}" Frozen="false">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Member" Property="LicenseNumber" Title="Licence" Width="100px" Filterable="false" Frozen="false">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Member" Property="LicenseTypeName" Title="Type" Width="100px" Filterable="false" Frozen="false">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Member" Property="Amount" Title="Réglé" Width="80px" Filterable="false" Frozen="false">
+            <Template Context="data">
+                <PriceLabel Value="data.Amount"/>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Member" Property="CreationDate" Title="Date" Width="80px" Filterable="false" FormatString="{0:dd/MM/yy}" Frozen="true">
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+

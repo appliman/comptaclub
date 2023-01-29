@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using ComptaClub.Datas;
+using ComptaClub.Results;
 
 namespace ComptaClub.Blazor.ViewModels
 {
@@ -28,5 +29,6 @@ namespace ComptaClub.Blazor.ViewModels
 		public decimal Balance { get; set; }
 		public decimal Amount { get; set; }
         public string? ImportId { get; set; }
+        public List<Member> AssociatedMemberList { get; set; } = new();
     }
 }

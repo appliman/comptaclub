@@ -9,10 +9,10 @@ using ComptaClub.Results;
 
 namespace ComptaClub.Handlers;
 
-internal class SaveUserRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Datas.UserData>, Results.PersistResult<Guid>>
+internal class SaveUserRequestHandler : SaveRequestHandlerBase, 
+    IRequestHandler<Requests.SaveEntityRequest<Datas.UserData>, Results.PersistResult<Guid>>
 {
     private readonly IValidator<Datas.UserData> _validator;
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
 
     public SaveUserRequestHandler(
         IValidator<Datas.UserData> validator,
@@ -21,7 +21,6 @@ internal class SaveUserRequestHandler : SaveRequestHandlerBase, IRequestHandler<
         : base(dbContextFactory, logger)
     {
         _validator = validator;
-        _dbContextFactory = dbContextFactory;
     }
 
     public async Task<PersistResult<Guid>> Handle(SaveEntityRequest<UserData> request, CancellationToken cancellationToken)
@@ -35,7 +34,6 @@ internal class SaveUserRequestHandler : SaveRequestHandlerBase, IRequestHandler<
             }
         }
 
-        var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
         var saveResult = await SaveEntity<Datas.UserData>(request.Entity);
 
         return saveResult;

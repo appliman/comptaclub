@@ -16,7 +16,6 @@ public class EntryData : IPrimaryKey
     public Guid AccountId { get; set; }
     public Guid ExerciceId { get; set; }
     public Guid UserCreatorId { get; set; }
-    public Guid? MemberId { get; set; }
     public PaymentType PaymentType { get; set; }
     public string? ExtraInfos { get; set; }
     public string? ImportId { get; set; }
