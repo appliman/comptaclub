@@ -12,8 +12,7 @@ internal class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandle
 
     public override async Task<PagedList<IEnumerable<EntryData>>> Handle(GetPagedEntityListRequest<EntryListFilter, EntryData> request, CancellationToken cancellationToken)
     {
-        var filter = new EntryListFilter();
-        request.Filter?.Invoke(filter);
+        var filter = request.GetFilter(new EntryListFilter());
 
         filter.EnsureGoodFilter();
 
@@ -37,6 +36,12 @@ internal class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandle
         if (filter.ExerciceId.HasValue)
         {
             query = query.Where(i => i.ExerciceId == filter.ExerciceId.Value);
+        }
+
+        if (filter.ImportIdList != null 
+            && filter.ImportIdList.Any())
+        {
+            query = query.Where(i => i.ImportId != null && filter.ImportIdList.Contains(i.ImportId));
         }
 
         switch (filter.Options.DeletedState)

@@ -27,5 +27,6 @@ namespace ComptaClub.Blazor.ViewModels
 		public string? ExtraInfos { get; set; }
 		public decimal Balance { get; set; }
 		public decimal Amount { get; set; }
+        public string? ImportId { get; set; }
     }
 }

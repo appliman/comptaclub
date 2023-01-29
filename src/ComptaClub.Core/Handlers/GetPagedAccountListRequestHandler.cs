@@ -12,15 +12,22 @@ internal class GetPagedAccountListRequestHandler : GetEntityPagedListRequestHand
 
     public override async Task<PagedList<IEnumerable<AccountData>>> Handle(GetPagedEntityListRequest<AccountListFilter, AccountData> request, CancellationToken cancellationToken)
     {
-        var filter = new AccountListFilter();
-        request.Filter?.Invoke(filter);
-
-        filter.EnsureGoodFilter();
+        var filter = request.GetFilter(new AccountListFilter());
 
         var db = await DbContextFactory.CreateDbContextAsync();
 
         var query = from account in db.Accounts
                     select account;
+
+        if (filter.ParentAccountId != null)
+        {
+            query = query.Where(i => i.ParentAccountId == filter.ParentAccountId);
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Code))
+        {
+            query = query.Where(i => i.Code == filter.Code);    
+        }
 
         var page = await query.GetPagedDataList(i => i.CreationDate, filter);
 

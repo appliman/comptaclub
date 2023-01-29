@@ -1,9 +1,4 @@
 using ComptaClub.Blazor.Pages.Shared;
-using ComptaClub.Blazor.ViewModels.Toolbar;
-
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.Extensions.Azure;
 
 namespace ComptaClub.Blazor.Pages.Components;
 
@@ -16,7 +11,7 @@ public partial class Toolbar : ComponentBase
     public NavigationManager NavigationManager { get; set; } = default!;
 
     List<ViewModels.Toolbar.ToolbarItem> toolbarItems = new();
-	string location;
+	string? location;
 
     protected override void OnAfterRender(bool firstRender)
     {
