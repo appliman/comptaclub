@@ -6,6 +6,7 @@ using ComptaClub.Requests;
 using System.Linq.Dynamic.Core;
 
 using Microsoft.AspNetCore.Components.Routing;
+using ComptaClub.Models;
 
 namespace ComptaClub.Blazor.Pages;
 
@@ -30,10 +31,11 @@ public partial class EntryList : ComponentBase
     DialogService DialogService { get; set; } = default!;
 
     IEnumerable<ViewModels.Entry>? entryList;
-    RadzenDataGrid<ViewModels.Entry>? grid;
+    RadzenDataGrid<ViewModels.Entry> grid = new();
     List<ViewModels.Account> leafAccountList = new();
     ViewModels.Exercice activeExercice = new();
     decimal currentBalance = 0;
+    EntryListFilter filter = new();
 
 
     protected override async Task OnInitializedAsync()
@@ -61,15 +63,14 @@ public partial class EntryList : ComponentBase
             IconName = "cloud_upload",
             Text = "Import"
         }).Display();
+
+        filter.ExerciceId = activeExercice.Id;
+        filter.PageSize = int.MaxValue;
     }
 
     async Task LoadDatas(LoadDataArgs args)
     {
-        var request = new GetPagedEntityListRequest<Models.EntryListFilter, Datas.EntryData>(f =>
-        {
-            f.ExerciceId = activeExercice.Id;
-            f.PageSize = int.MaxValue;
-        });
+        var request = new GetPagedEntityListRequest<Models.EntryListFilter, Datas.EntryData>(filter);
 
 		var dataPage = await Mediator!.Send(request);
         var list = Mapper.Map<IEnumerable<ViewModels.Entry>>(dataPage.List);
@@ -89,6 +90,22 @@ public partial class EntryList : ComponentBase
         {
             entryList = list;
         }
+    }
+
+    async Task ApplyFilter()
+    {
+        filter.PageIndex = 0;
+        grid.Reset(true, true);
+        if (grid.CurrentPage == 0)
+        {
+            await grid.Reload();
+        }
+        else
+        {
+            await grid.GoToPage(0);
+        }
+        StateHasChanged();
+
     }
 
     Task InsertRow(string direction)

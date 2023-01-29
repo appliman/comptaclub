@@ -4,7 +4,7 @@
 
 <RadzenDataGrid @ref="grid" 
     AllowFiltering="true" 
-    AllowSorting="true" 
+    AllowSorting="false" 
     AllowColumnResize="false"
     Data="@entryList"
     LoadData="@LoadDatas"
@@ -15,8 +15,10 @@
     <Columns>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Property="RowIndex" Title="#" Width="60px" Filterable="false" FormatString="" Frozen="true" SortOrder="SortOrder.Ascending">
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="CreationDate" Title="Date" Width="100px" Filterable="true" FormatString="{0:dd/MM/yy}" Frozen="true">
-
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="CreationDate" Title="Date" Width="110px" Filterable="true" Frozen="true">
+            <Template Context="data">
+                <DateLabel Value="data.CreationDate" />
+            </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Property="PartNumber" Title="N°" Width="200px" Filterable="true" Frozen="true">
             <Template Context="data">
@@ -25,6 +27,12 @@
                     @data.Label
                 </div>
             </Template>
+            <FooterTemplate>
+                @if (entryList != null)
+                {
+                    <div>Nombre d'ecritures : @entryList!.Count() / @entryList!.Count()</div>
+                }
+            </FooterTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Property="AccountId" Title="Compte" Width="250px" Filterable="true">
             <Template Context="data">
@@ -32,8 +40,11 @@
             </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Règlement" Filterable="true" Width="120px">
+            <FilterTemplate>
+                <SuperNullableEnumDropdownFilterColumn Value="@filter.PaymentType" ApplyFilter="ApplyFilter" />
+            </FilterTemplate>
             <Template Context="entry">
-                @entry.PaymentType
+                <EnumLabel Value="@entry.PaymentType"/>
             </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Débit" Filterable="true">
@@ -43,6 +54,12 @@
                     <PriceLabel Value="@entry.Amount" />
                 }
             </Template>
+            <FooterTemplate>
+                @if (entryList != null) 
+                {
+                    <PriceLabel Value="@(entryList!.Where(i => i.AccountDirection == Datas.AccountDirection.Debit).Sum(i => i.Amount))"/>
+                }
+            </FooterTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Crédit" Filterable="true">
             <Template Context="entry">
@@ -51,11 +68,20 @@
                     <PriceLabel Value="@entry.Amount" />
                 }
             </Template>
+            <FooterTemplate>
+                @if (entryList != null)
+                {
+                    <PriceLabel Value="@(entryList!.Where(i => i.AccountDirection == Datas.AccountDirection.Credit).Sum(i => i.Amount))" />
+                }
+            </FooterTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Solde" Filterable="false">
             <Template Context="entry">
                 <PriceLabel Value="@entry.Balance" />
             </Template>
+            <FooterTemplate>
+                <PriceLabel Value="@currentBalance"/>
+            </FooterTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Context="entry" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="100px">
             <Template Context="entry">

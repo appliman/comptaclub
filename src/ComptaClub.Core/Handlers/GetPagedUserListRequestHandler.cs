@@ -18,10 +18,7 @@ internal class GetPagedUserListRequestHandler : GetEntityPagedListRequestHandler
 
     public override async Task<PagedList<IEnumerable<UserData>>> Handle(GetPagedEntityListRequest<UserListFilter, UserData> request, CancellationToken cancellationToken)
     {
-        var filter = new UserListFilter();
-        request.Filter?.Invoke(filter);
-
-        filter.EnsureGoodFilter();
+        var filter = request.GetFilter(new UserListFilter());
 
         var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
 

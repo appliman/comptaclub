@@ -8,6 +8,7 @@ public record GetEntryByFilterRequest : IRequest<Datas.EntryData?>
     {
         var defaultFilter = new Models.EntryListFilter();
         defaultFilter.Options.DeletedState = DeletedState.Undeleted;
+        defaultFilter.PageSize = int.MaxValue;
         filter(defaultFilter);
         Filter = filter;
     }

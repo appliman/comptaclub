@@ -5,10 +5,12 @@ namespace ComptaClub.Requests;
 
 public record GetAccountByFilterRequest : IRequest<Datas.AccountData?>
 {
-    public GetAccountByFilterRequest(Expression<Func<Datas.AccountData, bool>> filter)
+    public GetAccountByFilterRequest(Action<AccountListFilter> filter)
     {
+        var defaultFilter = new AccountListFilter();
+        filter(defaultFilter);
         this.Filter = filter;   
     }
 
-    public Expression<Func<Datas.AccountData, bool>> Filter { get; init; } = null!;
+    public Action<AccountListFilter> Filter { get; init; } = null!;
 }

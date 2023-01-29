@@ -1,19 +1,19 @@
-﻿namespace ComptaClub.Handlers;
+﻿using ComptaClub.Requests;
+
+namespace ComptaClub.Handlers;
 
 internal class GetAccountByFilterRequestHandler : IRequestHandler<Requests.GetAccountByFilterRequest, Datas.AccountData?>
 {
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IMediator _mediator;
 
-    public GetAccountByFilterRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+    public GetAccountByFilterRequestHandler(IMediator mediator)
     {
-        _dbContextFactory = dbContextFactory;
+        _mediator = mediator;
     }
 
     public async Task<Datas.AccountData?> Handle(Requests.GetAccountByFilterRequest request, CancellationToken cancellationToken)
     {
-        var db = await _dbContextFactory.CreateDbContextAsync();
-
-        var data = await db.Accounts.FirstOrDefaultAsync(request.Filter);
-        return data;
+        var page = await _mediator.Send(new GetPagedEntityListRequest<Models.AccountListFilter, Datas.AccountData>(request.Filter));
+        return page.List.SingleOrDefault();
     }
 }
