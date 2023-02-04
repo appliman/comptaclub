@@ -12,10 +12,11 @@ using Azure.Storage;
 using EFScriptableMigration;
 using System.Data;
 using Microsoft.AspNetCore.Identity;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var cfg = await builder.ConfigureComptaClub();
+var globalSettings = await builder.ConfigureComptaClub(args);
 
 builder.Services.AddAutoMapper(cfg =>
 {
@@ -40,21 +41,21 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
     });
 
-var rootUri = new Uri($"https://{cfg.settings.AzureStorageAccountName}.blob.core.windows.net");
-var storageCredential = new StorageSharedKeyCredential(cfg.settings.AzureStorageAccountName, cfg.settings.AzureStorageAccountKey);
+var rootUri = new Uri($"https://{globalSettings.AzureStorageAccountName}.blob.core.windows.net");
+var storageCredential = new StorageSharedKeyCredential(globalSettings.AzureStorageAccountName, globalSettings.AzureStorageAccountKey);
 var blobServiceClient = new BlobServiceClient(rootUri, storageCredential);
 
-var response = blobServiceClient.GetBlobContainerClient(cfg.settings.AzureStorageWebAppDataProtectionContainerName);
+var response = blobServiceClient.GetBlobContainerClient(globalSettings.AzureStorageWebAppDataProtectionContainerName);
 if (!await response.ExistsAsync())
 {
-    await blobServiceClient.CreateBlobContainerAsync(cfg.settings.AzureStorageWebAppDataProtectionContainerName);
+    await blobServiceClient.CreateBlobContainerAsync(globalSettings.AzureStorageWebAppDataProtectionContainerName);
 }
 
-var keyUri = new Uri($"https://{cfg.settings.AzureStorageAccountName}.blob.core.windows.net/{cfg.settings.AzureStorageWebAppDataProtectionContainerName}/{cfg.settings.DataProtectionFileName}");
+var keyUri = new Uri($"https://{globalSettings.AzureStorageAccountName}.blob.core.windows.net/{globalSettings.AzureStorageWebAppDataProtectionContainerName}/{globalSettings.DataProtectionFileName}");
 var blobClient = new BlobClient(keyUri, storageCredential);
 
 builder.Services.AddDataProtection()
-        .SetApplicationName(cfg.settings.ApplicationName)
+        .SetApplicationName(globalSettings.ApplicationName)
         .AddKeyManagementOptions(options =>
         {
             options.AutoGenerateKeys = true;
@@ -81,13 +82,29 @@ if (!System.IO.Directory.Exists(outputEmails))
     System.IO.Directory.CreateDirectory(outputEmails);
 }
 
-builder.Services.AddFluentEmail("test@email.com")
-    .AddRazorRenderer(emailTemplatesFolder)
-    .AddSmtpSender(new System.Net.Mail.SmtpClient()
+var fluentEmail = builder.Services.AddFluentEmail("test@email.com")
+    .AddRazorRenderer(emailTemplatesFolder);
+
+if (globalSettings.SmtpProviderName == "local")
+{
+    fluentEmail.AddSmtpSender(new System.Net.Mail.SmtpClient()
     {
         DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.SpecifiedPickupDirectory,
         PickupDirectoryLocation = outputEmails
     });
+}
+else if (globalSettings.SmtpProviderName == "smtp")
+{
+    var credentials = new NetworkCredential(globalSettings.SmtpUserName, globalSettings.SmtpPassword);
+    fluentEmail.AddSmtpSender(new System.Net.Mail.SmtpClient()
+    {
+        EnableSsl = globalSettings.SmtpEnableSsl,   
+        Host = globalSettings.SmtpHost,
+        Port = globalSettings.SmtpPort,
+        Credentials = credentials
+    });
+}
+
 
 var app = builder.Build();
 
@@ -112,7 +129,7 @@ app.MapFallbackToPage("/_Host");
 
 var migration = new DbMigration()
 {
-	ConnectionString = cfg.settings.SqlConnectionString,
+	ConnectionString = globalSettings.SqlConnectionString,
 	SchemaName = "ComptaClub",
 	EmbededTypeReference = typeof(ComptaClub.Datas.StartupExtensions)
 };

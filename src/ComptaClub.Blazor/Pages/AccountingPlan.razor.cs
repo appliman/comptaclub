@@ -37,7 +37,7 @@ public partial class AccountingPlan : ComponentBase
 
 
     IEnumerable<ViewModels.Account> accountList = new List<ViewModels.Account>();
-    RadzenDataGrid<ViewModels.Account>? grid = default!;
+    RadzenDataGrid<ViewModels.Account>? grid;
     ViewModels.Account? accountToUpdate;
     ViewModels.Account? accountToInsert;
     List<Results.BrokenRule> brokenRules = new();
@@ -104,7 +104,7 @@ public partial class AccountingPlan : ComponentBase
 	async Task EditRow(ViewModels.Account account)
 	{
 		accountToUpdate = account;
-		await grid.EditRow(account);
+		await grid!.EditRow(account);
 	}
 
 	async Task SaveRow(ViewModels.Account account)
@@ -124,7 +124,7 @@ public partial class AccountingPlan : ComponentBase
 			return;
 		}
 
-		await grid.UpdateRow(account);
+		await grid!.UpdateRow(account);
 		brokenRules.Clear();
 	}
 
@@ -144,12 +144,12 @@ public partial class AccountingPlan : ComponentBase
 	{
 		var data = await Mediator.Send(new Requests.CreateAccountRequest());
         accountToInsert = Mapper.Map<ViewModels.Account>(data);
-        await grid.InsertRow(accountToInsert);
+        await grid!.InsertRow(accountToInsert);
 	}
 
 	async Task InsertRow(ViewModels.Account account)
 	{
-		await grid.ExpandRow(account);
+		await grid!.ExpandRow(account);
 		var data = await Mediator.Send(new Requests.CreateAccountRequest() 
 		{ 
 			Direction = account.Direction,
@@ -176,7 +176,7 @@ public partial class AccountingPlan : ComponentBase
 		else
 		{
             await LoadDatas();
-            await grid.Reload();
+            await grid!.Reload();
 			NotificationService.Notify(new NotificationMessage
 			{
 				Severity = NotificationSeverity.Info,

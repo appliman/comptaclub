@@ -33,6 +33,9 @@ public partial class LoginPartial : ComponentBase
 	IMemoryCache Cache { get; set; } = default!;
 	[Inject]
 	IFluentEmail FluentEmail { get; set; } = default!;
+	[Inject]
+	Configuration.ComptaClubSettings GlobalSettings { get; set; } = default!;
+
 
 	LoginForm loginForm = new();
 	Components.CustomValidator? customValidator = new();
@@ -139,13 +142,11 @@ public partial class LoginPartial : ComponentBase
 		emailTemplatesFolder = Path.Combine(emailTemplatesFolder, @$"Pages\EmailTemplates\digicode.cshtml");
 
 
-		var email = FluentEmail.SetFrom("compta@compta.com", "Compta");
+		var email = FluentEmail.SetFrom(GlobalSettings.ContactEmailAdress, GlobalSettings.ContactName);
 		email.To(loginForm.Email);
 		email.Subject("Votre code d'accès");
 		email.UsingTemplateFromFile(emailTemplatesFolder, loginForm);
 		email.Tag("workaround");
-
-		var html = email.Data.Body;
 
 		var errorMessage = string.Empty;
 		try

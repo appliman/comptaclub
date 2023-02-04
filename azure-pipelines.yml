@@ -1,18 +1,24 @@
-# ASP.NET Core (.NET Framework)
-# Build and test ASP.NET Core projects targeting the full .NET Framework.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+parameters:
+  - name: AllowUnitTests
+    displayName: Allow unit tests
+    type: boolean
+    default : true
 
 trigger:
-- prod
+  batch: 'true'
+  branches:
+    include:
+      - prod
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'windows-2022'
 
 variables:
-  solution: '**/*.sln'
+  solution: 'ComptaClub.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  secureFile: 'comptaclubdev-ComptaClubDev-20230204.pfx',
+  dotnetVersion: 'net7.0'
 
 steps:
 - task: NuGetToolInstaller@1
@@ -24,11 +30,48 @@ steps:
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
+    msbuildArgs: '/p:DeployOnBuild=false'
     platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    configuration: '$(buildConfiguration
+
+- task: DownloadSecureFile@1
+  name: KeyvaultCertificat 
+  displayName: Download KeyVault Certificate from library
+  inputs:
+    secureFile: '$(secureFile)'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: "$(Agent.TempDirectory)"
+    Contents: '$(secureFile)'
+    TargetFolder: '$(Build.repository.LocalPath)\src'
+    OverWrite: true
 
 - task: VSTest@2
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+- task: CmdLine@2
+  displayName: Publish Blazor
+  inputs:
+    workingDirectory : $(System.DefaultWorkingDirectory)\src\ComptaClub.Blazor
+    script: |
+      dotnet publish -c $(buildConfiguration)
+      cd $(System.DefaultWorkingDirectory)\src\ComptaClub.Blazor\bin\$(buildConfiguration)\$(dotnetVersion)\publish
+      echo $(environment) > env.txt
+
+- task: ArchiveFiles@2
+  displayName: Create Zip to ArtifactStagingDirectory
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)\src\ComptaClub.Blazor\bin\$(buildConfiguration)\$(dotnetVersion)\publish'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/ComptaClub.zip'
+    replaceExistingArchive: true
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'

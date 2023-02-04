@@ -1,4 +1,6 @@
-﻿namespace ComptaClub.Configuration
+﻿using DocumentFormat.OpenXml.EMMA;
+
+namespace ComptaClub.Configuration
 {
     public class ComptaClubSettings
     {
@@ -16,6 +18,17 @@
         public string CookieName { get; set; } = "comptaclub";
 
         public string? AdminUserEmail { get; set; }
+        public string ContactEmailAdress { get; set; } = null!;
+        public string ContactName { get; set; } = null!;
+        public string SmtpProviderName { get; set; } = "local";
+
+        // Smtp
+        public string SmtpHost { get; set; } = null!;
+        public int SmtpPort { get; set; }
+        public string SmtpUserName { get; set; } = null!;
+        public string SmtpPassword { get; set; } = null!;
+        public void SetSmtpPassword(string value) => this.SmtpUserName = value;
+        public bool SmtpEnableSsl { get; set; } = true;
 
         public string AzureStorageConnectionString {get; private set; } = null!;
         public void SetAzureStorageConnectionString(string azureStorageConnectionString) => this.AzureStorageConnectionString = azureStorageConnectionString;
@@ -30,6 +43,7 @@
         public string KeyVaultClientId { get; set; } = null!;
         public string KeyVaultClientSecret { get; set; } = null!;
         public string KeyVaultName { get; set; } = null!;
+        public string KeyVaultCertificatePath { get; set; } = null!;
 
         public System.Globalization.CultureInfo CultureInfo { get; init; } 
             = new System.Globalization.CultureInfo("fr-FR");
