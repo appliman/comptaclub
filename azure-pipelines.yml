@@ -48,9 +48,15 @@ steps:
     OverWrite: true
 
 - task: VSTest@2
+  enabled: ${{parameters.AllowUnitTests}}
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      $(System.DefaultWorkingDirectory)\src\TimeSheet.Tests\bin\$(buildConfiguration)\$(dotnetVersion)\ComptaClub.Tests.dll
+      !**\*TestAdapter.dll
+      !**\obj\**
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    codeCoverageEnabled : false
 
 - task: CmdLine@2
   displayName: Publish Blazor
