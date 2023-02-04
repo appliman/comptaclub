@@ -39,7 +39,7 @@ public partial class MemberList : ComponentBase
     MemberListFilter filter = new();
     bool displayUpload = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarButton
         {

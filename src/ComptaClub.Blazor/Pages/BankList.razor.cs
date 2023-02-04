@@ -93,9 +93,9 @@ public partial class BankList : ComponentBase
     }
 
 
-    async Task DeleteRow(ViewModels.Bank bank)
+    Task DeleteRow(ViewModels.Bank bank)
     {
-
+        return Task.CompletedTask;
     }
 
     async Task ChangeActiveBank(ChangeEventArgs args, ViewModels.Bank bank)

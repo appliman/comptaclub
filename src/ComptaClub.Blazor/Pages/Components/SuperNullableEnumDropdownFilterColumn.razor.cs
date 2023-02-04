@@ -38,14 +38,14 @@ public partial class SuperNullableEnumDropdownFilterColumn<E> : ComponentBase
     async Task SelectChanged(ChangeEventArgs args)
 	{
         var type = Nullable.GetUnderlyingType(typeof(E))!;
-        Enum.TryParse(type, $"{args.Value}", out object v);
+        Enum.TryParse(type, $"{args.Value}", out object? v);
 		if (v != null)
 		{
 			Value = (E)v;
 		}
 		else
 		{
-			Value = default(E);
+			Value = default(E)!;
 		}
 		if (ValueChanged.HasDelegate)
 		{
@@ -66,11 +66,11 @@ public partial class SuperNullableEnumDropdownFilterColumn<E> : ComponentBase
 			Name = NullItemLabel
 		});
 		var type = Nullable.GetUnderlyingType(typeof(E));
-		var values = Enum.GetValues(type);
+		var values = Enum.GetValues(type!);
 		foreach (var value in values)
 		{
 			var fi = value.GetType().GetField($"{value}");
-			var attr = fi.GetCustomAttribute<DisplayAttribute>();
+			var attr = fi!.GetCustomAttribute<DisplayAttribute>();
 			var isSelected = $"{Value}" == $"{value}";
 			if (attr != null)
 			{

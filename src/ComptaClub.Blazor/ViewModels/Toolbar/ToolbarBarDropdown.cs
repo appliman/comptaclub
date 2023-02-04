@@ -2,6 +2,6 @@
 
 public class ToolbarBarDropdown : ToolbarItem
 {
-	public string DropdownId { get; set; }
-	public List<ToolbarBarDropdownItem> Items { get; set; }
+	public string DropdownId { get; set; } = null!;
+	public List<ToolbarBarDropdownItem> Items { get; set; } = new();
 }

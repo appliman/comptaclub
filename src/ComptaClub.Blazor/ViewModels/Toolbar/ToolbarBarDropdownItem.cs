@@ -2,7 +2,7 @@
 
 public class ToolbarBarDropdownItem : ToolbarItem
 {
-	public string ButtonText { get; set; }
+	public string ButtonText { get; set; } = null!; 
 	public bool Disabled { get; set; }
-	public Func<Task> Action { get; set; } = () => Task.CompletedTask;
+	public Func<Task> OnClick { get; set; } = () => Task.CompletedTask;
 }
