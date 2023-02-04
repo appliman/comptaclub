@@ -32,7 +32,7 @@ steps:
     solution: '$(solution)'
     msbuildArgs: '/p:DeployOnBuild=false'
     platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration
+    configuration: '$(buildConfiguration)'
 
 - task: DownloadSecureFile@1
   name: KeyvaultCertificat 
