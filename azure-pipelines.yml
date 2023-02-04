@@ -19,6 +19,7 @@ variables:
   buildConfiguration: 'Release'
   secureFile: 'comptaclubdev-ComptaClubDev-20230204.pfx'
   dotnetVersion: 'net7.0'
+  environment: 'production'
 
 steps:
 - task: NuGetToolInstaller@1
@@ -52,7 +53,7 @@ steps:
   inputs:
     testSelector: 'testAssemblies'
     testAssemblyVer2: |
-      $(System.DefaultWorkingDirectory)\src\TimeSheet.Tests\bin\$(buildConfiguration)\$(dotnetVersion)\ComptaClub.Tests.dll
+      $(System.DefaultWorkingDirectory)\src\ComptaClub.Tests\bin\$(buildConfiguration)\$(dotnetVersion)\ComptaClub.Tests.dll
       !**\*TestAdapter.dll
       !**\obj\**
     searchFolder: '$(System.DefaultWorkingDirectory)'
