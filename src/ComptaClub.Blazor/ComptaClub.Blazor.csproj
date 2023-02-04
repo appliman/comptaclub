@@ -11,6 +11,17 @@
 	  <Version>0.0.1.0</Version>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="Pages\EmailTemplates\Digicode.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Pages\EmailTemplates\Digicode.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+
 	<ItemGroup>
 		<None Update="appsettings.local.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -25,7 +36,7 @@
     <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.2.3" />
 	  <PackageReference Include="Radzen.Blazor" Version="4.6.3" />
   </ItemGroup>
-
+	
   <ItemGroup>
     <ProjectReference Include="..\ComptaClub.Core\ComptaClub.Core.csproj" />
   </ItemGroup>
@@ -41,9 +52,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Update="Pages\EmailTemplates\Digicode.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="Pages\Shared\MainLayout.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
