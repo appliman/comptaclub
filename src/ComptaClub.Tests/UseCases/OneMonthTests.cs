@@ -50,6 +50,7 @@ public class OneMonthTests
 		var bank = await mediator.GetOrCreateBank($"{Guid.NewGuid()}");
 		var plan = await mediator.GetOrCreatePlan();
         var leafPlan = plan.GetLeafList();
+        var user = await mediator.GetOrCreateUser($"{Guid.NewGuid()}@email.com");
 
         var licenceAccount = leafPlan.Single(i => i.Code == "756001");
         var bankFeeAccount = leafPlan.Single(i => i.Code == "61/62");
@@ -64,6 +65,7 @@ public class OneMonthTests
         entry.Amount = 70 * 1000000;
         entry.AccountDirection = licenceAccount.Direction;
         entry.PaymentType = Datas.PaymentType.Transfer;
+        entry.UserCreatorId = user.Id;
 
         var saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
         saveEntryResult.HasError.Should().BeFalse();
@@ -81,6 +83,7 @@ public class OneMonthTests
         entry.Amount = Convert.ToInt64(2.45 * 1000000);
         entry.AccountDirection = bankFeeAccount.Direction;
         entry.PaymentType = Datas.PaymentType.Transfer;
+        entry.UserCreatorId = user.Id;
 
         saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
         saveEntryResult.HasError.Should().BeFalse();
@@ -99,6 +102,7 @@ public class OneMonthTests
         entry.Amount = Convert.ToInt64(1209 * 1000000);
         entry.AccountDirection = licenceAccount.Direction;
         entry.PaymentType = Datas.PaymentType.Check;
+        entry.UserCreatorId = user.Id;
 
         saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
         saveEntryResult.HasError.Should().BeFalse();
