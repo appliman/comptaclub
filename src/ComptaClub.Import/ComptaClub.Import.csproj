@@ -7,13 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <Reference Include="OFXNet">
+	    <HintPath>..\..\References\OFXNet.dll</HintPath>
+	  </Reference>
 	  <Reference Include="SgmlReader.Logic">
 		  <HintPath>lib\SgmlReader.Logic.dll</HintPath>
 	  </Reference>
   </ItemGroup>
 
 	<ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\Libs\ForkedOFXNet\OFXNet\OFXNet.csproj" />
     <ProjectReference Include="..\ComptaClub.Datas.MsSql\ComptaClub.Datas.MsSql.csproj" />
   </ItemGroup>
 

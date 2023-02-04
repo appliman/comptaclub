@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -13,12 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\ComptaClub.Blazor\appsettings.local.json" Link="appsettings.local.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ComptaClub\appsettings.Development.json" Link="appsettings.Development.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\ComptaClub\appsettings.json" Link="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -50,6 +44,9 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
+		</None>
+		<None Update="appsettings.test.json">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 

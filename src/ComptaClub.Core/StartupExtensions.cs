@@ -17,8 +17,10 @@ namespace ComptaClub;
 
 public static class StartupExtensions
 {
-    public static async Task<(Configuration.ComptaClubSettings settings, TokenCredential credential)> ConfigureComptaClub(this WebApplicationBuilder builder, string? sqlConnectionString = null)
+    public static async Task<Configuration.ComptaClubSettings> ConfigureComptaClub(this WebApplicationBuilder builder, params string[] args)
     {
+        builder.Environment.EnvironmentName = GetEnvironmentName(args);
+
         var currentFolder = System.IO.Path.GetDirectoryName(typeof(StartupExtensions).Assembly.Location);
         builder.Configuration
             .AddJsonFile("appsettings.json")
@@ -33,12 +35,13 @@ public static class StartupExtensions
         builder.Services.AddSingleton(settings);
 
         var vaultUri = new Uri($"https://{settings.KeyVaultName}.vault.azure.net");
-        var credential = new ClientSecretCredential(settings.KeyVaultTenantId, settings.KeyVaultClientId, settings.KeyVaultClientSecret);
+        var credential = new ClientCertificateCredential(settings.KeyVaultTenantId, settings.KeyVaultClientId, settings.KeyVaultCertificatePath);
         var client = new SecretClient(vaultUri,credential);
 
         var csSecret = await client.GetSecretAsync("AzureStorageConnectionString");
         settings.SetAzureStorageConnectionString(csSecret.Value.Value);
 
+        var sqlConnectionString = args.GetParameterValue("cs");
         if (string.IsNullOrWhiteSpace(sqlConnectionString))
         {
             var cs = await client.GetSecretAsync("SqlConnectionString");
@@ -51,6 +54,9 @@ public static class StartupExtensions
 
         var azureStorageAccountKey = await client.GetSecretAsync("AzureStorageAccountKey");
         settings.SetAzureStorageAccountKey(azureStorageAccountKey.Value.Value);
+
+        var smtpPassword = await client.GetSecretAsync("SmtpPassword");
+        settings.SetSmtpPassword(smtpPassword.Value.Value);
 
         builder.Services.AddComptaClubDbContext(cfg =>
         {
@@ -75,6 +81,57 @@ public static class StartupExtensions
 			builder.Logging.AddConsole();
 		}
 
-		return await Task.FromResult((settings, credential));
+		return settings;
+    }
+
+    public static string GetEnvironmentName(params string[] args)
+    {
+        var envParam = args.GetParameterValue("env");
+        if (!string.IsNullOrWhiteSpace(envParam))
+        {
+            return envParam;
+        }
+        var currentFolder = System.IO.Path.GetDirectoryName(typeof(StartupExtensions).Assembly.Location);
+        var environmentFileName = System.IO.Path.Combine(currentFolder!, "env.txt");
+        if (!System.IO.File.Exists(environmentFileName))
+        {
+            return "Development";
+        }
+        var lines = System.IO.File.ReadAllLines(environmentFileName);
+        if (lines == null)
+        {
+            return "Development";
+        }
+        var result = lines.FirstOrDefault();
+        if (result == null)
+        {
+            return "Development";
+        }
+        return result.Trim();
+    }
+
+    public static string GetParameterValue(this string[] args, string parameterName)
+    {
+        if (args == null
+            || !args.Any())
+        {
+            return string.Empty;
+        }
+
+        string value = string.Empty;
+        var nextisvalue = false;
+        foreach (var item in args)
+        {
+            if (nextisvalue)
+            {
+                value = item;
+                break;
+            }
+            if (item.Equals($"--{parameterName}", StringComparison.InvariantCultureIgnoreCase))
+            {
+                nextisvalue = true;
+            }
+        }
+        return $"{value}".Trim();
     }
 }
