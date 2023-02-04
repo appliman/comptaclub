@@ -17,7 +17,7 @@ variables:
   solution: 'ComptaClub.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  secureFile: 'comptaclubdev-ComptaClubDev-20230204.pfx',
+  secureFile: 'comptaclubdev-ComptaClubDev-20230204.pfx'
   dotnetVersion: 'net7.0'
 
 steps:
