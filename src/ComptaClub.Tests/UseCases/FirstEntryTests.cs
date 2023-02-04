@@ -39,6 +39,8 @@ public class FirstEntryTests
 		var app = await TestHelper.CreateWebApplication();
 		var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
 
+		var user = await mediator.GetOrCreateUser($"{Guid.NewGuid()}@email.com");
+
 		var exercice = await mediator.Send(new GetExerciceByFilterRequest(f => f.Code == "Exercice 2022"));
 		if (exercice == null)
 		{
@@ -75,6 +77,7 @@ public class FirstEntryTests
 		entry.Amount = 40 * 1000000;
 		entry.AccountDirection = account.Direction;
 		entry.PaymentType = Datas.PaymentType.CreditCard;
+		entry.UserCreatorId = user.Id;
 
 		var saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
 		saveEntryResult.HasError.Should().BeFalse();
