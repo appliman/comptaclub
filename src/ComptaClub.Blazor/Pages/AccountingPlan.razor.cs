@@ -5,45 +5,109 @@ using Microsoft.AspNetCore.Components;
 
 using Radzen;
 using Radzen.Blazor;
+using Microsoft.Extensions.Azure;
+using ComptaClub.Blazor.Extensions;
+using ComptaClub.Requests;
+using ComptaClub.Blazor.Pages.Shared;
+using System.Reflection.Metadata.Ecma335;
+using Microsoft.AspNetCore.Mvc.Localization;
+using System.Collections.Generic;
 
 namespace ComptaClub.Blazor.Pages;
 
 public partial class AccountingPlan : ComponentBase
 {
-    IEnumerable<Models.Account> accounts = new List<Models.Account>();
-    RadzenDataGrid<Models.Account>? grid;
-	Models.Account? accountToUpdate;
-	Models.Account? accountToInsert;
-	List<BrokenRule> brokenRules = new();
+    [CascadingParameter]
+    Shared.MainLayout MainLayout { get; set; } = default!;
+
+    [Inject]
+	MediatR.IMediator Mediator { get; set; } = default!;
+
+    [Inject]
+	AutoMapper.IMapper Mapper { get; set; } = default!;
+
+    [Inject]
+	NotificationService NotificationService { get; set; } = default!;
 
 	[Inject]
-	Services.IAccountingService? AccountingService { get; set; }
+	DialogService DialogService { get; set; } = default!;
 
 	[Inject]
-	MediatR.IMediator? Mediator { get; set; }
+	NavigationManager NavigationManager { get; set; } = default!;
 
-	protected override async Task OnInitializedAsync()
+
+    IEnumerable<ViewModels.Account> accountList = new List<ViewModels.Account>();
+    RadzenDataGrid<ViewModels.Account>? grid;
+    ViewModels.Account? accountToUpdate;
+    ViewModels.Account? accountToInsert;
+    List<Results.BrokenRule> brokenRules = new();
+
+    protected override async Task OnInitializedAsync()
 	{
-		accounts = await AccountingService!.GetAccountingPlan();
+        MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarButton
+        {
+            OnClick = InsertRow,
+            IconName = "add_circle_outline",
+            Text = "Ajouter un compte",
+			Disabled = (accountToInsert != null || accountToUpdate != null)
+		}).AddItem(new ViewModels.Toolbar.ToolbarButton
+        {
+            OnClick = ExportToJson,
+            IconName = "file_download",
+            Text = "Exporter"
+		}).AddItem(new ViewModels.Toolbar.ToolbarButton
+        {
+            OnClick = async () =>
+			{
+				foreach (var row in accountList)
+				{
+					await grid!.ExpandRow(row);
+				}
+			},
+            IconName = "expand_content",
+            Text = "Déployer",
+			Title = "Voir tous les comptes"
+        }).Display();
+
+        await LoadDatas();
+    }
+
+	async Task LoadDatas()
+	{
+        var dataPlan = await Mediator.Send(new GetPlanRequest());
+        var list = MapPlan(dataPlan);
+        accountList = list;
+    }
+
+    List<ViewModels.Account> MapPlan(List<Datas.AccountData> list)
+	{
+        var result = new List<ViewModels.Account>();
+		foreach (var item in list)
+		{
+			var account = Mapper.Map<ViewModels.Account>(item);
+            account.Children = MapPlan(item.Children);
+			result.Add(account);
+		}
+		return result;
 	}
 
-	void RowRender(RowRenderEventArgs<Models.Account> args)
+    void RowRender(RowRenderEventArgs<ViewModels.Account> args)
 	{
 		args.Expandable = args.Data.Children.Any();
 	}
 
-	void LoadChildData(DataGridLoadChildDataEventArgs<Models.Account> args)
+	void LoadChildData(DataGridLoadChildDataEventArgs<ViewModels.Account> args)
 	{
 		args.Data = args.Item.Children;
 	}
 
-	async Task EditRow(Models.Account account)
+	async Task EditRow(ViewModels.Account account)
 	{
 		accountToUpdate = account;
 		await grid!.EditRow(account);
 	}
 
-	async Task SaveRow(Models.Account account)
+	async Task SaveRow(ViewModels.Account account)
 	{
 		if (account == accountToInsert)
 		{
@@ -52,17 +116,19 @@ public partial class AccountingPlan : ComponentBase
 
 		accountToUpdate = null;
 
-		var saveResult = await Mediator!.Send(new Requests.SaveEntityRequest<Models.Account>(account));
-		if (saveResult!.HasError)
+		var data = Mapper.Map<Datas.AccountData>(account);
+		var saveResult = await Mediator.Send(new Requests.SaveEntityRequest<Datas.AccountData>(data));
+		if (saveResult.HasError)
 		{
 			brokenRules = saveResult.ErrorBrokenRuleList;
 			return;
 		}
 
 		await grid!.UpdateRow(account);
+		brokenRules.Clear();
 	}
 
-	void CancelEdit(Models.Account account)
+	void CancelEdit(ViewModels.Account account)
 	{
 		if (account == accountToInsert)
 		{
@@ -76,16 +142,62 @@ public partial class AccountingPlan : ComponentBase
 
 	async Task InsertRow()
 	{
-		accountToInsert = await Mediator!.Send(new Requests.CreateAccountRequest());
-		await grid!.InsertRow(accountToInsert);
+		var data = await Mediator.Send(new Requests.CreateAccountRequest());
+        accountToInsert = Mapper.Map<ViewModels.Account>(data);
+        await grid!.InsertRow(accountToInsert);
 	}
 
-	async Task InsertRow(Models.Account account)
+	async Task InsertRow(ViewModels.Account account)
 	{
-		accountToInsert = await Mediator!.Send(new Requests.CreateAccountRequest());
-		account.Children.Add(accountToInsert);
-		await grid!.SelectRow(accountToInsert);
-		await grid!.EditRow(accountToInsert);
 		await grid!.ExpandRow(account);
+		var data = await Mediator.Send(new Requests.CreateAccountRequest() 
+		{ 
+			Direction = account.Direction,
+			ParentId = account.Id
+		});
+        accountToInsert = Mapper.Map<ViewModels.Account>(data);
+        account.Children.Add(accountToInsert);
+		await grid.SelectRow(accountToInsert);
+		await grid.EditRow(accountToInsert);
 	}
+
+    async Task DeleteRow(ViewModels.Account account)
+    {
+		var confirm = await DialogService.Confirm("Confirmez vous la suppression de ce compte", "Suppression");
+        if (!confirm.GetValueOrDefault(false))
+		{
+			return;
+		}
+        var result = await Mediator!.Send(new Requests.DeleteAccountRequest(account.Id));
+		if (result.HasError)
+		{
+			NotificationService.NotifyError(result);
+		}
+		else
+		{
+            await LoadDatas();
+            await grid!.Reload();
+			NotificationService.Notify(new NotificationMessage
+			{
+				Severity = NotificationSeverity.Info,
+				Summary = $"Ce compte ({account.Code}) vient d'etre supprimé"
+            });
+		}
+    }
+
+	async Task ExportToJson()
+	{
+		var fileName = $"{Guid.NewGuid()}.json";
+		var path = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        var request = new Requests.ExportPlanToJsonFileRequest(System.IO.Path.Combine(path, fileName));
+		var result = await Mediator.Send(request);
+		if (result.HasError)
+		{
+            NotificationService.NotifyError(result);
+			return;
+        }
+
+		NavigationManager.NavigateTo($"/api/client/dlexport/{fileName}", true);
+	}
+
 }

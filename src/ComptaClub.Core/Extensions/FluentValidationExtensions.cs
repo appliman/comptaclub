@@ -9,19 +9,19 @@ namespace ComptaClub.Extensions;
 
 public static class FluentValidationExtensions
 {
-    public static List<Models.BrokenRule> ToBrokenRules(this List<ValidationFailure> validationFailures)
+    public static List<Results.BrokenRule> ToBrokenRules(this List<ValidationFailure> validationFailures)
     {
         if (validationFailures.IsNullOrEmpty())
         {
-            return new List<Models.BrokenRule>();
+            return new List<Results.BrokenRule>();
         }
 
-        return validationFailures.GroupBy(x => x.ErrorCode).Select(x => new Models.BrokenRule { PropertyName = x.Key, MessageList = x.Select(g => g.ErrorMessage).ToList() }).ToList();
+        return validationFailures.GroupBy(x => x.ErrorCode).Select(x => new Results.BrokenRule { PropertyName = x.Key, MessageList = x.Select(g => g.ErrorMessage).ToList() }).ToList();
     }
 
-    public static List<Models.BrokenRule> ToBrokenRules(this ValidationResult validationResult)
+    public static List<Results.BrokenRule> ToBrokenRules(this ValidationResult validationResult)
     {
-        var brokenRules = new List<Models.BrokenRule>();
+        var brokenRules = new List<Results.BrokenRule>();
 
         if (validationResult == null)
         {
@@ -34,18 +34,18 @@ public static class FluentValidationExtensions
 
             foreach (var item in validationErrors)
             {
-                var severity = Models.Severity.Error;
+                var severity = Results.Severity.Error;
 
                 switch (item.Severity)
                 {
                     case FluentValidation.Severity.Warning:
-                        severity = Models.Severity.Warning;
+                        severity = Results.Severity.Warning;
                         break;
                     case FluentValidation.Severity.Info:
-                        severity = Models.Severity.Info;
+                        severity = Results.Severity.Info;
                         break;
                     default:
-                        severity = Models.Severity.Error;
+                        severity = Results.Severity.Error;
                         break;
                 }
 
@@ -53,7 +53,7 @@ public static class FluentValidationExtensions
 
                 if (br == null)
                 {
-                    br = new Models.BrokenRule { PropertyName = item.PropertyName };
+                    br = new Results.BrokenRule { PropertyName = item.PropertyName };
                     br.Severity = severity;
                     brokenRules.Add(br);
                 }
@@ -65,39 +65,39 @@ public static class FluentValidationExtensions
         return brokenRules;
     }
 
-    public static Models.PersistResult<T>? ToPersistResult<T>(this List<Models.BrokenRule> brokenRules)
+    public static Results.PersistResult<T>? ToPersistResult<T>(this List<Results.BrokenRule> brokenRules)
     {
         if (brokenRules.IsNullOrEmpty())
         {
             return null;
         }
-        return new Models.PersistResult<T>()
+        return new Results.PersistResult<T>()
         {
-			ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Models.Severity.Error).ToList(),
-            WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Models.Severity.Warning).ToList(),
-            HasError = brokenRules.Count(x => x.Severity == Models.Severity.Error) > 0
+			ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Error).ToList(),
+            WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Warning).ToList(),
+            HasError = brokenRules.Count(x => x.Severity == Results.Severity.Error) > 0
         };
     }
 
 
-    public static List<Models.PersistResult<T>> ToPersistResultList<T>(this List<Models.BrokenRule> brokenRules)
+    public static List<Results.PersistResult<T>> ToPersistResultList<T>(this List<Results.BrokenRule> brokenRules)
     {
-        var result = new List<Models.PersistResult<T>>();
+        var result = new List<Results.PersistResult<T>>();
 
         if (!brokenRules.IsNullOrEmpty())
         {
-            result.Add(new Models.PersistResult<T>
+            result.Add(new Results.PersistResult<T>
             {
-                ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Models.Severity.Error).ToList(),
-                WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Models.Severity.Warning).ToList(),
-                HasError = brokenRules.Count(x => x.Severity == Models.Severity.Error) > 0
+                ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Error).ToList(),
+                WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Warning).ToList(),
+                HasError = brokenRules.Count(x => x.Severity == Results.Severity.Error) > 0
             });
         }
 
         return result;
     }
 
-	public static Models.PersistResult<T>? ToPersistResult<T>(this ValidationResult validationResult)
+	public static Results.PersistResult<T>? ToPersistResult<T>(this ValidationResult validationResult)
 	{
 		if (validationResult == null)
 		{
@@ -105,15 +105,15 @@ public static class FluentValidationExtensions
 		}
 		var brokenRules = validationResult.ToBrokenRules();
 		
-		return new Models.PersistResult<T>
+		return new Results.PersistResult<T>
 		{
-			ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Models.Severity.Error).ToList(),
-			WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Models.Severity.Warning).ToList(),
-			HasError = brokenRules.Any(x => x.Severity == Models.Severity.Error)
+			ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Error).ToList(),
+			WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Warning).ToList(),
+			HasError = brokenRules.Any(x => x.Severity == Results.Severity.Error)
 		};
 	}
 
-	public static Models.CommandResult? ToPersistResult(this ValidationResult validationResult)
+	public static Results.CommandResult? ToPersistResult(this ValidationResult validationResult)
 	{
 		if (validationResult == null)
 		{
@@ -121,15 +121,15 @@ public static class FluentValidationExtensions
 		}
 		var brokenRules = validationResult.ToBrokenRules();
 
-		return new Models.CommandResult
+		return new Results.CommandResult
 		{
-			ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Models.Severity.Error).ToList(),
-			WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Models.Severity.Warning).ToList(),
-			HasError = brokenRules.Count(x => x.Severity == Models.Severity.Error) > 0
+			ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Error).ToList(),
+			WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Warning).ToList(),
+			HasError = brokenRules.Count(x => x.Severity == Results.Severity.Error) > 0
 		};
 	}
 
-	public static void LogValidationFailedResult<T>(this ILogger logger, string message, Models.PersistResult<T> validationResult)
+	public static void LogValidationFailedResult<T>(this ILogger logger, string message, Results.PersistResult<T> validationResult)
 	{
 		if (validationResult == null)
 		{

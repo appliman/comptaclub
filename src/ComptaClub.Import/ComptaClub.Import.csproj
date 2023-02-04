@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <Reference Include="OFXNet">
+	    <HintPath>..\..\References\OFXNet.dll</HintPath>
+	  </Reference>
+	  <Reference Include="SgmlReader.Logic">
+		  <HintPath>lib\SgmlReader.Logic.dll</HintPath>
+	  </Reference>
+  </ItemGroup>
+
+	<ItemGroup>
+    <ProjectReference Include="..\ComptaClub.Datas.MsSql\ComptaClub.Datas.MsSql.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="lib\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="ClosedXML" Version="0.100.3" />
+	</ItemGroup>
+
+</Project>

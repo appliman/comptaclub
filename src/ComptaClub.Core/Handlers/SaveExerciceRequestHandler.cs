@@ -1,35 +1,60 @@
-﻿using ComptaClub.Configuration;
-using ComptaClub.Models;
-using ComptaClub.Requests;
-using ComptaClub.Services;
+﻿using ComptaClub.Requests;
 
-using FluentValidation;
+namespace ComptaClub.Handlers;
 
-using MediatR;
-
-namespace ComptaClub.Handlers
+internal class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Datas.ExerciceData>, Results.PersistResult<Guid>>
 {
-    public class SaveExerciceRequestHandler : IRequestHandler<Requests.SaveEntityRequest<Models.Exercice>, Models.PersistResult<Guid>>
+    private readonly IValidator<Datas.ExerciceData> _validator;
+	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IMediator _mediator;
+
+    public SaveExerciceRequestHandler(IValidator<Datas.ExerciceData> validator, 
+        IDbContextFactory<ComptaClubDbContext> dbContextFactory, 
+        ILogger<SaveBankRequestHandler> logger,
+        IMediator mediator) 
+        : base(dbContextFactory, logger)
     {
-        private readonly ITableStorageService _tableStorageService;
-        private readonly IValidator<Models.Exercice> _validator;
+        _validator = validator;
+		_dbContextFactory = dbContextFactory;
+        _mediator = mediator;
+    }
 
-        public SaveExerciceRequestHandler(ITableStorageService tableStorageService,
-            IValidator<Models.Exercice> validator)
+    public async Task<Results.PersistResult<Guid>> Handle(Requests.SaveEntityRequest<Datas.ExerciceData> request, CancellationToken cancellationToken)
+    {
+        var valid = await _validator.ValidateAsync(request.Entity);
+        if (!valid.IsValid)
         {
-            _tableStorageService = tableStorageService;
-            _validator = validator;
+            return valid.ToPersistResult<Guid>()!;
         }
 
-        public async Task<PersistResult<Guid>> Handle(Requests.SaveEntityRequest<Models.Exercice> request, CancellationToken cancellationToken)
+        var db = await _dbContextFactory.CreateDbContextAsync();
+        var exerciceCount = await db.Exercices.CountAsync();
+
+        // S'il n'y a aucun exercice, le nouveau doit etre actif
+        if (exerciceCount == 0)
         {
-            var result = await _validator.ValidateAsync(request.Entity);
-            if (!result.IsValid)
+            request.Entity.Active = true;
+        }
+
+        if (request.Entity.Active)
+        {
+            var balance = await _mediator.Send(new GetCurrentBalanceRequest());
+            request.Entity.BalanceAmount = balance;
+        }
+
+        var result = await SaveEntity<Datas.ExerciceData>(request.Entity);
+        if (!result.HasError)
+        {
+			exerciceCount = await db.Exercices.CountAsync();
+            // Si c'est le seul exercice, il doit etre actif impérativement
+            if (exerciceCount == 1
+                && !request.Entity.Active)
             {
-                return result.ToPersistResult<Guid>()!;
-            }
+                request.Entity.Active = true;
+				result = await SaveEntity<Datas.ExerciceData>(request.Entity);
+			}
+		}
 
-            return await _tableStorageService.SaveEntity<Datas.Exercice>(request.Entity);
-        }
+        return result;
     }
 }

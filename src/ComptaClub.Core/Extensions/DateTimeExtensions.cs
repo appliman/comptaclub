@@ -15,11 +15,33 @@ namespace ComptaClub.Extensions
             return Convert.ToInt32(dayCount);
         }
 
+        public static int? ToDayId(this DateTime? date)
+        {
+            if (date == null)
+            {
+                return null;
+            }
+            var baseDate = new DateTime(2000, 1, 1);
+            var dayCount = (date.Value - baseDate).TotalDays;
+            return Convert.ToInt32(dayCount);
+        }
+
         public static DateTime FromDayId(this int dayId)
         {
-            var date = new DateTime(2000,0,0).AddDays(dayId);
+            var date = new DateTime(2000,1,1).AddDays(dayId);
             return date;
         }
+
+        public static DateTime? FromDayId(this int? dayId)
+        {
+            if (dayId == null)
+            {
+                return null;
+            }
+            var date = new DateTime(2000, 1, 1).AddDays(dayId.Value);
+            return date;
+        }
+
 
         public static int FirstDateOfCurrentYear(this DateTime date)
         {

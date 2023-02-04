@@ -1,61 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ComptaClub.Requests;
 
-using Azure.Data.Tables;
+namespace ComptaClub.Handlers;
 
-using ComptaClub.Models;
-using ComptaClub.Requests;
-using ComptaClub.Services;
-
-using MediatR;
-
-namespace ComptaClub.Handlers
+internal class GetCurrentBalanceRequestHandler : IRequestHandler<Requests.GetCurrentBalanceRequest, long>
 {
-	public class GetCurrentBalanceRequestHandler : IRequestHandler<Requests.GetCurrentBalanceRequest, Models.Balance?>
+     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+     private readonly IMediator _mediator;
+
+	public GetCurrentBalanceRequestHandler(
+        IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+		MediatR.IMediator mediator)
 	{
-		private readonly IMapper _mapper;
-		private readonly ITableStorageService _tableStorageService;
-		private readonly IMediator _mediator;
+        _dbContextFactory = dbContextFactory;
+        _mediator = mediator;
+	}
 
-		public GetCurrentBalanceRequestHandler(AutoMapper.IMapper mapper,
-			ITableStorageService tableStorageService,
-			MediatR.IMediator mediator)
+	public async Task<long> Handle(Requests.GetCurrentBalanceRequest request, CancellationToken cancellationToken)
+	{
+        var db = await _dbContextFactory.CreateDbContextAsync();
+		var exercice = await db.Exercices.FirstOrDefaultAsync(i => i.Active);
+		if (exercice is null) 
 		{
-			_mapper = mapper;
-			_tableStorageService = tableStorageService;
-			_mediator = mediator;
+			return 0;
 		}
 
-		public async Task<Balance?> Handle(GetCurrentBalanceRequest request, CancellationToken cancellationToken)
-		{
-			var table = await _tableStorageService.GetTable<Datas.Exercice>();
-			var page = table.QueryAsync<Datas.Exercice>(i => i.Active);
-			Models.Exercice? exercice = null;
-			await foreach (var item in page)
-			{
-				exercice = _mapper.Map<Models.Exercice>(item);
-				break;
-			}
-			if (exercice is null) 
-			{
-				throw new Exception("Il n'y a pas d'exercice en cours");
-			}
+        long globalBalance = exercice.InitialAmount;
 
-			if (!exercice.LastEntryId.HasValue)
-			{
-				return new Balance(exercice.InitialAmount);
-			}
+        var query = from entry in db.Entries
+                    where entry.ValueDate >= exercice.StartDate && entry.ValueDate <= exercice.EndDate
+                        && entry.DeletedDate == null
+                        && entry.ExerciceId == exercice.Id
+                    group entry by new { } into g
+                    select new
+                    {
+                        Balance = g.Sum(i => i.AccountDirection == AccountDirection.Credit ? i.Amount : i.Amount * -1),
+                        EntryCount = g.Count()
+                    };
 
-			var lastEntry = await _mediator.Send(new GetEntryByIdRequest(exercice.LastEntryId.Value));
-			if (lastEntry is null)
-			{
-				throw new Exception("Ne devrait pas arriver");
-			}
+        var balanceResult = await query.FirstOrDefaultAsync();
+        if (balanceResult != null)
+        {
+            globalBalance = globalBalance + balanceResult.Balance;
+        }
 
-			return lastEntry.Balance;
-		}
+        return globalBalance;
 	}
 }

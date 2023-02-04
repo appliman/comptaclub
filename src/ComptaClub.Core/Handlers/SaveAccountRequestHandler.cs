@@ -1,41 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Azure.Core;
 
-using ComptaClub.Models;
 using ComptaClub.Requests;
-using ComptaClub.Services;
 
-using FluentValidation;
+namespace ComptaClub.Handlers;
 
-using MediatR;
-
-namespace ComptaClub.Handlers
+internal class SaveAccountRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Datas.AccountData>, Results.PersistResult<Guid>>
 {
-    public class SaveAccountRequestHandler : IRequestHandler<Requests.SaveEntityRequest<Models.Account>, Models.PersistResult<Guid>>
-    {
-        private readonly ITableStorageService _tableStorageService;
-        private readonly IValidator<Account> _validator;
+    private readonly IValidator<Datas.AccountData> _validator;
+    private readonly IMediator _mediator;
 
-        public SaveAccountRequestHandler(ITableStorageService tableStorageService,
-            IValidator<Models.Account> validator)
+    public SaveAccountRequestHandler(
+        IValidator<Datas.AccountData> validator,
+        IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+        ILogger<SaveAccountRequestHandler> logger,
+        IMediator mediator)
+        : base(dbContextFactory, logger)
+    {
+        _validator = validator;
+        _mediator = mediator;
+    }
+
+    public async Task<Results.PersistResult<Guid>> Handle(Requests.SaveEntityRequest<Datas.AccountData> request, CancellationToken cancellationToken)
+    {
+        var existing = await _mediator.Send(new GetAccountByFilterRequest(f => f.GetById(request.Entity.Id)));
+        if (existing != null
+            && existing.Direction != request.Entity.Direction)
         {
-            _tableStorageService = tableStorageService;
-            _validator = validator;
+            // Changer la direction de tous les enfants
+            await ChangeDirectionForAllChildren(request.Entity);
         }
 
-        public async Task<PersistResult<Guid>> Handle(SaveEntityRequest<Account> request, CancellationToken cancellationToken)
+        var result = await _validator.ValidateAsync(request.Entity);
+        if (!result.IsValid)
         {
-            var result = await _validator.ValidateAsync(request.Entity);
-            if (!result.IsValid)
-            {
-                return result.ToPersistResult<Guid>()!;
-            }
+            return result.ToPersistResult<Guid>()!;
+        }
 
-            return await _tableStorageService.SaveEntity<Datas.Account>(request.Entity);
+        return await SaveEntity<Datas.AccountData>(request.Entity);
+    }
+
+    private async Task ChangeDirectionForAllChildren(Datas.AccountData root)
+    {
+        var children = await _mediator.Send(new GetPagedEntityListRequest<AccountListFilter, Datas.AccountData>(f => f.ParentAccountId = root.Id));
+        if (children == null
+            || children.List == null
+            || !children.List.Any())
+        {
+            return;
+        }
+        foreach (var account in children.List)
+        {
+            account.Direction = root.Direction;
+            await SaveEntity<Datas.AccountData>(account);
+            await ChangeDirectionForAllChildren(account);
         }
     }
 }

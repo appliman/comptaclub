@@ -1,0 +1,96 @@
+﻿@page "/ecritures"
+
+<PageTitle>Ecritures</PageTitle>
+
+<RadzenDataGrid @ref="grid" 
+    AllowFiltering="true" 
+    AllowSorting="false" 
+    AllowColumnResize="true"
+    Data="@entryList"
+    LoadData="@LoadDatas"
+    TItem="ViewModels.Entry"
+    ColumnWidth="90px"
+    GridLines="DataGridGridLines.Both" 
+    FilterMode="FilterMode.Simple">
+    <Columns>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="RowIndex" Title="#" Width="60px" Filterable="false" FormatString="" Frozen="true" SortOrder="SortOrder.Ascending">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="CreationDate" Title="Date" Width="110px" Filterable="true" Frozen="true">
+            <Template Context="data">
+                <DateLabel Value="data.CreationDate" />
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="PartNumber" Title="N°" Width="200px" Filterable="true" Frozen="true">
+            <Template Context="data">
+                <div class="w-100">
+                    @data.PartNumber<br/>
+                    @data.Label<br/>
+                    <small>@data.ExtraInfos</small>
+                </div>
+            </Template>
+            <FooterTemplate>
+                @if (entryList != null)
+                {
+                    <div>Nombre d'ecritures : @entryList!.Count() / @entryList!.Count()</div>
+                }
+            </FooterTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="AccountId" Title="Compte" Width="250px" Filterable="true">
+            <Template Context="data">
+                <div class="w-100">@leafAccountList.Single(i => data.AccountId == i.Id).CodeAndLabel</div>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Règlement" Filterable="true" Width="120px">
+            <FilterTemplate>
+                <SuperNullableEnumDropdownFilterColumn Value="@filter.PaymentType" ApplyFilter="ApplyFilter" />
+            </FilterTemplate>
+            <Template Context="entry">
+                <EnumLabel Value="@entry.PaymentType"/>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Débit" Filterable="true">
+            <Template Context="entry">
+                @if (entry.AccountDirection == Datas.AccountDirection.Debit)
+                {
+                    <PriceLabel Value="@entry.Amount" />
+                }
+            </Template>
+            <FooterTemplate>
+                @if (entryList != null) 
+                {
+                    <PriceLabel Value="@(entryList!.Where(i => i.AccountDirection == Datas.AccountDirection.Debit).Sum(i => i.Amount))"/>
+                }
+            </FooterTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Crédit" Filterable="true">
+            <Template Context="entry">
+                @if (entry.AccountDirection == Datas.AccountDirection.Credit)
+                {
+                    <PriceLabel Value="@entry.Amount" />
+                }
+            </Template>
+            <FooterTemplate>
+                @if (entryList != null)
+                {
+                    <PriceLabel Value="@(entryList!.Where(i => i.AccountDirection == Datas.AccountDirection.Credit).Sum(i => i.Amount))" />
+                }
+            </FooterTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Solde" Filterable="false">
+            <Template Context="entry">
+                <PriceLabel Value="@entry.Balance" />
+            </Template>
+            <FooterTemplate>
+                <PriceLabel Value="@currentBalance"/>
+            </FooterTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Context="entry" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="100px">
+            <Template Context="entry">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(entry))" @onclick:stopPropagation="true" title="Editer cette ecriture">
+                </RadzenButton>
+                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(entry))" @onclick:stopPropagation="true" title="Supprimer cette ecriture">
+                </RadzenButton>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>

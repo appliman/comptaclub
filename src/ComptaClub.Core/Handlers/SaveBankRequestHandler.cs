@@ -1,35 +1,50 @@
-﻿using ComptaClub.Configuration;
-using ComptaClub.Models;
-using ComptaClub.Requests;
-using ComptaClub.Services;
+﻿namespace ComptaClub.Handlers;
 
-using FluentValidation;
-
-using MediatR;
-
-namespace ComptaClub.Handlers
+internal class SaveBankRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<Datas.BankData>, Results.PersistResult<Guid>>
 {
-    public class SaveBankRequestHandler : IRequestHandler<Requests.SaveEntityRequest<Models.Bank>, Models.PersistResult<Guid>>
+    private readonly IValidator<Datas.BankData> _validator;
+    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+
+    public SaveBankRequestHandler(
+        IValidator<Datas.BankData> validator,
+        IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+        ILogger<SaveBankRequestHandler> logger)
+        : base(dbContextFactory, logger)
     {
-        private readonly ITableStorageService _tableStorageService;
-        private readonly IValidator<Bank> _validator;
+        _validator = validator;
+        _dbContextFactory = dbContextFactory;
+    }
 
-        public SaveBankRequestHandler(ITableStorageService tableStorageService,
-            IValidator<Models.Bank> validator)
+    public async Task<Results.PersistResult<Guid>> Handle(Requests.SaveEntityRequest<Datas.BankData> request, CancellationToken cancellationToken)
+    {
+        var result = await _validator.ValidateAsync(request.Entity);
+        if (!result.IsValid)
         {
-            _tableStorageService = tableStorageService;
-            _validator = validator;
+            return result.ToPersistResult<Guid>()!;
         }
 
-        public async Task<PersistResult<Guid>> Handle(Requests.SaveEntityRequest<Models.Bank> request, CancellationToken cancellationToken)
+        var db = await _dbContextFactory.CreateDbContextAsync();
+        var bankCount = await db.Banks.CountAsync();
+
+        // S'il n'y a aucun exercice, le nouveau doit etre actif
+        if (bankCount == 0)
         {
-            var result = await _validator.ValidateAsync(request.Entity);
-            if (!result.IsValid)
+            request.Entity.Active = true;
+        }
+
+        var saveResult = await SaveEntity<Datas.BankData>(request.Entity);
+        if (!saveResult.HasError)
+        {
+            bankCount = await db.Banks.CountAsync();
+            // Si c'est le seul exercice, il doit etre actif impérativement
+            if (bankCount == 1
+                && !request.Entity.Active)
             {
-                return result.ToPersistResult<Guid>()!;
+                request.Entity.Active = true;
+                saveResult = await SaveEntity<Datas.BankData>(request.Entity);
             }
-
-            return await _tableStorageService.SaveEntity<Datas.Bank>(request.Entity);
         }
+
+        return saveResult;
     }
 }

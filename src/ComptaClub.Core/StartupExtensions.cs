@@ -1,4 +1,10 @@
-﻿using FluentValidation;
+﻿using Azure.Core;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+
+using ComptaClub.Datas;
+
+using FluentValidation;
 
 using MediatR;
 
@@ -11,31 +17,61 @@ namespace ComptaClub;
 
 public static class StartupExtensions
 {
-    public static async Task<Configuration.ComptaClubSettings> ConfigureComptaClub(this WebApplicationBuilder builder)
+    public static async Task<Configuration.ComptaClubSettings> ConfigureComptaClub(this WebApplicationBuilder builder, params string[] args)
     {
+        builder.Environment.EnvironmentName = GetEnvironmentName(args);
+
         var currentFolder = System.IO.Path.GetDirectoryName(typeof(StartupExtensions).Assembly.Location);
         builder.Configuration
-            .AddJsonFile("appSettings.json")
-            .AddJsonFile($"appSettings.{builder.Environment.EnvironmentName}.json")
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json")
+            .AddJsonFile($"appsettings.local.json", true)
             .AddEnvironmentVariables()
             .SetBasePath(currentFolder!);
 
         var section = builder.Configuration.GetSection("ComptaClub");
         var settings = new Configuration.ComptaClubSettings();
         section.Bind(settings);
-
         builder.Services.AddSingleton(settings);
 
-        builder.Services.AddScoped<Services.ITableStorageService, Services.TableStorageService>();
-        builder.Services.AddScoped<Services.IAccountingService, Services.AccountingService>();
+        var vaultUri = new Uri($"https://{settings.KeyVaultName}.vault.azure.net");
+        var credential = new ClientCertificateCredential(settings.KeyVaultTenantId, settings.KeyVaultClientId, settings.KeyVaultCertificatePath);
+        var client = new SecretClient(vaultUri,credential);
 
-        builder.Services.AddAutoMapper(typeof(StartupExtensions));
+        var csSecret = await client.GetSecretAsync("AzureStorageConnectionString");
+        settings.SetAzureStorageConnectionString(csSecret.Value.Value);
+
+        var sqlConnectionString = args.GetParameterValue("cs");
+        if (string.IsNullOrWhiteSpace(sqlConnectionString))
+        {
+            var cs = await client.GetSecretAsync("SqlConnectionString");
+            settings.SetSqlConnectionString(cs.Value.Value);
+        }
+        else
+        {
+            settings.SetSqlConnectionString(sqlConnectionString);
+        }
+
+        var azureStorageAccountKey = await client.GetSecretAsync("AzureStorageAccountKey");
+        settings.SetAzureStorageAccountKey(azureStorageAccountKey.Value.Value);
+
+        var smtpPassword = await client.GetSecretAsync("SmtpPassword");
+        settings.SetSmtpPassword(smtpPassword.Value.Value);
+
+        builder.Services.AddComptaClubDbContext(cfg =>
+        {
+            cfg.EnvironmentName = builder.Environment.EnvironmentName;
+            cfg.ConnectionString = settings.SqlConnectionString;
+        });
+
         builder.Services.AddMediatR(typeof(StartupExtensions));
 
-        builder.Services.AddTransient<IValidator<Models.Bank>, Validators.BankValidator>();
-        builder.Services.AddTransient<IValidator<Models.Account>, Validators.AccountValidator>();
-        builder.Services.AddTransient<IValidator<Models.Exercice>, Validators.ExerciceValidator>();
-        builder.Services.AddTransient<IValidator<Models.Entry>, Validators.EntryValidator>();
+        builder.Services.AddTransient<IValidator<Datas.BankData>, Validators.BankValidator>();
+        builder.Services.AddTransient<IValidator<Datas.AccountData>, Validators.AccountValidator>();
+        builder.Services.AddTransient<IValidator<Datas.ExerciceData>, Validators.ExerciceValidator>();
+        builder.Services.AddTransient<IValidator<Datas.EntryData>, Validators.EntryValidator>();
+        builder.Services.AddTransient<IValidator<Datas.UserData>, Validators.UserValidator>();
+        builder.Services.AddTransient<IValidator<Datas.MemberData>, Validators.MemberValidator>();
 
         builder.Services.AddMemoryCache();
 
@@ -45,6 +81,57 @@ public static class StartupExtensions
 			builder.Logging.AddConsole();
 		}
 
-		return await Task.FromResult(settings);
+		return settings;
+    }
+
+    public static string GetEnvironmentName(params string[] args)
+    {
+        var envParam = args.GetParameterValue("env");
+        if (!string.IsNullOrWhiteSpace(envParam))
+        {
+            return envParam;
+        }
+        var currentFolder = System.IO.Path.GetDirectoryName(typeof(StartupExtensions).Assembly.Location);
+        var environmentFileName = System.IO.Path.Combine(currentFolder!, "env.txt");
+        if (!System.IO.File.Exists(environmentFileName))
+        {
+            return "Development";
+        }
+        var lines = System.IO.File.ReadAllLines(environmentFileName);
+        if (lines == null)
+        {
+            return "Development";
+        }
+        var result = lines.FirstOrDefault();
+        if (result == null)
+        {
+            return "Development";
+        }
+        return result.Trim();
+    }
+
+    public static string GetParameterValue(this string[] args, string parameterName)
+    {
+        if (args == null
+            || !args.Any())
+        {
+            return string.Empty;
+        }
+
+        string value = string.Empty;
+        var nextisvalue = false;
+        foreach (var item in args)
+        {
+            if (nextisvalue)
+            {
+                value = item;
+                break;
+            }
+            if (item.Equals($"--{parameterName}", StringComparison.InvariantCultureIgnoreCase))
+            {
+                nextisvalue = true;
+            }
+        }
+        return $"{value}".Trim();
     }
 }

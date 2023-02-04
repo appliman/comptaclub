@@ -1,0 +1,54 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using ComptaClub.Requests;
+using ComptaClub.Results;
+
+namespace ComptaClub.Handlers;
+
+internal class DeleteExerciceRequestHandler : IRequestHandler<Requests.DeleteExerciceRequest, CommandResult>
+{
+	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+
+	public DeleteExerciceRequestHandler(IDbContextFactory<Datas.ComptaClubDbContext> dbContextFactory)
+	{
+		_dbContextFactory = dbContextFactory;
+	}
+
+	public async Task<CommandResult> Handle(DeleteExerciceRequest request, CancellationToken cancellationToken)
+	{
+		// On regarde s'il existe déjà des entrées associées à l'exercice
+		var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+		var exercice = await db.Exercices.FindAsync(request.ExerciceId);
+
+		if (exercice == null)
+		{
+			return CommandResult.CreateWarningResult("Cet exercice n'existe pas");
+		}
+
+		if (exercice.ClosedDate.HasValue)
+		{
+			return CommandResult.CreateInvalidResult("Il n'est pas possible de supprimer un exercice clos");
+		}
+
+		var entryCount = await db.Entries.CountAsync(i => i.ExerciceId == request.ExerciceId);
+		if (entryCount > 0)
+		{
+			return CommandResult.CreateInvalidResult("Il n'est pas possible de supprimer un exercice avec des ecritures");
+		}
+
+		db.Exercices.Remove(exercice);
+		db.Entry(exercice).State = EntityState.Deleted;
+
+		var changeCount = await db.SaveChangesAsync(cancellationToken);
+
+		return new CommandResult
+		{
+			ChangeCount = changeCount,
+			HasError = false
+		};
+	}
+}

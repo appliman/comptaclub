@@ -1,24 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+namespace ComptaClub.Requests;
 
-using ComptaClub.Models;
-
-using MediatR;
-
-namespace ComptaClub.Requests
+public record SaveEntityRequest<T> : IRequest<Results.PersistResult<Guid>>
+    where T : class, Datas.IPrimaryKey
 {
-    public record SaveEntityRequest<T> : IRequest<Models.PersistResult<Guid>>
-        where T : class, IEntityKey
+    public SaveEntityRequest(T entity, bool bypassRules = false)
     {
-        public SaveEntityRequest(T entity)
-        {
-            this.Entity = entity;
-        }
-
-        public T Entity { get; init; }
+        this.Entity = entity;
+        this.BypassRules = bypassRules;
     }
+
+    public T Entity { get; init; }
+    public bool BypassRules { get; set; } = false;
 }

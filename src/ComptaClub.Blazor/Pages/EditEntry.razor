@@ -1,0 +1,40 @@
+﻿@page "/ecriture/ajout/{direction}"
+@page "/ecriture/edition/{EntryId:guid}"
+
+<PageTitle>Edition d'une ecriture</PageTitle>
+
+<EditForm Model="entry" OnValidSubmit="ValidateAndSave">
+	<ValidationSummary></ValidationSummary>
+	<DataAnnotationsValidator />
+	<CustomValidator @ref="customValidator"></CustomValidator>
+	<div class="row">
+		<SuperInputDate @bind-Value="entry.CreationDate" PlaceHoder="Date" Required="true" Label="Date :" />
+		<SuperInputText @bind-Value="entry.PartNumber" PlaceHoder="Code" Required="true" Label="N° Pièce :" />
+		<SuperInputText @bind-Value="entry.Label" PlaceHoder="Libellé" Required="true" Label="Libellé :" />
+		<SuperInputSelect @bind-Value="entry.BankId" ItemList="@bankOptionList" Required="true" Label="Banque :" />
+		<SuperInputSelect @bind-Value="entry.AccountId" ItemList="@accountOptionList" Required="true" Label="Compte :" />
+		<SuperEnumInputSelect @bind-Value="entry.PaymentType" Required="true" Label="Mode de règlement :" />
+		<SuperInputCurrency @bind-Value="entry.Amount" PlaceHoder="Montant" Label="Montant :"/>
+		<SuperInputArea @bind-Value="entry.ExtraInfos" PlaceHoder="Informations supplémentaires" Label="Informations supplémentaires :"/>
+	</div>
+</EditForm>
+
+<hr/>
+<label>Membres associé à l'écriture :</label>
+<RadzenDataGrid @ref="grid"
+                AllowFiltering="true"
+                AllowSorting="true"
+                AllowColumnResize="true"
+                Data="@memberList"
+                TItem="ViewModels.Member"
+                ColumnWidth="100px"
+                GridLines="DataGridGridLines.Both"
+                FilterMode="FilterMode.Simple">
+    <Columns>
+        <RadzenDataGridColumn TItem="ViewModels.Member" Property="Name" Title="Nom" Width="120px" Filterable="false" Frozen="true">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Member" Property="Email" Title="Email" Width="100px" Filterable="false" FormatString="{0:dd/MM/yy}" Frozen="false">
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+

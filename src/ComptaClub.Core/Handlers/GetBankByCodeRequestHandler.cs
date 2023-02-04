@@ -1,40 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ComptaClub.Requests;
 
-using ComptaClub.Configuration;
-using ComptaClub.Models;
-using ComptaClub.Requests;
-using ComptaClub.Services;
+namespace ComptaClub.Handlers;
 
-using MediatR;
-
-namespace ComptaClub.Handlers
+internal class GetBankByCodeRequestHandler : IRequestHandler<Requests.GetBankByFilterRequest, Datas.BankData?>
 {
-    public class GetBankByCodeRequestHandler : IRequestHandler<Requests.GetBankByCodeRequest, Models.Bank>
+    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+
+    public GetBankByCodeRequestHandler(
+        IDbContextFactory<ComptaClubDbContext> dbContextFactory)
     {
-        private readonly IMapper _mapper;
-        private readonly ITableStorageService _tableStorageService;
-
-        public GetBankByCodeRequestHandler(
-            AutoMapper.IMapper mapper,
-            ITableStorageService tableStorageService)
-        {
-            _mapper = mapper;
-            _tableStorageService = tableStorageService;
-        }
-
-        public async Task<Bank> Handle(GetBankByCodeRequest request, CancellationToken cancellationToken)
-        {
-            var bankTable = await _tableStorageService.GetTable<Datas.Bank>();
-
-            var data = await bankTable.GetFirstOrDefaultEntity<Datas.Bank>(f => f.PartitionKey == request.Code);
-
-            var result = _mapper.Map<Models.Bank>(data);
-            return result;
-        }
-
+        _dbContextFactory = dbContextFactory;
     }
+
+    public async Task<Datas.BankData?> Handle(GetBankByFilterRequest request, CancellationToken cancellationToken)
+    {
+        var db = await _dbContextFactory.CreateDbContextAsync();
+
+        var data = await db.Banks.FirstOrDefaultAsync(request.Filter);
+
+        return data;
+    }
+
 }

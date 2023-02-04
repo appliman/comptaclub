@@ -9,16 +9,16 @@ using ComptaClub.Requests;
 
 using MediatR;
 
-namespace ComptaClub.Handlers
+namespace ComptaClub.Handlers;
+
+internal class CreateEntryRequestHandler : IRequestHandler<Requests.CreateEntryRequest, Datas.EntryData>
 {
-    public class CreateEntryRequestHandler : IRequestHandler<Requests.CreateEntryRequest, Models.Entry>
+    public Task<Datas.EntryData> Handle(CreateEntryRequest request, CancellationToken cancellationToken)
     {
-        public Task<Entry> Handle(CreateEntryRequest request, CancellationToken cancellationToken)
-        {
-            var result = new Models.Entry();
-            result.Id = Guid.NewGuid();
-            result.CreationDate = DateTime.Today.ToDayId();
-            return Task.FromResult(result);
-        }
+        var result = new Datas.EntryData();
+        result.Id = Guid.NewGuid();
+        result.CreationDate = DateTime.Today.ToDayId();
+        result.ValueDate = DateTime.Today.ToDayId();    
+        return Task.FromResult(result);
     }
 }
