@@ -2,13 +2,13 @@
 
 public abstract class ToolbarItem
 {
-	public string Name { get; set; }
-	public string IconName { get; set; }
-	public string Text { get; set; }
-	public string Title { get; set; }
-	public string Description { get; set; }
+	public string Name { get; set; } = null!;
+	public string IconName { get; set; } = null!;
+    public string Text { get; set; } = null!; 
+	public string Title { get; set; } = null!; 
+	public string Description { get; set; } = null!;
 	public bool ReloadList { get; set; } = true;
-	public object Entity { get; set; }
+	public object? Entity { get; set; }
 	public int SelectedItemCount { get; set; }
 	public bool DisplayLoader { get; set; } = true;
 }
