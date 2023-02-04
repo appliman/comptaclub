@@ -13,6 +13,7 @@ using EFScriptableMigration;
 using System.Data;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
+using FluentEmail.MailKitSmtp;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -104,7 +105,17 @@ else if (globalSettings.SmtpProviderName == "smtp")
         Credentials = credentials
     });
 }
-
+else if (globalSettings.SmtpProviderName == "mimekit")
+{
+    fluentEmail.AddMailKitSender(new SmtpClientOptions
+    {
+        UseSsl = globalSettings.SmtpEnableSsl,
+        Server = globalSettings.SmtpHost,
+        Port = globalSettings.SmtpPort,
+        User = globalSettings.SmtpUserName,
+        Password = globalSettings.SmtpPassword
+    });
+}
 
 var app = builder.Build();
 
