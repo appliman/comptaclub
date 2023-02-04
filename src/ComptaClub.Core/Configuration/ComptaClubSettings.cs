@@ -27,7 +27,7 @@ namespace ComptaClub.Configuration
         public int SmtpPort { get; set; }
         public string SmtpUserName { get; set; } = null!;
         public string SmtpPassword { get; set; } = null!;
-        public void SetSmtpPassword(string value) => this.SmtpUserName = value;
+        public void SetSmtpPassword(string value) => this.SmtpPassword = value;
         public bool SmtpEnableSsl { get; set; } = true;
 
         public string AzureStorageConnectionString {get; private set; } = null!;
