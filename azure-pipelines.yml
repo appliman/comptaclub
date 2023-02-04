@@ -52,7 +52,7 @@ steps:
   inputs:
     testSelector: 'testAssemblies'
     testAssemblyVer2: |
-      $(System.DefaultWorkingDirectory)\src\TimeSheet.Tests\bin\$(buildConfiguration)\$(dotnetVersion)\ComptaClub.Tests.dll
+      $(System.DefaultWorkingDirectory)\src\ComptaClub.Tests\bin\$(buildConfiguration)\$(dotnetVersion)\ComptaClub.Tests.dll
       !**\*TestAdapter.dll
       !**\obj\**
     searchFolder: '$(System.DefaultWorkingDirectory)'
