@@ -2,6 +2,23 @@
 
 <PageTitle>Plan</PageTitle>
 
+@if (uploadEnabled)
+{
+    <div class="m-4">
+        <label class="form-label">Veuillez indiquer le fichier à envoyer :</label>
+        <InputFile OnChange="ImportFromJson" class="form-control" />
+        @if (!string.IsNullOrWhiteSpace(uploadError))
+        {
+            <div class="danger">@uploadError</div>
+        }
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(uploadSuccess))
+{
+    <div class="success m-4">@uploadError</div>
+}
+
 <RadzenDataGrid @ref="grid" 
     AllowFiltering="false" 
     AllowSorting="false" 

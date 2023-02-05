@@ -1,4 +1,6 @@
-﻿namespace ComptaClub.Handlers;
+﻿using ComptaClub.Requests;
+
+namespace ComptaClub.Handlers;
 
 internal class ImportAccountingPlanRequestHandler : IRequestHandler<Requests.ImportAccountingPlanRequest, Results.CommandResult>
 {
@@ -19,6 +21,11 @@ internal class ImportAccountingPlanRequestHandler : IRequestHandler<Requests.Imp
 		var itemCount = 0;
 		foreach (var account in list)
 		{
+			var existing = await _mediator.Send(new GetAccountByFilterRequest(f => f.SetById(account.Id)));
+			if (existing != null)
+			{
+				continue;
+			}
 			var saveResult = await _mediator.Send(new Requests.SaveEntityRequest<Datas.AccountData>(account));
 			if (saveResult.HasError)
 			{
