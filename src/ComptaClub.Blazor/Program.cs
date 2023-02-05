@@ -113,7 +113,8 @@ else if (globalSettings.SmtpProviderName == "mimekit")
         Server = globalSettings.SmtpHost,
         Port = globalSettings.SmtpPort,
         User = globalSettings.SmtpUserName,
-        Password = globalSettings.SmtpPassword
+        Password = globalSettings.SmtpPassword,
+        RequiresAuthentication = true
     });
 }
 
