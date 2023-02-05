@@ -51,7 +51,7 @@ internal class GetBalanceByMemberListRequestHandler : IRequestHandler<Requests.G
                     {
                         ExerciceId = exerciceId,
                         MemberId = g.Key,
-                        Balance = g.Sum(i => i.entry.Amount * (int)i.entry.AccountDirection),
+                        Balance = g.Sum(i => i.mbe.Amount * (int)i.entry.AccountDirection),
                         EntryCount = g.Select(i => i.entry.Id).Distinct().Count()
                     };
 

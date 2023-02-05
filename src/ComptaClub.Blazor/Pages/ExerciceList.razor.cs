@@ -28,15 +28,18 @@ public partial class ExerciceList : ComponentBase
     RadzenDataGrid<ViewModels.Exercice>? grid;
     List<Results.BrokenRule> brokenRules = new();
 
+    protected override void OnInitialized()
+    {
+        MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarLink
+        {
+            IconName = "add_circle_outline",
+            Text = "Ajouter un exercice",
+            Url = "/exercice/ajout"
+        }).Display();
+    }
+
     async Task LoadDatas()
     {
-		MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarLink
-		{
-			IconName = "add_circle_outline",
-			Text = "Ajouter un exercice",
-            Url = "/exercice/ajout"
-		}).Display();
-
 		var datas = await Mediator!.Send(new GetAllExercicesRequest());
         exerciceList = Mapper.Map<List<ViewModels.Exercice>>(datas);
         StateHasChanged();

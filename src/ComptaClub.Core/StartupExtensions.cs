@@ -72,6 +72,7 @@ public static class StartupExtensions
         builder.Services.AddTransient<IValidator<Datas.EntryData>, Validators.EntryValidator>();
         builder.Services.AddTransient<IValidator<Datas.UserData>, Validators.UserValidator>();
         builder.Services.AddTransient<IValidator<Datas.MemberData>, Validators.MemberValidator>();
+        builder.Services.AddTransient<IValidator<Datas.AssociatedMemberListByEntryData>, Validators.AssociatedMemberListByEntryValidator>();
 
         builder.Services.AddMemoryCache();
 
