@@ -91,7 +91,10 @@ public class ImportExcelMemberListRequestHandler : IRequestHandler<Requests.Impo
                     continue;
                 }
 
-                existing = await _mediator.Send(new GetMemberByFilterRequest(f => f.Email = member.Email));
+                existing = await _mediator.Send(new GetMemberByFilterRequest(f => {
+                    f.LicenseNumber = member.Email;
+                    f.Name = member.Name;
+                }));
                 if (existing != null)
                 {
                     continue;
