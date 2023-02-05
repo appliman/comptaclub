@@ -9,6 +9,13 @@ namespace ComptaClub.Blazor.Pages.Shared
         [CascadingParameter]
         Task<AuthenticationState> AuthenticationState { get; set; } = default!;
 
+        [Inject]
+        public NotificationService NotificationService { get; set; } = default!;
+
+        [Inject]
+        public DialogService DialogService { get; set; } = default!;
+
+
         bool sidebarExpanded = false;
         bool loaderVisible = false;
         RadzenBody? body;
@@ -19,6 +26,11 @@ namespace ComptaClub.Blazor.Pages.Shared
         protected override async Task OnInitializedAsync()
         {
             user = (await AuthenticationState).User.GetUserInfos() ?? new();
+        }
+
+        public ViewModels.User GetCurrentUser()
+        {
+            return user!;
         }
 
         public Toolbar AddToolbarItem(ViewModels.Toolbar.ToolbarItem item)

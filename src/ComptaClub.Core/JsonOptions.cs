@@ -20,6 +20,7 @@ public static class JsonSerializer
 			= System.Text.Json.Serialization.JsonUnknownTypeHandling.JsonNode;
 		options.PropertyNamingPolicy = null;
         options.WriteIndented = true;
+        options.ReadCommentHandling = JsonCommentHandling.Skip;
 		return options;
     }, true);
 

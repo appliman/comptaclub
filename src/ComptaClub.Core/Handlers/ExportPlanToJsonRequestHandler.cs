@@ -27,23 +27,14 @@ internal class ExportPlanToJsonRequestHandler : IRequestHandler<Requests.ExportP
         var plan = await _mediator.Send(new GetPlanRequest());
         var result = new CommandResult();
 
-        var jsonOptions = new System.Text.Json.JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            PropertyNamingPolicy = null,
-            DictionaryKeyPolicy = JsonNamingPolicy.CamelCase
-        };
-        jsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-        jsonOptions.WriteIndented = true;
-
-        var content = System.Text.Json.JsonSerializer.Serialize(plan, jsonOptions);
+        var content = System.Text.Json.JsonSerializer.Serialize(plan, ComptaClub.JsonSerializer.Options);
         try
         {
             if (System.IO.File.Exists(request.FileName))
             {
                 System.IO.File.Delete(request.FileName);
             }
-            await System.IO.File.WriteAllTextAsync(request.FileName, content, Encoding.UTF8);
+            await System.IO.File.WriteAllTextAsync(request.FileName, content, new UTF8Encoding(false));
             result.HasError = false;
         }
         catch(Exception ex) 
