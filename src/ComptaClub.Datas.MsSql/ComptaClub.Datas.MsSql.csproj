@@ -31,9 +31,11 @@
     <None Remove="Scripts\ComptaClub\0021-AlterTable-Members.sql" />
     <None Remove="Scripts\ComptaClub\0023-AlterTable-Entries.sql" />
     <None Remove="Scripts\ComptaClub\0024-CreateTable-AssociatedMemberListByEntryData.sql" />
+    <None Remove="Scripts\ComptaClub\0025-AlterTable-AssociatedMemberListByEntryData.sql" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\ComptaClub\0025-AlterTable-AssociatedMemberListByEntryData.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0023-AlterTable-Entries.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0024-CreateTable-AssociatedMemberListByEntryData.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0021-AlterTable-Members.sql" />

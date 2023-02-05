@@ -8,14 +8,16 @@ using ComptaClub.Results;
 
 namespace ComptaClub.Requests;
 
-public record LinkMemberToEntryRequest : IRequest<CommandResult>
+public record LinkMemberToEntryRequest : IRequest<PersistResult<Guid>>
 {
-	public LinkMemberToEntryRequest(Guid entryId, Guid memberId)
+	public LinkMemberToEntryRequest(Guid entryId, Guid memberId, long amount)
 	{
 		this.EntryId = entryId;
 		this.MemberId = memberId;
+		this.Amount = amount;
 	}
 
 	public Guid EntryId { get; init; }
 	public Guid MemberId { get; init; }
+	public long Amount { get; init; }
 }

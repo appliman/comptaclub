@@ -13,9 +13,6 @@ namespace ComptaClub.Blazor.Pages;
 
 public partial class EditEntry : ComponentBase
 {
-	[CascadingParameter]
-	Task<AuthenticationState> AuthenticationState { get; set; } = default!;
-
     [CascadingParameter]
     Shared.MainLayout MainLayout { get; set; } = default!;
 
@@ -34,9 +31,6 @@ public partial class EditEntry : ComponentBase
 	[Inject]
 	NavigationManager NavigationManager { get; set; } = default!;
 
-	[Inject]
-	DialogService DialogService { get; set; } = default!;
-
 
 	ViewModels.Entry entry = new();
 	CustomValidator? customValidator;
@@ -44,10 +38,7 @@ public partial class EditEntry : ComponentBase
 	List<SelectOption<Guid>> accountOptionList = new();
 	List<SelectOption<Guid>> exerciceOptionList = new();
 	Datas.AccountDirection direction;
-    RadzenDataGrid<ViewModels.Member>? grid = new();
-	List<ViewModels.Member> memberList = new();
-    ViewModels.Member? memberToInsert;
-
+	AssociatedMemberByEntry? associatedMembers;
 
     protected override async Task OnInitializedAsync()
 	{
@@ -108,14 +99,11 @@ public partial class EditEntry : ComponentBase
 			entry.ExerciceId = exercices.Single(i => i.Active).Id;
 		}
 
-		var userId = (await AuthenticationState).User.GetUserId();
-		if (userId != null)
+		var user = MainLayout.GetCurrentUser();
+		if (user != null)
 		{
-			entry.UserCreatorId = userId!;
+			entry.UserCreatorId = user.Id!;
         }
-
-		var dataList = await Mediator.Send(new GetMemberListByEntryRequest(entry.Id));
-		memberList = Mapper.Map<List<Member>>(dataList);
 
 		MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarButton
         {
@@ -128,7 +116,10 @@ public partial class EditEntry : ComponentBase
             IconName = "person_add",
             Text = "Associer",
             Title = "Associer un membre à cette écriture",
-            OnClick = InsertRow
+            OnClick = async () =>
+			{
+				await associatedMembers!.InsertRow();
+			}
         }).Display();
     }
 
@@ -143,27 +134,9 @@ public partial class EditEntry : ComponentBase
 			return;
 		}
 
-		foreach (var member in memberList)
-		{
-			await Mediator.Send(new LinkMemberToEntryRequest(entry.Id, member.Id));
-		}
+		await associatedMembers!.SaveAssociations();
 
 		NavigationManager.NavigateTo("/ecritures");
 	}
 
-    async Task InsertRow()
-    {
-		var result = await DialogService.OpenAsync<Dialogs.MemberSelectorDialog>("Selection d'un membre",
-			options: new DialogOptions
-			{
-				CloseDialogOnEsc = true,
-			});
-
-		memberToInsert = result as ViewModels.Member;
-        if (memberToInsert != null)
-		{
-            memberList.Add(memberToInsert);
-			await grid!.InsertRow(memberToInsert);
-        }
-    }
 }
