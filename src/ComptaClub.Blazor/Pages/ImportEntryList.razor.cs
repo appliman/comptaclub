@@ -27,7 +27,7 @@ public partial class ImportEntryList : ComponentBase
     NotificationService NotificationService { get; set; } = default!;
 
     IEnumerable<ViewModels.Entry> entryList = new List<ViewModels.Entry>();
-    RadzenDataGrid<ViewModels.Entry> grid = default!;
+    RadzenDataGrid<ViewModels.Entry>? grid = default!;
     List<Datas.AccountData> accountList = new();
     List<ViewModels.Account>? creditAccountOptionList;
     List<ViewModels.Account>? debitAccountOptionList;

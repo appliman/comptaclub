@@ -41,6 +41,10 @@ public partial class EntryList : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         var exercice = await Mediator.Send(new GetActiveExerciceRequest());
+        if (exercice == null)
+        {
+            return;
+        }
         activeExercice = Mapper.Map<ViewModels.Exercice>(exercice);
         currentBalance = activeExercice.BalanceAmount;
 
