@@ -6,7 +6,7 @@ public partial class DateLabel
     public DateTime Value { get; set; }
 
     [Parameter]
-    public string Format { get; set; } = "ddd MMM yy";
+    public string Format { get; set; } = "ddd dd MMM yy";
 
     MarkupString MomentValue
     {
