@@ -14,4 +14,5 @@ public class AssociatedMemberListByEntryData
     public Guid MemberId { get; set; }
     public Guid EntryId { get; set; }
     public int CreationDate { get; set; }
+    public long Amount { get; set; }
 }

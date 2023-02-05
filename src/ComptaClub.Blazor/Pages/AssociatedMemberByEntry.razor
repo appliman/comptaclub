@@ -1,0 +1,51 @@
+﻿@using ComptaClub.Blazor.ViewModels;
+@using ComptaClub.Requests;
+
+<RadzenDataGrid @ref="grid"
+                AllowFiltering="true"
+                AllowSorting="true"
+                AllowColumnResize="true"
+                Data="@associatedMemberList"
+                LoadData="LoadDatas"
+                TItem="ViewModels.AssociatedMemberToEntryRow"
+                ColumnWidth="100px"
+                GridLines="DataGridGridLines.Both"
+                FilterMode="FilterMode.Simple">
+    <Columns>
+        <RadzenDataGridColumn TItem="ViewModels.AssociatedMemberToEntryRow" Property="Name" Title="Nom" Width="120px" Filterable="false" Frozen="true">
+            <Template Context="data">
+                <span>@data.Member.Name</span>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.AssociatedMemberToEntryRow" Property="Email" Title="Email" Width="100px" Filterable="false" FormatString="{0:dd/MM/yy}" Frozen="false">
+            <Template Context="data">
+                <span>@data.Member.Email</span>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.AssociatedMemberToEntryRow" Property="Amount" Title="Montant" Width="100px" Filterable="false" Frozen="false">
+            <EditTemplate Context="data">
+                <RadzenNumeric @bind-Value="data.Amount"/>
+            </EditTemplate>
+            <Template Context="data">
+                <PriceLabel Value="@data.Amount" />
+            </Template>
+            <FooterTemplate>
+                <PriceLabel Value="@total" />
+            </FooterTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.AssociatedMemberToEntryRow" Context="association" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="40px">
+            <Template Context="association">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(association))" @onclick:stopPropagation="true" title="Modifier cette liaison">
+                </RadzenButton>
+                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(association))" @onclick:stopPropagation="true" title="Supprimer cette liaison">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="association">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => Save(association))">
+                </RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelEdit(association))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>

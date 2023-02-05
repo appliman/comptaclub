@@ -26,11 +26,13 @@ public partial class MemberSelectorDialog
     async Task LoadDatas(LoadDataArgs args)
     {
         var page = await Mediator.Send(new GetPagedEntityListRequest<MemberListFilter, Datas.MemberData>(filter));
-        memberList = Mapper.Map<List<ViewModels.Member>>(page.List);
+        memberList = new();
         int rowIndex = 1;
-        foreach (var item in memberList)
+        foreach (var data in page.List.OrderBy(i => i.Name))
         {
+            var item = Mapper.Map<ViewModels.Member>(data);
             item.RowIndex = rowIndex++;
+            memberList.Add(item);
         }
     }
 

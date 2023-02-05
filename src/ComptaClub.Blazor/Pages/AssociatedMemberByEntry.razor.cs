@@ -1,0 +1,154 @@
+using System.Collections.Generic;
+
+using AutoMapper;
+
+using ComptaClub.Blazor.ViewModels;
+using ComptaClub.Models;
+using ComptaClub.Requests;
+
+using DocumentFormat.OpenXml.Vml.Office;
+
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
+namespace ComptaClub.Blazor.Pages;
+
+public partial class AssociatedMemberByEntry
+{
+    [Parameter]
+    public Guid? EntryId { get; set; }
+
+    [Inject]
+    MediatR.IMediator Mediator { get; set; } = default !;
+
+    [Inject]
+    AutoMapper.IMapper Mapper { get; set; } = default !;
+
+    [Inject]
+    DialogService DialogService { get; set; } = default!;
+
+    RadzenDataGrid<ViewModels.AssociatedMemberToEntryRow>? grid = default!;
+    List<ViewModels.AssociatedMemberToEntryRow>? associatedMemberList;
+    ViewModels.AssociatedMemberToEntryRow? associationToInsert;
+    ViewModels.AssociatedMemberToEntryRow? associationToUpdate;
+    List<ViewModels.AssociatedMemberToEntryRow> unlinkedAssociationList = new();
+    decimal total = 0;
+
+    public async Task LoadDatas(LoadDataArgs args)
+    {
+        associatedMemberList = new();
+
+        if (EntryId == null)
+        {
+            return;
+        }
+        var dataList = await Mediator.Send(new GetAssociatedMemberListByEntryRequest(EntryId.Value));
+        var memberIdList = dataList.Select(i => i.MemberId).Distinct().ToList();
+        var memberPage = await Mediator.Send(new GetPagedEntityListRequest<MemberListFilter, Datas.MemberData>(f =>
+        {
+            f.KeyIdList.KeyList = memberIdList.Cast<object>().ToList();
+            f.KeyIdList.PropertyName = "Id";
+        }));
+
+        List<ViewModels.AssociatedMemberToEntryRow> list = new();
+        foreach (var item in dataList)
+        {
+            if (unlinkedAssociationList.Any(i => i.Member.Id == item.MemberId))
+            {
+                continue;
+            }
+            var member = memberPage.List.SingleOrDefault(i => i.Id == item.MemberId);
+            var association = new ViewModels.AssociatedMemberToEntryRow
+            {
+                Amount = item.Amount / 1000000m,
+                Member = Mapper.Map<ViewModels.Member>(member)
+            };
+            list.Add(association);
+            total = total + association.Amount;
+        }
+        associatedMemberList = list;
+    }
+
+    public async Task SaveAssociations()
+    {
+        foreach (var association in associatedMemberList!)
+        {
+            await Mediator.Send(new LinkMemberToEntryRequest(EntryId!.Value, association.Member.Id, Convert.ToInt64(association.Amount * 1000000)));
+        }
+        foreach (var association in unlinkedAssociationList)
+        {
+            await Mediator.Send(new UnlinkMemberToEntryRequest(association.Id));
+        }
+    }
+
+    public async Task Save(ViewModels.AssociatedMemberToEntryRow row)
+    {
+        if (row == associationToInsert)
+        {
+            associationToInsert = null;
+        }
+
+        associationToUpdate = null;
+        total = total + row.Amount;
+        await grid!.UpdateRow(row);
+    }
+
+    public async Task InsertRow()
+    {
+        var result = await DialogService.OpenAsync<Dialogs.MemberSelectorDialog>("Selection d'un membre",
+            options: new DialogOptions
+            {
+                CloseDialogOnEsc = true,
+            });
+
+        var member = result as ViewModels.Member;
+        if (member != null)
+        {
+            var entry = await Mediator.Send(new GetEntryByFilterRequest(f => f.GetById(EntryId!.Value)));
+            var entryAmount = entry!.Amount / 1000000m;
+
+            associationToInsert = new();
+            associationToInsert.Member = member;
+            associationToInsert.Amount = Math.Max(0, entryAmount - total);
+            associatedMemberList!.Add(associationToInsert);
+            await grid!.InsertRow(associationToInsert);
+        }
+    }
+
+    async Task EditRow(ViewModels.AssociatedMemberToEntryRow row)
+    {
+        associationToUpdate = row;
+        await grid!.EditRow(row);
+    }
+
+    void CancelEdit(ViewModels.AssociatedMemberToEntryRow row)
+    {
+        if (row == associationToInsert)
+        {
+            associationToInsert = null;
+        }
+
+        associationToUpdate = null;
+
+        grid!.CancelEditRow(row);
+    }
+
+
+    Task DeleteRow(ViewModels.AssociatedMemberToEntryRow row)
+    {
+        if (row == associationToInsert)
+        {
+            associationToInsert = null;
+        }
+        if (row == associationToUpdate)
+        {
+            associationToUpdate = null;
+        }
+        if (!unlinkedAssociationList.Any(i => i.Id == row.Id))
+        {
+            unlinkedAssociationList.Add(row);
+            grid!.Reload();
+        }
+        return Task.CompletedTask;
+    }
+
+}

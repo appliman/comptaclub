@@ -53,27 +53,47 @@ public class AssociateMemberToEntryTests
         var saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
         saveEntryResult.HasError.Should().BeFalse();
 
-        var member = await mediator.Send(new Requests.CreateMemberRequest());
-        member.Name = $"{Guid.NewGuid()}";
-        member.Email = $"{Guid.NewGuid()}@email.com";
-        member.LicenseNumber = $"{Guid.NewGuid()}";
+        var member1 = await mediator.Send(new Requests.CreateMemberRequest());
+        member1.Name = $"{Guid.NewGuid()}";
+        member1.Email = $"{Guid.NewGuid()}@email.com";
+        member1.LicenseNumber = $"{Guid.NewGuid()}";
 
-        var saveResult = await mediator.Send(new SaveEntityRequest<Datas.MemberData>(member));
+        var saveResult = await mediator.Send(new SaveEntityRequest<Datas.MemberData>(member1));
         saveResult.HasError.Should().BeFalse();
 
-        var associatedMemberList = await mediator.Send(new GetMemberListByEntryRequest(entry.Id));
+        var member2 = await mediator.Send(new Requests.CreateMemberRequest());
+        member2.Name = $"{Guid.NewGuid()}";
+        member2.Email = $"{Guid.NewGuid()}@email.com";
+        member2.LicenseNumber = $"{Guid.NewGuid()}";
+
+        saveResult = await mediator.Send(new SaveEntityRequest<Datas.MemberData>(member2));
+        saveResult.HasError.Should().BeFalse();
+
+        var associatedMemberList = await mediator.Send(new GetAssociatedMemberListByEntryRequest(entry.Id));
         associatedMemberList.Any().Should().BeFalse();
 
-        var assocResult = await mediator.Send(new LinkMemberToEntryRequest(entry.Id, member.Id));
-        assocResult.HasError.Should().BeFalse();
+        var assocResult1 = await mediator.Send(new LinkMemberToEntryRequest(entry.Id, member1.Id, 30 * 1000000));
+        assocResult1.HasError.Should().BeFalse();
 
-        associatedMemberList = await mediator.Send(new GetMemberListByEntryRequest(entry.Id));
+        var assocResult2 = await mediator.Send(new LinkMemberToEntryRequest(entry.Id, member2.Id, 40 * 1000000));
+        assocResult2.HasError.Should().BeFalse();
+
+        associatedMemberList = await mediator.Send(new GetAssociatedMemberListByEntryRequest(entry.Id));
         associatedMemberList.Any().Should().BeTrue();
 
-        var balanceList = await mediator.Send(new GetBalanceByMemberListRequest(f => f.PageSize = int.MaxValue, exercice.Id));
+        var balanceList = await mediator.Send(new GetBalanceByMemberListRequest(f =>
+        {
+            f.PageSize = int.MaxValue;
+            f.GetById(member1.Id);
+        }, exercice.Id));
+
         balanceList.Any().Should().BeTrue();
 
         var balance = balanceList.Single();
-        balance.Balance.Should().Be(entry.Amount);
+        balance.Balance.Should().Be(30 * 1000000);
+
+        var unlinkResult = await mediator.Send(new UnlinkMemberToEntryRequest(assocResult2.Id));
+        unlinkResult.HasError.Should().BeFalse();
+        unlinkResult.ChangeCount.Should().Be(1);
     }
 }

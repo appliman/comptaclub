@@ -19,22 +19,5 @@
 	</div>
 </EditForm>
 
-<hr/>
-<label>Membres associé à l'écriture :</label>
-<RadzenDataGrid @ref="grid"
-                AllowFiltering="true"
-                AllowSorting="true"
-                AllowColumnResize="true"
-                Data="@memberList"
-                TItem="ViewModels.Member"
-                ColumnWidth="100px"
-                GridLines="DataGridGridLines.Both"
-                FilterMode="FilterMode.Simple">
-    <Columns>
-        <RadzenDataGridColumn TItem="ViewModels.Member" Property="Name" Title="Nom" Width="120px" Filterable="false" Frozen="true">
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Member" Property="Email" Title="Email" Width="100px" Filterable="false" FormatString="{0:dd/MM/yy}" Frozen="false">
-        </RadzenDataGridColumn>
-    </Columns>
-</RadzenDataGrid>
-
+<h4 class="mt-5">Membres associé à l'écriture :</h4>
+<AssociatedMemberByEntry @ref="associatedMembers" EntryId="EntryId"/>
