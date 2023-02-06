@@ -1,0 +1,11 @@
+﻿.cell-indent {
+    width : 30px;
+}
+
+.cell-total {
+    width: 130px;
+}
+
+th {
+    background-color :  lightgreen;
+}

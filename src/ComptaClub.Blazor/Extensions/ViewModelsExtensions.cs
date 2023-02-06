@@ -1,5 +1,7 @@
 ﻿using System.Linq.Expressions;
 
+using AutoMapper;
+
 namespace ComptaClub.Blazor.Extensions;
 
 public static class ViewModelsExtensions
@@ -35,4 +37,52 @@ public static class ViewModelsExtensions
         }
         return result;
 	}
+
+    public static List<ViewModels.Account> MapToAccountList(this IEnumerable<Datas.AccountData> list, AutoMapper.IMapper mapper)
+    {
+        var result = new List<ViewModels.Account>();
+        foreach (var item in list)
+        {
+            var account = mapper.Map<ViewModels.Account>(item);
+            account.Children = MapToAccountList(item.Children, mapper);
+            result.Add(account);
+        }
+        return result;
+    }
+
+    public static ViewModels.Account? DeepFirstOrDefault(this IEnumerable<ViewModels.Account> list, Func<ViewModels.Account, bool> predicate)
+    {
+        var result = list.FirstOrDefault(predicate);
+        if (result == null)
+        {
+            foreach (var item in list)
+            {
+                if (item.Children.Any())
+                {
+                    result = item.Children.DeepFirstOrDefault(predicate);
+                    if (result != null)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public static decimal? DeepSum(this List<ViewModels.Account> list, Func<ViewModels.Account, decimal?> selector)
+    {
+        var result = list.Sum(selector);
+        if (result == null)
+        {
+            foreach (var item in list)
+            {
+                if (item.Children.Any())
+                {
+                    result = result + item.Children.DeepSum(selector);
+                }
+            }
+        }
+        return result;
+    }
 }
