@@ -1,0 +1,48 @@
+﻿<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th colspan="3" class="text-center">Charges</th>
+            <th class="cell-total">Exercice N</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var account in Plan.Where(i => i.Direction == Direction))
+        {
+            <tr>
+                <td colspan="3"><b>@account.Code</b> @account.Label</td>
+                <td>
+                    <PriceLabel Value="@account.DeepTotal" />
+                </td>
+            </tr>
+            @foreach (var subAccount in account.Children)
+            {
+                <tr>
+                    <td class="cell-indent"></td>
+                    <td colspan="2"><b>@subAccount.Code</b> @subAccount.Label</td>
+                    <td>
+                        <PriceLabel Value="@subAccount.DeepTotal" />
+                    </td>
+                </tr>
+                @foreach (var subsubAccount in subAccount.Children)
+                {
+                    <tr>
+                        <td class="cell-indent"></td>
+                        <td class="cell-indent"></td>
+                        <td><b>@subsubAccount.Code</b> @subsubAccount.Label</td>
+                        <td>
+                            <PriceLabel Value="@subsubAccount.DeepTotal" />
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public IEnumerable<ViewModels.Account> Plan { get; set; } = new List<ViewModels.Account>();
+
+    [Parameter]
+    public Datas.AccountDirection Direction { get; set; } = Datas.AccountDirection.Credit;
+}

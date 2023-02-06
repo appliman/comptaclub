@@ -13,14 +13,14 @@
     GridLines="DataGridGridLines.Both" 
     FilterMode="FilterMode.Simple">
     <Columns>
-        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="RowIndex" Title="#" Width="60px" Filterable="false" FormatString="" Frozen="true" SortOrder="SortOrder.Ascending">
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="RowIndex" Title="#" Width="50px" Filterable="false" FormatString="" Frozen="true" SortOrder="SortOrder.Ascending">
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="CreationDate" Title="Date" Width="110px" Filterable="true" Frozen="true">
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="CreationDate" Title="Date" Width="150px" Filterable="true" Frozen="true">
             <Template Context="data">
                 <DateLabel Value="data.CreationDate" />
             </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="PartNumber" Title="N°" Width="200px" Filterable="true" Frozen="true">
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="PartNumber" Title="N°" Width="250px" Filterable="true" Frozen="true">
             <Template Context="data">
                 <div class="w-100">
                     @data.PartNumber<br/>
