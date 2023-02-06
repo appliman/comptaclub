@@ -1,4 +1,5 @@
-﻿using ComptaClub.Datas;
+﻿using ComptaClub.Blazor.Extensions;
+using ComptaClub.Datas;
 
 namespace ComptaClub.Blazor.ViewModels
 {
@@ -15,5 +16,17 @@ namespace ComptaClub.Blazor.ViewModels
         public int CreationDate { get; set; }
         public List<Account> Children { get; set; } = new();
         public int Level { get; set; } = -1;
+        public decimal Total { get; set; }
+        public decimal? DeepTotal 
+        {
+            get
+            {
+                if (Children.Any())
+                {
+                    return Children.DeepSum(i => i.Total);
+                }
+                return Total;
+            }
+        }
     }
 }

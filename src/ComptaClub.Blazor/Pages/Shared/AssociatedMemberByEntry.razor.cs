@@ -10,7 +10,7 @@ using DocumentFormat.OpenXml.Vml.Office;
 
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace ComptaClub.Blazor.Pages;
+namespace ComptaClub.Blazor.Pages.Shared;
 
 public partial class AssociatedMemberByEntry
 {
@@ -18,19 +18,19 @@ public partial class AssociatedMemberByEntry
     public Guid? EntryId { get; set; }
 
     [Inject]
-    MediatR.IMediator Mediator { get; set; } = default !;
+    MediatR.IMediator Mediator { get; set; } = default!;
 
     [Inject]
-    AutoMapper.IMapper Mapper { get; set; } = default !;
+    IMapper Mapper { get; set; } = default!;
 
     [Inject]
     DialogService DialogService { get; set; } = default!;
 
-    RadzenDataGrid<ViewModels.AssociatedMemberToEntryRow>? grid = default!;
-    List<ViewModels.AssociatedMemberToEntryRow>? associatedMemberList;
-    ViewModels.AssociatedMemberToEntryRow? associationToInsert;
-    ViewModels.AssociatedMemberToEntryRow? associationToUpdate;
-    List<ViewModels.AssociatedMemberToEntryRow> unlinkedAssociationList = new();
+    RadzenDataGrid<AssociatedMemberToEntryRow>? grid = default!;
+    List<AssociatedMemberToEntryRow>? associatedMemberList;
+    AssociatedMemberToEntryRow? associationToInsert;
+    AssociatedMemberToEntryRow? associationToUpdate;
+    List<AssociatedMemberToEntryRow> unlinkedAssociationList = new();
     decimal total = 0;
 
     public async Task LoadDatas(LoadDataArgs args)
@@ -49,7 +49,7 @@ public partial class AssociatedMemberByEntry
             f.KeyIdList.PropertyName = "Id";
         }));
 
-        List<ViewModels.AssociatedMemberToEntryRow> list = new();
+        List<AssociatedMemberToEntryRow> list = new();
         foreach (var item in dataList)
         {
             if (unlinkedAssociationList.Any(i => i.Member.Id == item.MemberId))
@@ -57,10 +57,10 @@ public partial class AssociatedMemberByEntry
                 continue;
             }
             var member = memberPage.List.SingleOrDefault(i => i.Id == item.MemberId);
-            var association = new ViewModels.AssociatedMemberToEntryRow
+            var association = new AssociatedMemberToEntryRow
             {
                 Amount = item.Amount / 1000000m,
-                Member = Mapper.Map<ViewModels.Member>(member)
+                Member = Mapper.Map<Member>(member)
             };
             list.Add(association);
             total = total + association.Amount;
@@ -80,7 +80,7 @@ public partial class AssociatedMemberByEntry
         }
     }
 
-    public async Task Save(ViewModels.AssociatedMemberToEntryRow row)
+    public async Task Save(AssociatedMemberToEntryRow row)
     {
         if (row == associationToInsert)
         {
@@ -100,7 +100,7 @@ public partial class AssociatedMemberByEntry
                 CloseDialogOnEsc = true,
             });
 
-        var member = result as ViewModels.Member;
+        var member = result as Member;
         if (member != null)
         {
             var entry = await Mediator.Send(new GetEntryByFilterRequest(f => f.GetById(EntryId!.Value)));
@@ -114,13 +114,13 @@ public partial class AssociatedMemberByEntry
         }
     }
 
-    async Task EditRow(ViewModels.AssociatedMemberToEntryRow row)
+    async Task EditRow(AssociatedMemberToEntryRow row)
     {
         associationToUpdate = row;
         await grid!.EditRow(row);
     }
 
-    void CancelEdit(ViewModels.AssociatedMemberToEntryRow row)
+    void CancelEdit(AssociatedMemberToEntryRow row)
     {
         if (row == associationToInsert)
         {
@@ -133,7 +133,7 @@ public partial class AssociatedMemberByEntry
     }
 
 
-    Task DeleteRow(ViewModels.AssociatedMemberToEntryRow row)
+    Task DeleteRow(AssociatedMemberToEntryRow row)
     {
         if (row == associationToInsert)
         {
