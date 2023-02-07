@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace ComptaClub.Requests;
 
+/// <summary>
+/// Recupère l'exercice en cours
+/// <see cref="Handlers.GetActiveExerciceRequestHandler"/>
+/// </summary>
 public record GetActiveExerciceRequest : IRequest<Datas.ExerciceData?>
 {
 }

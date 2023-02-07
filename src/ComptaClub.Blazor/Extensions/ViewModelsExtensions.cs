@@ -70,18 +70,13 @@ public static class ViewModelsExtensions
         return result;
     }
 
-    public static decimal? DeepSum(this List<ViewModels.Account> list, Func<ViewModels.Account, decimal?> selector)
+    public static decimal DeepSum(this ViewModels.Account account, Expression<Func<ViewModels.Account, decimal>> expression)
     {
-        var result = list.Sum(selector);
-        if (result == null)
+        var member = expression.Compile();
+        var result = member.Invoke(account);
+        foreach (var subAccount in account.Children)
         {
-            foreach (var item in list)
-            {
-                if (item.Children.Any())
-                {
-                    result = result + item.Children.DeepSum(selector);
-                }
-            }
+            result = result + subAccount.DeepSum(expression);
         }
         return result;
     }
