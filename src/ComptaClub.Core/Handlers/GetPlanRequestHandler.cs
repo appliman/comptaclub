@@ -23,7 +23,7 @@ internal class GetPlanRequestHandler : IRequestHandler<GetPlanRequest, List<Data
             f.PageSize = int.MaxValue;
         });
 
-		var page = await _mediator.Send(requestFilter);
+		var page = await _mediator.Send(requestFilter, cancellationToken);
 
         var list = new List<Datas.AccountData>();
         foreach (var data in page.List)
