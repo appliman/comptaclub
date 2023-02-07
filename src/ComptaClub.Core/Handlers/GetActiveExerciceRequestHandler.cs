@@ -21,7 +21,7 @@ internal class GetActiveExerciceRequestHandler : IRequestHandler<Requests.GetAct
 	{
 		var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
-		var active = await db.Exercices.SingleOrDefaultAsync(i => i.Active);
+		var active = await db.Exercices.SingleOrDefaultAsync(i => i.Active, cancellationToken);
 		return active;
 	}
 }

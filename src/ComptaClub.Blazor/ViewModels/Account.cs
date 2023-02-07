@@ -17,13 +17,13 @@ namespace ComptaClub.Blazor.ViewModels
         public List<Account> Children { get; set; } = new();
         public int Level { get; set; } = -1;
         public decimal Total { get; set; }
-        public decimal? DeepTotal 
+        public decimal DeepTotal 
         {
             get
             {
                 if (Children.Any())
                 {
-                    return Children.DeepSum(i => i.Total);
+                    return this.DeepSum(i => i.Total);
                 }
                 return Total;
             }
