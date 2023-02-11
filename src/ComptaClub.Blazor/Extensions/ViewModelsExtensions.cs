@@ -80,4 +80,17 @@ public static class ViewModelsExtensions
         }
         return result;
     }
+
+    public static string ToFileSize(this long fileSize)
+    {
+        var units = new[] { "o", "Ko", "Mo", "Go", "To" };
+        var index = 0;
+        var size = Convert.ToDouble(fileSize);
+        while (size > 1024)
+        {
+            size /= 1024d;
+            index++;
+        }
+        return string.Format("{0:F2} {1}", size, units[index]);
+    }
 }

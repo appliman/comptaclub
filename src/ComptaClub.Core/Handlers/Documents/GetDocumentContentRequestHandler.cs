@@ -2,7 +2,7 @@
 
 namespace ComptaClub.Handlers.Documents;
 
-internal class GetDocumentContentRequestHandler : IRequestHandler<Requests.Documents.GetDocumentContentRequest, long>
+internal class GetDocumentContentRequestHandler : IRequestHandler<Requests.Documents.GetDocumentContentRequest, DocumentData?>
 {
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
 
@@ -11,7 +11,7 @@ internal class GetDocumentContentRequestHandler : IRequestHandler<Requests.Docum
         _dbContextFactory = dbContextFactory;
     }
 
-    public async Task<long> Handle(GetDocumentContentRequest request, CancellationToken cancellationToken)
+    public async Task<DocumentData?> Handle(GetDocumentContentRequest request, CancellationToken cancellationToken)
     {
         var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
@@ -39,6 +39,7 @@ internal class GetDocumentContentRequestHandler : IRequestHandler<Requests.Docum
             str.Close();
         }
 
-        return size;
+        var result = await db.Documents.SingleAsync(i => i.Id == request.DocumentId, cancellationToken);
+        return result;
     }
 }

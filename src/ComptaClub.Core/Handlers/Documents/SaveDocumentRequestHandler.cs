@@ -40,7 +40,7 @@ internal class SaveDocumentRequestHandler : SaveRequestHandlerBase, IRequestHand
         byte[]? content = null;
         if (request.ContentStream != null)
         {
-            content = request.ContentStream.GetBuffer();
+            content = request.ContentStream.ToArray();
         }
         else if (request.FileName != null)
         {
