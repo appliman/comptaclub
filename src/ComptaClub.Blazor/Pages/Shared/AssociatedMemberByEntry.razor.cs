@@ -41,7 +41,7 @@ public partial class AssociatedMemberByEntry
         {
             return;
         }
-        var dataList = await Mediator.Send(new GetAssociatedMemberListByEntryRequest(EntryId.Value));
+        var dataList = await Mediator.Send(new Requests.Members.GetAssociatedMemberListByEntryRequest(EntryId.Value));
         var memberIdList = dataList.Select(i => i.MemberId).Distinct().ToList();
         var memberPage = await Mediator.Send(new GetPagedEntityListRequest<MemberListFilter, Datas.MemberData>(f =>
         {
@@ -72,11 +72,11 @@ public partial class AssociatedMemberByEntry
     {
         foreach (var association in associatedMemberList!)
         {
-            await Mediator.Send(new LinkMemberToEntryRequest(EntryId!.Value, association.Member.Id, Convert.ToInt64(association.Amount * 1000000)));
+            await Mediator.Send(new Requests.Members.LinkMemberToEntryRequest(EntryId!.Value, association.Member.Id, Convert.ToInt64(association.Amount * 1000000)));
         }
         foreach (var association in unlinkedAssociationList)
         {
-            await Mediator.Send(new UnlinkMemberToEntryRequest(association.Id));
+            await Mediator.Send(new Requests.Members.UnlinkMemberToEntryRequest(association.Id));
         }
     }
 
@@ -103,7 +103,7 @@ public partial class AssociatedMemberByEntry
         var member = result as Member;
         if (member != null)
         {
-            var entry = await Mediator.Send(new GetEntryByFilterRequest(f => f.GetById(EntryId!.Value)));
+            var entry = await Mediator.Send(new Requests.Entries.GetEntryByFilterRequest(f => f.GetById(EntryId!.Value)));
             var entryAmount = entry!.Amount / 1000000m;
 
             associationToInsert = new();

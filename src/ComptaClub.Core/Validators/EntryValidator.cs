@@ -26,7 +26,7 @@ internal class EntryValidator : FluentValidation.AbstractValidator<Datas.EntryDa
             {
                 return;
             }
-            var plan = await mediator.Send(new GetPlanRequest());
+            var plan = await mediator.Send(new Requests.Accounts.GetPlanRequest());
             var leafList = plan.GetLeafList();
             if (!leafList.Any(i => i.Id == accountId))
             {
@@ -44,7 +44,7 @@ internal class EntryValidator : FluentValidation.AbstractValidator<Datas.EntryDa
         });
         RuleFor(i => i.ExerciceId).CustomAsync(async (exerciceId, ctx, cancel) =>
         {
-            var exerciceList = await mediator.Send(new GetAllExercicesRequest());
+            var exerciceList = await mediator.Send(new Requests.Exercices.GetAllExercicesRequest());
             if (!exerciceList.Any(i => i.Id == exerciceId))
             {
                 ctx.AddFailure(nameof(Datas.EntryData.ExerciceId), "Cet écriture ne peut pas etre associée à un exercice inexistant");

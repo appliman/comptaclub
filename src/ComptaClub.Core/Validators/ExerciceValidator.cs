@@ -16,7 +16,7 @@ internal class ExerciceValidator : FluentValidation.AbstractValidator<Datas.Exer
 		RuleFor(i => i.Code).CustomAsync(async (code, ctx, cancel) =>
 		{
 			var current = ctx.InstanceToValidate;
-			var existing = await mediator.Send(new Requests.GetExerciceByFilterRequest(f => f.Code == code));
+			var existing = await mediator.Send(new Requests.Exercices.GetExerciceByFilterRequest(f => f.Code == code));
 			if (existing != null
 				&& current.Id != existing.Id)
 			{
@@ -54,7 +54,7 @@ internal class ExerciceValidator : FluentValidation.AbstractValidator<Datas.Exer
 		{
 			if (active)
 			{
-				var alreadyActiveExercice = await mediator.Send(new Requests.GetActiveExerciceRequest());
+				var alreadyActiveExercice = await mediator.Send(new Requests.Exercices.GetActiveExerciceRequest());
 				if (alreadyActiveExercice != null
 					&& alreadyActiveExercice.Id != ctx.InstanceToValidate.Id)
 				{

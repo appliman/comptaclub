@@ -43,14 +43,14 @@ public partial class BankList : ComponentBase
 
     async Task LoadDatas()
     {
-        var datas = await Mediator.Send(new GetAllBanksRequest());
+        var datas = await Mediator.Send(new Requests.Banks.GetAllBanksRequest());
         var result = Mapper.Map<List<ViewModels.Bank>>(datas);
         bankList = result;
     }
 
     async Task InsertRow()
     {
-        var data = await Mediator.Send(new Requests.CreateBankRequest());
+        var data = await Mediator.Send(new Requests.Banks.CreateBankRequest());
         bankToInsert = Mapper.Map<ViewModels.Bank>(data);
         await grid!.InsertRow(bankToInsert);
     }
@@ -100,7 +100,7 @@ public partial class BankList : ComponentBase
 
     async Task ChangeActiveBank(ChangeEventArgs args, ViewModels.Bank bank)
     {
-        var changeResult = await Mediator.Send(new ChangeActiveBankRequest($"{args.Value}" == "on", bank.Id));
+        var changeResult = await Mediator.Send(new Requests.Banks.ChangeActiveBankRequest($"{args.Value}" == "on", bank.Id));
         if (changeResult.HasError)
         {
             NotificationService.NotifyError(changeResult);

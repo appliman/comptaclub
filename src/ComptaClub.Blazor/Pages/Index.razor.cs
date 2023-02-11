@@ -24,12 +24,12 @@ public partial class Index
 
 	protected override async Task OnInitializedAsync()
 	{
-		var exercice = await Mediator.Send(new GetActiveExerciceRequest());
+		var exercice = await Mediator.Send(new Requests.Exercices.GetActiveExerciceRequest());
 		currentExercice = Mapper.Map<ViewModels.Exercice>(exercice);
 
-		balanceByDayList = await Mediator.Send(new GetBalanceByDayRequest());
-		amountTotalByAccount = await Mediator.Send(new GetAmountTotalByAccountRequest());
-		plan = (await Mediator.Send(new GetPlanRequest())).MapToAccountList(Mapper);
+		balanceByDayList = await Mediator.Send(new Requests.Stats.GetBalanceByDayRequest());
+		amountTotalByAccount = await Mediator.Send(new Requests.Accounts.GetAmountTotalByAccountRequest());
+		plan = (await Mediator.Send(new Requests.Accounts.GetPlanRequest())).MapToAccountList(Mapper);
 		foreach (var total in amountTotalByAccount)
 		{
 			var account = plan.DeepFirstOrDefault(i => i.Id == total.Id);

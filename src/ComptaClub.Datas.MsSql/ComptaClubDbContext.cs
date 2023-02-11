@@ -29,6 +29,7 @@ public class ComptaClubDbContext : DbContext
     public DbSet<AccountData> Accounts { get; set; }
     public DbSet<BankData> Banks { get; set; }
     public DbSet<DocumentData> Documents { get; set; }
+    public DbSet<DocumentContentData> DocumentsContents { get; set; }
     public DbSet<DocumentByEntityData> DocumentsByEntities { get; set; }
     public DbSet<EntryData> Entries { get; set; }
     public DbSet<ExerciceData> Exercices { get; set; }

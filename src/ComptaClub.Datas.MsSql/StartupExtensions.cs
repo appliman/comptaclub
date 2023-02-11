@@ -14,7 +14,6 @@ public static class StartupExtensions
         dbConfiguration.Invoke(cfg);
 
 		services.AddDbContextFactory<ComptaClubDbContext>(lifetime: ServiceLifetime.Singleton);
-		services.AddSingleton<ModelRegister>();
 		services.AddSingleton(cfg);
 		return services;
 	}

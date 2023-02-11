@@ -40,7 +40,7 @@ public partial class ExerciceList : ComponentBase
 
     async Task LoadDatas()
     {
-		var datas = await Mediator!.Send(new GetAllExercicesRequest());
+		var datas = await Mediator!.Send(new Requests.Exercices.GetAllExercicesRequest());
         exerciceList = Mapper.Map<List<ViewModels.Exercice>>(datas);
         StateHasChanged();
     }
@@ -52,7 +52,7 @@ public partial class ExerciceList : ComponentBase
 
     async Task DeleteRow(ViewModels.Exercice exercice)
     {
-        var deleteResult = await Mediator.Send(new DeleteExerciceRequest(exercice.Id));
+        var deleteResult = await Mediator.Send(new Requests.Exercices.DeleteExerciceRequest(exercice.Id));
         if (deleteResult.HasError)
         {
             NotificationService.NotifyError(deleteResult);
@@ -66,7 +66,7 @@ public partial class ExerciceList : ComponentBase
 
 	async Task ChangeActiveExercice(ChangeEventArgs args, ViewModels.Exercice exercice)
 	{
-        var changeResult = await Mediator.Send(new ChangeActiveExerciceRequest($"{args.Value}" == "on", exercice.Id));
+        var changeResult = await Mediator.Send(new Requests.Exercices.ChangeActiveExerciceRequest($"{args.Value}" == "on", exercice.Id));
         if (changeResult.HasError)
         {
             NotificationService.NotifyError(changeResult);

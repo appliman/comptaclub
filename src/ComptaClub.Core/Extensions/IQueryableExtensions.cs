@@ -239,7 +239,7 @@ namespace ComptaClub.Extensions
 			return false;
 		}
 
-		public static async Task<(int Count, IEnumerable<T> List)> GetPagedDataList<T, TKey>(this IQueryable<T> query, Expression<Func<T, TKey>> defaultSort, Models.IListFilter filter)
+		public static async Task<(int Count, IEnumerable<T> List)> GetPagedDataList<T, TKey>(this IQueryable<T> query, Expression<Func<T, TKey>> defaultSort, Models.IListFilter filter, CancellationToken cancellationToken)
 		{
 			var count = 0;
 			if (filter.KeyIdList.KeyList.Count == 0)
@@ -280,7 +280,7 @@ namespace ComptaClub.Extensions
 				count = filter.KeyIdList.KeyList.Count;
 			}
 
-			var datalist = await query.ToListAsync();
+			var datalist = await query.ToListAsync(cancellationToken);
 			if (!datalist.Any())
 			{
 				count = 0;

@@ -35,6 +35,10 @@ namespace ComptaClub.Blazor.Pages.Shared
 
         public Toolbar AddToolbarItem(ViewModels.Toolbar.ToolbarItem item)
         {
+            if (toolbar == null)
+            {
+                return new Toolbar();
+            }
             toolbar!.InitializeToolbar();
             toolbar.AddItem(item);
             return toolbar;

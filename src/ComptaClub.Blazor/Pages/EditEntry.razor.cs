@@ -45,12 +45,12 @@ public partial class EditEntry : ComponentBase
 		if (EntryId == null
 			|| EntryId == Guid.Empty)
 		{
-			var data = await Mediator.Send(new Requests.CreateEntryRequest());
+			var data = await Mediator.Send(new Requests.Entries.CreateEntryRequest());
 			entry = Mapper.Map<ViewModels.Entry>(data);
 		}
 		else
 		{
-			var data = await Mediator.Send(new Requests.GetEntryByFilterRequest(f => f.GetById(EntryId.Value)));
+			var data = await Mediator.Send(new Requests.Entries.GetEntryByFilterRequest(f => f.GetById(EntryId.Value)));
 			if (data != null)
 			{
 				entry = Mapper.Map<ViewModels.Entry>(data);
@@ -70,7 +70,7 @@ public partial class EditEntry : ComponentBase
 			direction = entry.AccountDirection;
 		}
 
-		var bankList = await Mediator.Send(new Requests.GetAllBanksRequest());
+		var bankList = await Mediator.Send(new Requests.Banks.GetAllBanksRequest());
 		bankOptionList = bankList.ToSelectOptionList(k => k.Id, t => $"({t.Code}) {t.Label}", i => i.Id == entry.BankId);
 		if (entry.BankId == Guid.Empty
 			&& bankOptionList.Any())
@@ -79,7 +79,7 @@ public partial class EditEntry : ComponentBase
 			bankOptionList.First().Selected = true;
 		}
 
-		var accountList = await Mediator.Send(new Requests.GetPlanRequest());
+		var accountList = await Mediator.Send(new Requests.Accounts.GetPlanRequest());
 		accountList = accountList.GetLeafList().ToList();
 		if (direction == Datas.AccountDirection.Debit)
 		{
@@ -91,7 +91,7 @@ public partial class EditEntry : ComponentBase
 		}
 		accountOptionList = accountList.ToSelectOptionList(i => i.Id, t => $"({t.Code}) {t.Label}", i => i.Id == entry.AccountId);
 
-		var exercices = await Mediator.Send(new GetAllExercicesRequest());
+		var exercices = await Mediator.Send(new Requests.Exercices.GetAllExercicesRequest());
 		exerciceOptionList = exercices.ToSelectOptionList(i => i.Id, t => $"({t.Code}) {t.Label}", i => i.Id == entry.ExerciceId);
 		if (exercices.Any()
 			&& entry.ExerciceId == Guid.Empty)

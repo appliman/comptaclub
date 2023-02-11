@@ -41,10 +41,10 @@ public class FirstEntryTests
 
 		var user = await mediator.GetOrCreateUser($"{Guid.NewGuid()}@email.com");
 
-		var exercice = await mediator.Send(new GetExerciceByFilterRequest(f => f.Code == "Exercice 2022"));
+		var exercice = await mediator.Send(new Requests.Exercices.GetExerciceByFilterRequest(f => f.Code == "Exercice 2022"));
 		if (exercice == null)
 		{
-			exercice = await mediator.Send(new Requests.CreateExerciceRequest("Exercice 2022", "Exercice 2022", DateTime.Now.FirstDateOfCurrentYear(), DateTime.Now.LastDateOfCurrentYear(), 100 * 1000000));
+			exercice = await mediator.Send(new Requests.Exercices.CreateExerciceRequest("Exercice 2022", "Exercice 2022", DateTime.Now.FirstDateOfCurrentYear(), DateTime.Now.LastDateOfCurrentYear(), 100 * 1000000));
 			var saveResult = await mediator.Send(new SaveEntityRequest<Datas.ExerciceData>(exercice));
 			saveResult.HasError.Should().BeFalse();
 		}
@@ -54,21 +54,21 @@ public class FirstEntryTests
 
 		var plan = System.Text.Json.JsonSerializer.Deserialize<List<Datas.AccountData>>(planFileContent, ComptaClub.JsonSerializer.Options);	
 
-		var importResult = await mediator.Send(new ImportAccountingPlanRequest(plan!));
+		var importResult = await mediator.Send(new Requests.Accounts.ImportAccountingPlanRequest(plan!));
 		importResult.HasError.Should().BeFalse();
 
-		var bank = await mediator.Send(new GetBankByFilterRequest(i => i.Code == "MyBank"));
+		var bank = await mediator.Send(new Requests.Banks.GetBankByFilterRequest(i => i.Code == "MyBank"));
 		if (bank == null)
 		{
-			bank = await mediator.Send(new CreateBankRequest("MyBank", "My Bank"));
+			bank = await mediator.Send(new Requests.Banks.CreateBankRequest("MyBank", "My Bank"));
 			var saveResult = await mediator.Send(new SaveEntityRequest<Datas.BankData>(bank));	
 			saveResult.HasError.Should().BeFalse();
 		}
 
-		var account = await mediator.Send(new GetAccountByFilterRequest(i => i.Code = "605001"));
+		var account = await mediator.Send(new Requests.Accounts.GetAccountByFilterRequest(i => i.Code = "605001"));
 		account.Should().NotBeNull();
 
-		var entry = await mediator.Send(new CreateEntryRequest());
+		var entry = await mediator.Send(new Requests.Entries.CreateEntryRequest());
 		entry.PartNumber = $"{Guid.NewGuid()}";
 		entry.Label = "My first entry";
 		entry.BankId = bank.Id;
@@ -82,7 +82,7 @@ public class FirstEntryTests
 		var saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
 		saveEntryResult.HasError.Should().BeFalse();
 
-		exercice = await mediator.Send(new GetExerciceByFilterRequest(i => i.Id == entry.ExerciceId))!;
+		exercice = await mediator.Send(new Requests.Exercices.GetExerciceByFilterRequest(i => i.Id == entry.ExerciceId))!;
 		exercice!.BalanceAmount.Should().Be(60 * 1000000);
 		exercice!.LastEntryId.Should().Be(entry.Id);
 	}
