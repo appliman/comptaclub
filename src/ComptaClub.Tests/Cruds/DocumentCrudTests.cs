@@ -68,8 +68,9 @@ public class DocumentCrudTests
         saveResult.HasError.Should().BeFalse();
 
         var ms = new MemoryStream();
-        var sizeOfContent = await mediator.Send(new Requests.Documents.GetDocumentContentRequest(document!.Id, ms));
-        sizeOfContent.Should().BeGreaterThan(0);
+        var doc = await mediator.Send(new Requests.Documents.GetDocumentContentRequest(document!.Id, ms));
+        doc.Should().NotBeNull();
+        doc!.Size.Should().BeGreaterThan(0);
 
         var dbContent = System.Text.Encoding.Default.GetString(ms.ToArray());
         dbContent.Should().Be(textContent);
