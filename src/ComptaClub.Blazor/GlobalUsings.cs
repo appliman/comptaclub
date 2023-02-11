@@ -10,6 +10,7 @@ global using Microsoft.AspNetCore.Components.Forms;
 global using Microsoft.Extensions.DependencyInjection;
 
 global using ComptaClub.Extensions;
+global using ComptaClub.Blazor.Extensions;
 
 global using Radzen;
 global using Radzen.Blazor;

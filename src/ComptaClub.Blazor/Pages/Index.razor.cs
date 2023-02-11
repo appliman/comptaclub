@@ -21,6 +21,7 @@ public partial class Index
 	IEnumerable<Models.AmountTotalByAccount> amountTotalByAccount = new List<Models.AmountTotalByAccount>();
 	IEnumerable<ViewModels.Account> plan = new List<ViewModels.Account>();
 	System.Globalization.CultureInfo ci = new System.Globalization.CultureInfo("fr-FR");
+	int memberCount = 0;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -38,5 +39,7 @@ public partial class Index
 				account.Total = total.Total;
 			}
 		}
+
+		memberCount = await Mediator.Send(new Requests.Members.GetMemberCountRequest());
     }
 }

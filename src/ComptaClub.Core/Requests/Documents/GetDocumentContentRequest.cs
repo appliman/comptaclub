@@ -1,6 +1,6 @@
 ﻿namespace ComptaClub.Requests.Documents;
 
-public record GetDocumentContentRequest : IRequest<long>
+public record GetDocumentContentRequest : IRequest<DocumentData?>
 {
 	public GetDocumentContentRequest(Guid documentId, Stream output)
 	{
