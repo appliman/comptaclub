@@ -34,7 +34,7 @@ public partial class ImportEntryList : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        accountList = await Mediator.Send(new Requests.GetPlanRequest());
+        accountList = await Mediator.Send(new Requests.Accounts.GetPlanRequest());
         accountList = accountList.GetLeafList().ToList();
         accountList.Insert(0,new Datas.AccountData()
         {
@@ -49,7 +49,7 @@ public partial class ImportEntryList : ComponentBase
     {
         var ms = new MemoryStream();
         await args.File.OpenReadStream().CopyToAsync(ms);
-        var dataList = await Mediator.Send(new Requests.ImportEntryListFromStreamRequest(ms));
+        var dataList = await Mediator.Send(new Requests.Entries.ImportEntryListFromStreamRequest(ms));
         entryList = Mapper.Map<IEnumerable<ViewModels.Entry>>(dataList);
         int rowIndex = 1;
         foreach (var item in entryList)

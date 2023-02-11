@@ -21,17 +21,24 @@ namespace ComptaClub.Tests.Cruds
 
     public class AccountCrudTests
     {
+        [TestInitialize]
+        public async Task Initialize()
+        {
+            var app = await TestHelper.CreateWebApplication();
+            await TestHelper.CleanupDatabase(app.Services);
+        }
+
         [TestMethod]
         public async Task Account_Crud()
         {
             var app = await TestHelper.CreateWebApplication();
             var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
 
-            var account = await mediator.Send(new Requests.GetAccountByFilterRequest(i => i.Code = "fake"));
+            var account = await mediator.Send(new Requests.Accounts.GetAccountByFilterRequest(i => i.Code = "fake"));
             account.Should().BeNull();
 
             var code = $"Test{Guid.NewGuid()}";
-            account = await mediator.Send(new Requests.CreateAccountRequest(code, $"{Guid.NewGuid()}", Datas.AccountDirection.Credit));
+            account = await mediator.Send(new Requests.Accounts.CreateAccountRequest(code, $"{Guid.NewGuid()}", Datas.AccountDirection.Credit));
 
             var saveResult = await mediator.Send(new Requests.SaveEntityRequest<Datas.AccountData>(account));
             saveResult.HasError.Should().BeFalse();
@@ -41,16 +48,16 @@ namespace ComptaClub.Tests.Cruds
             saveResult = await mediator.Send(new Requests.SaveEntityRequest<Datas.AccountData>(account));
             saveResult.HasError.Should().BeFalse();
 
-            account = await mediator.Send(new Requests.GetAccountByFilterRequest(i => i.Code = code));
+            account = await mediator.Send(new Requests.Accounts.GetAccountByFilterRequest(i => i.Code = code));
             account.Should().NotBeNull();
 
             account!.Label.Should().Be(label);
 
-            var commandResult = await mediator.Send(new DeleteAccountRequest(account.Id));
+            var commandResult = await mediator.Send(new Requests.Accounts.DeleteAccountRequest(account.Id));
             commandResult.HasError.Should().BeFalse();
             commandResult.ChangeCount.Should().Be(1);
 
-            account = await mediator.Send(new Requests.GetAccountByFilterRequest(i => i.Code = code));
+            account = await mediator.Send(new Requests.Accounts.GetAccountByFilterRequest(i => i.Code = code));
             account.Should().BeNull();
         }
 

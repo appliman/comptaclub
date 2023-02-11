@@ -32,7 +32,7 @@ public class ImportMemberListFromExcelTests
         var mediator = app.Services.GetRequiredService<IMediator>();
 
         var fileName = System.IO.Path.Combine(System.Environment.CurrentDirectory, @"..\..\..\..\..\Doc\export_excel_saison.xlsx");
-        var import = await mediator.Send(new Requests.ImportExcelMemberListRequest(fileName));
+        var import = await mediator.Send(new Requests.Members.ImportExcelMemberListRequest(fileName));
 
         import.Should().NotBeNull();
 

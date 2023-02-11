@@ -27,12 +27,12 @@ namespace ComptaClub.Blazor.Pages
             if (ExerciceId == null
                 || ExerciceId == Guid.Empty)
             {
-                var data = await Mediator.Send(new Requests.CreateExerciceRequest());
+                var data = await Mediator.Send(new Requests.Exercices.CreateExerciceRequest());
 				exercice = Mapper.Map<ViewModels.Exercice>(data);
 			}
             else
             {
-                var data = await Mediator.Send(new Requests.GetExerciceByFilterRequest(f => f.Id == ExerciceId.Value));
+                var data = await Mediator.Send(new Requests.Exercices.GetExerciceByFilterRequest(f => f.Id == ExerciceId.Value));
                 if (data != null)
                 {
 					exercice = Mapper.Map<ViewModels.Exercice>(data);

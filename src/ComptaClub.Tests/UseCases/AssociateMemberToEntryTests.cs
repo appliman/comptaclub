@@ -36,9 +36,8 @@ public class AssociateMemberToEntryTests
         var leafPlan = plan.GetLeafList();
 
         var licenceAccount = leafPlan.Single(i => i.Code == "756001");
-        var bankFeeAccount = leafPlan.Single(i => i.Code == "61/62");
 
-        var entry = await mediator.Send(new CreateEntryRequest());
+        var entry = await mediator.Send(new Requests.Entries.CreateEntryRequest());
         entry.CreationDate = entry.ValueDate = new DateTime(DateTime.Now.Year, 2, 1).ToDayId();
         entry.Label = "B70027L NICOLAS GIRARD 2/2\r\nB70027L Adhesion Nicolas Girard 2/2";
         entry.PartNumber = "VIR M NICOLAS GIRARD";
@@ -53,7 +52,7 @@ public class AssociateMemberToEntryTests
         var saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
         saveEntryResult.HasError.Should().BeFalse();
 
-        var member1 = await mediator.Send(new Requests.CreateMemberRequest());
+        var member1 = await mediator.Send(new Requests.Members.CreateMemberRequest());
         member1.Name = $"{Guid.NewGuid()}";
         member1.Email = $"{Guid.NewGuid()}@email.com";
         member1.LicenseNumber = $"{Guid.NewGuid()}";
@@ -61,7 +60,7 @@ public class AssociateMemberToEntryTests
         var saveResult = await mediator.Send(new SaveEntityRequest<Datas.MemberData>(member1));
         saveResult.HasError.Should().BeFalse();
 
-        var member2 = await mediator.Send(new Requests.CreateMemberRequest());
+        var member2 = await mediator.Send(new Requests.Members.CreateMemberRequest());
         member2.Name = $"{Guid.NewGuid()}";
         member2.Email = $"{Guid.NewGuid()}@email.com";
         member2.LicenseNumber = $"{Guid.NewGuid()}";
@@ -69,19 +68,19 @@ public class AssociateMemberToEntryTests
         saveResult = await mediator.Send(new SaveEntityRequest<Datas.MemberData>(member2));
         saveResult.HasError.Should().BeFalse();
 
-        var associatedMemberList = await mediator.Send(new GetAssociatedMemberListByEntryRequest(entry.Id));
+        var associatedMemberList = await mediator.Send(new Requests.Members.GetAssociatedMemberListByEntryRequest(entry.Id));
         associatedMemberList.Any().Should().BeFalse();
 
-        var assocResult1 = await mediator.Send(new LinkMemberToEntryRequest(entry.Id, member1.Id, 30 * 1000000));
+        var assocResult1 = await mediator.Send(new Requests.Members.LinkMemberToEntryRequest(entry.Id, member1.Id, 30 * 1000000));
         assocResult1.HasError.Should().BeFalse();
 
-        var assocResult2 = await mediator.Send(new LinkMemberToEntryRequest(entry.Id, member2.Id, 40 * 1000000));
+        var assocResult2 = await mediator.Send(new Requests.Members.LinkMemberToEntryRequest(entry.Id, member2.Id, 40 * 1000000));
         assocResult2.HasError.Should().BeFalse();
 
-        associatedMemberList = await mediator.Send(new GetAssociatedMemberListByEntryRequest(entry.Id));
+        associatedMemberList = await mediator.Send(new Requests.Members.GetAssociatedMemberListByEntryRequest(entry.Id));
         associatedMemberList.Any().Should().BeTrue();
 
-        var balanceList = await mediator.Send(new GetBalanceByMemberListRequest(f =>
+        var balanceList = await mediator.Send(new Requests.Members.GetBalanceByMemberListRequest(f =>
         {
             f.PageSize = int.MaxValue;
             f.GetById(member1.Id);
@@ -92,7 +91,7 @@ public class AssociateMemberToEntryTests
         var balance = balanceList.Single();
         balance.Balance.Should().Be(30 * 1000000);
 
-        var unlinkResult = await mediator.Send(new UnlinkMemberToEntryRequest(assocResult2.Id));
+        var unlinkResult = await mediator.Send(new Requests.Members.UnlinkMemberToEntryRequest(assocResult2.Id));
         unlinkResult.HasError.Should().BeFalse();
         unlinkResult.ChangeCount.Should().Be(1);
     }

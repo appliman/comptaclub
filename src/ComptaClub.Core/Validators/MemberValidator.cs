@@ -12,7 +12,7 @@ internal class MemberValidator : FluentValidation.AbstractValidator<Datas.Member
         RuleFor(i => i.LicenseNumber).CustomAsync(async (licenseNumber, ctx, cancel) =>
         {
             var current = ctx.InstanceToValidate;
-            var existing = await mediator.Send(new Requests.GetMemberByFilterRequest(i => i.LicenseNumber = licenseNumber));
+            var existing = await mediator.Send(new Requests.Members.GetMemberByFilterRequest(i => i.LicenseNumber = licenseNumber));
             if (existing != null && current.Id != existing.Id)
             {
                 ctx.AddFailure(nameof(Datas.AccountData.Code), "Ce membre exist déjà");

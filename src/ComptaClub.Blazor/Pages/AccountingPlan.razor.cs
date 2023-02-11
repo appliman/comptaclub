@@ -81,7 +81,7 @@ public partial class AccountingPlan : ComponentBase
 
 	async Task LoadDatas()
 	{
-		var dataPlan = await Mediator.Send(new GetPlanRequest());
+		var dataPlan = await Mediator.Send(new Requests.Accounts.GetPlanRequest());
 		var list = MapPlan(dataPlan);
 		accountList = list;
 	}
@@ -149,7 +149,7 @@ public partial class AccountingPlan : ComponentBase
 
 	async Task InsertRow()
 	{
-		var data = await Mediator.Send(new Requests.CreateAccountRequest());
+		var data = await Mediator.Send(new Requests.Accounts.CreateAccountRequest());
 		accountToInsert = Mapper.Map<ViewModels.Account>(data);
 		await grid!.InsertRow(accountToInsert);
 	}
@@ -157,7 +157,7 @@ public partial class AccountingPlan : ComponentBase
 	async Task InsertRow(ViewModels.Account account)
 	{
 		await grid!.ExpandRow(account);
-		var data = await Mediator.Send(new Requests.CreateAccountRequest()
+		var data = await Mediator.Send(new Requests.Accounts.CreateAccountRequest()
 		{
 			Direction = account.Direction,
 			ParentId = account.Id
@@ -175,7 +175,7 @@ public partial class AccountingPlan : ComponentBase
 		{
 			return;
 		}
-		var result = await Mediator!.Send(new Requests.DeleteAccountRequest(account.Id));
+		var result = await Mediator!.Send(new Requests.Accounts.DeleteAccountRequest(account.Id));
 		if (result.HasError)
 		{
 			MainLayout.NotificationService.NotifyError(result);
@@ -196,7 +196,7 @@ public partial class AccountingPlan : ComponentBase
 	{
 		var fileName = $"{Guid.NewGuid()}.json";
 		var path = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-		var request = new Requests.ExportPlanToJsonFileRequest(System.IO.Path.Combine(path, fileName));
+		var request = new Requests.Accounts.ExportPlanToJsonFileRequest(System.IO.Path.Combine(path, fileName));
 		var result = await Mediator.Send(request);
 		if (result.HasError)
 		{
@@ -217,7 +217,7 @@ public partial class AccountingPlan : ComponentBase
 		}
         var ms = new MemoryStream();
         await args.File.OpenReadStream().CopyToAsync(ms);
-        var result = await Mediator.Send(new Requests.ImportAccountingPlanFromFileStreamRequest(ms));
+        var result = await Mediator.Send(new Requests.Accounts.ImportAccountingPlanFromFileStreamRequest(ms));
 		if (result.HasError)
 		{
 			uploadError = "Une erreur est survenue pendant l'import";

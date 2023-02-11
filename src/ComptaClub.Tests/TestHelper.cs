@@ -66,19 +66,19 @@ namespace ComptaClub.Tests
 
             var plan = System.Text.Json.JsonSerializer.Deserialize<List<Datas.AccountData>>(planFileContent, ComptaClub.JsonSerializer.Options);
 
-            await mediator.Send(new ImportAccountingPlanRequest(plan!));
+            await mediator.Send(new Requests.Accounts.ImportAccountingPlanRequest(plan!));
 
-            plan = await mediator.Send(new GetPlanRequest());
+            plan = await mediator.Send(new Requests.Accounts.GetPlanRequest());
 
             return plan!;
         }
 
         public async static Task<Datas.BankData> GetOrCreateBank(this IMediator mediator, string bankName)
         {
-            var bank = await mediator.Send(new GetBankByFilterRequest(i => i.Code == bankName));
+            var bank = await mediator.Send(new Requests.Banks.GetBankByFilterRequest(i => i.Code == bankName));
             if (bank == null)
             {
-                bank = await mediator.Send(new CreateBankRequest("MyBank", "My Bank"));
+                bank = await mediator.Send(new Requests.Banks.CreateBankRequest("MyBank", "My Bank"));
                 await mediator.Send(new SaveEntityRequest<Datas.BankData>(bank));
             }
             return bank;
@@ -86,10 +86,10 @@ namespace ComptaClub.Tests
 
         public async static Task<Datas.ExerciceData> GetOrCreateExercice(this MediatR.IMediator mediator, string code)
         {
-            var exercice = await mediator.Send(new GetExerciceByFilterRequest(i => i.Code == code));
+            var exercice = await mediator.Send(new Requests.Exercices.GetExerciceByFilterRequest(i => i.Code == code));
             if (exercice == null)
             {
-                exercice = await mediator.Send(new CreateExerciceRequest(code, "test", DateTime.Today.FirstDateOfCurrentYear(), DateTime.Today.LastDateOfCurrentYear(), 0));
+                exercice = await mediator.Send(new Requests.Exercices.CreateExerciceRequest(code, "test", DateTime.Today.FirstDateOfCurrentYear(), DateTime.Today.LastDateOfCurrentYear(), 0));
                 await mediator.Send(new SaveEntityRequest<Datas.ExerciceData>(exercice));
             }
             return exercice;
@@ -97,13 +97,18 @@ namespace ComptaClub.Tests
 
         public async static Task<Datas.UserData> GetOrCreateUser(this IMediator mediator, string email)
         {
-            var user = await mediator.Send(new GetUserByFilterRequest(i => i.Email = email));
+            var user = await mediator.Send(new Requests.Users.GetUserByFilterRequest(i => i.Email = email));
             if (user == null)
             {
-                user = await mediator.Send(new CreateUserRequest($"{Guid.NewGuid()}", email));
+                user = await mediator.Send(new Requests.Users.CreateUserRequest($"{Guid.NewGuid()}", email));
                 await mediator.Send(new SaveEntityRequest<Datas.UserData>(user));
             }
             return user;
+        }
+
+        public static string GetRandomName()
+        {
+            return $"{Guid.NewGuid()}";
         }
 
         public async static Task CleanupDatabase(this IServiceProvider serviceProvider)
