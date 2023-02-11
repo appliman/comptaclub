@@ -29,13 +29,13 @@ public class MemberCrudTests
         var app = await TestHelper.CreateWebApplication();
         var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
 
-        var member = await mediator.Send(new Requests.GetMemberByFilterRequest(i => i.Email = "fake"));
+        var member = await mediator.Send(new Requests.Members.GetMemberByFilterRequest(i => i.Email = "fake"));
         member.Should().BeNull();
 
         var memberEmail = $"{Guid.NewGuid()}@email.com";
         var memberName = $"{Guid.NewGuid()}";
 
-        member = await mediator.Send(new Requests.CreateMemberRequest());
+        member = await mediator.Send(new Requests.Members.CreateMemberRequest());
         member.Name = memberName;
         member.Email = memberEmail;
         member.LicenseNumber = $"{Guid.NewGuid()}";
@@ -43,7 +43,7 @@ public class MemberCrudTests
         var saveResult = await mediator.Send(new SaveEntityRequest<Datas.MemberData>(member));
         saveResult.HasError.Should().BeFalse();
 
-        member = await mediator.Send(new Requests.GetMemberByFilterRequest(i => i.LicenseNumber = member.LicenseNumber));
+        member = await mediator.Send(new Requests.Members.GetMemberByFilterRequest(i => i.LicenseNumber = member.LicenseNumber));
         member.Should().NotBeNull();
 
         member!.Name.Should().Be(memberName);

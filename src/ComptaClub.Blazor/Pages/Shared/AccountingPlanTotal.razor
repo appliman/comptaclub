@@ -1,7 +1,7 @@
 ﻿<table class="table table-bordered table-hover">
     <thead>
         <tr>
-            <th colspan="3" class="text-center">Charges</th>
+            <th colspan="3" class="text-center">@Title</th>
             <th class="cell-total">Exercice N</th>
         </tr>
     </thead>
@@ -45,4 +45,7 @@
 
     [Parameter]
     public Datas.AccountDirection Direction { get; set; } = Datas.AccountDirection.Credit;
+
+    [Parameter]
+    public string Title { get; set; } = null!;
 }

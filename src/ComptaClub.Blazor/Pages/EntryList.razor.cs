@@ -40,7 +40,7 @@ public partial class EntryList : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        var exercice = await Mediator.Send(new GetActiveExerciceRequest());
+        var exercice = await Mediator.Send(new Requests.Exercices.GetActiveExerciceRequest());
         if (exercice == null)
         {
             return;
@@ -48,7 +48,7 @@ public partial class EntryList : ComponentBase
         activeExercice = Mapper.Map<ViewModels.Exercice>(exercice);
         currentBalance = activeExercice.BalanceAmount;
 
-        var accountList = await Mediator.Send(new Requests.GetPlanRequest());
+        var accountList = await Mediator.Send(new Requests.Accounts.GetPlanRequest());
         leafAccountList = Mapper.Map<List<ViewModels.Account>>(accountList.GetLeafList().ToList());
 
         MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarButton
@@ -132,7 +132,7 @@ public partial class EntryList : ComponentBase
             return;
         }
 
-        var deleteResult = await Mediator.Send(new DeleteEntryRequest(entry.Id));
+        var deleteResult = await Mediator.Send(new Requests.Entries.DeleteEntryRequest(entry.Id));
         if (deleteResult.HasError)
         {
             NotificationService.NotifyError(deleteResult);

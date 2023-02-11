@@ -33,10 +33,10 @@ public class EntryCrudTests
         var user = await mediator.GetOrCreateUser($"{Guid.NewGuid()}@email.com");
         var leafList = plan.GetLeafList();
 
-        var entry = await mediator.Send(new GetEntryByFilterRequest(i => i.GetById(Guid.NewGuid())));
+        var entry = await mediator.Send(new Requests.Entries.GetEntryByFilterRequest(i => i.GetById(Guid.NewGuid())));
         entry.Should().BeNull();
 
-        entry = await mediator.Send(new CreateEntryRequest());
+        entry = await mediator.Send(new Requests.Entries.CreateEntryRequest());
         entry.Should().NotBeNull();
 
         var saveResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
@@ -78,15 +78,15 @@ public class EntryCrudTests
         saveResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
         saveResult.HasError.Should().BeFalse();
 
-        entry = await mediator.Send(new GetEntryByFilterRequest(i => i.GetById(entry.Id)));
+        entry = await mediator.Send(new Requests.Entries.GetEntryByFilterRequest(i => i.GetById(entry.Id)));
 
         entry!.Amount.Should().Be(20 * 1000000);
         entry!.ExtraInfos.Should().Be("Test");
 
-        var deleteResult = await mediator.Send(new DeleteEntryRequest(entry!.Id));
+        var deleteResult = await mediator.Send(new Requests.Entries.DeleteEntryRequest(entry!.Id));
         deleteResult.HasError.Should().BeFalse();
 
-        entry = await mediator.Send(new GetEntryByFilterRequest(i => i.GetById(entry.Id)));
+        entry = await mediator.Send(new Requests.Entries.GetEntryByFilterRequest(i => i.GetById(entry.Id)));
         entry.Should().BeNull();
     }
 

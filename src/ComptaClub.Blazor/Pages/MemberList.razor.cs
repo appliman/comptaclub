@@ -20,9 +20,6 @@ namespace ComptaClub.Blazor.Pages;
 public partial class MemberList : ComponentBase
 {
     [CascadingParameter]
-    Task<AuthenticationState> AuthenticationState { get; set; } = default!;
-
-    [CascadingParameter]
     Shared.MainLayout MainLayout { get; set; } = default!;
 
     [Inject]
@@ -62,7 +59,7 @@ public partial class MemberList : ComponentBase
         var page = await Mediator.Send(new GetPagedEntityListRequest<MemberListFilter, Datas.MemberData>(filter));
         memberList = Mapper.Map<List<ViewModels.Member>>(page.List);
 
-        var balanceByMemberList = await Mediator.Send(new GetBalanceByMemberListRequest(filter)); 
+        var balanceByMemberList = await Mediator.Send(new Requests.Members.GetBalanceByMemberListRequest(filter)); 
         int rowIndex = 1;
         foreach (var item in memberList)
         {
@@ -79,7 +76,7 @@ public partial class MemberList : ComponentBase
     {
         var ms = new MemoryStream();
         await args.File.OpenReadStream().CopyToAsync(ms);
-        var dataList = await Mediator.Send(new Requests.ImportExcelMemberListRequest(ms));
+        var dataList = await Mediator.Send(new Requests.Members.ImportExcelMemberListRequest(ms));
         memberList = Mapper.Map<List<ViewModels.Member>>(dataList);
         int rowIndex = 1;
         foreach (var item in memberList)

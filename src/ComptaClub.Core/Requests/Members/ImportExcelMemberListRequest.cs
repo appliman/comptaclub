@@ -1,0 +1,17 @@
+﻿namespace ComptaClub.Requests.Members;
+
+public class ImportExcelMemberListRequest : IRequest<IEnumerable<MemberData>?>
+{
+    public ImportExcelMemberListRequest(MemoryStream? contentStream)
+    {
+        ContentStream = contentStream;
+    }
+
+    public ImportExcelMemberListRequest(string? fileName)
+    {
+        FileName = fileName;
+    }
+
+    public MemoryStream? ContentStream { get; init; }
+    public string? FileName { get; init; }
+}

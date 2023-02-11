@@ -22,18 +22,18 @@ namespace ComptaClub.Tests.Cruds
             var app = await TestHelper.CreateWebApplication();
             var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
 
-            var user = await mediator.Send(new Requests.GetUserByFilterRequest(i => i.Email = "fake"));
+            var user = await mediator.Send(new Requests.Users.GetUserByFilterRequest(i => i.Email = "fake"));
             user.Should().BeNull();
 
             var userEmail = $"{Guid.NewGuid()}@email.com";
             var userName = $"{Guid.NewGuid()}";
 
-            user = await mediator.Send(new Requests.CreateUserRequest(userName, userEmail));
+            user = await mediator.Send(new Requests.Users.CreateUserRequest(userName, userEmail));
 
             var saveResult = await mediator.Send(new SaveEntityRequest<Datas.UserData>(user));
             saveResult.HasError.Should().BeFalse();
 
-            user = await mediator.Send(new Requests.GetUserByFilterRequest(i => i.Email = userEmail));
+            user = await mediator.Send(new Requests.Users.GetUserByFilterRequest(i => i.Email = userEmail));
             user.Should().NotBeNull();
 
             user!.Name.Should().Be(userName);
@@ -44,15 +44,15 @@ namespace ComptaClub.Tests.Cruds
 
             user.Name.Should().Be(userName);
 
-            var disableResult = await mediator.Send(new Requests.DisableUserRequest(user.Id));
+            var disableResult = await mediator.Send(new Requests.Users.DisableUserRequest(user.Id));
             disableResult.HasError.Should().BeFalse();
 
-            user = await mediator.Send(new Requests.GetUserByFilterRequest(f => {
+            user = await mediator.Send(new Requests.Users.GetUserByFilterRequest(f => {
                 f.Email = userEmail;
                 }));
             user.Should().BeNull();
 
-            user = await mediator.Send(new Requests.GetUserByFilterRequest(f => {
+            user = await mediator.Send(new Requests.Users.GetUserByFilterRequest(f => {
                 f.Email = userEmail;
                 f.Options.DeletedState = Models.DeletedState.Both;
             }));

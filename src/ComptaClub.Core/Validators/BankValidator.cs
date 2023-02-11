@@ -12,7 +12,7 @@ internal class BankValidator : FluentValidation.AbstractValidator<Datas.BankData
         RuleFor(i => i.Code).CustomAsync(async (code, ctx, cancel) =>
         {
             var current = ctx.InstanceToValidate;
-            var existing = await mediator.Send(new Requests.GetBankByFilterRequest(i => i.Code == code));
+            var existing = await mediator.Send(new Requests.Banks.GetBankByFilterRequest(i => i.Code == code));
             if (existing != null && current.Id != existing.Id)
             {
                 ctx.AddFailure(nameof(Datas.BankData.Code), "Ce nom de banque est déjà utilisé");

@@ -38,7 +38,7 @@ public class OfxImportTests
 
         var user = await mediator.GetOrCreateUser($"{Guid.NewGuid()}@email.com");
 
-        var exercice = await mediator.Send(new Requests.CreateExerciceRequest($"Exercice {Guid.NewGuid()}", 
+        var exercice = await mediator.Send(new Requests.Exercices.CreateExerciceRequest($"Exercice {Guid.NewGuid()}", 
             "Exercice 2022", 
             8300, 
             8400, 
@@ -52,10 +52,10 @@ public class OfxImportTests
 
         var plan = System.Text.Json.JsonSerializer.Deserialize<List<Datas.AccountData>>(planFileContent, ComptaClub.JsonSerializer.Options);
 
-        var importResult = await mediator.Send(new ImportAccountingPlanRequest(plan!));
+        var importResult = await mediator.Send(new Requests.Accounts.ImportAccountingPlanRequest(plan!));
         importResult.HasError.Should().BeFalse();
 
-        var bank = await mediator.Send(new CreateBankRequest("MyBank", "My Bank"));
+        var bank = await mediator.Send(new Requests.Banks.CreateBankRequest("MyBank", "My Bank"));
         var saveBankResult = await mediator.Send(new SaveEntityRequest<Datas.BankData>(bank));
         saveBankResult.HasError.Should().BeFalse();
 
@@ -64,7 +64,7 @@ public class OfxImportTests
         var ms = new MemoryStream();
         await sr.CopyToAsync(ms);
 
-        var importedTransactionList = await mediator.Send(new ImportEntryListFromStreamRequest(ms));
+        var importedTransactionList = await mediator.Send(new Requests.Entries.ImportEntryListFromStreamRequest(ms));
 
         var importCount = importedTransactionList.Count();
 

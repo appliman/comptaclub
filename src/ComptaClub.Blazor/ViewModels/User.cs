@@ -12,5 +12,7 @@ namespace ComptaClub.Blazor.ViewModels
         public string Name { get; set; } = null!;
         public string Email { get; set; } = null!;
         public bool IsAuthenticated { get; set; } = false;
+        public int RowIndex { get; set; }
+        public DateTime CreationDate { get; set; }
     }
 }

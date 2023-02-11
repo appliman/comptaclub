@@ -24,13 +24,13 @@ internal class WarmupRequestHandler : IRequestHandler<Requests.WarmupRequest, Re
 
 	async Task<CommandResult> IRequestHandler<WarmupRequest, CommandResult>.Handle(WarmupRequest request, CancellationToken cancellationToken)
 	{
-		var defaultUser = await _mediator.Send(new GetUserByFilterRequest(i => i.Email = _settings.AdminUserEmail));
+		var defaultUser = await _mediator.Send(new Requests.Users.GetUserByFilterRequest(i => i.Email = _settings.AdminUserEmail));
 		if (defaultUser != null)
 		{
 			return new CommandResult();
 		}
 
-		defaultUser = await _mediator.Send(new CreateUserRequest(_settings.AdminUserEmail!, _settings.AdminUserEmail!));
+		defaultUser = await _mediator.Send(new Requests.Users.CreateUserRequest(_settings.AdminUserEmail!, _settings.AdminUserEmail!));
 
 		var saveResult = await _mediator.Send(new SaveEntityRequest<Datas.UserData>(defaultUser));
 		return saveResult;
