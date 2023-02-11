@@ -38,7 +38,7 @@ internal class GetDocumentContentRequestHandler : IRequestHandler<Requests.Docum
             }
             str.Close();
         }
-
+        await reader.CloseAsync();
         var result = await db.Documents.SingleAsync(i => i.Id == request.DocumentId, cancellationToken);
         return result;
     }
