@@ -39,11 +39,11 @@ internal class CreateEntryFromOfxImportRequestHandler : IRequestHandler<CreateEn
         entry.ImportId = request.OfxTransactionImport.TransactionID;
         if (request.OfxTransactionImport.Amount >= 0)
         {
-            entry.AccountDirection = AccountDirection.Credit;
+            entry.AccountDirection = Enums.AccountDirection.Credit;
         }
         else
         {
-            entry.AccountDirection = AccountDirection.Debit;
+            entry.AccountDirection = Enums.AccountDirection.Debit;
         }
         entry.AccountId = ComptaClubSettings.ImportAccount;
         entry.Amount = Math.Abs(Convert.ToInt64(request.OfxTransactionImport.Amount * 1000000));
@@ -61,7 +61,7 @@ internal class CreateEntryFromOfxImportRequestHandler : IRequestHandler<CreateEn
         return entry;
     }
 
-    private PaymentType ConvertToPaymentType(string transType)
+    private Enums.PaymentType ConvertToPaymentType(string transType)
     {
         switch (transType)
         {
@@ -71,21 +71,21 @@ internal class CreateEntryFromOfxImportRequestHandler : IRequestHandler<CreateEn
             case "ATM":
             case "POS":
             case "XFER":
-                return PaymentType.Transfer;
+                return Enums.PaymentType.Transfer;
             case "DEBIT":
             case "FEE":
             case "SRVCHG":
             case "DIRECTDEBIT":
-                return PaymentType.Debit;
+                return Enums.PaymentType.Debit;
             case "DEPOT":
             case "CASH":
             case "DIRECTDEP":
-                return PaymentType.Cash;
+                return Enums.PaymentType.Cash;
             case "CHECK":
             case "PAYMENT":
-                return PaymentType.Check;
+                return Enums.PaymentType.Check;
             default:
-                return PaymentType.Import;
+                return Enums.PaymentType.Import;
         }
     }
 }

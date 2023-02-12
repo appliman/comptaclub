@@ -1,4 +1,4 @@
-﻿namespace ComptaClub.Datas
+﻿namespace ComptaClub.Enums
 {
     public enum AccountDirection
     {

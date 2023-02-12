@@ -38,8 +38,8 @@ internal class GetBalanceByDayRequestHandler : IRequestHandler<GetBalanceByDayRe
                     select new
                     {
                         DayId = g.Key,
-                        CreditAmount = g.Sum(i => i.Amount * (i.AccountDirection == AccountDirection.Credit ? 1 : 0)),
-                        DebitAmount = g.Sum(i => i.Amount * (i.AccountDirection == AccountDirection.Debit ? 1 : 0)),
+                        CreditAmount = g.Sum(i => i.Amount * (i.AccountDirection == Enums.AccountDirection.Credit ? 1 : 0)),
+                        DebitAmount = g.Sum(i => i.Amount * (i.AccountDirection == Enums.AccountDirection.Debit ? 1 : 0)),
                     };
 
         var list = await query.ToListAsync(cancellationToken);

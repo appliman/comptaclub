@@ -13,7 +13,7 @@ namespace ComptaClub.Blazor.ViewModels
     {
         public int RowIndex { get; set; }
         public Guid Id { get; set; }
-        public MetaEntity MetaEntity => MetaEntity.Entry;
+        public Enums.MetaEntity MetaEntity => Enums.MetaEntity.Entry;
         public string PartNumber { get; set; } = null!;
         public string Label { get; set; } = null!;
         public Guid BankId { get; set; }
@@ -23,8 +23,8 @@ namespace ComptaClub.Blazor.ViewModels
         public Guid? MemberId { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime ValueDate { get; set; }
-        public Datas.PaymentType PaymentType { get; set; }
-		public Datas.AccountDirection AccountDirection { get; set; }
+        public Enums.PaymentType PaymentType { get; set; }
+		public Enums.AccountDirection AccountDirection { get; set; }
 		public string? ExtraInfos { get; set; }
 		public decimal Balance { get; set; }
 		public decimal Amount { get; set; }

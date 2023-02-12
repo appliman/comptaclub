@@ -50,7 +50,7 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Débit" Filterable="true">
             <Template Context="entry">
-                @if (entry.AccountDirection == Datas.AccountDirection.Debit)
+                @if (entry.AccountDirection == Enums.AccountDirection.Debit)
                 {
                     <PriceLabel Value="@entry.Amount" />
                 }
@@ -58,13 +58,13 @@
             <FooterTemplate>
                 @if (entryList != null) 
                 {
-                    <PriceLabel Value="@(entryList!.Where(i => i.AccountDirection == Datas.AccountDirection.Debit).Sum(i => i.Amount))"/>
+                    <PriceLabel Value="@(entryList!.Where(i => i.AccountDirection == Enums.AccountDirection.Debit).Sum(i => i.Amount))" />
                 }
             </FooterTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Crédit" Filterable="true">
             <Template Context="entry">
-                @if (entry.AccountDirection == Datas.AccountDirection.Credit)
+                @if (entry.AccountDirection == Enums.AccountDirection.Credit)
                 {
                     <PriceLabel Value="@entry.Amount" />
                 }
@@ -72,7 +72,7 @@
             <FooterTemplate>
                 @if (entryList != null)
                 {
-                    <PriceLabel Value="@(entryList!.Where(i => i.AccountDirection == Datas.AccountDirection.Credit).Sum(i => i.Amount))" />
+                    <PriceLabel Value="@(entryList!.Where(i => i.AccountDirection == Enums.AccountDirection.Credit).Sum(i => i.Amount))" />
                 }
             </FooterTemplate>
         </RadzenDataGridColumn>

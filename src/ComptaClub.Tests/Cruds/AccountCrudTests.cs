@@ -38,7 +38,7 @@ namespace ComptaClub.Tests.Cruds
             account.Should().BeNull();
 
             var code = $"Test{Guid.NewGuid()}";
-            account = await mediator.Send(new Requests.Accounts.CreateAccountRequest(code, $"{Guid.NewGuid()}", Datas.AccountDirection.Credit));
+            account = await mediator.Send(new Requests.Accounts.CreateAccountRequest(code, $"{Guid.NewGuid()}", Enums.AccountDirection.Credit));
 
             var saveResult = await mediator.Send(new Requests.SaveEntityRequest<Datas.AccountData>(account));
             saveResult.HasError.Should().BeFalse();

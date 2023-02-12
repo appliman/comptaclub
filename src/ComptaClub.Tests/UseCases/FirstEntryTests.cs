@@ -76,7 +76,7 @@ public class FirstEntryTests
 		entry.ExerciceId = exercice.Id;
 		entry.Amount = 40 * 1000000;
 		entry.AccountDirection = account.Direction;
-		entry.PaymentType = Datas.PaymentType.CreditCard;
+		entry.PaymentType = Enums.PaymentType.CreditCard;
 		entry.UserCreatorId = user.Id;
 
 		var saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));

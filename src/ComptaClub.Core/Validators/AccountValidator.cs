@@ -34,7 +34,7 @@ internal class AccountValidator : FluentValidation.AbstractValidator<Datas.Accou
 		RuleFor(i => i.Label).NotNull().NotEmpty().WithMessage("Un compte doit avoir un libellé");
         RuleFor(i => i.Direction).Custom((direction, ctx) =>
         {
-            var directions = Enum.GetValues<Datas.AccountDirection>();
+            var directions = Enum.GetValues<Enums.AccountDirection>();
             if (!directions.Any(i => i == direction))
             {
                 ctx.AddFailure(nameof(Datas.AccountData.Direction), "Le sens doit etre indiqué");

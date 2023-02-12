@@ -51,7 +51,7 @@ public class EntryCrudTests
         entry.AccountDirection = firstAccount.Direction;
         var partNumber = entry.PartNumber = $"{Guid.NewGuid()}";
         var label = entry.Label = $"{Guid.NewGuid()}";
-        var paymentType = entry.PaymentType = PaymentType.Transfer;
+        var paymentType = entry.PaymentType = Enums.PaymentType.Transfer;
 
         saveResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
         saveResult.HasError.Should().BeFalse();

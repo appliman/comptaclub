@@ -27,11 +27,11 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Compte" Filterable="false" Width="300px">
             <Template Context="entry">
-                @if (entry.AccountDirection == Datas.AccountDirection.Debit)
+                @if (entry.AccountDirection == Enums.AccountDirection.Debit)
                 {
                     <RadzenDropDown @bind-Value="entry.AccountId" LoadData="LoadDebitAccountList" Data="@debitAccountOptionList" TextProperty="CodeAndLabel" ValueProperty="Id" AllowFiltering="true" />
                 }
-                else if (entry.AccountDirection == Datas.AccountDirection.Credit)
+                else if (entry.AccountDirection == Enums.AccountDirection.Credit)
                 {
                     <RadzenDropDown @bind-Value="entry.AccountId" LoadData="LoadCreditAccountList" Data="@creditAccountOptionList" TextProperty="CodeAndLabel" ValueProperty="Id" AllowFiltering="true" />
                 }
@@ -39,7 +39,7 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Débit" Filterable="false">
             <Template Context="entry">
-                @if (entry.AccountDirection == Datas.AccountDirection.Debit)
+                @if (entry.AccountDirection == Enums.AccountDirection.Debit)
                 {
                     <PriceLabel Value="@entry.Amount" />
                 }
@@ -47,7 +47,7 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Crédit" Filterable="false">
             <Template Context="entry">
-                @if (entry.AccountDirection == Datas.AccountDirection.Credit)
+                @if (entry.AccountDirection == Enums.AccountDirection.Credit)
                 {
                     <PriceLabel Value="@entry.Amount" />
                 }

@@ -41,7 +41,7 @@ public partial class ImportEntryList : ComponentBase
             Id = ComptaClubSettings.ImportAccount,
             Code = "Import",
             Label = "Import",
-            Direction = Datas.AccountDirection.Import
+            Direction = Enums.AccountDirection.Import
         });
     }
 
@@ -74,8 +74,8 @@ public partial class ImportEntryList : ComponentBase
 
     void LoadDebitAccountList(LoadDataArgs args)
     {
-        debitAccountOptionList = Mapper.Map<List<ViewModels.Account>>(accountList.Where(i => i.Direction == Datas.AccountDirection.Debit
-                            || i.Direction == Datas.AccountDirection.Import)
+        debitAccountOptionList = Mapper.Map<List<ViewModels.Account>>(accountList.Where(i => i.Direction == Enums.AccountDirection.Debit
+                            || i.Direction == Enums.AccountDirection.Import)
                             .ToList());
 
         if (!string.IsNullOrWhiteSpace(args.Filter))
@@ -89,8 +89,8 @@ public partial class ImportEntryList : ComponentBase
 
     void LoadCreditAccountList(LoadDataArgs args)
     {
-        creditAccountOptionList = Mapper.Map<List<ViewModels.Account>>(accountList.Where(i => i.Direction == Datas.AccountDirection.Credit
-                                    || i.Direction == Datas.AccountDirection.Import)
+        creditAccountOptionList = Mapper.Map<List<ViewModels.Account>>(accountList.Where(i => i.Direction == Enums.AccountDirection.Credit
+                                    || i.Direction == Enums.AccountDirection.Import)
                                     .ToList());
 
         if (!string.IsNullOrWhiteSpace(args.Filter))
