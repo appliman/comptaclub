@@ -10,6 +10,6 @@ namespace ComptaClub.Blazor.ViewModels
     {
         public int RowIndex { get; set; }
         public Guid Id { get; set; }
-        public Datas.MetaEntity MetaEntity { get; }
+        public Enums.MetaEntity MetaEntity { get; }
     }
 }

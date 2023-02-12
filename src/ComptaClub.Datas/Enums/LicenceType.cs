@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ComptaClub.Datas.Enums
+namespace ComptaClub.Enums
 {
     internal class LicenceType
     {

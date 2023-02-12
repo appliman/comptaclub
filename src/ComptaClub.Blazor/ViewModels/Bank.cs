@@ -6,7 +6,7 @@ public class Bank : IMetaEntity
 {
     public int RowIndex { get; set; }
     public Guid Id { get; set; }
-    public MetaEntity MetaEntity => MetaEntity.Bank;
+    public Enums.MetaEntity MetaEntity => Enums.MetaEntity.Bank;
     public string Code { get; set; } = null!;
     public string? Label { get; set; }
     public int CreationDate { get; set; }

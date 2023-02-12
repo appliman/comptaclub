@@ -21,7 +21,7 @@ namespace ComptaClub.Models
         public List<string>? ImportIdList { get; set; }
         public Guid? ExerciceId { get; set; }
         public EntryListFilterOptions Options { get; set; } = new();
-        public PaymentType? PaymentType { get; set; }
+        public Enums.PaymentType? PaymentType { get; set; }
 
         public void GetById(Guid entryId)
         {

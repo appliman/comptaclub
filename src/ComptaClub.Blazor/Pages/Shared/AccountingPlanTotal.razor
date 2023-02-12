@@ -44,7 +44,7 @@
     public IEnumerable<ViewModels.Account> Plan { get; set; } = new List<ViewModels.Account>();
 
     [Parameter]
-    public Datas.AccountDirection Direction { get; set; } = Datas.AccountDirection.Credit;
+    public Enums.AccountDirection Direction { get; set; } = Enums.AccountDirection.Credit;
 
     [Parameter]
     public string Title { get; set; } = null!;

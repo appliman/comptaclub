@@ -15,5 +15,5 @@ public class Document : IMetaEntity
     public long Size { get; set; }
     public Guid? UserOwnerId { get; set; }
     public int RowIndex { get; set; }
-    public MetaEntity MetaEntity => MetaEntity.Document;
+    public Enums.MetaEntity MetaEntity => Enums.MetaEntity.Document;
 }

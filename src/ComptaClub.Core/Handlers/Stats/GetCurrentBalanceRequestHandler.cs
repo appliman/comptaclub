@@ -33,7 +33,7 @@ internal class GetCurrentBalanceRequestHandler : IRequestHandler<GetCurrentBalan
                     group entry by new { } into g
                     select new
                     {
-                        Balance = g.Sum(i => i.AccountDirection == AccountDirection.Credit ? i.Amount : i.Amount * -1),
+                        Balance = g.Sum(i => i.AccountDirection == Enums.AccountDirection.Credit ? i.Amount : i.Amount * -1),
                         EntryCount = g.Count()
                     };
 
