@@ -3,6 +3,7 @@ using System.Security.Principal;
 using AutoMapper;
 
 using ComptaClub.Blazor.Extensions;
+using ComptaClub.Blazor.ViewModels;
 using ComptaClub.Requests;
 
 using MediatR;
@@ -18,7 +19,7 @@ public partial class Index
 
 	ViewModels.Exercice currentExercice = new();
 	IEnumerable<Models.BalanceByDay> balanceByDayList = new List<Models.BalanceByDay>();
-	IEnumerable<Models.AmountTotalByAccount> amountTotalByAccount = new List<Models.AmountTotalByAccount>();
+	IEnumerable<Models.AmountTotalByAccount> amountTotalByAccountList = new List<Models.AmountTotalByAccount>();
 	IEnumerable<ViewModels.Account> plan = new List<ViewModels.Account>();
 	System.Globalization.CultureInfo ci = new System.Globalization.CultureInfo("fr-FR");
 	int memberCount = 0;
@@ -29,9 +30,9 @@ public partial class Index
 		currentExercice = Mapper.Map<ViewModels.Exercice>(exercice);
 
 		balanceByDayList = await Mediator.Send(new Requests.Stats.GetBalanceByDayRequest());
-		amountTotalByAccount = await Mediator.Send(new Requests.Accounts.GetAmountTotalByAccountRequest());
+		amountTotalByAccountList = await Mediator.Send(new Requests.Accounts.GetAmountTotalByAccountRequest());
 		plan = (await Mediator.Send(new Requests.Accounts.GetPlanRequest())).MapToAccountList(Mapper);
-		foreach (var total in amountTotalByAccount)
+		foreach (var total in amountTotalByAccountList)
 		{
 			var account = plan.DeepFirstOrDefault(i => i.Id == total.Id);
 			if (account != null)

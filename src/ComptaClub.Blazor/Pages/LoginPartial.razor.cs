@@ -61,7 +61,7 @@ public partial class LoginPartial : ComponentBase
 				loginForm.User = user;
 				loginForm.GeneratedDigicode = CreateDigicode();
 				Cache.Set($"login:{loginForm.TokenId}", loginForm);
-				Logger.LogInformation("Digicode : {0}", loginForm.Digicode);
+				Logger.LogInformation("Digicode : {0}", loginForm.GeneratedDigicode);
 
 				var sendResult = await SendEmailConnection();
 				if (!sendResult.Successful)
