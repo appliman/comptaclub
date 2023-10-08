@@ -64,7 +64,7 @@ public class OneMonthTests
         entry.ExerciceId = exercice.Id;
         entry.Amount = 70 * 1000000;
         entry.AccountDirection = licenceAccount.Direction;
-        entry.PaymentType = Datas.PaymentType.Transfer;
+        entry.PaymentType = Enums.PaymentType.Transfer;
         entry.UserCreatorId = user.Id;
 
         var saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
@@ -82,7 +82,7 @@ public class OneMonthTests
         entry.ExerciceId = exercice.Id;
         entry.Amount = Convert.ToInt64(2.45 * 1000000);
         entry.AccountDirection = bankFeeAccount.Direction;
-        entry.PaymentType = Datas.PaymentType.Transfer;
+        entry.PaymentType = Enums.PaymentType.Transfer;
         entry.UserCreatorId = user.Id;
 
         saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
@@ -101,7 +101,7 @@ public class OneMonthTests
         entry.ExerciceId = exercice.Id;
         entry.Amount = Convert.ToInt64(1209 * 1000000);
         entry.AccountDirection = licenceAccount.Direction;
-        entry.PaymentType = Datas.PaymentType.Check;
+        entry.PaymentType = Enums.PaymentType.Check;
         entry.UserCreatorId = user.Id;
 
         saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));

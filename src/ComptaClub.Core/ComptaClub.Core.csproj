@@ -9,30 +9,21 @@
 
 	<ItemGroup>
 		<PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
-		<PackageReference Include="Azure.Identity" Version="1.8.2" />
-		<PackageReference Include="Azure.Security.KeyVault.Keys" Version="4.4.0" />
+		<PackageReference Include="Azure.Identity" Version="1.10.1" />
+		<PackageReference Include="Azure.Security.KeyVault.Keys" Version="4.5.0" />
 		<PackageReference Include="FluentEmail.MailKit" Version="3.0.2" />
 		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.21.0" />
-		<PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.4.0" />
-		<PackageReference Include="Azure.Storage.Blobs" Version="12.14.1" />
-		<PackageReference Include="FluentValidation" Version="11.4.0" />
-		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+		<PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.5.0" />
+		<PackageReference Include="Azure.Storage.Blobs" Version="12.18.0" />
+		<PackageReference Include="FluentValidation" Version="11.7.1" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
 		<PackageReference Include="FluentEmail.Smtp" Version="3.0.2" />
 		<PackageReference Include="FluentEmail.Razor" Version="3.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\ComptaClub.Datas.MsSql\ComptaClub.Datas.MsSql.csproj" />
 	  <ProjectReference Include="..\ComptaClub.Import\ComptaClub.Import.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Mapping\" />
 	</ItemGroup>
 
 </Project>

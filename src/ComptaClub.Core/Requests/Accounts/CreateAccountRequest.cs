@@ -6,10 +6,10 @@ public record CreateAccountRequest : IRequest<AccountData>
     {
         Code = "A completer";
         Label = "A completer";
-        Direction = AccountDirection.Credit;
+        Direction = Enums.AccountDirection.Credit;
     }
 
-    public CreateAccountRequest(string code, string label, AccountDirection accountDirection)
+    public CreateAccountRequest(string code, string label, Enums.AccountDirection accountDirection)
     {
         Code = code;
         Label = label;
@@ -18,6 +18,6 @@ public record CreateAccountRequest : IRequest<AccountData>
 
     public string Code { get; init; } = null!;
     public string Label { get; init; } = null!;
-    public AccountDirection Direction { get; init; }
+    public Enums.AccountDirection Direction { get; init; }
     public Guid? ParentId { get; set; }
 }

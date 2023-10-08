@@ -12,7 +12,7 @@ namespace ComptaClub.Blazor.ViewModels
     {
         public int RowIndex { get; set; }
         public Guid Id { get; set; }
-        public MetaEntity MetaEntity => MetaEntity.Exercice;
+        public Enums.MetaEntity MetaEntity => Enums.MetaEntity.Exercice;
         public string Code { get; set; } = null!;
         public string? Label { get; set; }
         public decimal InitialAmount { get; set; }

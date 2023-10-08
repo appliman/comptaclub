@@ -13,5 +13,5 @@ public class Member : IMetaEntity
     public DateTime CreationDate { get; set; }
     public int RowIndex { get; set; }
     public decimal Amount { get; set; }
-    public MetaEntity MetaEntity => MetaEntity.Member;
+    public Enums.MetaEntity MetaEntity => Enums.MetaEntity.Member;
 }

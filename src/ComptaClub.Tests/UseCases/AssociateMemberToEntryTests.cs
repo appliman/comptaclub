@@ -46,7 +46,7 @@ public class AssociateMemberToEntryTests
         entry.ExerciceId = exercice.Id;
         entry.Amount = 70 * 1000000;
         entry.AccountDirection = licenceAccount.Direction;
-        entry.PaymentType = Datas.PaymentType.Transfer;
+        entry.PaymentType = Enums.PaymentType.Transfer;
         entry.UserCreatorId = user.Id;
 
         var saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));

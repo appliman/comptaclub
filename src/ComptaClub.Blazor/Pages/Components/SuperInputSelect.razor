@@ -1,7 +1,7 @@
 ﻿@typeparam T 
 
-<div class="form-group">
-	<label class="control-label">@Label</label>
+<div class="mb-3">
+	<label class="form-label">@Label</label>
 	<div>
 		<InputSelect TValue="T" class="form-select" Value="Value" ValueChanged="ValueChanged" ValueExpression="ValueExpression">
 			@foreach(var item in ItemList!)

@@ -37,7 +37,7 @@ public partial class EditEntry : ComponentBase
 	List<SelectOption<Guid>> bankOptionList = new();
 	List<SelectOption<Guid>> accountOptionList = new();
 	List<SelectOption<Guid>> exerciceOptionList = new();
-	Datas.AccountDirection direction;
+	Enums.AccountDirection direction;
 	AssociatedMemberByEntry? associatedMembers;
 
     protected override async Task OnInitializedAsync()
@@ -59,11 +59,11 @@ public partial class EditEntry : ComponentBase
 
 		if (Direction == "charge")
 		{
-			direction = Datas.AccountDirection.Debit;
+			direction = Enums.AccountDirection.Debit;
 		}
 		else if (Direction == "produit")
 		{
-			direction = Datas.AccountDirection.Credit;
+			direction = Enums.AccountDirection.Credit;
 		}
 		else
 		{
@@ -81,13 +81,13 @@ public partial class EditEntry : ComponentBase
 
 		var accountList = await Mediator.Send(new Requests.Accounts.GetPlanRequest());
 		accountList = accountList.GetLeafList().ToList();
-		if (direction == Datas.AccountDirection.Debit)
+		if (direction == Enums.AccountDirection.Debit)
 		{
-			accountList.RemoveAll(i => i.Direction == Datas.AccountDirection.Credit);
+			accountList.RemoveAll(i => i.Direction == Enums.AccountDirection.Credit);
 		}
 		else
 		{
-			accountList.RemoveAll(i => i.Direction == Datas.AccountDirection.Debit);
+			accountList.RemoveAll(i => i.Direction == Enums.AccountDirection.Debit);
 		}
 		accountOptionList = accountList.ToSelectOptionList(i => i.Id, t => $"({t.Code}) {t.Label}", i => i.Id == entry.AccountId);
 

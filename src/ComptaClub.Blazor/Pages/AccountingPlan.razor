@@ -48,7 +48,7 @@
                 @if (!account.ParentAccountId.HasValue)
                 {
                     <RadzenDropDown @bind-Value="account.Direction"
-                                Data="ComptaClub.Extensions.EnumExtensions.GetEnumExtensions<Datas.AccountDirection>()"
+                                Data="ComptaClub.Extensions.EnumExtensions.GetEnumExtensions<Enums.AccountDirection>()"
                                 ValueProperty="Key"
                                 TextProperty="Name"
                                 Style="width:100%; display: block;">

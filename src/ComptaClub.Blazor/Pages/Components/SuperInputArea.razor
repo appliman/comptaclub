@@ -1,7 +1,14 @@
-﻿<div class="form-group">
-	<label for="Name" class="control-label">@Label</label>
+﻿<div class="mb-3">
+	<label for="Name" class="form-label">@Label</label>
 	<div>
-		<InputTextArea @attributes="@CatpuredAttributes" type="@Type" class="form-control" Value="@Value" placeholder="@PlaceHoder" required="@(Required ? "required" : null)" ValueChanged="@ValueChanged" ValueExpression="@ValueExpression"  />
+		<InputTextArea @attributes="@CatpuredAttributes" 
+			type="@Type" 
+			class="form-control" 
+			Value="@Value" 
+			placeholder="@PlaceHoder" 
+			required="@(Required ? "required" : null)" 
+			ValueChanged="@ValueChanged" 
+			ValueExpression="@ValueExpression"  />
 		<small>
 			<ValidationMessage For="@ValueExpression" />
 		</small>
