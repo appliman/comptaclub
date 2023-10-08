@@ -38,7 +38,6 @@ namespace ComptaClub.Configuration
         public void SetSqlConnectionString(string sqlConnectionString) => this.SqlConnectionString = sqlConnectionString;
 
         // Keyvault
-
         public string KeyVaultTenantId { get; set; } = null!;
         public string KeyVaultClientId { get; set; } = null!;
         public string KeyVaultClientSecret { get; set; } = null!;

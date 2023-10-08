@@ -1,9 +1,9 @@
 ﻿@typeparam E where E : struct
 
-<div class="form-group">
+<div class="mb-3">
 	@if (!string.IsNullOrWhiteSpace(Label))
 	{
-		<label class="control-label">@Label</label>
+		<label class="form-label">@Label</label>
 	}
 	<div>
 		<InputSelect TValue="E" class="form-select" Value="Value" ValueChanged="ValueChanged" ValueExpression="ValueExpression">

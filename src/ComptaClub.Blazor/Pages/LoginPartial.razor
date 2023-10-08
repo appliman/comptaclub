@@ -1,38 +1,40 @@
-﻿<div class="content-header text-center">
-	<div class="container-fluid">
-		<h1 class="m-0">Connexion</h1>
+﻿
+<div class="col d-flex justify-content-center">
+	<div class="card text-center w-50">
+
+		<div class="card-header">
+			<h1 class="m-0">Connexion</h1>
+		</div>
+
+		<div class="card-body">
+			<EditForm Model="loginForm" OnValidSubmit="Validate">
+				<DataAnnotationsValidator />
+				<CustomValidator @ref="customValidator"></CustomValidator>
+
+				@if (loginForm.Step == "Email")
+				{
+					<p>Saisissez votre adresse email pour recevoir un code d'accès</p>
+					<div class="loginform m-auto">
+						<InputText @bind-Value="@loginForm.Email" auto-complete="true" placeholder="Indiquez votre adresse email" class="form-control width-input" />
+						<small>
+							<ValidationMessage For="() => loginForm.Email" />
+						</small>
+						<button type="submit" class="btn btn-primary m-3">@submitMessage</button>
+					</div>
+				}
+				else if (loginForm.Step == "Digicode")
+				{
+					<p>Saisissez le code d'accès reçu par email</p>
+					<div class="loginform m-auto">
+						<InputNumber @bind-Value="loginForm.Digicode" class="form-control width-input" />
+						<small>
+							<ValidationMessage For="() => loginForm.Digicode" />
+						</small>
+						<button type="submit" class="btn btn-primary m-3">@submitMessage</button>
+					</div>
+				}
+			</EditForm>
+		</div>
+
 	</div>
 </div>
-
-<section class="content text-center">
-	<div class="container-fluid">
-		<EditForm Model="loginForm" OnValidSubmit="Validate">
-			<DataAnnotationsValidator />
-			<CustomValidator @ref="customValidator"></CustomValidator>
-
-			@if (loginForm.Step == "Email")
-			{
-				<p>Saisissez votre adresse email pour recevoir un code d'accès</p>
-				<div class="loginform m-auto">
-					<InputText @bind-Value="@loginForm.Email" auto-complete="true" placeholder="Indiquez votre adresse email" class="form-control width-input" />
-					<small>
-						<ValidationMessage For="() => loginForm.Email" />
-					</small>
-					<button type="submit" class="btn btn-primary">@submitMessage</button>
-				</div>
-			}
-			else if (loginForm.Step == "Digicode")
-			{
-				<p>Saisissez le code d'accès reçu par email</p>
-				<div class="loginform m-auto">
-					<InputNumber @bind-Value="loginForm.Digicode" class="form-control width-input" />
-					<small>
-						<ValidationMessage For="() => loginForm.Digicode" />
-					</small>
-					<button type="submit" class="btn btn-primary">@submitMessage</button>
-				</div>
-			}
-		</EditForm>
-	</div>
-</section>
-
