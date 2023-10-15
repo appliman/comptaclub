@@ -60,7 +60,8 @@ internal class GetBalanceByDayRequestHandler : IRequestHandler<GetBalanceByDayRe
             {
                 bbd.DebitAmount = activeDay.DebitAmount / 1000000m;
                 bbd.CreditAmount = activeDay.CreditAmount / 1000000m;
-                balance = bbd.BalanceAmount = balance + (activeDay.CreditAmount - activeDay.DebitAmount) / 1000000m;
+                bbd.BalanceAmount = (balance + (bbd.CreditAmount - bbd.DebitAmount));
+                balance = bbd.BalanceAmount;
             }
             else
             {

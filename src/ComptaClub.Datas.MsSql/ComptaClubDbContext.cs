@@ -37,4 +37,6 @@ public class ComptaClubDbContext : DbContext
     public DbSet<RoleByUserData> RolesByUsers { get; set; }
     public DbSet<UserData> Users { get; set; }
     public DbSet<AssociatedMemberListByEntryData> AssociatedMemberListByEntries { get; set; }
+    public DbSet<IncomeStatementData> IncomeStatements { get; set; }
+    public DbSet<IncomeStatementItemData> IncomeStatementItems { get; set; }
 }

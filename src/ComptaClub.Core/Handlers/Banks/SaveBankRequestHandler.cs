@@ -1,6 +1,6 @@
 ﻿namespace ComptaClub.Handlers.Banks;
 
-internal class SaveBankRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<BankData>, Results.PersistResult<Guid>>
+internal class SaveBankRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<BankData>, Results.PersistResult>
 {
     private readonly IValidator<BankData> _validator;
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
@@ -15,12 +15,12 @@ internal class SaveBankRequestHandler : SaveRequestHandlerBase, IRequestHandler<
         _dbContextFactory = dbContextFactory;
     }
 
-    public async Task<Results.PersistResult<Guid>> Handle(Requests.SaveEntityRequest<BankData> request, CancellationToken cancellationToken)
+    public async Task<Results.PersistResult> Handle(Requests.SaveEntityRequest<BankData> request, CancellationToken cancellationToken)
     {
         var result = await _validator.ValidateAsync(request.Entity);
         if (!result.IsValid)
         {
-            return result.ToPersistResult<Guid>()!;
+            return result.ToPersistResult()!;
         }
 
         var db = await _dbContextFactory.CreateDbContextAsync();

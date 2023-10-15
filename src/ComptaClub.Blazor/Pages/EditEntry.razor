@@ -19,5 +19,8 @@
 	</div>
 </EditForm>
 
-<h4 class="mt-5">Membres associé à l'écriture :</h4>
-<AssociatedMemberByEntry @ref="associatedMembers" EntryId="EntryId"/>
+@if (!newEntry)
+{
+	<h4 class="mt-5">Membres associé à l'écriture :</h4>
+	<AssociatedMemberByEntry @ref="associatedMembers" EntryId="EntryId"/>
+}

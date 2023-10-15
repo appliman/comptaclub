@@ -1,6 +1,6 @@
 ﻿namespace ComptaClub.Handlers.Entries;
 
-internal class SaveEntryRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<EntryData>, Results.PersistResult<Guid>>
+internal class SaveEntryRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<EntryData>, Results.PersistResult>
 {
     private readonly IValidator<EntryData> _validator;
     private readonly IMediator _mediator;
@@ -16,14 +16,14 @@ internal class SaveEntryRequestHandler : SaveRequestHandlerBase, IRequestHandler
         _mediator = mediator;
     }
 
-    public async Task<Results.PersistResult<Guid>> Handle(Requests.SaveEntityRequest<EntryData> request, CancellationToken cancellationToken)
+    public async Task<Results.PersistResult> Handle(Requests.SaveEntityRequest<EntryData> request, CancellationToken cancellationToken)
     {
         if (!request.BypassRules)
         {
             var result = await _validator.ValidateAsync(request.Entity, cancellationToken);
             if (!result.IsValid)
             {
-                return result.ToPersistResult<Guid>()!;
+                return result.ToPersistResult()!;
             }
         }
 

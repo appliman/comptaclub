@@ -43,12 +43,16 @@
         <RadzenPanelMenu Match="NavLinkMatch.Prefix">
             <RadzenPanelMenuItem Text="Accueil" Path="/" Icon="assessment" />
             <RadzenPanelMenuItem Text="Ecritures" Path="/ecritures" Icon="receipt" />
-            <RadzenPanelMenuItem Text="Plan comptable" Path="/plan" Icon="dynamic_feed" />
-            <RadzenPanelMenuItem Text="Exercices" Path="/exercices" Icon="cases" />
-            <RadzenPanelMenuItem Text="Banques" Path="/banques" Icon="account_balance" />
+            <RadzenPanelMenuItem Text="Comptes de résultats" Path="/comptes-resultats" Icon="workspace_premium" />
+            <RadzenPanelMenuItem Text="Bilans prévisionnels" Path="/bilans-previsionnels" Icon="query_stats" />
             <RadzenPanelMenuItem Text="Membres" Path="/membres" Icon="diversity_1" />
             <RadzenPanelMenuItem Text="Documents" Path="/documents" Icon="document_scanner" />
-            <RadzenPanelMenuItem Text="Utilisateurs" Path="/utilisateurs" Icon="group" />
+            <RadzenPanelMenuItem Text="Configuration" Icon="settings">
+                <RadzenPanelMenuItem Text="Utilisateurs" Path="/utilisateurs" Icon="group" />
+                <RadzenPanelMenuItem Text="Plan comptable" Path="/plan" Icon="dynamic_feed" />
+                <RadzenPanelMenuItem Text="Exercices" Path="/exercices" Icon="cases" />
+                <RadzenPanelMenuItem Text="Banques" Path="/banques" Icon="account_balance" />
+            </RadzenPanelMenuItem>
         </RadzenPanelMenu>
         <div class="text-center d-none d-sm-block">
             <small>Version : @version</small><br />

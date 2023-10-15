@@ -9,7 +9,10 @@
     Data="@exerciceList"
     LoadData="@LoadDatas"
     TItem="ViewModels.Exercice"
-    ColumnWidth="80px">
+    SelectionMode="DataGridSelectionMode.Single"
+    AllowRowSelectOnRowClick="true"
+    ColumnWidth="80px"
+    @bind-Value="selectedExercices">
     <Columns>
         <RadzenDataGridColumn TItem="ViewModels.Exercice" Property="Code" Title="Code Exercice" Width="120px" Filterable="false">
         </RadzenDataGridColumn>
@@ -35,12 +38,20 @@
                 }
             </Template>
         </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Exercice" Property="ExerciceState" Title="Etat" Width="100px" Filterable="false">
+            <Template Context="exercice">
+                <SuperEnumLabel Value="@exercice.ExerciceState"/>
+            </Template>
+        </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Exercice" Context="exercice" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
             <Template Context="exercice">
-                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(exercice))" @onclick:stopPropagation="true" title="Editer cet exercice">
-                </RadzenButton>
-                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(exercice))" @onclick:stopPropagation="true" title="Supprimer cet exercice">
-                </RadzenButton>
+                @if (exercice.ExerciceState != ExerciceState.Closed)
+                {
+                    <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(exercice))" @onclick:stopPropagation="true" title="Editer cet exercice">
+                    </RadzenButton>
+                    <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(exercice))" @onclick:stopPropagation="true" title="Supprimer cet exercice">
+                    </RadzenButton>
+                }
             </Template>
         </RadzenDataGridColumn>
     </Columns>

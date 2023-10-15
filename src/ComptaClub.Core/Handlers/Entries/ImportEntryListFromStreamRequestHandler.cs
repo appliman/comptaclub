@@ -43,7 +43,7 @@ internal class ImportEntryListFromStreamRequestHandler : IRequestHandler<ImportE
         }));
 
         var existingImportList = existingEntries.List.Where(i => i.ImportId is not null).Select(i => i.ImportId!).Distinct().ToList();
-        var removeCount = result.RemoveAll(i => existingImportList.Contains(i.ImportId));
+        var removeCount = result.RemoveAll(i => existingImportList.Contains(i.ImportId!));
         _logger.LogTrace($"{removeCount} entrée déjà importées");
 
         return result;

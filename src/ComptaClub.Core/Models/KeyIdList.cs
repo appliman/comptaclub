@@ -8,9 +8,9 @@ public class KeyIdList
 {
 	public KeyIdList()
 	{
-		KeyList = new List<object>();
+		KeyList = new List<Guid>();
 		PropertyName = "Id";
 	}
-	public List<object> KeyList { get; set; }
+	public List<Guid> KeyList { get; set; }
 	public string PropertyName { get; set; }
 }

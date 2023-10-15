@@ -3,7 +3,7 @@ using ComptaClub.Requests;
 
 namespace ComptaClub.Handlers.Exercices;
 
-internal class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHandler<SaveEntityRequest<ExerciceData>, Results.PersistResult<Guid>>
+internal class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHandler<SaveEntityRequest<ExerciceData>, Results.PersistResult>
 {
     private readonly IValidator<ExerciceData> _validator;
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
@@ -20,12 +20,12 @@ internal class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHand
         _mediator = mediator;
     }
 
-    public async Task<Results.PersistResult<Guid>> Handle(SaveEntityRequest<ExerciceData> request, CancellationToken cancellationToken)
+    public async Task<Results.PersistResult> Handle(SaveEntityRequest<ExerciceData> request, CancellationToken cancellationToken)
     {
         var valid = await _validator.ValidateAsync(request.Entity, cancellationToken);
         if (!valid.IsValid)
         {
-            return valid.ToPersistResult<Guid>()!;
+            return valid.ToPersistResult()!;
         }
 
         var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);

@@ -4,7 +4,7 @@ namespace ComptaClub.Models;
 
 public class AccountListFilter : IListFilter
 {
-    public KeyIdList KeyIdList { get; } = new();
+    public List<Guid> IdList { get; set; } = new();
     public int PageIndex { get; set; }
     public int? Skip { get; set; }
     public int PageSize { get; set; } = int.MaxValue;
@@ -17,8 +17,7 @@ public class AccountListFilter : IListFilter
 
     public void GetById(Guid entryId)
     {
-        KeyIdList.PropertyName = "Id";
-        KeyIdList.KeyList.Add(entryId);
+        IdList.Clear();
+        IdList.Add(entryId);
     }
-
 }

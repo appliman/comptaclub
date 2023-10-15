@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace ComptaClub.Models;
 
 public class UserListFilter : IListFilter
 {
-    public KeyIdList KeyIdList { get; } = new();
+    public List<Guid> IdList { get; set; } = new();
     public int PageIndex { get; set; }
     public int? Skip { get; set; }
     public int PageSize { get; set; }
@@ -22,8 +17,8 @@ public class UserListFilter : IListFilter
 
     public void GetById(Guid entryId)
     {
-        KeyIdList.PropertyName = "Id";
-        KeyIdList.KeyList.Add(entryId);
+        IdList.Clear();
+        IdList.Add(entryId);
     }
 
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using ComptaClub.Enums;
 using ComptaClub.Models;
 using ComptaClub.Requests.Exercices;
 using MediatR;
@@ -24,6 +25,7 @@ internal class CreateExerciceRequestHandler : IRequestHandler<CreateExerciceRequ
         result.InitialAmount = request.InitialAmount;
         result.BalanceAmount = request.InitialAmount;
         result.Active = request.Active;
+        result.ExerciceState = ExerciceState.Current;
         return Task.FromResult(result);
     }
 }

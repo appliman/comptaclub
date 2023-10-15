@@ -10,6 +10,5 @@ namespace ComptaClub.Requests.Exercices;
 /// Recupère l'exercice en cours
 /// <see cref="Handlers.Exercices.GetActiveExerciceRequestHandler"/>
 /// </summary>
-public record GetActiveExerciceRequest : IRequest<ExerciceData?>
-{
-}
+public record GetActiveExerciceRequest 
+    : IRequest<ExerciceData?>;
