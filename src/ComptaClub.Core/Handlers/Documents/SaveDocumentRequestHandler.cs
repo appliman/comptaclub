@@ -2,7 +2,7 @@
 
 namespace ComptaClub.Handlers.Banks;
 
-internal class SaveDocumentRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.Documents.SaveDocumentRequest, Results.PersistResult<Guid>>
+internal class SaveDocumentRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.Documents.SaveDocumentRequest, Results.PersistResult>
 {
     private readonly IValidator<DocumentData> _validator;
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
@@ -19,12 +19,12 @@ internal class SaveDocumentRequestHandler : SaveRequestHandlerBase, IRequestHand
         _logger = logger;
     }
 
-    public async Task<Results.PersistResult<Guid>> Handle(Requests.Documents.SaveDocumentRequest request, CancellationToken cancellationToken)
+    public async Task<Results.PersistResult> Handle(Requests.Documents.SaveDocumentRequest request, CancellationToken cancellationToken)
     {
         var result = await _validator.ValidateAsync(request.Entity,cancellationToken);
         if (!result.IsValid)
         {
-            return result.ToPersistResult<Guid>()!;
+            return result.ToPersistResult()!;
         }
 
         request.Entity.LastUpdate = DateTime.Now.ToDayId();

@@ -2,7 +2,7 @@
 
 namespace ComptaClub.Requests.Documents;
 
-public class SaveDocumentRequest : IRequest<Results.PersistResult<Guid>>
+public class SaveDocumentRequest : IRequest<Results.PersistResult>
 {
     public SaveDocumentRequest(DocumentData document, MemoryStream? contentStream)
     {

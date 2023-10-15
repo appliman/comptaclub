@@ -2,8 +2,11 @@ namespace ComptaClub.Blazor.Pages.Components;
 
 public partial class PriceLabel
 {
-    [Parameter]
-    public decimal? Value { get; set; }
+	[Parameter(CaptureUnmatchedValues = true)]
+	public Dictionary<string, object> CapturedAttributes { get; set; } = new();
+
+	[Parameter]
+    public long? Value { get; set; }
 
     [Parameter]
     public bool DisplayIf { get; set; } = true;
@@ -13,7 +16,7 @@ public partial class PriceLabel
     {
         get
         {
-            return new MarkupString(string.Format("{0:#,##0.00}&nbsp;€", Value.GetValueOrDefault(0)));
+            return new MarkupString(string.Format("{0:#,##0.00}&nbsp;€", Value.GetValueOrDefault(0) / 1000000m));
         }
     }
 

@@ -1,5 +1,4 @@
 ﻿namespace ComptaClub.Requests.Accounts;
 
-public class GetAmountTotalByAccountRequest : IRequest<IEnumerable<AmountTotalByAccount>>
-{
-}
+public record GetAmountTotalByAccountRequest(Guid? ExerciceId = null) 
+    : IRequest<IEnumerable<AmountTotalByAccount>>;

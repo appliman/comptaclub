@@ -5,7 +5,7 @@ using DocumentFormat.OpenXml.Vml.Office;
 
 namespace ComptaClub.Handlers.Members;
 
-public class LinkMemberToEntryRequestHandler : IRequestHandler<LinkMemberToEntryRequest, PersistResult<Guid>>
+public class LinkMemberToEntryRequestHandler : IRequestHandler<LinkMemberToEntryRequest, PersistResult>
 {
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
     private readonly IMediator _mediator;
@@ -20,7 +20,7 @@ public class LinkMemberToEntryRequestHandler : IRequestHandler<LinkMemberToEntry
         _validator = validator;
     }
 
-    public async Task<PersistResult<Guid>> Handle(LinkMemberToEntryRequest request, CancellationToken cancellationToken)
+    public async Task<PersistResult> Handle(LinkMemberToEntryRequest request, CancellationToken cancellationToken)
     {
         var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
@@ -51,11 +51,11 @@ public class LinkMemberToEntryRequestHandler : IRequestHandler<LinkMemberToEntry
         var result = await _validator.ValidateAsync(data);
         if (!result.IsValid)
         {
-            return result.ToPersistResult<Guid>()!;
+            return result.ToPersistResult()!;
         }
 
         var changeCount = await db.SaveChangesAsync(cancellationToken);
-        return new PersistResult<Guid>
+        return new PersistResult
         {
             Id = data.Id,
             ChangeCount = changeCount,

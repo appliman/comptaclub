@@ -39,6 +39,7 @@ public partial class EditEntry : ComponentBase
 	List<SelectOption<Guid>> exerciceOptionList = new();
 	Enums.AccountDirection direction;
 	AssociatedMemberByEntry? associatedMembers;
+	bool newEntry = true;
 
     protected override async Task OnInitializedAsync()
 	{
@@ -47,6 +48,7 @@ public partial class EditEntry : ComponentBase
 		{
 			var data = await Mediator.Send(new Requests.Entries.CreateEntryRequest());
 			entry = Mapper.Map<ViewModels.Entry>(data);
+			newEntry = true;
 		}
 		else
 		{
@@ -54,6 +56,7 @@ public partial class EditEntry : ComponentBase
 			if (data != null)
 			{
 				entry = Mapper.Map<ViewModels.Entry>(data);
+				newEntry = false;
 			}
 		}
 
@@ -134,7 +137,10 @@ public partial class EditEntry : ComponentBase
 			return;
 		}
 
-		await associatedMembers!.SaveAssociations();
+		if (associatedMembers is not null)
+		{
+			await associatedMembers.SaveAssociations();
+		}
 
 		NavigationManager.NavigateTo("/ecritures");
 	}

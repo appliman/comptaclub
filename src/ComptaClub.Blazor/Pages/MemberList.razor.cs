@@ -66,7 +66,7 @@ public partial class MemberList : ComponentBase
             var balance = balanceByMemberList.SingleOrDefault(i => i.MemberId == item.Id);
             if (balance != null)
             {
-                item.Amount = (balance.Balance / 1000000m);
+                item.Amount = balance.Balance;
             }
             item.RowIndex = rowIndex++;
         }

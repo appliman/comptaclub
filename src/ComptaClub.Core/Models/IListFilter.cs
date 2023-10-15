@@ -6,7 +6,7 @@ namespace ComptaClub.Models;
 
 public interface IListFilter
 {
-	KeyIdList KeyIdList { get; }
+	List<Guid> IdList { get; set; }
 	int PageIndex { get; set; }
 	int? Skip { get; set; }
 	int PageSize { get; set; }

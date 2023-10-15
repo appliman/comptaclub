@@ -65,13 +65,13 @@ public static class FluentValidationExtensions
         return brokenRules;
     }
 
-    public static Results.PersistResult<T>? ToPersistResult<T>(this List<Results.BrokenRule> brokenRules)
+    public static Results.PersistResult? ToPersistResult<T>(this List<Results.BrokenRule> brokenRules)
     {
         if (brokenRules.IsNullOrEmpty())
         {
             return null;
         }
-        return new Results.PersistResult<T>()
+        return new Results.PersistResult()
         {
 			ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Error).ToList(),
             WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Warning).ToList(),
@@ -80,13 +80,13 @@ public static class FluentValidationExtensions
     }
 
 
-    public static List<Results.PersistResult<T>> ToPersistResultList<T>(this List<Results.BrokenRule> brokenRules)
+    public static List<Results.PersistResult> ToPersistResultList<T>(this List<Results.BrokenRule> brokenRules)
     {
-        var result = new List<Results.PersistResult<T>>();
+        var result = new List<Results.PersistResult>();
 
         if (!brokenRules.IsNullOrEmpty())
         {
-            result.Add(new Results.PersistResult<T>
+            result.Add(new Results.PersistResult
             {
                 ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Error).ToList(),
                 WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Warning).ToList(),
@@ -97,7 +97,7 @@ public static class FluentValidationExtensions
         return result;
     }
 
-	public static Results.PersistResult<T>? ToPersistResult<T>(this ValidationResult validationResult)
+	public static Results.PersistResult? ToPersistResult(this ValidationResult validationResult)
 	{
 		if (validationResult == null)
 		{
@@ -105,7 +105,7 @@ public static class FluentValidationExtensions
 		}
 		var brokenRules = validationResult.ToBrokenRules();
 		
-		return new Results.PersistResult<T>
+		return new Results.PersistResult
 		{
 			ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Error).ToList(),
 			WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Warning).ToList(),
@@ -113,23 +113,7 @@ public static class FluentValidationExtensions
 		};
 	}
 
-	public static Results.CommandResult? ToPersistResult(this ValidationResult validationResult)
-	{
-		if (validationResult == null)
-		{
-			return null;
-		}
-		var brokenRules = validationResult.ToBrokenRules();
-
-		return new Results.CommandResult
-		{
-			ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Error).ToList(),
-			WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Warning).ToList(),
-			HasError = brokenRules.Count(x => x.Severity == Results.Severity.Error) > 0
-		};
-	}
-
-	public static void LogValidationFailedResult<T>(this ILogger logger, string message, Results.PersistResult<T> validationResult)
+	public static void LogValidationFailedResult(this ILogger logger, string message, Results.PersistResult validationResult)
 	{
 		if (validationResult == null)
 		{

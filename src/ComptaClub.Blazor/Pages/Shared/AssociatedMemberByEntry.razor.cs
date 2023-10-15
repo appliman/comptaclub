@@ -31,7 +31,7 @@ public partial class AssociatedMemberByEntry
     AssociatedMemberToEntryRow? associationToInsert;
     AssociatedMemberToEntryRow? associationToUpdate;
     List<AssociatedMemberToEntryRow> unlinkedAssociationList = new();
-    decimal total = 0;
+    long total = 0;
 
     public async Task LoadDatas(LoadDataArgs args)
     {
@@ -45,8 +45,7 @@ public partial class AssociatedMemberByEntry
         var memberIdList = dataList.Select(i => i.MemberId).Distinct().ToList();
         var memberPage = await Mediator.Send(new GetPagedEntityListRequest<MemberListFilter, Datas.MemberData>(f =>
         {
-            f.KeyIdList.KeyList = memberIdList.Cast<object>().ToList();
-            f.KeyIdList.PropertyName = "Id";
+            f.IdList = memberIdList;
         }));
 
         List<AssociatedMemberToEntryRow> list = new();
@@ -59,7 +58,7 @@ public partial class AssociatedMemberByEntry
             var member = memberPage.List.SingleOrDefault(i => i.Id == item.MemberId);
             var association = new AssociatedMemberToEntryRow
             {
-                Amount = item.Amount / 1000000m,
+                Amount = item.Amount,
                 Member = Mapper.Map<Member>(member)
             };
             list.Add(association);
@@ -104,7 +103,7 @@ public partial class AssociatedMemberByEntry
         if (member != null)
         {
             var entry = await Mediator.Send(new Requests.Entries.GetEntryByFilterRequest(f => f.GetById(EntryId!.Value)));
-            var entryAmount = entry!.Amount / 1000000m;
+            var entryAmount = entry!.Amount;
 
             associationToInsert = new();
             associationToInsert.Member = member;

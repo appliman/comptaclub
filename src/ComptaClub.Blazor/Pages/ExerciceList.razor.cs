@@ -1,4 +1,5 @@
 using ComptaClub.Blazor.Extensions;
+using ComptaClub.Blazor.ViewModels;
 using ComptaClub.Requests;
 
 using Radzen;
@@ -27,6 +28,7 @@ public partial class ExerciceList : ComponentBase
 	List<ViewModels.Exercice>? exerciceList;
     RadzenDataGrid<ViewModels.Exercice>? grid;
     List<Results.BrokenRule> brokenRules = new();
+    IList<ViewModels.Exercice>? selectedExercices;
 
     protected override void OnInitialized()
     {
@@ -35,7 +37,13 @@ public partial class ExerciceList : ComponentBase
             IconName = "add_circle_outline",
             Text = "Ajouter un exercice",
             Url = "/exercice/ajout"
-        }).Display();
+        }).AddItem(new ViewModels.Toolbar.ToolbarButton
+        {
+            IconName = "collapse_all",
+            Text = "Clore l'exercice",
+            OnClick = CloseExercice
+        })
+        .Display();
     }
 
     async Task LoadDatas()
@@ -77,5 +85,36 @@ public partial class ExerciceList : ComponentBase
 		}
 		await LoadDatas();
 	}
+
+    async Task CloseExercice()
+    {
+        var selectedExercice = selectedExercices?.FirstOrDefault();
+        if (selectedExercice is null)
+        {
+            NotificationService.Notify(new NotificationMessage()
+            {
+				Severity = NotificationSeverity.Info,
+				Summary = "Vous devez cliquer sur un exercice pour le clore"
+			});
+			return;
+        }
+
+        var confirm = await MainLayout.DialogService.Confirm("Confirmez vous la clôture de cet exercice", "Clôture");
+        if (!confirm.GetValueOrDefault(false))
+		{
+			return;
+		}
+
+        var closeResult = await Mediator.Send(new Requests.Exercices.CloseExerciceRequest(selectedExercice.Id));
+		if (closeResult.HasError)
+		{
+			NotificationService.NotifyError(closeResult);
+		}
+		else if (closeResult.HasWarning)
+		{
+			NotificationService.NotifyWarning(closeResult);
+		}
+		await LoadDatas();
+    }
 
 }

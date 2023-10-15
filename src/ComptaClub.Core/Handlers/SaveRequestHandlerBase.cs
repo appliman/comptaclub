@@ -13,14 +13,14 @@ internal abstract class SaveRequestHandlerBase
         _dbContextFactory = dbContextFactory;
     }
 
-    public virtual async Task<Results.PersistResult<Guid>> SaveEntity<T>(Datas.IPrimaryKey model, CancellationToken cancellationToken)
+    public virtual async Task<Results.PersistResult> SaveEntity<T>(Datas.IPrimaryKey model, CancellationToken cancellationToken)
         where T : class, new()
     {
         using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
         return await SaveEntity<T>(db, model, cancellationToken);
     }
 
-    public virtual async Task<Results.PersistResult<Guid>> SaveEntity<T>(ComptaClubDbContext db, Datas.IPrimaryKey model, CancellationToken cancellationToken)
+    public virtual async Task<Results.PersistResult> SaveEntity<T>(ComptaClubDbContext db, Datas.IPrimaryKey model, CancellationToken cancellationToken)
     where T : class, new()
     {
         _logger.LogTrace("Try to save entity {Id} in table {Name}", model.Id, typeof(T).Name);
@@ -44,7 +44,7 @@ internal abstract class SaveRequestHandlerBase
 
         var changeCount = await db.SaveChangesAsync(cancellationToken);
 
-        var pResult = new Results.PersistResult<Guid>();
+        var pResult = new Results.PersistResult();
         var id = data as Datas.IPrimaryKey;
         if (id != null) 
         {

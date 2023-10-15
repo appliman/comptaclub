@@ -52,7 +52,8 @@ internal class EntryValidator : FluentValidation.AbstractValidator<Datas.EntryDa
             else
             {
                 var exercice = exerciceList.Single(i => i.Id == exerciceId);
-                if (exercice.ClosedDate.HasValue)
+                if (exercice.ClosedDate.HasValue
+                    || exercice.ExerciceState == Enums.ExerciceState.Closed)
                 {
                     ctx.AddFailure(nameof(Datas.EntryData.ExerciceId), "Il n'est pas possible de modifier une écriture sur un exercice déjà clos");
                 }
