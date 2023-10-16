@@ -17,11 +17,16 @@ public class PrintService
     public async Task Print(string selector)
     {
         var currentDirectory = System.IO.Directory.GetCurrentDirectory();
-        var cssPath = System.IO.Path.Combine(currentDirectory, "wwwroot", "css", "bootstrap", "bootstrap.min.css");
-        var bootstrapContent = await System.IO.File.ReadAllTextAsync(cssPath);
+        var bootstrapCssPath = System.IO.Path.Combine(currentDirectory, "wwwroot", "css", "bootstrap", "bootstrap.min.css");
+        var bootstrapContent = await System.IO.File.ReadAllTextAsync(bootstrapCssPath);
+
+        var siteCssPath = System.IO.Path.Combine(currentDirectory, "wwwroot", "css", "site.css");
+        var siteContent = await System.IO.File.ReadAllTextAsync(siteCssPath);
+
+        var cssContent = $"{bootstrapContent}{siteContent}";
         try
         {
-            await _js.InvokeVoidAsync("printer.print", selector, bootstrapContent);
+            await _js.InvokeVoidAsync("printer.print", selector, cssContent);
         }
         catch(Exception ex)
         {
