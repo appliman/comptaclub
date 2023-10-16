@@ -65,10 +65,12 @@ internal class CreateAndSaveIncomeStatementRequestHandler : IRequestHandler<Crea
             }
 
 			var accountData = flatPlan.Single(i => i.Id == accountTotal.Id);
+            direction = accountData.Direction;
+
             // On recupere la liste des compte jusqu'a la racine
             var parentList = accountData.GetParentList(flatPlan);
 
-            // On remonte le total jusqua la racine
+            // On remonte le total jusqu'a la racine
             Guid? parentId = null;
             foreach (var parentAccount in parentList.Reverse())
 			{
@@ -83,7 +85,7 @@ internal class CreateAndSaveIncomeStatementRequestHandler : IRequestHandler<Crea
                         Code = parentAccount.Code,
                         Label = parentAccount.Label,
                         Amount = accountTotal.Total,
-                        Direction = direction
+                        Direction = parentAccount.Direction
                     };
 
                     if (parentId is not null)
@@ -100,8 +102,6 @@ internal class CreateAndSaveIncomeStatementRequestHandler : IRequestHandler<Crea
                 {
                     incomeStatementItem.Amount += accountTotal.Total;
                 }
-
-                direction = accountData.Direction;
 			}
 		
             if (direction == Enums.AccountDirection.Credit)
