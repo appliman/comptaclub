@@ -1,18 +1,9 @@
 ﻿<div class="mb-3">
 	<label for="Name" class="form-label">@Label</label>
-	@if (string.IsNullOrWhiteSpace(Prepend))
-	{
-		<div>
-			<InputNumber class="form-control" Value="Value" ValueChanged="ValueChanged" ValueExpression="ValueExpression" placeholder="@PlaceHoder" required="@(Required ? "required" : null)" />
-		</div>
-	}
-	else
-	{
-		<div class="input-group">
-			<span class="input-group-text"><i class="@Prepend"></i></span>
-			<InputNumber class="form-control" Value="Value" ValueChanged="ValueChanged" ValueExpression="ValueExpression" placeholder="@PlaceHoder" required="@(Required ? "required" : null)" />
-		</div>
-	}
+	<div class="input-group">
+		<span class="input-group-text"><span class="material-icons">€</span></span>
+		<input type="text" step="0" class="form-control w-25" value="@innerValue" @onchange="InnerValueChanged" placeholder="@PlaceHoder" required="@(Required ? "required" : null)" />
+	</div>
 	<small>
 		<ValidationMessage class="invalid-feedback" For="() => Value" />
 	</small>
@@ -25,13 +16,13 @@
 	public string? Label { get; set; }
 
 	[Parameter]
-	public decimal Value { get; set; }
+	public long Value { get; set; }
 
 	[Parameter]
-	public EventCallback<decimal> ValueChanged { get; set; }
+	public EventCallback<long> ValueChanged { get; set; }
 
 	[Parameter]
-	public System.Linq.Expressions.Expression<Func<decimal>>? ValueExpression { get; set; }
+	public System.Linq.Expressions.Expression<Func<long>>? ValueExpression { get; set; }
 
 	[Parameter]
 	public string? PlaceHoder { get; set; }
@@ -40,9 +31,39 @@
 	public bool Required { get; set; }
 
 	[Parameter]
-	public string? Prepend { get; set; }
-
-	[Parameter]
 	public RenderFragment? ChildContent { get; set; }
+
+	System.Globalization.CultureInfo ci = default!;
+	string innerValue = null!;
+
+	protected override void OnInitialized()
+	{
+		ci = new System.Globalization.CultureInfo("fr-FR");
+		ci.NumberFormat.CurrencyDecimalSeparator = ".";
+		ci.NumberFormat.NumberDecimalSeparator = ".";
+
+		innerValue = $"{Value / 1000000m}".Replace(",", ".");
+	}
+
+	void InnerValueChanged(ChangeEventArgs args)
+	{
+		if (args.Value is null)
+		{
+			innerValue = "0.00";
+		}
+		else
+		{
+			innerValue = $"{args.Value}".Replace(",", ".");
+		}
+		if (decimal.TryParse(innerValue, ci, out var decimalValue))
+		{
+			Value = (long)(decimalValue * 1000000m);
+			if (ValueChanged.HasDelegate)
+			{
+				ValueChanged.InvokeAsync(Value);
+			}
+		}
+	}
+
 
 }

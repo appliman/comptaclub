@@ -8,7 +8,7 @@ using ComptaClub.Results;
 
 namespace ComptaClub.Requests.Members;
 
-public record LinkMemberToEntryRequest : IRequest<PersistResult<Guid>>
+public record LinkMemberToEntryRequest : IRequest<PersistResult>
 {
     public LinkMemberToEntryRequest(Guid entryId, Guid memberId, long amount)
     {

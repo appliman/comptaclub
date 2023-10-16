@@ -46,6 +46,10 @@ public partial class Toolbar : ComponentBase
 
     public void Display()
     {
+        if (NavigationManager is null)
+        {
+            return;
+        }
         location = NavigationManager.ToAbsoluteUri(NavigationManager.Uri).ToString();
         StateHasChanged();
     }

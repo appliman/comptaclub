@@ -26,12 +26,30 @@ public partial class Index
 
 	protected override async Task OnInitializedAsync()
 	{
-		var exercice = await Mediator.Send(new Requests.Exercices.GetActiveExerciceRequest());
+		var tasks = new List<Task>();
+
+		var t1 = Mediator.Send(new Requests.Exercices.GetActiveExerciceRequest());
+		var t2 = Mediator.Send(new Requests.Accounts.GetAmountTotalByAccountRequest());
+		var t3 = Mediator.Send(new Requests.Stats.GetBalanceByDayRequest()); 
+		var t4 = Mediator.Send(new Requests.Accounts.GetPlanRequest());
+		var t5 = Mediator.Send(new Requests.Members.GetMemberCountRequest());
+
+		tasks.Add(t1);
+		tasks.Add(t2);
+		tasks.Add(t3);
+		tasks.Add(t4);
+		tasks.Add(t5);
+
+		await Task.WhenAll(tasks);
+
+        var exercice = t1.Result;
 		currentExercice = Mapper.Map<ViewModels.Exercice>(exercice);
 
-		balanceByDayList = await Mediator.Send(new Requests.Stats.GetBalanceByDayRequest());
-		amountTotalByAccountList = await Mediator.Send(new Requests.Accounts.GetAmountTotalByAccountRequest());
-		plan = (await Mediator.Send(new Requests.Accounts.GetPlanRequest())).MapToAccountList(Mapper);
+		amountTotalByAccountList = t2.Result;
+		balanceByDayList = t3.Result;
+		var planData = t4.Result;
+
+        plan = planData.MapToAccountList(Mapper);
 		foreach (var total in amountTotalByAccountList)
 		{
 			var account = plan.DeepFirstOrDefault(i => i.Id == total.Id);
@@ -41,6 +59,6 @@ public partial class Index
 			}
 		}
 
-		memberCount = await Mediator.Send(new Requests.Members.GetMemberCountRequest());
+		memberCount = t5.Result;
     }
 }

@@ -11,7 +11,7 @@ internal abstract class GetEntityPagedListRequestHandlerBase<F,D> : IRequestHand
         DbContextFactory = dbContextFactory;
     }
 
-    public IDbContextFactory<ComptaClubDbContext> DbContextFactory { get; }
+    protected IDbContextFactory<ComptaClubDbContext> DbContextFactory { get; }
 
     public abstract Task<PagedList<IEnumerable<D>>> Handle(GetPagedEntityListRequest<F, D> request, CancellationToken cancellationToken);
 }

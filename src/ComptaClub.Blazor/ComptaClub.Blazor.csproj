@@ -8,7 +8,7 @@
   	  <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
 	  <PreserveCompilationContext>true</PreserveCompilationContext>
 	  <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
-	  <Version>0.0.6.0-beta</Version>
+	  <Version>0.0.7.0-beta</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +19,7 @@
     <None Include="Pages\EmailTemplates\Digicode.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Pages\IncomeStatementList.razor" />
   </ItemGroup>
 
 
@@ -60,6 +61,14 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\IncomeStatementList.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\IncomeStatementList.razor" />
   </ItemGroup>
 
 </Project>

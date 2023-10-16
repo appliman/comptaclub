@@ -4,12 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using ComptaClub.Datas;
 using ComptaClub.Extensions;
 using ComptaClub.Requests;
 
+using DocumentFormat.OpenXml.Spreadsheet;
+
 using EFScriptableMigration;
 
+using FluentAssertions;
 using FluentAssertions.Equivalency;
+
+using MailKit.Net.Imap;
 
 using MediatR;
 
@@ -111,7 +117,60 @@ namespace ComptaClub.Tests
             return $"{Guid.NewGuid()}";
         }
 
-        public async static Task CleanupDatabase(this IServiceProvider serviceProvider)
+        public async static Task<EntryData?> CreateAndSaveRandomCreditEntry(this IMediator mediator,
+            ExerciceData exercice,
+            UserData user,
+            BankData bank,
+            Guid accountId,
+            DateTime entryDate)
+        {
+            var random = new Random(100);
+            var amount = random.Next(1, 100);
+			var entry = await mediator.Send(new Requests.Entries.CreateEntryRequest());
+			entry.CreationDate = entry.ValueDate = entryDate.ToDayId();
+			entry.Label = GetRandomName();
+			entry.PartNumber = GetRandomName();
+			entry.BankId = bank.Id;
+			entry.AccountId = accountId;
+			entry.ExerciceId = exercice.Id;
+			entry.Amount = amount * 1000000;
+			entry.AccountDirection = Enums.AccountDirection.Credit;
+			entry.PaymentType = Enums.PaymentType.Transfer;
+			entry.UserCreatorId = user.Id;
+
+			var saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
+
+            return saveEntryResult.HasError ? null : entry;
+		}
+
+		public async static Task<EntryData?> CreateAndSaveRandomDebitEntry(this IMediator mediator,
+	        ExerciceData exercice,
+	        UserData user,
+	        BankData bank,
+	        Guid accountId,
+	        DateTime entryDate)
+		{
+			var random = new Random(100);
+			var amount = random.Next(1, 100);
+			var entry = await mediator.Send(new Requests.Entries.CreateEntryRequest());
+			entry.CreationDate = entry.ValueDate = entryDate.ToDayId();
+			entry.Label = GetRandomName();
+			entry.PartNumber = GetRandomName();
+			entry.BankId = bank.Id;
+			entry.AccountId = accountId;
+			entry.ExerciceId = exercice.Id;
+			entry.Amount = amount * 1000000;
+			entry.AccountDirection = Enums.AccountDirection.Debit;
+			entry.PaymentType = Enums.PaymentType.Debit;
+			entry.UserCreatorId = user.Id;
+
+			var saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
+
+			return saveEntryResult.HasError ? null : entry;
+		}
+
+
+		public async static Task CleanupDatabase(this IServiceProvider serviceProvider)
         {
             var dbContextFactory = serviceProvider.GetRequiredService<IDbContextFactory<Datas.ComptaClubDbContext>>();
             var db = await dbContextFactory.CreateDbContextAsync();

@@ -13,5 +13,5 @@ public class AmountTotalByAccount
     public Guid Id { get; set; }
     public string Code { get; set; } = null!;
     public string Lablel { get; set; } = null!;
-    public decimal Total { get; set; }
+    public long Total { get; set; }
 }

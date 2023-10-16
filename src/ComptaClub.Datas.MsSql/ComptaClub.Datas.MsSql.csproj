@@ -34,10 +34,16 @@
     <None Remove="Scripts\ComptaClub\0025-AlterTable-AssociatedMemberListByEntryData.sql" />
     <None Remove="Scripts\ComptaClub\0026-AlterTable-Documents.sql" />
     <None Remove="Scripts\ComptaClub\0027-CreateTableDocumentContents.sql" />
+    <None Remove="Scripts\ComptaClub\0028-AlterTable-Exercices.sql" />
+    <None Remove="Scripts\ComptaClub\0029-CreateIncomeStatement.sql" />
+    <None Remove="Scripts\ComptaClub\0030-AlterTableIncomeStatementItem.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Scripts\ComptaClub\0003-CreateTable-Documents - Copy.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0030-AlterTableIncomeStatementItem.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0029-CreateIncomeStatement.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0028-AlterTable-Exercices.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0026-AlterTable-Documents.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0025-AlterTable-AssociatedMemberListByEntryData.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0023-AlterTable-Entries.sql" />

@@ -4,7 +4,7 @@ using ComptaClub.Requests;
 
 namespace ComptaClub.Handlers.Accounts;
 
-internal class SaveAccountRequestHandler : SaveRequestHandlerBase, IRequestHandler<SaveEntityRequest<AccountData>, Results.PersistResult<Guid>>
+internal class SaveAccountRequestHandler : SaveRequestHandlerBase, IRequestHandler<SaveEntityRequest<AccountData>, Results.PersistResult>
 {
     private readonly IValidator<AccountData> _validator;
     private readonly IMediator _mediator;
@@ -20,7 +20,7 @@ internal class SaveAccountRequestHandler : SaveRequestHandlerBase, IRequestHandl
         _mediator = mediator;
     }
 
-    public async Task<Results.PersistResult<Guid>> Handle(SaveEntityRequest<AccountData> request, CancellationToken cancellationToken)
+    public async Task<Results.PersistResult> Handle(SaveEntityRequest<AccountData> request, CancellationToken cancellationToken)
     {
         var existing = await _mediator.Send(new Requests.Accounts.GetAccountByFilterRequest(f => f.GetById(request.Entity.Id)), cancellationToken);
         if (existing != null
@@ -33,7 +33,7 @@ internal class SaveAccountRequestHandler : SaveRequestHandlerBase, IRequestHandl
         var result = await _validator.ValidateAsync(request.Entity, cancellationToken);
         if (!result.IsValid)
         {
-            return result.ToPersistResult<Guid>()!;
+            return result.ToPersistResult()!;
         }
 
         return await SaveEntity<AccountData>(request.Entity, cancellationToken);

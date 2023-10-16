@@ -34,7 +34,7 @@ public partial class EntryList : ComponentBase
     RadzenDataGrid<ViewModels.Entry>? grid = new();
     List<ViewModels.Account> leafAccountList = new();
     ViewModels.Exercice activeExercice = new();
-    decimal currentBalance = 0;
+    long currentBalance = 0;
     EntryListFilter filter = new();
 
 
@@ -58,7 +58,7 @@ public partial class EntryList : ComponentBase
             Text = "Ajouter une dépense"
         }).AddItem(new ViewModels.Toolbar.ToolbarButton
         {
-            OnClick = () => InsertRow("charge"),
+            OnClick = () => InsertRow("produit"),
             IconName = "add_circle_outline",
             Text = "Ajouter une rentrée"
         }).AddItem(new ViewModels.Toolbar.ToolbarLink

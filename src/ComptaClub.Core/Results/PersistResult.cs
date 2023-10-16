@@ -1,16 +1,16 @@
 ﻿
 namespace ComptaClub.Results;
 
-public class PersistResult<T> : CommandResult
+public class PersistResult : CommandResult
 {
-    public T Id { get; set; } = default(T)!;
+    public Guid Id { get; set; }
     public long AutoInc { get; set; }
     public byte[] Version { get; set; } = null!;
     public string Code { get; set; } = null!;
 
-    public new static PersistResult<T> CreateWarningResult(string warning)
+    public new static PersistResult CreateWarningResult(string warning)
     {
-        return new PersistResult<T>
+        return new PersistResult
         {
 			HasError = false,
 			WarningBrokenRuleList = new List<BrokenRule>
@@ -29,18 +29,18 @@ public class PersistResult<T> : CommandResult
         };
     }
 
-	public new static PersistResult<T> CreateInvalidResult(List<BrokenRule> brokenRuleList)
+	public new static PersistResult CreateInvalidResult(List<BrokenRule> brokenRuleList)
 	{
-		return new PersistResult<T>
+		return new PersistResult
 		{
 			HasError = true,
 			ErrorBrokenRuleList = new List<BrokenRule>(brokenRuleList)
 		};
 	}
 
-    public new static PersistResult<T> CreateInvalidResult(string error)
+    public new static PersistResult CreateInvalidResult(string error)
     {
-        return new PersistResult<T>
+        return new PersistResult
         {
             HasError = true,
             ErrorBrokenRuleList = new List<BrokenRule>()

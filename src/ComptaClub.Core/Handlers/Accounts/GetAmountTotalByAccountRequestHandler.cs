@@ -16,8 +16,17 @@ internal class GetAmountTotalByAccountRequestHandler : IRequestHandler<GetAmount
 
     public async Task<IEnumerable<AmountTotalByAccount>> Handle(GetAmountTotalByAccountRequest request, CancellationToken cancellationToken)
     {
-        var currentExercice = await _mediator.Send(new Requests.Exercices.GetActiveExerciceRequest(), cancellationToken);
-        if (currentExercice == null)
+        Datas.ExerciceData? exercice = null;
+        if (request.ExerciceId.HasValue)
+        {
+            exercice = await _mediator.Send(new Requests.Exercices.GetExerciceByFilterRequest(i => i.Id == request.ExerciceId.Value));
+        }
+        else
+        {
+            exercice = await _mediator.Send(new Requests.Exercices.GetActiveExerciceRequest(), cancellationToken);
+        }
+
+        if (exercice == null)
         {
             return new List<AmountTotalByAccount>();
         }
@@ -26,8 +35,8 @@ internal class GetAmountTotalByAccountRequestHandler : IRequestHandler<GetAmount
 
         var query = from entry in db.Entries
                     join account in db.Accounts on entry.AccountId equals account.Id
-                    where entry.ValueDate >= currentExercice.StartDate
-                    && entry.ValueDate <= currentExercice.EndDate
+                    where entry.ValueDate >= exercice.StartDate
+                    && entry.ValueDate <= exercice.EndDate
                     && entry.DeletedDate == null
                     group new
                     {
@@ -40,7 +49,7 @@ internal class GetAmountTotalByAccountRequestHandler : IRequestHandler<GetAmount
                         Id = g.Key.AccountId,
                         Code = g.Key.Code,
                         Lablel = g.Key.Label,
-                        Total = g.Sum(i => i.entry.Amount) / 1000000m
+                        Total = g.Sum(i => i.entry.Amount)
                     };
 
         var list = await query.ToListAsync(cancellationToken);
