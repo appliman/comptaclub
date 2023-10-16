@@ -39,7 +39,7 @@
             </RadzenRow>
         </ChildContent>
     </RadzenHeader>
-    <RadzenSidebar @bind-Expanded="sidebarExpanded" Visible="@user!.IsAuthenticated">
+    <RadzenSidebar @bind-Expanded="sidebarExpanded" Visible="@user!.IsAuthenticated" class="d-print-block">
         <RadzenPanelMenu Match="NavLinkMatch.Prefix">
             <RadzenPanelMenuItem Text="Accueil" Path="/" Icon="assessment" />
             <RadzenPanelMenuItem Text="Ecritures" Path="/ecritures" Icon="receipt" />

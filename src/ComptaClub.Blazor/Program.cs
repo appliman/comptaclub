@@ -1,19 +1,18 @@
-using System.Text.Json.Serialization;
+using System.Net;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+
+using Azure.Storage;
+using Azure.Storage.Blobs;
 
 using ComptaClub;
 
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Azure.Storage.Blobs;
-using Microsoft.AspNetCore.DataProtection;
-using Azure.Storage;
 using EFScriptableMigration;
-using System.Data;
-using Microsoft.AspNetCore.Identity;
-using System.Net;
+
 using FluentEmail.MailKitSmtp;
+
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +27,7 @@ builder.Services.AddScoped<Radzen.DialogService>();
 builder.Services.AddScoped<Radzen.NotificationService>();
 builder.Services.AddScoped<Radzen.TooltipService>();
 builder.Services.AddScoped<Radzen.ContextMenuService>();
+builder.Services.AddScoped<ComptaClub.Blazor.Services.PrintService>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -67,13 +67,13 @@ builder.Services.AddDataProtection()
 builder.Services.AddLocalization();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-		.AddCookie(options =>
-		{
-			options.Cookie.Name = "ComptaClub";
-			options.SlidingExpiration = true;
-			options.ExpireTimeSpan = TimeSpan.FromDays(15);
-			options.Cookie.HttpOnly = true;
-		});
+        .AddCookie(options =>
+        {
+            options.Cookie.Name = "ComptaClub";
+            options.SlidingExpiration = true;
+            options.ExpireTimeSpan = TimeSpan.FromDays(15);
+            options.Cookie.HttpOnly = true;
+        });
 
 var rootFolder = System.IO.Path.GetDirectoryName(typeof(Program).Assembly.Location)!;
 var emailTemplatesFolder = System.IO.Path.Combine(rootFolder, @$"Pages\EmailTemplates");
@@ -99,7 +99,7 @@ else if (globalSettings.SmtpProviderName == "smtp")
     var credentials = new NetworkCredential(globalSettings.SmtpUserName, globalSettings.SmtpPassword);
     fluentEmail.AddSmtpSender(new System.Net.Mail.SmtpClient()
     {
-        EnableSsl = globalSettings.SmtpEnableSsl,   
+        EnableSsl = globalSettings.SmtpEnableSsl,
         Host = globalSettings.SmtpHost,
         Port = globalSettings.SmtpPort,
         Credentials = credentials
@@ -141,9 +141,9 @@ app.MapFallbackToPage("/_Host");
 
 var migration = new DbMigration()
 {
-	ConnectionString = globalSettings.SqlConnectionString,
-	SchemaName = "ComptaClub",
-	EmbededTypeReference = typeof(ComptaClub.Datas.StartupExtensions)
+    ConnectionString = globalSettings.SqlConnectionString,
+    SchemaName = "ComptaClub",
+    EmbededTypeReference = typeof(ComptaClub.Datas.StartupExtensions)
 };
 
 await migration.Start();

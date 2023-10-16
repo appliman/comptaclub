@@ -2,16 +2,24 @@ using ComptaClub.Datas;
 using ComptaClub.Requests.IncomeStatements;
 using ComptaClub.Requests;
 using MediatR;
+using ComptaClub.Blazor.Pages.Shared;
+using System.Security.AccessControl;
 
 namespace ComptaClub.Blazor.Pages;
 
 public partial class ViewIncomeStatement
 {
+	[CascadingParameter]
+	MainLayout MainLayout { get; set; } = default!;
+
 	[Parameter]
 	public Guid IncomeStatementId { get; set; }
 
 	[Inject]
 	IMediator Mediator { get; set; } = default!;
+
+	[Inject]
+	Services.PrintService PrintService { get; set; } = default!;
 
 	[Inject]
 	AutoMapper.IMapper Mapper { get; set; } = default!;
@@ -43,6 +51,20 @@ public partial class ViewIncomeStatement
 
 		// Hierarchize
 		incomeStatement.ItemList.Hierarchize();
+
+		MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarButton
+		{
+			IconName = "print",
+			Text = "Imprimer ce compte de résultat",
+			OnClick = Print
+		})
+		.Display();
+
 		StateHasChanged();
+	}
+
+	async Task Print()
+	{
+		await PrintService.Print("#printable");
 	}
 }
