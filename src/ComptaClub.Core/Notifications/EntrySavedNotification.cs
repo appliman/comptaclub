@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace ComptaClub.Notifications;
 
-using MediatR;
-
-namespace ComptaClub.Notifications
+public record EntrySavedNotification : INotification
 {
-	public record EntrySavedNotification : INotification
-	{
-		public Guid EntryId { get; set; }
-		public Guid ExerciceId { get; set; }
-	}
+    public Guid EntryId { get; set; }
+    public Guid ExerciceId { get; set; }
 }

@@ -19,7 +19,7 @@ namespace ComptaClub.Blazor.Pages.Shared
         bool sidebarExpanded = false;
         bool loaderVisible = false;
         RadzenBody? body;
-        Toolbar? toolbar;
+        Toolbar toolbar = default!;
         ViewModels.User? user = new();
         string version = $"{typeof(Program).Assembly.GetName()?.Version}";
 
@@ -35,11 +35,11 @@ namespace ComptaClub.Blazor.Pages.Shared
 
         public Toolbar AddToolbarItem(ViewModels.Toolbar.ToolbarItem item)
         {
-            if (toolbar == null)
+            if (toolbar is null)
             {
                 return new Toolbar();
             }
-            toolbar!.InitializeToolbar();
+            toolbar.InitializeToolbar();
             toolbar.AddItem(item);
             return toolbar;
         }

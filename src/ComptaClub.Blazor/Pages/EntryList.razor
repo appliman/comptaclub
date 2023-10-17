@@ -36,13 +36,24 @@
             </FooterTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Property="AccountId" Title="Compte" Width="250px" Filterable="true">
+            <FilterTemplate>
+                <RadzenDropDown @bind-Value="filter.AccountIdList" 
+                    Multiple="true" 
+                    AllowSelectAll="false"
+                    Data="@leafAccountList"
+                    TextProperty="CodeAndLabel" 
+                    ValueProperty="Id"
+                    Change="ApplyFilter"
+                    Style="width:100%"
+                    />
+            </FilterTemplate>
             <Template Context="data">
                 <div class="w-100">@leafAccountList.Single(i => data.AccountId == i.Id).CodeAndLabel</div>
             </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Règlement" Filterable="true" Width="120px">
+        <RadzenDataGridColumn TItem="ViewModels.Entry" Property="PaymentType" Title="Règlement" Filterable="true" Width="120px">
             <FilterTemplate>
-                <SuperNullableEnumDropdownFilterColumn Value="@filter.PaymentType" ApplyFilter="ApplyFilter" />
+                <SuperNullableEnumDropdownFilterColumn @bind-Value="@filter.PaymentType" ApplyFilter="ApplyFilter" />
             </FilterTemplate>
             <Template Context="entry">
                 <EnumLabel Value="@entry.PaymentType"/>

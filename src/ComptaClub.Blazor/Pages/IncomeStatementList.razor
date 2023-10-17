@@ -14,7 +14,7 @@
     ColumnWidth="80px"
     @bind-Value="selectedRow">
     <Columns>
-        <RadzenDataGridColumn TItem="ViewModels.IncomeStatement" Property="Description" Title="Description" Width="120px" Filterable="false">
+        <RadzenDataGridColumn TItem="ViewModels.IncomeStatement" Property="Description" Title="Description" Width="200px" Filterable="false">
             <Template Context="data">
                 <a href="/compte-de-resultat/@data.Id">@data.Description</a>
             </Template>
@@ -27,6 +27,14 @@
         <RadzenDataGridColumn TItem="ViewModels.IncomeStatement" Title="Débit" Width="120px" Filterable="false">
             <Template Context="data">
                 <PriceLabel Value="data.DebitTotal" />
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.IncomeStatement" Title="Résultat Net" Width="120px" Filterable="false">
+            <Template Context="data">
+                @{
+                    var total = data.CreditTotal - data.DebitTotal;
+                }
+                <PriceLabel Value="@total" />
             </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.IncomeStatement" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
