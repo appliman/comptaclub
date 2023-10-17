@@ -7,6 +7,8 @@ using System.Linq.Dynamic.Core;
 
 using Microsoft.AspNetCore.Components.Routing;
 using ComptaClub.Models;
+using ComptaClub.Blazor.Services;
+using ComptaClub.Blazor.ViewModels;
 
 namespace ComptaClub.Blazor.Pages;
 
@@ -30,17 +32,37 @@ public partial class EntryList : ComponentBase
     [Inject]
     DialogService DialogService { get; set; } = default!;
 
+    [Inject]
+    ListFilterQueryStringParametersService ListFilterQueryStringParametersService { get; set; } = default!;
+
     List<ViewModels.Entry>? entryList;
     RadzenDataGrid<ViewModels.Entry>? grid = new();
     List<ViewModels.Account> leafAccountList = new();
     ViewModels.Exercice activeExercice = new();
     long currentBalance = 0;
     EntryListFilter filter = new();
+    bool filterFirstInitialize = false;
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ListFilterQueryStringParametersService.AddFilterToQueryString(new FilterInfo(filter));
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        var exercice = await Mediator.Send(new Requests.Exercices.GetActiveExerciceRequest());
+        var taskList = new List<Task>();
+
+        var t1 = Mediator.Send(new Requests.Exercices.GetActiveExerciceRequest());
+        taskList.Add(t1);
+        var t2 = Mediator.Send(new Requests.Accounts.GetPlanRequest());
+        taskList.Add(t2);
+
+        await Task.WhenAll(taskList);
+
+        var exercice = t1.Result;
         if (exercice == null)
         {
             return;
@@ -48,8 +70,10 @@ public partial class EntryList : ComponentBase
         activeExercice = Mapper.Map<ViewModels.Exercice>(exercice);
         currentBalance = activeExercice.BalanceAmount;
 
-        var accountList = await Mediator.Send(new Requests.Accounts.GetPlanRequest());
+        var accountList = t2.Result;
         leafAccountList = Mapper.Map<List<ViewModels.Account>>(accountList.GetLeafList().ToList());
+
+        InitializeFilter();
 
         MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarButton
         {
@@ -67,25 +91,38 @@ public partial class EntryList : ComponentBase
             IconName = "cloud_upload",
             Text = "Import"
         }).Display();
+    }
 
+    void InitializeFilter(bool bypass = false)
+    {
+        var filterInfo = ListFilterQueryStringParametersService.GetFilterInfoFromQueryString()
+                    ?? new FilterInfo(filter);
+        if (bypass)
+        {
+            filter = new();
+            filterInfo = new FilterInfo(filter);
+        }
+
+        filter = (filterInfo.Filter as EntryListFilter) ?? new();
         filter.ExerciceId = activeExercice.Id;
         filter.PageSize = int.MaxValue;
+        filterFirstInitialize = true;
     }
 
     async Task LoadDatas(LoadDataArgs args)
     {
+        if (!filterFirstInitialize)
+        {
+            filter.Search = null;
+            if (!args.Filters.IsNullOrEmpty())
+            {
+            }
+        }
         var request = new GetPagedEntityListRequest<Models.EntryListFilter, Datas.EntryData>(filter);
 
-		var dataPage = await Mediator!.Send(request);
+		var dataPage = await Mediator.Send(request);
         var list = Mapper.Map<List<ViewModels.Entry>>(dataPage.List);
         int rowIndex = dataPage.List.Count();
-        var balance = currentBalance;
-        foreach (var item in list.OrderByDescending(i => i.CreationDate))
-        {
-            item.RowIndex = rowIndex--;
-            item.Balance = balance;
-            balance = balance - (item.Amount * (int)item.AccountDirection);
-        }
         if (!string.IsNullOrEmpty(args.OrderBy))
         {
             entryList = list.AsQueryable().OrderBy(args.OrderBy).ToList();
@@ -94,6 +131,7 @@ public partial class EntryList : ComponentBase
         {
             entryList = list;
         }
+        filterFirstInitialize = false;
     }
 
     async Task ApplyFilter()

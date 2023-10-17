@@ -1,5 +1,9 @@
 ﻿using ComptaClub.Requests;
 
+using DocumentFormat.OpenXml.Wordprocessing;
+
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+
 namespace ComptaClub.Handlers.Entries;
 
 internal class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandlerBase<EntryListFilter, EntryData>
@@ -42,6 +46,11 @@ internal class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandle
             && filter.ImportIdList.Any())
         {
             query = query.Where(i => i.ImportId != null && filter.ImportIdList.Contains(i.ImportId));
+        }
+
+        if (filter.PaymentType.HasValue)
+        {
+            query = query.Where(i => i.PaymentType == filter.PaymentType.Value);
         }
 
         switch (filter.Options.DeletedState)
