@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Components.Routing;
 using ComptaClub.Models;
 using ComptaClub.Blazor.Services;
 using ComptaClub.Blazor.ViewModels;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ComptaClub.Blazor.Pages;
 
@@ -42,6 +43,7 @@ public partial class EntryList : ComponentBase
     long currentBalance = 0;
     EntryListFilter filter = new();
     bool filterFirstInitialize = false;
+    PeriodFilter? selectedPeriodFilter;
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -91,9 +93,11 @@ public partial class EntryList : ComponentBase
             IconName = "cloud_upload",
             Text = "Import"
         }).Display();
-    }
 
-    void InitializeFilter(bool bypass = false)
+		StateHasChanged();
+	}
+
+	void InitializeFilter(bool bypass = false)
     {
         var filterInfo = ListFilterQueryStringParametersService.GetFilterInfoFromQueryString()
                     ?? new FilterInfo(filter);
@@ -116,8 +120,25 @@ public partial class EntryList : ComponentBase
             filter.Search = null;
             if (!args.Filters.IsNullOrEmpty())
             {
+                var searchFilter = args.Filters.FirstOrDefault();
+                if (searchFilter is not null
+                    && searchFilter.Property == nameof(Entry.PartNumber))
+                {
+                    filter.Search = $"{searchFilter.FilterValue}";
+                }
             }
         }
+        if (selectedPeriodFilter is not null)
+        {
+            filter.FromDayId = selectedPeriodFilter.FromDayId;
+            filter.ToDayId = selectedPeriodFilter.ToDayId;
+        }
+        else
+        {
+            filter.FromDayId = null;
+            filter.ToDayId = null;
+        }
+
         var request = new GetPagedEntityListRequest<Models.EntryListFilter, Datas.EntryData>(filter);
 
 		var dataPage = await Mediator.Send(request);
