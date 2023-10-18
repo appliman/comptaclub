@@ -17,6 +17,11 @@ public class EntryListFilter : IListFilter
     public Guid? ExerciceId { get; set; }
     public EntryListFilterOptions Options { get; set; } = new();
     public Enums.PaymentType? PaymentType { get; set; }
+    public int? FromDayId { get; set; }
+    public int? ToDayId { get; set; }
+    public Models.AmountFilter CreditAmountFilter { get; set; } = new();
+    public Models.AmountFilter DebitAmountFilter { get; set; } = new();
+    public Models.AmountFilter BalanceAmountFilter { get; set; } = new();
 
     public void GetById(Guid id)
     {
