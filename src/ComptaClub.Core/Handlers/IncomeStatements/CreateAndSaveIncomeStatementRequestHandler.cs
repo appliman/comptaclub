@@ -45,7 +45,7 @@ internal class CreateAndSaveIncomeStatementRequestHandler : IRequestHandler<Crea
             CreationDate = DateTime.Now.ToDayId(),
             CreditTotal = 0,
             DebitTotal = 0,
-            Description = $"Bilan {exercice.Label}"
+            Description = $"Compte de résultat : {exercice.Label}"
         };
         db.IncomeStatements.Add(incomeStatement);
         db.Entry(incomeStatement).State = EntityState.Added;
@@ -101,6 +101,7 @@ internal class CreateAndSaveIncomeStatementRequestHandler : IRequestHandler<Crea
                 else
                 {
                     incomeStatementItem.Amount += accountTotal.Total;
+                    parentId = incomeStatementItem.Id;
                 }
 			}
 		

@@ -71,7 +71,7 @@ public partial class AssociatedMemberByEntry
     {
         foreach (var association in associatedMemberList!)
         {
-            await Mediator.Send(new Requests.Members.LinkMemberToEntryRequest(EntryId!.Value, association.Member.Id, Convert.ToInt64(association.Amount * 1000000)));
+            await Mediator.Send(new Requests.Members.LinkMemberToEntryRequest(EntryId!.Value, association.Member.Id, association.Amount));
         }
         foreach (var association in unlinkedAssociationList)
         {

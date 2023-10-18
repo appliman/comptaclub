@@ -1,5 +1,9 @@
 ﻿using ComptaClub.Requests;
 
+using DocumentFormat.OpenXml.Wordprocessing;
+
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+
 namespace ComptaClub.Handlers.Entries;
 
 internal class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandlerBase<EntryListFilter, EntryData>
@@ -29,8 +33,10 @@ internal class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandle
 
         if (!string.IsNullOrWhiteSpace(filter.Search))
         {
-            query = query.Where(i => EF.Functions.Like($"{i.ExtraInfos}", $"%{filter.Search}%")
-                                    || EF.Functions.Like($"{i.Label}", $"%{filter.Search}%"));
+            var searchPattern = $"%{filter.Search}%";
+			query = query.Where(i => EF.Functions.Like(i.ExtraInfos ?? "**************", searchPattern)
+                                    || EF.Functions.Like(i.Label, searchPattern)
+                                    || EF.Functions.Like(i.PartNumber, searchPattern));
         }
 
         if (filter.ExerciceId.HasValue)
@@ -42,6 +48,41 @@ internal class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandle
             && filter.ImportIdList.Any())
         {
             query = query.Where(i => i.ImportId != null && filter.ImportIdList.Contains(i.ImportId));
+        }
+
+        if (filter.PaymentType.HasValue)
+        {
+            query = query.Where(i => i.PaymentType == filter.PaymentType.Value);
+        }
+
+        if (filter.FromDayId.HasValue)
+        {
+            query = query.Where(i => i.CreationDate >= filter.FromDayId.Value);
+        }
+
+        if (filter.ToDayId.HasValue)
+        {
+            query = query.Where(i => i.CreationDate <= filter.ToDayId.Value);
+        }
+
+        if (filter.DebitAmountFilter.Amount > 0)
+        {
+            query = query.Where(i => i.Amount >= filter.DebitAmountFilter.Min 
+                                    && i.Amount <= filter.DebitAmountFilter.Max
+                                    && i.AccountDirection == Enums.AccountDirection.Debit);
+        }
+
+        if (filter.CreditAmountFilter.Amount > 0)
+        {
+            query = query.Where(i => i.Amount >= filter.CreditAmountFilter.Min
+                                    && i.Amount <= filter.CreditAmountFilter.Max
+                                    && i.AccountDirection == Enums.AccountDirection.Credit);
+        }
+
+        if (filter.BalanceAmountFilter.Amount > 0)
+        {
+            query = query.Where(i => i.Balance >= filter.CreditAmountFilter.Min
+                                    && i.Balance <= filter.CreditAmountFilter.Max);
         }
 
         switch (filter.Options.DeletedState)

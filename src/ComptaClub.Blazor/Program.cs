@@ -28,10 +28,12 @@ builder.Services.AddScoped<Radzen.NotificationService>();
 builder.Services.AddScoped<Radzen.TooltipService>();
 builder.Services.AddScoped<Radzen.ContextMenuService>();
 builder.Services.AddScoped<ComptaClub.Blazor.Services.PrintService>();
+builder.Services.AddScoped<ComptaClub.Blazor.Services.ListFilterQueryStringParametersService>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddMemoryCache();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

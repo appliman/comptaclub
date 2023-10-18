@@ -17,9 +17,11 @@ public partial class Toolbar : ComponentBase
     {
         if (firstRender)
         {
+            location = NavigationManager.ToAbsoluteUri(NavigationManager.Uri).ToString();
             NavigationManager.LocationChanged += (s, e) =>
             {
-                if (e.Location != location)
+                if (e.IsNavigationIntercepted
+                   &&  e.Location != location)
                 {
                     toolbarItems.Clear();
                     StateHasChanged();
@@ -28,10 +30,10 @@ public partial class Toolbar : ComponentBase
         }
     }
 
-    public void ToolbarInitialized()
-    {
-        location = NavigationManager.ToAbsoluteUri(NavigationManager.Uri).ToString();
-    }
+    //public void ToolbarInitialized()
+    //{
+    //    location = NavigationManager.ToAbsoluteUri(NavigationManager.Uri).ToString();
+    //}
 
     public void InitializeToolbar()
     {

@@ -1,14 +1,13 @@
-﻿namespace ComptaClub.Extensions
+﻿namespace ComptaClub.Extensions;
+
+public static class IEnumerableExtensions
 {
-    public static class IEnumerableExtensions
+    public static bool IsNullOrEmpty<T>(this IEnumerable<T> list)
     {
-        public static bool IsNullOrEmpty<T>(this IEnumerable<T> list)
+        if (list == null)
         {
-            if (list == null)
-            {
-                return false;
-            }
-            return list.Any();
+            return false;
         }
+        return list.Count() == 0;
     }
 }

@@ -48,7 +48,7 @@ internal class GetAmountTotalByAccountRequestHandler : IRequestHandler<GetAmount
                     {
                         Id = g.Key.AccountId,
                         Code = g.Key.Code,
-                        Lablel = g.Key.Label,
+                        Label = g.Key.Label,
                         Total = g.Sum(i => i.entry.Amount)
                     };
 
