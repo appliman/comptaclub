@@ -64,7 +64,7 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Débit" Filterable="true">
             <FilterTemplate>
-                <PriceFilter @bind-AmountFilter="filter.DebitAmountFilter" Title="Débit" ApplyFilter="ApplyFilter" />
+                <AmountColumnFilter @bind-AmountFilter="filter.DebitAmountFilter" Title="Débit" ApplyFilter="ApplyFilter" />
             </FilterTemplate>
             <Template Context="entry">
                 @if (entry.AccountDirection == Enums.AccountDirection.Debit)
@@ -81,7 +81,7 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Crédit" Filterable="true">
             <FilterTemplate>
-                <PriceFilter @bind-AmountFilter="filter.CreditAmountFilter" Title="Crédit" ApplyFilter="ApplyFilter" />
+                <AmountColumnFilter @bind-AmountFilter="filter.CreditAmountFilter" Title="Crédit" ApplyFilter="ApplyFilter" />
             </FilterTemplate>
             <Template Context="entry">
                 @if (entry.AccountDirection == Enums.AccountDirection.Credit)
@@ -98,7 +98,7 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.Entry" Title="Solde" Filterable="true">
             <FilterTemplate>
-                <PriceFilter @bind-AmountFilter="filter.BalanceAmountFilter" Title="Solde" ApplyFilter="ApplyFilter" />
+                <AmountColumnFilter @bind-AmountFilter="filter.BalanceAmountFilter" Title="Solde" ApplyFilter="ApplyFilter" />
             </FilterTemplate>
             <Template Context="entry">
                 <PriceLabel Value="@entry.Balance" />

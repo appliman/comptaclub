@@ -1,15 +1,13 @@
 ﻿namespace ComptaClub.Models;
 public class AmountFilter
 {
-    public int PrecisionInCentime { get; set; } = 100;
+    public long PrecisionInCentime { get; set; } = 1 * 1000000; // 1 euro
     public long Amount { get; set; } = 0;
     internal long Min
     {
         get
         {
-            var amountInCentime = Amount / 10000m;
-            var min = Convert.ToInt64((amountInCentime - PrecisionInCentime) * 10000);
-            return min;
+            return Amount - PrecisionInCentime;
         }
     }
 
@@ -17,9 +15,7 @@ public class AmountFilter
     {
         get
         {
-            var amountInCentime = Amount / 10000m;
-            var min = Convert.ToInt64((amountInCentime + PrecisionInCentime) * 10000);
-            return min;
+            return Amount + PrecisionInCentime;
         }
     }
 
