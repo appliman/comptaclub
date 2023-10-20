@@ -11,4 +11,7 @@ public abstract class ToolbarItem
 	public object? Entity { get; set; }
 	public int SelectedItemCount { get; set; }
 	public bool DisplayLoader { get; set; } = true;
+	public Func<bool> IsDisable { get; set; } = () => false;
+	public bool Visible { get; set; } = true;
+	public Func<bool> IsVisible { get; set; } = () => true;
 }

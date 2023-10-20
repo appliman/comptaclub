@@ -14,7 +14,7 @@ public partial class DateIdLabel
     {
         get
         {
-            var date = Value;
+            var date = Value.FromDayId();
             var ci = new System.Globalization.CultureInfo("fr-FR");
             var result = string.Format(ci,$"{{0:{Format}}}", date);
             if (Format.Equals("fromNow", StringComparison.InvariantCultureIgnoreCase))
@@ -34,14 +34,13 @@ public partial class DateIdLabel
         }
     }
 
-    string FromNow(int start)
+    string FromNow(DateTime start)
     {
-        var startDate = start.FromDayId();
-        TimeSpan sincets = DateTime.Now - startDate;
+        TimeSpan sincets = DateTime.Now - start;
         int sinceTotalDays = Convert.ToInt32(Math.Floor(sincets.TotalDays));
         int sinceTotalHours = Convert.ToInt32(Math.Floor(sincets.TotalHours));
         int sinceTotalMinutes = Convert.ToInt32(Math.Floor(sincets.TotalMinutes));
-        if (sinceTotalDays == 0 && startDate.Day == DateTime.Now.Day)
+        if (sinceTotalDays == 0 && start.Day == DateTime.Now.Day)
         {
             if (sinceTotalHours == 0)
             {

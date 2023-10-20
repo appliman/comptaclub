@@ -31,23 +31,27 @@ public partial class EditEntry : ComponentBase
 	[Inject]
 	NavigationManager NavigationManager { get; set; } = default!;
 
+	[Inject]
+	NotificationService NotificationService { get; set; } = default!;
 
-	ViewModels.Entry entry = new();
+
+	Datas.EntryData entry = new();
 	CustomValidator? customValidator;
 	List<SelectOption<Guid>> bankOptionList = new();
 	List<SelectOption<Guid>> accountOptionList = new();
 	List<SelectOption<Guid>> exerciceOptionList = new();
 	Enums.AccountDirection direction;
-	AssociatedMemberByEntry? associatedMembers;
+	AssociatedMemberByEntry associatedMembers = default!;
 	bool newEntry = true;
+	int selectedTabIndex = 0;
+	RadzenTabs tabs = default!;
 
-    protected override async Task OnInitializedAsync()
+	protected override async Task OnInitializedAsync()
 	{
 		if (EntryId == null
 			|| EntryId == Guid.Empty)
 		{
-			var data = await Mediator.Send(new Requests.Entries.CreateEntryRequest());
-			entry = Mapper.Map<ViewModels.Entry>(data);
+			entry = await Mediator.Send(new Requests.Entries.CreateEntryRequest());
 			newEntry = true;
 		}
 		else
@@ -55,7 +59,7 @@ public partial class EditEntry : ComponentBase
 			var data = await Mediator.Send(new Requests.Entries.GetEntryByFilterRequest(f => f.GetById(EntryId.Value)));
 			if (data != null)
 			{
-				entry = Mapper.Map<ViewModels.Entry>(data);
+				entry = data;
 				newEntry = false;
 			}
 		}
@@ -119,9 +123,10 @@ public partial class EditEntry : ComponentBase
             IconName = "person_add",
             Text = "Associer",
             Title = "Associer un membre à cette écriture",
+			IsDisable = () => selectedTabIndex != 1,
             OnClick = async () =>
 			{
-				await associatedMembers!.InsertRow();
+				await associatedMembers.InsertRow();
 			}
         }).Display();
     }
@@ -134,6 +139,10 @@ public partial class EditEntry : ComponentBase
 		if (saveResult!.HasError)
 		{
 			customValidator!.DisplayErrors(saveResult.ErrorBrokenRuleList);
+			if (selectedTabIndex != 0)
+			{
+				NotificationService.NotifyError(saveResult);
+			}
 			return;
 		}
 
@@ -145,4 +154,9 @@ public partial class EditEntry : ComponentBase
 		NavigationManager.NavigateTo("/ecritures");
 	}
 
+	void RefreshToolbar(int tabId)
+	{
+		selectedTabIndex = tabId;
+		MainLayout.Toolbar.Refresh();
+	}
 }

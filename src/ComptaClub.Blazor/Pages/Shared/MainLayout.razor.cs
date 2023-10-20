@@ -22,6 +22,7 @@ namespace ComptaClub.Blazor.Pages.Shared
         Toolbar toolbar = default!;
         ViewModels.User? user = new();
         string version = $"{typeof(Program).Assembly.GetName()?.Version}";
+        public Toolbar Toolbar => toolbar;
 
         protected override async Task OnInitializedAsync()
         {

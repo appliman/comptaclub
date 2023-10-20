@@ -26,8 +26,8 @@ public partial class ImportEntryList : ComponentBase
     [Inject]
     NotificationService NotificationService { get; set; } = default!;
 
-    IEnumerable<ViewModels.Entry> entryList = new List<ViewModels.Entry>();
-    RadzenDataGrid<ViewModels.Entry>? grid = default!;
+    IEnumerable<ViewModels.EntryRow> entryList = new List<ViewModels.EntryRow>();
+    RadzenDataGrid<ViewModels.EntryRow>? grid = default!;
     List<Datas.AccountData> accountList = new();
     List<ViewModels.Account>? creditAccountOptionList;
     List<ViewModels.Account>? debitAccountOptionList;
@@ -50,20 +50,22 @@ public partial class ImportEntryList : ComponentBase
         var ms = new MemoryStream();
         await args.File.OpenReadStream().CopyToAsync(ms);
         var dataList = await Mediator.Send(new Requests.Entries.ImportEntryListFromStreamRequest(ms));
-        entryList = Mapper.Map<IEnumerable<ViewModels.Entry>>(dataList);
         int rowIndex = 1;
         foreach (var item in entryList)
         {
-            item.RowIndex = rowIndex++;
+            ((List<EntryRow>)entryList).Add(new EntryRow
+            {
+                Entity = item.Entity,
+				RowIndex = rowIndex
+            });
         }
     }
 
-    async Task SaveRow(ViewModels.Entry entry)
+    async Task SaveRow(ViewModels.EntryRow entry)
     {
         var currentUser = (await AuthenticationState).User.GetUserInfos();
-        entry.UserCreatorId = currentUser!.Id;
-        var data = Mapper.Map<Datas.EntryData>(entry);
-        var saveResult = await Mediator!.Send(new Requests.SaveEntityRequest<Datas.EntryData>(data));
+        entry.Entity.UserCreatorId = currentUser!.Id;
+        var saveResult = await Mediator!.Send(new Requests.SaveEntityRequest<Datas.EntryData>(entry.Entity));
         if (saveResult!.HasError)
         {
             NotificationService.NotifyError(saveResult);
