@@ -14,6 +14,8 @@ using FluentEmail.MailKitSmtp;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 
+using LogRWebMonitor;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var globalSettings = await builder.ConfigureComptaClub(args);
@@ -120,7 +122,15 @@ else if (globalSettings.SmtpProviderName == "mimekit")
     });
 }
 
+builder.AddLogRWebMonitor(config =>
+{
+    config.EnvironmentName = builder.Environment.EnvironmentName;
+    config.HostName = "ComptaClub"; 
+});
+
 var app = builder.Build();
+
+app.UseLogRWebMonitor();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

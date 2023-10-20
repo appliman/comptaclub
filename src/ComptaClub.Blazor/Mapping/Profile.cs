@@ -30,14 +30,6 @@ public class Profile : AutoMapper.Profile
 
         CreateMap<CreateExerciceRequest, ViewModels.Exercice>();
 
-        CreateMap<Datas.EntryData, ViewModels.Entry>()
-            .ForMember(d => d.CreationDate, opt => opt.MapFrom(s => s.CreationDate.FromDayId()))
-            .ForMember(d => d.ValueDate, opt => opt.MapFrom(s => s.ValueDate.FromDayId()));
-
-		CreateMap<ViewModels.Entry, Datas.EntryData>()
-			.ForMember(d => d.ValueDate, opt => opt.MapFrom(s => s.ValueDate.ToDayId()))
-			.ForMember(d => d.CreationDate, opt => opt.MapFrom(s => s.CreationDate.ToDayId()));
-
         CreateMap<Datas.MemberData, ViewModels.Member>()
             .ForMember(d => d.CreationDate, opt => opt.MapFrom(s => s.CreationDate.FromDayId()));
 

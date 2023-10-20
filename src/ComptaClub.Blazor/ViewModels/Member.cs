@@ -1,7 +1,4 @@
-﻿using ComptaClub.Blazor.ViewModels;
-using ComptaClub.Datas;
-
-namespace ComptaClub.Blazor.ViewModels;
+﻿namespace ComptaClub.Blazor.ViewModels;
 
 public class Member : IMetaEntity
 {

@@ -2,8 +2,8 @@
 @using ComptaClub.Requests;
 
 <RadzenDataGrid @ref="grid"
-                AllowFiltering="true"
-                AllowSorting="true"
+                AllowFiltering="false"
+                AllowSorting="false"
                 AllowColumnResize="true"
                 Data="@associatedMemberList"
                 LoadData="LoadDatas"
@@ -24,7 +24,7 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.AssociatedMemberToEntryRow" Property="Amount" Title="Montant" Width="100px" Filterable="false" Frozen="false">
             <EditTemplate Context="data">
-                <RadzenNumeric @bind-Value="data.Amount"/>
+                <SuperInputCurrency @bind-Value="data.Amount" />
             </EditTemplate>
             <Template Context="data">
                 <PriceLabel Value="@data.Amount" />

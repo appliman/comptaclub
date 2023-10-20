@@ -1,5 +1,19 @@
-﻿<div class="mb-3">
-	<label for="Name" class="form-label">@Label</label>
+﻿@if (!string.IsNullOrWhiteSpace(Label))
+{
+	<div class="mb-3">
+		<label for="Name" class="form-label">@Label</label>
+		<div class="input-group w-50">
+			<span class="input-group-text"><span class="material-icons">€</span></span>
+			<input type="text" step="0" class="form-control" value="@innerValue" @onchange="InnerValueChanged" placeholder="@PlaceHoder" required="@(Required ? "required" : null)" />
+		</div>
+		<small>
+			<ValidationMessage class="invalid-feedback" For="() => Value" />
+		</small>
+		@ChildContent
+	</div>
+}
+else
+{
 	<div class="input-group">
 		<span class="input-group-text"><span class="material-icons">€</span></span>
 		<input type="text" step="0" class="form-control w-25" value="@innerValue" @onchange="InnerValueChanged" placeholder="@PlaceHoder" required="@(Required ? "required" : null)" />
@@ -7,8 +21,7 @@
 	<small>
 		<ValidationMessage class="invalid-feedback" For="() => Value" />
 	</small>
-	@ChildContent
-</div>
+}
 
 @code {
 
