@@ -31,6 +31,14 @@ internal class GetPagedDocumentListRequestHandler : GetEntityPagedListRequestHan
                                     || EF.Functions.Like($"{i.Description}", $"%{filter.Search}%"));
         }
 
+        if (filter.MetaEntityIdList is not null)
+        {
+            query = from document in db.Documents
+                    join dbe in db.DocumentsByEntities on document.Id equals dbe.DocumentId
+					where filter.MetaEntityIdList.EntityIdList.Contains(dbe.EntityId)
+                    select document;
+        }
+
         var page = await query.GetPagedDataList(i => i.CreationDate, filter, cancellationToken);
 
         var result = new PagedList<IEnumerable<DocumentData>>()

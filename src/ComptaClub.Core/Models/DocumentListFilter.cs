@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using ComptaClub.Enums;
+
 namespace ComptaClub.Models;
 
 public class DocumentListFilter : IListFilter
@@ -17,6 +19,7 @@ public class DocumentListFilter : IListFilter
     public ListSortDirection SortDirection { get; set; }
     public string? Search { get; set; }
     public ComputeRowCount ComputeRowCount { get; set; } = ComputeRowCount.OnlyInFirstPage;
+    public MetaEntityIdList? MetaEntityIdList { get; set; }
 
     public void GetById(Guid entryId)
     {

@@ -48,6 +48,13 @@
 		<None Update="appsettings.test.json">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+		<None Update="Docs\test.pdf">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Docs\" />
 	</ItemGroup>
 
 

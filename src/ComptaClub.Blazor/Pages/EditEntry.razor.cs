@@ -2,6 +2,7 @@ using System.Security.Claims;
 
 using ComptaClub.Blazor.Extensions;
 using ComptaClub.Blazor.Pages.Components;
+using ComptaClub.Blazor.Pages.Dialogs;
 using ComptaClub.Blazor.Pages.Shared;
 using ComptaClub.Blazor.ViewModels;
 using ComptaClub.Extensions;
@@ -42,6 +43,7 @@ public partial class EditEntry : ComponentBase
 	List<SelectOption<Guid>> exerciceOptionList = new();
 	Enums.AccountDirection direction;
 	AssociatedMemberByEntry associatedMembers = default!;
+	DocumentListByEntity associatedDocuments = default!;
 	bool newEntry = true;
 	int selectedTabIndex = 0;
 	RadzenTabs tabs = default!;
@@ -123,12 +125,22 @@ public partial class EditEntry : ComponentBase
             IconName = "person_add",
             Text = "Associer",
             Title = "Associer un membre à cette écriture",
-			IsDisable = () => selectedTabIndex != 1,
+			IsVisible = () => selectedTabIndex == 1,
             OnClick = async () =>
 			{
 				await associatedMembers.InsertRow();
 			}
-        }).Display();
+        }).AddItem(new ViewModels.Toolbar.ToolbarButton
+		{
+			IconName = "person_add",
+			Text = "Associer",
+			Title = "Associer un document à cette écriture",
+			IsVisible = () => selectedTabIndex == 2,
+			OnClick = async () =>
+			{
+				await associatedDocuments.InsertRow();
+			}
+		}).Display();
     }
 
     async Task ValidateAndSave()

@@ -23,11 +23,12 @@
 			</EditForm>
 		</RadzenTabsItem>
 		<RadzenTabsItem Text="Membres" Icon="group_add">
-			<h4>Membres associé à l'écriture :</h4>
+			<h4>Membres associés à l'écriture :</h4>
 			<AssociatedMemberByEntry @ref="associatedMembers" EntryId="EntryId" />
 		</RadzenTabsItem>
 		<RadzenTabsItem Text="documents" Icon="attach_file">
-
+			<h4>Documents associés à l'écriture</h4>
+			<DocumentListByEntity MetaEntity="MetaEntity.Entry" EntityId="EntryId.GetValueOrDefault(Guid.Empty)" @ref="associatedDocuments"/>
 		</RadzenTabsItem>
 	</Tabs>
 </RadzenTabs>
