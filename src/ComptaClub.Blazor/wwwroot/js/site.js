@@ -24,4 +24,25 @@ const printer = (() => {
 	};
 })();
 
+const screenInfo = ((selector) => {
+	try {
+		const element = document.querySelector(selector);
+		if (typeof (element) === null || element === undefined) {
+			return null;
+		}
+		const dimension = element.getBoundingClientRect();
+		const result = {
+			top: parseInt(dimension.top),
+			bottom: parseInt(dimension.bottom),
+			windowHeight: window.innerHeight,
+			documentHeight: document.documentElement.scrollHeight
+		};
+		return result;
+	} catch (ex) {
+		console.log(ex);
+		return null;
+	}
+})();
+
 window.printer = window.printer || printer;
+window.screeInfo = window.screeInfo || screenInfo;

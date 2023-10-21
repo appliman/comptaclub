@@ -7,40 +7,33 @@
                 Data="@userList"
                 LoadData="LoadDatas"
                 TItem="ViewModels.User"
-                ColumnWidth="100px"
                 GridLines="DataGridGridLines.Both"
                 FilterMode="FilterMode.Simple"
                 Density="Density.Compact">
     <Columns>
-        <RadzenDataGridColumn TItem="ViewModels.User" Property="RowIndex" Title="#" Width="30px" Filterable="false" FormatString="" Frozen="true">
+        <RadzenDataGridColumn TItem="ViewModels.User" Property="RowIndex" Title="#" Width="50px" Filterable="false" FormatString="" Frozen="true">
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.User" Property="Name" Title="Nom" Width="120px" Filterable="false" Frozen="true">
-            <EditTemplate Context="user">
-                <RadzenTextBox @bind-Value="user.Name" Style="width:100%" />
-                <BrokenRuleMessage For="() => user.Name" BrokenRuleList="brokenRules" />
-            </EditTemplate>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.User" Property="Email" Title="Email" Width="100px" Filterable="false" FormatString="{0:dd/MM/yy}" Frozen="false">
-            <EditTemplate Context="user">
-                <RadzenTextBox @bind-Value="user.Email" Style="width:100%" />
-                <BrokenRuleMessage For="() => user.Email" BrokenRuleList="brokenRules" />
-            </EditTemplate>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Member" Property="CreationDate" Title="Date" Width="80px" Filterable="false" FormatString="{0:dd/MM/yy}" Frozen="true">
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.User" Context="bank" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+        <RadzenDataGridColumn TItem="ViewModels.User" Filterable="false" Sortable="false" TextAlign="TextAlign.Left" Width="100px">
             <Template Context="user">
                 <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(user))" @onclick:stopPropagation="true" title="Editer cet utilisateur">
                 </RadzenButton>
                 <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(user))" @onclick:stopPropagation="true" title="Supprimer cet utilisateur">
                 </RadzenButton>
             </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.User" Property="Name" Title="Nom" Width="250px" Filterable="false" Frozen="true">
             <EditTemplate Context="user">
-                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(user))">
-                </RadzenButton>
-                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelEdit(user))">
-                </RadzenButton>
+                <RadzenTextBox @bind-Value="user.Name" Style="width:100%" />
+                <BrokenRuleMessage For="() => user.Name" BrokenRuleList="brokenRules" />
             </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.User" Property="Email" Title="Email" Filterable="false" FormatString="{0:dd/MM/yy}" Frozen="false">
+            <EditTemplate Context="user">
+                <RadzenTextBox @bind-Value="user.Email" Style="width:100%" />
+                <BrokenRuleMessage For="() => user.Email" BrokenRuleList="brokenRules" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.User" Property="CreationDate" Title="Date" Width="80px" Filterable="false" FormatString="{0:dd/MM/yy}" Frozen="true">
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>

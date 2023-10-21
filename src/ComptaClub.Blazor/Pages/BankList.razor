@@ -2,43 +2,21 @@
 
 <PageTitle>Banques</PageTitle>
 
+<div style="height:100%">
 <RadzenDataGrid @ref="grid" 
     AllowFiltering="true" 
     AllowSorting="true" 
     AllowColumnResize="true" 
     Data="@bankList" 
     TItem="ViewModels.Bank" 
-    EditMode="DataGridEditMode.Single" >
+    EditMode="DataGridEditMode.Single" 
+    Style="height:100%">
     <Columns>
-        <RadzenDataGridColumn TItem="ViewModels.Bank" Property="Code" Title="Code Banque" Width="120px" Filterable="false">
-            <EditTemplate Context="bank">
-                <RadzenTextBox @bind-Value="bank.Code" Style="width:100%" />
-                <BrokenRuleMessage For="() => bank.Code" BrokenRuleList="brokenRules" />
-            </EditTemplate>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Bank" Property="Label" Title="Libellé" Width="120px" Filterable="false">
-            <EditTemplate Context="bank">
-                <RadzenTextBox @bind-Value="bank.Label" Style="width:100%" />
-                <BrokenRuleMessage For="() => bank.Label" BrokenRuleList="brokenRules" />
-            </EditTemplate>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Bank" Title="Actif" Width="90px" Filterable="false">
+        <RadzenDataGridColumn TItem="ViewModels.Bank" Context="bank" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="100px">
             <Template Context="bank">
-                @if (bank.Active)
-                {
-                    <input type="radio" checked @onchange="@((args) => ChangeActiveBank(args, bank))" />
-                }
-                else
-                {
-                    <input type="radio" @onchange="@((args) => ChangeActiveBank(args, bank))" />
-                }
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Bank" Context="bank" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
-            <Template Context="bank">
-                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(bank))" @onclick:stopPropagation="true" title="Editer cette banque">
-                </RadzenButton>
-                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(bank))" @onclick:stopPropagation="true" title="Supprimer cette banque">
+                    <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(bank))" @onclick:stopPropagation="true" title="Supprimer cette banque">
+                    </RadzenButton>
+                    <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(bank))" @onclick:stopPropagation="true" title="Editer cette banque">
                 </RadzenButton>
             </Template>
             <EditTemplate Context="bank">
@@ -48,7 +26,31 @@
                 </RadzenButton>
             </EditTemplate>
         </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Bank" Property="Code" Title="Code Banque" Width="120px" Filterable="false">
+            <EditTemplate Context="bank">
+                <RadzenTextBox @bind-Value="bank.Code" Style="width:100%" />
+                <BrokenRuleMessage For="() => bank.Code" BrokenRuleList="brokenRules" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ViewModels.Bank" Title="Actif" Width="90px" Filterable="false">
+                <Template Context="bank">
+                    @if (bank.Active)
+                    {
+                        <input type="radio" checked @onchange="@((args) => ChangeActiveBank(args, bank))" />
+                    }
+                    else
+                    {
+                        <input type="radio" @onchange="@((args) => ChangeActiveBank(args, bank))" />
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ViewModels.Bank" Property="Label" Title="Libellé" Filterable="false">
+            <EditTemplate Context="bank">
+                <RadzenTextBox @bind-Value="bank.Label" Style="width:100%" />
+                <BrokenRuleMessage For="() => bank.Label" BrokenRuleList="brokenRules" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
-
+</div>
 

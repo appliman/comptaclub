@@ -38,11 +38,19 @@
     <None Remove="Scripts\ComptaClub\0029-CreateIncomeStatement.sql" />
     <None Remove="Scripts\ComptaClub\0030-AlterTableIncomeStatementItem.sql" />
     <None Remove="Scripts\ComptaClub\0031-AlterTable-Entries.sql" />
+    <None Remove="Scripts\ComptaClub\0032-AlterTable-DocumentByEntity.sql" />
+    <None Remove="Scripts\ComptaClub\0033-AlterTable-DocumentByEntity.sql" />
+    <None Remove="Scripts\ComptaClub\0034-AlterTable-DocumentByEntity.sql" />
+    <None Remove="Scripts\ComptaClub\0035-AlterTable-DocumentByEntity.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Scripts\ComptaClub\0003-CreateTable-Documents - Copy.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0031-AlterTable-Entries.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0035-AlterTable-DocumentByEntity.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0034-AlterTable-DocumentByEntity.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0033-AlterTable-DocumentByEntity.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0032-AlterTable-DocumentByEntity.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0030-AlterTableIncomeStatementItem.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0029-CreateIncomeStatement.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0028-AlterTable-Exercices.sql" />

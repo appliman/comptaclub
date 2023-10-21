@@ -30,11 +30,6 @@ public partial class Toolbar : ComponentBase
         }
     }
 
-    //public void ToolbarInitialized()
-    //{
-    //    location = NavigationManager.ToAbsoluteUri(NavigationManager.Uri).ToString();
-    //}
-
     public void InitializeToolbar()
     {
         toolbarItems.Clear();
@@ -45,6 +40,11 @@ public partial class Toolbar : ComponentBase
 		toolbarItems.Add(item);
 		return this;
 	}
+
+    public void Refresh()
+    {
+        StateHasChanged();
+    }
 
     public void Display()
     {

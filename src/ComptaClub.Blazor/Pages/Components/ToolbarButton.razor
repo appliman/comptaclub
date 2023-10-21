@@ -1,7 +1,10 @@
-﻿<RadzenButton 
+﻿@if (ToolbarItem.Visible && ToolbarItem.IsVisible())
+{
+<RadzenButton 
 	Text="@ToolbarItem.Text" 
 	Click="OnClick" 
 	Icon="@ToolbarItem.IconName" 
-	Disabled="ToolbarItem.Disabled" 
+	Disabled="@(ToolbarItem.Disabled || ToolbarItem.IsDisable())" 
 	class="btn btn-primary m-1"
 	title="@ToolbarItem.Title"/>
+}

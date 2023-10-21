@@ -7,7 +7,7 @@
         <InputFile class="form-control" OnChange="LoadFile" />
     </div>
 }
-
+<div style="height:100%">
 <RadzenDataGrid @ref="grid" 
     AllowFiltering="true" 
     AllowSorting="true" 
@@ -17,7 +17,8 @@
     TItem="ViewModels.Member"
     ColumnWidth="100px" 
     GridLines="DataGridGridLines.Both"
-    FilterMode="FilterMode.Simple">
+    FilterMode="FilterMode.Simple"
+    Style="height:100%">
     <Columns>
         <RadzenDataGridColumn TItem="ViewModels.Member" Property="RowIndex" Title="#" Width="30px" Filterable="false" FormatString="" Frozen="true">
         </RadzenDataGridColumn>
@@ -38,4 +39,4 @@
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
-
+</div>
