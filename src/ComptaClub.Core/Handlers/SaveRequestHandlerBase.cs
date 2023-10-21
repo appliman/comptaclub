@@ -45,7 +45,7 @@ internal abstract class SaveRequestHandlerBase
         var changeCount = await db.SaveChangesAsync(cancellationToken);
 
         var pResult = new Results.PersistResult();
-        var id = data as Datas.IPrimaryKey;
+        var id = model as Datas.IPrimaryKey;
         if (id != null) 
         {
             pResult.Id = id.Id;

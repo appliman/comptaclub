@@ -1,6 +1,7 @@
 using AutoMapper;
 using ComptaClub.Models;
 using ComptaClub.Requests;
+using ComptaClub.Requests.Documents;
 using ComptaClub.Results;
 
 using MediatR;
@@ -19,12 +20,14 @@ public partial class DocumentList : ComponentBase
     IMapper Mapper { get; set; } = default!;
 
     [Inject]
+    DialogService DialogService { get; set; } = default!;
+
+    [Inject]
     NotificationService NotificationService { get; set; } = default!;
 
     List<ViewModels.Document>? documentList;
-    RadzenDataGrid<ViewModels.Document>? grid = new();
+    RadzenDataGrid<ViewModels.Document> grid = default!;
     DocumentListFilter filter = new();
-    bool displayUpload = false;
     ViewModels.Document? documentToUpdate;
     List<Results.BrokenRule> brokenRules = new();
 
@@ -35,12 +38,7 @@ public partial class DocumentList : ComponentBase
             IconName = "upload_file",
             Text = "Ajouter",
             Title = "Ajouter un document",
-            OnClick = () =>
-            {
-                displayUpload = !displayUpload;
-                StateHasChanged();
-                return Task.CompletedTask;
-            }
+            OnClick = AddDocument
         }).Display();
 
         filter.PageSize = 100;
@@ -57,27 +55,6 @@ public partial class DocumentList : ComponentBase
             item.RowIndex = rowIndex++;
         }
         documentList = vmList;
-    }
-
-    async Task LoadFile(InputFileChangeEventArgs args)
-    {
-        var extension = System.IO.Path.GetExtension(args.File.Name);
-
-        var ms = new MemoryStream();
-        await args.File.OpenReadStream().CopyToAsync(ms);
-
-        var document = await Mediator.Send(new Requests.Documents.CreateDocumentRequest());
-        document.FileName = args.File.Name;
-        document.MimeType = args.File.ContentType;
-
-        var saveResult = await Mediator.Send(new Requests.Documents.SaveDocumentRequest(document, ms));
-        if (!saveResult.HasError)
-        {
-            await grid!.Reload();
-        }
-
-
-        displayUpload = false;
     }
 
     async Task EditRow(ViewModels.Document doc)
@@ -109,8 +86,45 @@ public partial class DocumentList : ComponentBase
 
     async Task DeleteRow(ViewModels.Document doc)
     {
+        var dialogResult = await DialogService.Confirm("Confirmez-vous la suppression de ce document ?", "Suppression");
+        if (dialogResult.Value == false)
+		{
+			return;
+		}
+
         await Mediator.Send(new Requests.Documents.DeleteDocumentRequest(doc.Id));
         await grid!.Reload();
     }
 
+    async Task AddDocument()
+    {
+        var document = await Mediator.Send(new CreateDocumentRequest());
+		var dialogResult = await DialogService.OpenAsync<Dialogs.AddDocumentDialog>("Ajouter un document", new Dictionary<string, object>
+		{
+			{ "Document", document }
+		});
+
+        if (dialogResult != null)
+		{
+			await grid!.Reload();
+		}
+
+        var documentContent = dialogResult as MemoryStream;
+        if (documentContent is  null)
+		{
+			return;
+		}
+
+		var saveResult = await Mediator.Send(new Requests.Documents.SaveDocumentRequest(document, documentContent));
+		documentContent.Dispose();
+
+		if (saveResult.HasError)
+		{
+			NotificationService.NotifyError(saveResult);
+            return;
+		}
+
+        await grid.Reload();
+		StateHasChanged();
+	}
 }

@@ -1,0 +1,48 @@
+﻿<EditForm Model="Document">
+	<ValidationSummary></ValidationSummary>
+	<DataAnnotationsValidator />
+	<CustomValidator @ref="customValidator"></CustomValidator>
+
+	<div class="row media-area mb-4">
+		<div class="col-md-3 dialog-title">
+			Fichier
+		</div>
+		<div class="col-md-9 file-drop-zone @HoverClass" @ref="fileDropContainer" @ondragenter="OnDragEnter" @ondragleave="OnDragLeave" @ondragover="OnDragEnter">
+			<div class="row text-center">
+				<small>vous pouvez glisser déposer une image dans cette zone</small>
+			</div>
+			<div class="row m-2">
+				<InputFile class="form-control m-2" OnChange="OnInputFileChange"></InputFile>
+			</div>
+		</div>
+	</div>
+
+	<div class="row mb-3">
+		<div class="col-md-3 dialog-title">
+			Description du fichier
+		</div>
+		<div class="col-md-9">
+			<InputText @bind-Value="@Document.Description" MaxLength="100" class="form-control w-100" />
+			<ValidationMessage For="() => Document.Description" />
+		</div>
+	</div>
+	<div class="row media-area mb-4">
+		<div class="col-md-3 dialog-title">
+			Taille
+		</div>
+		<div class="col-md-9">
+			<FileSizeLabel FileSize="@Document.Size" />
+		</div>
+	</div>
+</EditForm>
+
+<div class="row mt-2 dialog-btns justify-content-end">
+	<div class="col-auto">
+		<RadzenButton ButtonStyle="ButtonStyle.Info" Icon="cancel" Text="Annuler" Click="@((args) => DialogService.Close())" />
+	</div>
+	<div class="col-auto">
+		<RadzenButton ButtonType="ButtonType.Submit" Icon="add_circle" Text="Ajouter" Click="@Select" />
+	</div>
+</div>
+
+

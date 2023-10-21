@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using ComptaClub.Datas;
-using ComptaClub.Extensions;
+﻿using ComptaClub.Extensions;
 using ComptaClub.Requests;
 
 using FluentAssertions;
 
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 
@@ -52,7 +41,7 @@ public class FirstEntryTests
 		var planFile = System.IO.Path.Combine(System.Environment.CurrentDirectory, "InitialAccountingPlan.json");
 		var planFileContent = System.IO.File.ReadAllText(planFile);
 
-		var plan = System.Text.Json.JsonSerializer.Deserialize<List<Datas.AccountData>>(planFileContent, ComptaClub.JsonSerializer.Options);	
+		var plan = System.Text.Json.JsonSerializer.Deserialize<List<Datas.AccountData>>(planFileContent, ComptaClub.JsonSerializer.Options);
 
 		var importResult = await mediator.Send(new Requests.Accounts.ImportAccountingPlanRequest(plan!));
 		importResult.HasError.Should().BeFalse();
@@ -61,7 +50,7 @@ public class FirstEntryTests
 		if (bank == null)
 		{
 			bank = await mediator.Send(new Requests.Banks.CreateBankRequest("MyBank", "My Bank"));
-			var saveResult = await mediator.Send(new SaveEntityRequest<Datas.BankData>(bank));	
+			var saveResult = await mediator.Send(new SaveEntityRequest<Datas.BankData>(bank));
 			saveResult.HasError.Should().BeFalse();
 		}
 
