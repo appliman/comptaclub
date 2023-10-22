@@ -1,0 +1,49 @@
+﻿<EditForm Model="documentContent">
+	<ValidationSummary></ValidationSummary>
+	<DataAnnotationsValidator />
+	<CustomValidator @ref="customValidator"></CustomValidator>
+
+	<p>
+		Si les membres sont déjà présents il ne seront pas écrasés
+	</p>
+
+	<div class="row media-area mb-4">
+		<div class="col-md-3 dialog-title">
+			Fichier
+		</div>
+		<div class="col-md-9 file-drop-zone @HoverClass" @ref="fileDropContainer" @ondragenter="OnDragEnter" @ondragleave="OnDragLeave" @ondragover="OnDragEnter">
+			<div class="row text-center">
+				<small>vous pouvez glisser déposer une image dans cette zone</small>
+			</div>
+			<div class="row m-2">
+				<InputFile class="form-control m-2" OnChange="OnInputFileChange"></InputFile>
+			</div>
+		</div>
+	</div>
+	@if (documentContent.Length > 0)
+	{
+		<div class="row mb-3">
+			<div class="col-md-3 dialog-title">
+				Nom du fichier
+			</div>
+			<div class="col-md-9">@fileName</div>
+		</div>
+		<div class="row media-area mb-4">
+			<div class="col-md-3 dialog-title">
+				Taille
+			</div>
+			<div class="col-md-9">
+				<FileSizeLabel FileSize="@documentContent.Length" />
+			</div>
+		</div>
+	}
+</EditForm>
+
+<div class="row mt-2 dialog-btns justify-content-end">
+	<div class="col-auto">
+		<RadzenButton ButtonStyle="ButtonStyle.Info" Icon="cancel" Text="Annuler" Click="@((args) => DialogService.Close())" />
+	</div>
+	<div class="col-auto">
+		<RadzenButton ButtonType="ButtonType.Submit" Icon="add_circle" Text="Importer" Click="@Select" Disabled="@(documentContent.Length == 0)"/>
+	</div>
+</div>
