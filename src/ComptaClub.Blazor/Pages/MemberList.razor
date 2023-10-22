@@ -1,12 +1,5 @@
 ﻿@page "/membres"
 
-@if (displayUpload)
-{
-    <div class="mb-3">
-        <label class="form-label">Veuillez indiquer le fichier excel (.xlsx)</label>
-        <InputFile class="form-control" OnChange="LoadFile" />
-    </div>
-}
 <div style="height:100%">
 <RadzenDataGrid @ref="grid" 
     AllowFiltering="true" 
