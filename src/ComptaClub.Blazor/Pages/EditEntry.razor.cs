@@ -44,7 +44,6 @@ public partial class EditEntry : ComponentBase
 	Enums.AccountDirection direction;
 	AssociatedMemberByEntry associatedMembers = default!;
 	DocumentListByEntity associatedDocuments = default!;
-	bool newEntry = true;
 	int selectedTabIndex = 0;
 	RadzenTabs tabs = default!;
 
@@ -54,7 +53,6 @@ public partial class EditEntry : ComponentBase
 			|| EntryId == Guid.Empty)
 		{
 			entry = await Mediator.Send(new Requests.Entries.CreateEntryRequest());
-			newEntry = true;
 		}
 		else
 		{
@@ -62,7 +60,6 @@ public partial class EditEntry : ComponentBase
 			if (data != null)
 			{
 				entry = data;
-				newEntry = false;
 			}
 		}
 

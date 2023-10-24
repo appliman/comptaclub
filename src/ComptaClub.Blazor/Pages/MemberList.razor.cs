@@ -26,10 +26,10 @@ public partial class MemberList : ComponentBase
 	[Inject]
 	DialogService DialogService { get; set; } = default!;
 
-	List<ViewModels.Member>? memberList;
-	RadzenDataGrid<ViewModels.Member>? grid = new();
+	List<ViewModels.MemberRow>? memberList;
+	RadzenDataGrid<ViewModels.MemberRow> grid = default!;
 	MemberListFilter filter = new();
-	bool displayUpload = false;
+	IList<ViewModels.MemberRow>? selectedMembers;
 
 	protected override void OnInitialized()
 	{
@@ -47,19 +47,25 @@ public partial class MemberList : ComponentBase
 	async Task LoadDatas(LoadDataArgs args)
 	{
 		var page = await Mediator.Send(new GetPagedEntityListRequest<MemberListFilter, Datas.MemberData>(filter));
-		memberList = Mapper.Map<List<ViewModels.Member>>(page.List);
+		var rowList = new List<ViewModels.MemberRow>();
 
 		var balanceByMemberList = await Mediator.Send(new Requests.Members.GetBalanceByMemberListRequest(filter));
 		int rowIndex = 1;
-		foreach (var item in memberList)
+		foreach (var item in page.List)
 		{
 			var balance = balanceByMemberList.SingleOrDefault(i => i.MemberId == item.Id);
+			var row = new ViewModels.MemberRow
+			{
+				Entity = item,
+				RowIndex = rowIndex++
+			};
 			if (balance != null)
 			{
-				item.Amount = balance.Balance;
+				row.Amount = balance.Balance;
 			}
-			item.RowIndex = rowIndex++;
+			rowList.Add(row);
 		}
+		memberList = rowList;
 	}
 
 	async Task ImportFile()
@@ -76,13 +82,6 @@ public partial class MemberList : ComponentBase
 			return;
 		}
 		ms.Seek(0, SeekOrigin.Begin);
-		var dataList = await Mediator.Send(new Requests.Members.ImportExcelMemberListRequest(ms));
-		memberList = Mapper.Map<List<ViewModels.Member>>(dataList);
-		int rowIndex = 1;
-		foreach (var item in memberList)
-		{
-			item.RowIndex = rowIndex++;
-		}
-		displayUpload = false;
+		await grid.Reload();
 	}
 }

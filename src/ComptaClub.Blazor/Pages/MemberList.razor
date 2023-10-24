@@ -7,28 +7,33 @@
     AllowColumnResize="true"
     Data="@memberList" 
     LoadData="LoadDatas"
-    TItem="ViewModels.Member"
+    TItem="ViewModels.MemberRow"
     ColumnWidth="100px" 
     GridLines="DataGridGridLines.Both"
     FilterMode="FilterMode.Simple"
+    SelectionMode="DataGridSelectionMode.Multiple"
+    @bind-Value="@selectedMembers"
     Style="height:100%">
     <Columns>
-        <RadzenDataGridColumn TItem="ViewModels.Member" Property="RowIndex" Title="#" Width="30px" Filterable="false" FormatString="" Frozen="true">
+        <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="RowIndex" Title="#" Width="30px" Filterable="false" FormatString="" Frozen="true">
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Member" Property="Name" Title="Nom" Width="120px" Filterable="false" Frozen="true">
+        <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Name" Title="Nom" Width="120px" Filterable="false" Frozen="true">
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Member" Property="Email" Title="Email" Width="100px" Filterable="false" FormatString="{0:dd/MM/yy}" Frozen="false">
+            <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Email" Title="Email" Width="100px" Filterable="false" FormatString="{0:dd/MM/yy}" Frozen="false">
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Member" Property="LicenseNumber" Title="Licence" Width="100px" Filterable="false" Frozen="false">
+            <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.LicenseNumber" Title="Licence" Width="100px" Filterable="false" Frozen="false">
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Member" Property="LicenseTypeName" Title="Type" Width="100px" Filterable="false" Frozen="false">
+            <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.LicenseTypeName" Title="Type" Width="100px" Filterable="false" Frozen="false">
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Member" Property="Amount" Title="Réglé" Width="80px" Filterable="false" Frozen="false">
+            <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Amount" Title="Réglé" Width="80px" Filterable="false" Frozen="false">
             <Template Context="data">
                 <PriceLabel Value="data.Amount"/>
             </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Member" Property="CreationDate" Title="Date" Width="80px" Filterable="false" FormatString="{0:dd/MM/yy}" Frozen="true">
+            <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.CreationDate" Title="Date" Width="80px" Filterable="false" Frozen="true">
+                <Template Context="data">
+                    <DateIdLabel Value="data.Entity.CreationDate"/>
+                </Template>
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>

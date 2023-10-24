@@ -34,7 +34,11 @@ builder.Services.AddScoped<ComptaClub.Blazor.Services.ListFilterQueryStringParam
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
+builder.Services.AddServerSideBlazor()
+            .AddHubOptions(o =>
+             {
+                 o.MaximumReceiveMessageSize = 2 * 1024 * 1024;
+             });
 builder.Services.AddMemoryCache();
 
 builder.Services.AddControllers()
