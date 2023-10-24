@@ -39,4 +39,5 @@ public class ComptaClubDbContext : DbContext
     public DbSet<AssociatedMemberListByEntryData> AssociatedMemberListByEntries { get; set; }
     public DbSet<IncomeStatementData> IncomeStatements { get; set; }
     public DbSet<IncomeStatementItemData> IncomeStatementItems { get; set; }
+    public DbSet<ClubData> ClubDatas { get; set; }
 }

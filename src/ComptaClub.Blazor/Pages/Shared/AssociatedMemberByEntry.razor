@@ -14,12 +14,12 @@
     <Columns>
         <RadzenDataGridColumn TItem="ViewModels.AssociatedMemberToEntryRow" Property="Name" Title="Nom" Width="120px" Filterable="false" Frozen="true">
             <Template Context="data">
-                <span>@data.Member.Name</span>
+                <span>@data.Member.Entity.Name</span>
             </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.AssociatedMemberToEntryRow" Property="Email" Title="Email" Width="100px" Filterable="false" FormatString="{0:dd/MM/yy}" Frozen="false">
             <Template Context="data">
-                <span>@data.Member.Email</span>
+                <span>@data.Member.Entity.Email</span>
             </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.AssociatedMemberToEntryRow" Property="Amount" Title="Montant" Width="100px" Filterable="false" Frozen="false">

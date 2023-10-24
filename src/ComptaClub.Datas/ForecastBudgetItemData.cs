@@ -1,7 +1,7 @@
 ﻿namespace ComptaClub.Datas;
 
 [Table("ForecastBudgetItems")]
-public class ForecastBudgetItem
+public class ForecastBudgetItemData
 {
 
 }

@@ -39,7 +39,11 @@ internal class ChangeActiveBankRequestHandler : IRequestHandler<ChangeActiveBank
             return CommandResult.CreateWarningResult("Il n'est pas possible de désactiver l'unique banque");
         }
 
-        var bank = bankList.Single(i => i.Id == request.BankId);
+        var bank = bankList.SingleOrDefault(i => i.Id == request.BankId);
+        if (bank is null)
+        {
+            return CommandResult.CreateWarningResult("Cette banque n'est pas encore enregistrée");
+        }
 
         if (request.Active
             && bank.Active)

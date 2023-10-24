@@ -24,25 +24,58 @@ const printer = (() => {
 	};
 })();
 
-const screenInfo = ((selector) => {
-	try {
-		const element = document.querySelector(selector);
-		if (typeof (element) === null || element === undefined) {
-			return null;
+const camera = (() => {
+	const startCamera = async (videoSelector) => {
+
+		if (!navigator?.mediaDevices?.getUserMedia) {
+			console.error("getUserMedia is not supported");
+			return;
 		}
-		const dimension = element.getBoundingClientRect();
-		const result = {
-			top: parseInt(dimension.top),
-			bottom: parseInt(dimension.bottom),
-			windowHeight: window.innerHeight,
-			documentHeight: document.documentElement.scrollHeight
+
+		const constraints = {
+			video: {
+				width: 1280,
+				height: 720
+			},
+			audio: false
 		};
-		return result;
-	} catch (ex) {
-		console.log(ex);
-		return null;
-	}
+		const stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+		const videoElement = document.getElementById(videoSelector);
+		videoElement.srcObject = stream;
+		videoElement.play();
+	};
+
+	const stopCamera = (videoSelector) => {
+		const videoElement = document.getElementById(videoSelector);
+		if (videoElement) {
+			try {
+				console.log(videoElement);
+				videoElement.pause();
+				videoElement.srcObject.getTracks().forEach(track => track.stop());
+			} catch(e) {
+				console.error(e);
+			}
+		}
+	};
+
+	const takePicture = (videoSelector, canvasSelector, dotNetHelper) => {
+		const videoElement = document.getElementById(videoSelector);
+		const canvasElement = document.getElementById(canvasSelector);
+
+		const context = canvasElement.getContext('2d');
+		context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+
+		const dataUrl = canvasElement.toDataURL('image/jpeg');
+		dotNetHelper.invokeMethodAsync("ProcessImage", dataUrl);
+	};
+
+	return {
+		startCamera,
+		stopCamera,
+		takePicture
+	};
 })();
 
 window.printer = window.printer || printer;
-window.screeInfo = window.screeInfo || screenInfo;
+window.camera = window.camera || camera;

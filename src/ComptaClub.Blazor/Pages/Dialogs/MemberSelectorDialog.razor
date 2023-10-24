@@ -4,7 +4,7 @@
                 AllowColumnResize="true"
                 Data="@memberList"
                 LoadData="LoadDatas"
-                TItem="ViewModels.Member"
+                TItem="ViewModels.MemberRow"
                 ColumnWidth="100px"
                 GridLines="DataGridGridLines.Both"
                 FilterMode="FilterMode.Simple"
@@ -12,11 +12,11 @@
                 @bind-Value="@selectedMembers"
                 Style="height:400px;">
     <Columns>
-        <RadzenDataGridColumn TItem="ViewModels.Member" Property="RowIndex" Title="#" Width="30px" Filterable="false" SortOrder="SortOrder.Ascending" >
+        <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="RowIndex" Title="#" Width="30px" Filterable="false" SortOrder="SortOrder.Ascending" >
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Member" Property="Name" Title="Nom" Width="120px" Filterable="true" >
+        <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Name" Title="Nom" Width="120px" Filterable="true" >
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Member" Property="Email" Title="Email" Width="100px" Filterable="false">
+        <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Email" Title="Email" Width="100px" Filterable="false">
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>

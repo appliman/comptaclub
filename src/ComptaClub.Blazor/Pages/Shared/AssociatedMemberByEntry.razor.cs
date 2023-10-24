@@ -56,10 +56,17 @@ public partial class AssociatedMemberByEntry
                 continue;
             }
             var member = memberPage.List.SingleOrDefault(i => i.Id == item.MemberId);
+            if (member is null)
+            {
+                continue;
+            }
             var association = new AssociatedMemberToEntryRow
             {
                 Amount = item.Amount,
-                Member = Mapper.Map<Member>(member)
+                Member = new MemberRow
+                {
+                    Entity = member
+                }
             };
             list.Add(association);
             total = total + association.Amount;
@@ -99,7 +106,7 @@ public partial class AssociatedMemberByEntry
                 CloseDialogOnEsc = true,
             });
 
-        var member = result as Member;
+        var member = result as MemberRow;
         if (member != null)
         {
             var entry = await Mediator.Send(new Requests.Entries.GetEntryByFilterRequest(f => f.GetById(EntryId!.Value)));

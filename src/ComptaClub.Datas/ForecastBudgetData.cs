@@ -1,6 +1,6 @@
 ﻿namespace ComptaClub.Datas;
 
 [Table("ForecastBudgets")]
-public class ForecastBudget
+public class ForecastBudgetData
 {
 }

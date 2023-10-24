@@ -48,7 +48,7 @@ else if (panel == "upload")
 				Description du fichier
 			</div>
 			<div class="col-md-9">
-				<InputText @bind-Value="@document.Description" MaxLength="100" class="form-control w-100" />
+				<InputText @bind-Value="@document!.Description" MaxLength="100" class="form-control w-100" />
 				<ValidationMessage For="() => document.Description" />
 			</div>
 		</div>
