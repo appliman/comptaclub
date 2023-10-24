@@ -16,10 +16,10 @@ public partial class MemberSelectorDialog
 	[Inject]
 	AutoMapper.IMapper Mapper { get; set; } = default!;
 
-	List<ViewModels.Member>? memberList;
-	RadzenDataGrid<ViewModels.Member>? grid = new();
+	List<ViewModels.MemberRow>? memberList;
+	RadzenDataGrid<ViewModels.MemberRow>? grid = new();
 	MemberListFilter filter = new();
-	IList<ViewModels.Member>? selectedMembers;
+	IList<ViewModels.MemberRow>? selectedMembers;
 
 	async Task LoadDatas(LoadDataArgs args)
 	{
@@ -28,7 +28,7 @@ public partial class MemberSelectorDialog
 		int rowIndex = 1;
 		foreach (var data in page.List.OrderBy(i => i.Name))
 		{
-			var item = Mapper.Map<ViewModels.Member>(data);
+			var item = Mapper.Map<ViewModels.MemberRow>(data);
 			item.RowIndex = rowIndex++;
 			memberList.Add(item);
 		}

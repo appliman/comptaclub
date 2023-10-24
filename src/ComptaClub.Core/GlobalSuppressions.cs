@@ -6,3 +6,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Style", "IDE0017:Simplify object initialization")]
+[assembly: SuppressMessage("Minor Code Smell", "S2094:Classes should not be empty")]

@@ -12,9 +12,6 @@ public class Profile : AutoMapper.Profile
         CreateMap<Datas.AccountData, ViewModels.Account>()
             .ReverseMap();
 
-        CreateMap<Datas.BankData, ViewModels.Bank>()
-            .ReverseMap();
-
         CreateMap<Datas.ExerciceData, ViewModels.Exercice>()
             .ForMember(d => d.StartDate, opt => opt.MapFrom(s => s.StartDate.FromDayId()))
             .ForMember(d => d.EndDate, opt => opt.MapFrom(s => s.EndDate.FromDayId()))
@@ -30,13 +27,7 @@ public class Profile : AutoMapper.Profile
 
         CreateMap<CreateExerciceRequest, ViewModels.Exercice>();
 
-        CreateMap<Datas.MemberData, ViewModels.Member>()
-            .ForMember(d => d.CreationDate, opt => opt.MapFrom(s => s.CreationDate.FromDayId()));
-
-        CreateMap<ViewModels.Member, Datas.MemberData>()
-            .ForMember(d => d.CreationDate, opt => opt.MapFrom(s => s.CreationDate.ToDayId()));
-
-		CreateMap<Datas.UserData, ViewModels.User>()
+        CreateMap<Datas.UserData, ViewModels.User>()
         	.ForMember(d => d.CreationDate, opt => opt.MapFrom(s => s.CreationDate.FromDayId()));
 
 		CreateMap<ViewModels.User, Datas.UserData>()

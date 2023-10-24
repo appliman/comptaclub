@@ -91,3 +91,8 @@ a, .btn-link {
     color: lightgray;
     font-weight: normal;
 }
+
+::placeholder {
+    color: lightgrey;
+    font-size: 0.7em;
+}

@@ -42,9 +42,11 @@
     <None Remove="Scripts\ComptaClub\0033-AlterTable-DocumentByEntity.sql" />
     <None Remove="Scripts\ComptaClub\0034-AlterTable-DocumentByEntity.sql" />
     <None Remove="Scripts\ComptaClub\0035-AlterTable-DocumentByEntity.sql" />
+    <None Remove="Scripts\ComptaClub\0036-CreateTable-Clubs.sql" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\ComptaClub\0036-CreateTable-Clubs.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0003-CreateTable-Documents - Copy.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0031-AlterTable-Entries.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0035-AlterTable-DocumentByEntity.sql" />

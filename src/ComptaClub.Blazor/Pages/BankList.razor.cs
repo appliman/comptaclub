@@ -22,13 +22,13 @@ public partial class BankList : ComponentBase
     NavigationManager NavigationManager { get; set; } = default!;
 
 
-    IEnumerable<ViewModels.Bank> bankList = new List<ViewModels.Bank>();
-    RadzenDataGrid<ViewModels.Bank>? grid;
-    ViewModels.Bank? bankToUpdate;
-    ViewModels.Bank? bankToInsert;
+    IEnumerable<ViewModels.BankRow>? bankList = null;
+    RadzenDataGrid<ViewModels.BankRow> grid = default!;
+    ViewModels.BankRow? bankToUpdate;
+    ViewModels.BankRow? bankToInsert;
     List<Results.BrokenRule> brokenRules = new();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
 		MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarButton
 		{
@@ -37,68 +37,69 @@ public partial class BankList : ComponentBase
 			Text = "Ajouter une banque",
 			Disabled = (bankToUpdate != null || bankToInsert != null)
 		}).Display();
-
-		await LoadDatas();
     }
 
     async Task LoadDatas()
     {
         var datas = await Mediator.Send(new Requests.Banks.GetAllBanksRequest());
-        var result = Mapper.Map<List<ViewModels.Bank>>(datas);
-        bankList = result;
+        int rowIndex = 1;
+        var rowList = new List<ViewModels.BankRow>();   
+        foreach (var item in datas)
+        {
+            rowList.Add(new ViewModels.BankRow
+            {
+                Entity = item,
+                RowIndex = rowIndex++
+            });
+        }
+        bankList = rowList;
     }
 
     async Task InsertRow()
     {
         var data = await Mediator.Send(new Requests.Banks.CreateBankRequest());
-        bankToInsert = Mapper.Map<ViewModels.Bank>(data);
-        await grid!.InsertRow(bankToInsert);
-    }
-
-    void EditRow(ViewModels.Bank bank)
-    {
-        NavigationManager.NavigateTo($"/banque/edition/{bank.Id}");
-    }
-
-    async Task SaveRow(ViewModels.Bank bank)
-    {
-        if (bank == bankToInsert)
+        bankToInsert = new ViewModels.BankRow
         {
-            bankToInsert = null;
-        }
+            Entity = data,
+            RowIndex = bankList!.Count() + 1
+        };
+        await grid.InsertRow(bankToInsert);
+    }
 
+    void EditRow(ViewModels.BankRow bank)
+    {
+        bankToUpdate = bank;
+        grid.EditRow(bank);
+    }
+
+    async Task SaveRow(ViewModels.BankRow bank)
+    {
+        bankToInsert = null;
         bankToUpdate = null;
 
-        var data = Mapper!.Map<Datas.BankData>(bank);
-        var saveResult = await Mediator.Send(new Requests.SaveEntityRequest<Datas.BankData>(data));
+        var saveResult = await Mediator.Send(new Requests.SaveEntityRequest<Datas.BankData>(bank.Entity));
         if (saveResult.HasError)
         {
             brokenRules = saveResult.ErrorBrokenRuleList;
             return;
         }
 
-        await grid!.UpdateRow(bank);
+        await grid.UpdateRow(bank);
     }
 
-    void CancelEdit(ViewModels.Bank bank)
+    void CancelEdit(ViewModels.BankRow bank)
     {
-        if (bank == bankToInsert)
-        {
-            bankToInsert = null;
-        }
-
-        bankToUpdate = null;
-
+		bankToInsert = null;
+		bankToUpdate = null;
         grid!.CancelEditRow(bank);
     }
 
-
-    Task DeleteRow(ViewModels.Bank bank)
+    Task DeleteRow(ViewModels.BankRow bank)
     {
         return Task.CompletedTask;
     }
 
-    async Task ChangeActiveBank(ChangeEventArgs args, ViewModels.Bank bank)
+    async Task ChangeActiveBank(ChangeEventArgs args, ViewModels.BankRow bank)
     {
         var changeResult = await Mediator.Send(new Requests.Banks.ChangeActiveBankRequest($"{args.Value}" == "on", bank.Id));
         if (changeResult.HasError)

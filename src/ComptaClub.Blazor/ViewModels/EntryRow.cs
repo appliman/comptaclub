@@ -16,5 +16,5 @@ public class EntryRow : IMetaEntity
 	public bool IsSelected { get; set; } = false;
 	public MetaEntity MetaEntity => MetaEntity.Entry;
 	public int RowIndex { get; set; }
-    public List<Member> AssociatedMemberList { get; set; } = new();
+    public List<MemberRow> AssociatedMemberList { get; set; } = new();
 }
