@@ -205,4 +205,15 @@ public partial class EntryList : ComponentBase
 		await grid!.Reload();
 	}
 
+	long? GetProfit()
+	{
+		if (entryList is null)
+		{
+			return 0;
+		}
+		var debit = entryList!.Where(i => i.Entity.AccountDirection == Enums.AccountDirection.Debit).Sum(i => i.Entity.Amount);
+		var credit = entryList!.Where(i => i.Entity.AccountDirection == Enums.AccountDirection.Credit).Sum(i => i.Entity.Amount);
+
+        return credit - debit;
+	}
 }

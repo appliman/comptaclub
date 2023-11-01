@@ -14,9 +14,9 @@
     <Columns>
         <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="RowIndex" Title="#" Width="30px" Filterable="false" SortOrder="SortOrder.Ascending" >
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Name" Title="Nom" Width="120px" Filterable="true" >
+        <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Name" Title="Nom" Width="120px" Filterable="true" >
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Email" Title="Email" Width="100px" Filterable="false">
+        <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Email" Title="Email" Width="100px" Filterable="false">
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
@@ -26,7 +26,7 @@
         <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="cancel" Text="Annuler" Click="@((args) => DialogService.Close())" />
     </div>
     <div class="col-auto">
-        <RadzenButton ButtonType="ButtonType.Submit" Icon="person_add" Text="Associer" Click="@Select" />
+        <RadzenButton ButtonType="ButtonType.Submit" Icon="person_add" Text="Associer" Click="@Select" Disabled="@(selectedMembers?.Count != 1)" />
     </div>
 </div>
 

@@ -16,7 +16,7 @@
     <Columns>
         <RadzenDataGridColumn TItem="ViewModels.EntryRow" Property="RowIndex" Title="#" Width="40px" Filterable="false" FormatString="" Frozen="true" SortOrder="SortOrder.Ascending">
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Context="entry" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="80px">
+        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Context="entry" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="90px" Frozen="true">
             <Template Context="entry">
                 <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(entry))" @onclick:stopPropagation="true" title="Supprimer cette ecriture">
                 </RadzenButton>
@@ -70,6 +70,9 @@
             <Template Context="entry">
                 <EnumLabel Value="@entry.Entity.PaymentType"/>
             </Template>
+            <FooterTemplate>
+                <PriceLabel Prefix="R.Net : " Value="GetProfit()" Color="blue" />
+            </FooterTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.EntryRow" Title="Débit" Filterable="true">
             <FilterTemplate>
