@@ -181,5 +181,20 @@ public static class ModelExtensions
 		return result;
 	}
 
+    public static List<Guid> GetIdListWithAllChildren(this Datas.AccountData account)
+    {
+        var result = new List<Guid>();
+
+        result.Add(account.Id);
+
+        foreach (var item in account.Children)
+        {
+            result.AddRange(item.GetIdListWithAllChildren());
+        }
+
+        return result;
+    }
+
+
 
 }

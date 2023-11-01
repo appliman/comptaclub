@@ -18,7 +18,6 @@ namespace ComptaClub.Blazor.Pages.Shared
 
         bool sidebarExpanded = false;
         bool loaderVisible = false;
-        RadzenBody? body;
         Toolbar toolbar = default!;
         ViewModels.User? user = new();
         string version = $"{typeof(Program).Assembly.GetName()?.Version}";

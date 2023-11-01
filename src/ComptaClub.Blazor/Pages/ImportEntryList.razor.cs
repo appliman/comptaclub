@@ -26,39 +26,31 @@ public partial class ImportEntryList : ComponentBase
     [Inject]
     NotificationService NotificationService { get; set; } = default!;
 
-    IEnumerable<ViewModels.EntryRow> entryList = new List<ViewModels.EntryRow>();
-    RadzenDataGrid<ViewModels.EntryRow>? grid = default!;
-    List<Datas.AccountData> accountList = new();
-    List<ViewModels.Account>? creditAccountOptionList;
-    List<ViewModels.Account>? debitAccountOptionList;
+    IEnumerable<ViewModels.EntryRow>? entryList;
+    RadzenDataGrid<ViewModels.EntryRow> grid = default!;
 
     protected override async Task OnInitializedAsync()
     {
-        accountList = await Mediator.Send(new Requests.Accounts.GetPlanRequest());
-        accountList = accountList.GetLeafList().ToList();
-        accountList.Insert(0,new Datas.AccountData()
-        {
-            Id = ComptaClubSettings.ImportAccount,
-            Code = "Import",
-            Label = "Import",
-            Direction = Enums.AccountDirection.Import
-        });
+        await Task.Yield();
+        entryList = new List<EntryRow>();
     }
 
     async Task LoadFile(InputFileChangeEventArgs args)
     {
-        var ms = new MemoryStream();
+        using var ms = new MemoryStream();
         await args.File.OpenReadStream().CopyToAsync(ms);
         var dataList = await Mediator.Send(new Requests.Entries.ImportEntryListFromStreamRequest(ms));
         int rowIndex = 1;
-        foreach (var item in entryList)
+        var list = new List<EntryRow>();
+        foreach (var item in dataList)
         {
-            ((List<EntryRow>)entryList).Add(new EntryRow
+            list.Add(new EntryRow
             {
-                Entity = item.Entity,
-				RowIndex = rowIndex
+                Entity = item,
+				RowIndex = rowIndex++
             });
         }
+        entryList = list;
     }
 
     async Task SaveRow(ViewModels.EntryRow entry)
@@ -71,36 +63,11 @@ public partial class ImportEntryList : ComponentBase
             NotificationService.NotifyError(saveResult);
             return;
         }
+        (entryList as List<EntryRow>)!.Remove(entry);
+        await grid.Reload();
         NotificationService.Notify(NotificationSeverity.Success, "Sauvegarde", "Cette écriture est bien importée");
+        StateHasChanged();
     }
 
-    void LoadDebitAccountList(LoadDataArgs args)
-    {
-        debitAccountOptionList = Mapper.Map<List<ViewModels.Account>>(accountList.Where(i => i.Direction == Enums.AccountDirection.Debit
-                            || i.Direction == Enums.AccountDirection.Import)
-                            .ToList());
 
-        if (!string.IsNullOrWhiteSpace(args.Filter))
-        {
-            debitAccountOptionList = (from account in debitAccountOptionList
-                                      where account.CodeAndLabel.IndexOf(args.Filter, StringComparison.InvariantCultureIgnoreCase) != -1
-                                       select account).ToList();
-        }
-        InvokeAsync(StateHasChanged);
-    }
-
-    void LoadCreditAccountList(LoadDataArgs args)
-    {
-        creditAccountOptionList = Mapper.Map<List<ViewModels.Account>>(accountList.Where(i => i.Direction == Enums.AccountDirection.Credit
-                                    || i.Direction == Enums.AccountDirection.Import)
-                                    .ToList());
-
-        if (!string.IsNullOrWhiteSpace(args.Filter))
-        {
-            creditAccountOptionList = (from account in creditAccountOptionList
-                                       where account.CodeAndLabel.IndexOf(args.Filter, StringComparison.InvariantCultureIgnoreCase) != -1
-                                      select account).ToList();
-        }
-        InvokeAsync(StateHasChanged);
-    }
 }

@@ -4,7 +4,8 @@
 	Text="@ToolbarItem.Text" 
 	Click="OnClick" 
 	Icon="@ToolbarItem.IconName" 
-	Disabled="@(ToolbarItem.Disabled || ToolbarItem.IsDisable())" 
+	Disabled="@(ToolbarItem.Disabled || ToolbarItem.IsDisable())"
+    ButtonStyle="ButtonStyle.Success"
 	class="btn btn-primary m-1"
 	title="@ToolbarItem.Title"/>
 }

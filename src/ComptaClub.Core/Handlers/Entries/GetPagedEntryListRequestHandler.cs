@@ -1,17 +1,22 @@
 ﻿using ComptaClub.Requests;
+using ComptaClub.Requests.Accounts;
 
 using DocumentFormat.OpenXml.Wordprocessing;
 
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ComptaClub.Handlers.Entries;
 
 internal class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandlerBase<EntryListFilter, EntryData>
 {
-    public GetPagedEntryListRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+    private readonly IMediator _mediator;
+
+    public GetPagedEntryListRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+        IMediator mediator)
         : base(dbContextFactory)
     {
-
+        _mediator = mediator;
     }
 
     public override async Task<PagedList<IEnumerable<EntryData>>> Handle(GetPagedEntityListRequest<EntryListFilter, EntryData> request, CancellationToken cancellationToken)
@@ -28,7 +33,21 @@ internal class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandle
         if (filter.AccountIdList != null
             && filter.AccountIdList.Any())
         {
-            query = query.Where(i => filter.AccountIdList.Contains(i.AccountId));
+            if (!filter.UseDeepAccount)
+            {
+                query = query.Where(i => filter.AccountIdList.Contains(i.AccountId));
+            }
+            else if (filter.AccountIdList.Count == 1
+                   && filter.UseDeepAccount)
+            {
+                var plan = await _mediator.Send(new GetPlanRequest());
+                var account = plan.DeepFind(filter.AccountIdList[0]);
+                if (account is not null)
+                {
+                    var idList = account.GetIdListWithAllChildren();
+                    query = query.Where(i => idList.Contains(i.AccountId));
+                }
+            }
         }
 
         if (!string.IsNullOrWhiteSpace(filter.Search))

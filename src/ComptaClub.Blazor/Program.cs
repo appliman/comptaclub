@@ -91,7 +91,7 @@ if (!System.IO.Directory.Exists(outputEmails))
     System.IO.Directory.CreateDirectory(outputEmails);
 }
 
-var fluentEmail = builder.Services.AddFluentEmail("test@email.com")
+var fluentEmail = builder.Services.AddFluentEmail(globalSettings.AdminUserEmail)
     .AddRazorRenderer(emailTemplatesFolder);
 
 if (globalSettings.SmtpProviderName == "local")
@@ -132,14 +132,19 @@ builder.AddLogRWebMonitor(config =>
     config.HostName = "ComptaClub"; 
 });
 
+/* ----------------------------------------------------------------------- */
+
 var app = builder.Build();
 
 app.UseLogRWebMonitor();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
+}
+else
+{
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseRequestLocalization("fr-FR");
