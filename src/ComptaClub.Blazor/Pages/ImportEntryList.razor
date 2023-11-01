@@ -4,20 +4,33 @@
 
 <InputFile OnChange="LoadFile" />
 
-<RadzenDataGrid @ref="grid" 
+<RadzenDataGrid @ref="grid"
     AllowFiltering="true" 
     AllowSorting="true" 
     AllowColumnResize="true"
     Data="@entryList" 
     TItem="ViewModels.EntryRow"
-    ColumnWidth="100px" 
     GridLines="DataGridGridLines.Both">
     <Columns>
         <RadzenDataGridColumn TItem="ViewModels.EntryRow" Property="RowIndex" Title="#" Width="50px" Filterable="false" FormatString="" Frozen="true">
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Property="CreationDate" Title="Date" Width="100px" Filterable="false" FormatString="{0:dd/MM/yy}" Frozen="true">
+        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Context="entry" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="70px">
+            <Template Context="entry">
+                <RadzenButton Icon="save" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => SaveRow(entry))" @onclick:stopPropagation="true" title="Editer cette ecriture">
+                </RadzenButton>
+            </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Property="PartNumber" Title="N°" Width="300px" Filterable="false" Frozen="true">
+        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Property="CreationDate" Title="Date" Width="150px" Filterable="false" Frozen="false">
+            <Template Context="data">
+                <DateIdLabel Value="data.Entity.CreationDate"/>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Title="Compte" Filterable="false" Width="300px">
+            <Template Context="entry">
+                <AccountLinkSelector @bind-AccountId="entry.Entity.AccountId" AccountDirection="entry.Entity.AccountDirection" />
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Property="PartNumber" Title="N°" Filterable="false" Frozen="false">
             <Template Context="data">
                 <div class="w-100">
                     @data.Entity.PartNumber<br />
@@ -25,19 +38,7 @@
                 </div>
             </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Title="Compte" Filterable="false" Width="300px">
-            <Template Context="entry">
-                @if (entry.Entity.AccountDirection == Enums.AccountDirection.Debit)
-                {
-                    <RadzenDropDown @bind-Value="entry.Entity.AccountId" LoadData="LoadDebitAccountList" Data="@debitAccountOptionList" TextProperty="CodeAndLabel" ValueProperty="Id" AllowFiltering="true" />
-                }
-                else if (entry.Entity.AccountDirection == Enums.AccountDirection.Credit)
-                {
-                    <RadzenDropDown @bind-Value="entry.Entity.AccountId" LoadData="LoadCreditAccountList" Data="@creditAccountOptionList" TextProperty="CodeAndLabel" ValueProperty="Id" AllowFiltering="true" />
-                }
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Title="Débit" Filterable="false">
+        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Title="Débit" Width="120px" Filterable="false">
             <Template Context="entry">
                 @if (entry.Entity.AccountDirection == Enums.AccountDirection.Debit)
                 {
@@ -45,7 +46,7 @@
                 }
             </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Title="Crédit" Filterable="false">
+        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Title="Crédit" Width="120px" Filterable="false">
             <Template Context="entry">
                 @if (entry.Entity.AccountDirection == Enums.AccountDirection.Credit)
                 {
@@ -53,12 +54,5 @@
                 }
             </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Context="entry" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="80px">
-            <Template Context="entry">
-                <RadzenButton Icon="save" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => SaveRow(entry))" @onclick:stopPropagation="true" title="Editer cette ecriture">
-                </RadzenButton>
-            </Template>
-        </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
-
