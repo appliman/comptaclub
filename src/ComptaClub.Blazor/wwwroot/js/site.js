@@ -40,6 +40,10 @@ const camera = (() => {
 			audio: false
 		};
 		const stream = await navigator.mediaDevices.getUserMedia(constraints);
+		if (!stream) {
+			console.error("getUserMedia returned null");
+			return;
+		}
 
 		const videoElement = document.getElementById(videoSelector);
 		videoElement.srcObject = stream;
