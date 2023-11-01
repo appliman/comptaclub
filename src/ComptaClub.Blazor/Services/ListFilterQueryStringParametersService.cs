@@ -44,7 +44,7 @@ public class ListFilterQueryStringParametersService
                 navigateToUri = $"{uri.Scheme}://{uri.Host}{newTargetPath}";
             }
         }
-        navigateToUri = new Uri(navigateToUri).AddOrUpdateQueryParam($"filter", $"{guid}");
+        navigateToUri = new Uri(navigateToUri).AddOrUpdateQueryParam("filter", $"{guid}");
 
         if (!navigateToUri.Equals(currentUri, StringComparison.InvariantCultureIgnoreCase))
         {
@@ -61,7 +61,7 @@ public class ListFilterQueryStringParametersService
     {
         var query = new Uri(_navigationManager.Uri).Query;
 
-        if (QueryHelpers.ParseQuery(query).TryGetValue($"Filters", out var filterId) &&
+        if (QueryHelpers.ParseQuery(query).TryGetValue("filter", out var filterId) &&
             _cacheService.TryGetValue($"AdminListFilterInfo_{filterId}", out FilterInfo? filter))
         {
             return filter;

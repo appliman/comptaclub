@@ -10,6 +10,13 @@ public partial class PriceLabel
 
     [Parameter]
     public bool DisplayIf { get; set; } = true;
+
+    [Parameter]
+    public string? Prefix { get; set; }
+
+    [Parameter]
+    public string? Suffix { get; set; }
+
     [Parameter]
     public string Color { get; set; } = "default";
     MarkupString PriceValue

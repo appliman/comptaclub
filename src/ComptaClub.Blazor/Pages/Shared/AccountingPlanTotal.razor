@@ -1,4 +1,6 @@
-﻿<table class="table table-bordered table-hover">
+﻿@using ComptaClub.Blazor.Services;
+@using ComptaClub.Models;
+<table class="table table-bordered table-hover">
     <thead>
         <tr>
             <th colspan="3" class="text-center">@Title</th>
@@ -8,7 +10,7 @@
     <tbody>
         @foreach (var account in Plan.Where(i => i.Direction == Direction))
         {
-            <tr>
+            <tr @onclick="@(() => DisplayEntries(account.Id))">
                 <td colspan="3"><b>@account.Code</b> @account.Label</td>
                 <td>
                     <PriceLabel Value="@account.DeepTotal" />
@@ -16,7 +18,7 @@
             </tr>
             @foreach (var subAccount in account.Children)
             {
-                <tr>
+                <tr @onclick="@(() => DisplayEntries(subAccount.Id))">
                     <td class="cell-indent"></td>
                     <td colspan="2"><b>@subAccount.Code</b> @subAccount.Label</td>
                     <td>
@@ -25,7 +27,7 @@
                 </tr>
                 @foreach (var subsubAccount in subAccount.Children)
                 {
-                    <tr>
+                    <tr @onclick="@(() => DisplayEntries(subsubAccount.Id))">
                         <td class="cell-indent"></td>
                         <td class="cell-indent"></td>
                         <td><b>@subsubAccount.Code</b> @subsubAccount.Label</td>
@@ -39,13 +41,4 @@
     </tbody>
 </table>
 
-@code {
-    [Parameter]
-    public IEnumerable<ViewModels.Account> Plan { get; set; } = new List<ViewModels.Account>();
 
-    [Parameter]
-    public Enums.AccountDirection Direction { get; set; } = Enums.AccountDirection.Credit;
-
-    [Parameter]
-    public string Title { get; set; } = null!;
-}

@@ -29,7 +29,7 @@ public partial class AddDocumentDialog
 	DialogService DialogService { get; set; } = default!;
 
 	[Inject]
-	IJSRuntime JSRuntime { get; set; }
+	IJSRuntime JSRuntime { get; set; } = default!;
 
 
 	[Parameter]

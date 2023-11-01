@@ -15,7 +15,7 @@
     <Columns>
         <RadzenDataGridColumn TItem="ViewModels.IncomeStatement" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="80px">
             <Template Context="incomeStatement">
-                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(incomeStatement))" @onclick:stopPropagation="true" title="Supprimer cet compte de résultat">
+                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(incomeStatement))" @onclick:stopPropagation="true" title="Supprimer ce compte de résultat">
                 </RadzenButton>
             </Template>
         </RadzenDataGridColumn>
