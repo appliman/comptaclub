@@ -48,7 +48,7 @@ public class CreateForecastBudgetTests
         incomeStatementResult.Should().NotBeNull();
 
         var incomeStatement = await mediator.GetIncomeStatementDataById(incomeStatementResult.Id);
-        var incomeStatementCreditTotal = incomeStatement.CreditTotal;
+        var incomeStatementCreditTotal = incomeStatement!.CreditTotal;
         var incomeStatementDebitTotal = incomeStatement.DebitTotal;
 
 
@@ -60,14 +60,16 @@ public class CreateForecastBudgetTests
         var forecastBudget = await mediator.GetForecastBudgetById(saveForecastBudgetResult.Id);
         forecastBudget.Should().NotBeNull();
 
-        var forecastBudgetItems = await mediator.GetForecastBudgetItemList(saveForecastBudgetResult.Id);
-        forecastBudgetItems.Should().NotBeNull();
+		forecastBudget!.ItemList = await mediator.GetForecastBudgetItemList(saveForecastBudgetResult.Id);
 
-        var name = forecastBudget.Name = TestHelper.GetRandomName();
+		var firstItem = forecastBudget!.ItemList[0];
+		firstItem.Amount = 100;
+
+		var name = forecastBudget!.Name = TestHelper.GetRandomName();
         var description = forecastBudget.Description = TestHelper.GetRandomName();
 
-        var firstItem = forecastBudgetItems[0];
-        firstItem.Amount = 100;
+        forecastBudget.ItemList.Levelize();
+        forecastBudget.ItemList.Hierarchize();
 
         var saveResult = await mediator.Send(new SaveForecastBudgetRequest(forecastBudget));
         saveResult.Should().NotBeNull();
@@ -79,10 +81,9 @@ public class CreateForecastBudgetTests
         forecastBudget.IncomeStatementCreditTotal.Should().Be(incomeStatementCreditTotal);
         forecastBudget.IncomeStatementDebitTotal.Should().Be(incomeStatementDebitTotal);
 
-		forecastBudgetItems = await mediator.GetForecastBudgetItemList(saveForecastBudgetResult.Id);
-        forecastBudgetItems.Should().NotBeNull();
+		forecastBudget.ItemList = await mediator.GetForecastBudgetItemList(saveForecastBudgetResult.Id);
 
-		firstItem = forecastBudgetItems[0];
+		firstItem = forecastBudget.ItemList[0];
 		firstItem.Amount.Should().Be(100);
 
 		var deleteResult = await mediator.Send(new DeleteForecastBudgetRequest(saveForecastBudgetResult.Id));
@@ -91,8 +92,7 @@ public class CreateForecastBudgetTests
         forecastBudget = await mediator.GetForecastBudgetById(saveForecastBudgetResult.Id);
         forecastBudget.Should().BeNull();
 
-        forecastBudgetItems = await mediator.GetForecastBudgetItemList(saveForecastBudgetResult.Id);
-        forecastBudgetItems.Count().Should().Be(0);
-
+        var forecastBudgetItems = await mediator.GetForecastBudgetItemList(saveForecastBudgetResult.Id);
+        forecastBudgetItems.Count.Should().Be(0);
     }
 }
