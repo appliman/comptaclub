@@ -19,20 +19,7 @@ internal class GetPlanRequestHandler : IRequestHandler<GetPlanRequest, List<Acco
     }
     public async Task<List<AccountData>> Handle(GetPlanRequest request, CancellationToken cancellationToken)
     {
-        var requestFilter = new GetPagedEntityListRequest<AccountListFilter, AccountData>(f =>
-        {
-            f.PageSize = int.MaxValue;
-        });
-
-        var page = await _mediator.Send(requestFilter, cancellationToken);
-
-        var list = new List<AccountData>();
-        foreach (var data in page.List)
-        {
-            data.Level = data.ParentAccountId == null ? 0 : -1;
-            list.Add(data);
-        }
-
+        var list = (await _mediator.GetAllAccounts()).ToList();
         list.Levelize();
         list.Hierarchize();
 

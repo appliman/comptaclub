@@ -3,7 +3,6 @@
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace ComptaClub.Blazor.Controllers;
 
