@@ -1,12 +1,9 @@
-using ComptaClub.Datas;
 using ComptaClub.Extensions;
 using ComptaClub.Requests;
+using ComptaClub.Requests.Accounts;
 
 using FluentAssertions;
 
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ComptaClub.Tests.Cruds;

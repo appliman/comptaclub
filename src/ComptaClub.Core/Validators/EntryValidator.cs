@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using ComptaClub.Configuration;
-using ComptaClub.Requests;
-
-using FluentValidation;
+﻿using ComptaClub.Configuration;
+using ComptaClub.Requests.Accounts;
 
 namespace ComptaClub.Validators;
 

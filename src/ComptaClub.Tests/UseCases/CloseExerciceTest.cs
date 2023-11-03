@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 
 using ComptaClub.Extensions;
+using ComptaClub.Requests.Accounts;
 
 using Microsoft.Extensions.DependencyInjection;
 

@@ -1,14 +1,24 @@
 ﻿@if (!string.IsNullOrWhiteSpace(Label))
 {
-	<div class="mb-3">
+	<div class="mb-3 @otherClass" @attributes="CatpuredAttributes">
 		<label for="Name" class="form-label">@Label</label>
-		<div class="input-group w-50">
+		<div class="input-group">
 			<span class="input-group-text"><span class="material-icons">€</span></span>
-			<input type="text" step="0" class="form-control" value="@innerValue" @onchange="InnerValueChanged" placeholder="@PlaceHoder" required="@(Required ? "required" : null)" />
+			<input type="text" 
+				step="0" 
+				class="form-control text-end" 
+				value="@innerValue" 
+				@onchange="InnerValueChanged"
+				@onblur="BlurHandler"
+				placeholder="@PlaceHoder" 
+				required="@(Required ? "required" : null)" />
 		</div>
-		<small>
-			<ValidationMessage class="invalid-feedback" For="() => Value" />
-		</small>
+		@if (WithValidation)
+		{
+			<small>
+				<ValidationMessage class="invalid-feedback" For="() => Value" />
+			</small>
+		}
 		@ChildContent
 	</div>
 }
@@ -16,11 +26,23 @@ else
 {
 	<div class="input-group">
 		<span class="input-group-text"><span class="material-icons">€</span></span>
-		<input type="text" step="0" class="form-control w-25" value="@innerValue" @onchange="InnerValueChanged" placeholder="@PlaceHoder" required="@(Required ? "required" : null)" />
+		<input type="text" 
+			step="0" 
+			class="form-control text-end @otherClass" 
+			@attributes="CatpuredAttributes" 
+			value="@innerValue" 
+			@onchange="InnerValueChanged"
+			@onblur="BlurHandler"
+			placeholder="@PlaceHoder" 
+			required="@(Required ? "required" : null)" />
 	</div>
-	<small>
-		<ValidationMessage class="invalid-feedback" For="() => Value" />
-	</small>
+	@if (WithValidation)
+	{
+		<small>
+			<ValidationMessage class="invalid-feedback" For="() => Value" />
+		</small>
+	}
+	@ChildContent
 }
 
 @code {
@@ -35,6 +57,9 @@ else
 	public EventCallback<long> ValueChanged { get; set; }
 
 	[Parameter]
+	public EventCallback LostFocus { get; set; }
+
+	[Parameter]
 	public System.Linq.Expressions.Expression<Func<long>>? ValueExpression { get; set; }
 
 	[Parameter]
@@ -46,8 +71,15 @@ else
 	[Parameter]
 	public RenderFragment? ChildContent { get; set; }
 
+	[Parameter]
+	public bool WithValidation { get; set; } = true;
+
+	[Parameter(CaptureUnmatchedValues = true)]
+	public Dictionary<string, object> CatpuredAttributes { get; set; } = new();
+
 	System.Globalization.CultureInfo ci = default!;
 	string innerValue = null!;
+	string? otherClass = null;
 
 	protected override void OnInitialized()
 	{
@@ -55,7 +87,8 @@ else
 		ci.NumberFormat.CurrencyDecimalSeparator = ".";
 		ci.NumberFormat.NumberDecimalSeparator = ".";
 
-		innerValue = $"{Value / 1000000m}".Replace(",", ".");
+		innerValue = $"{Value / 1000000m:F2}".Replace(",", ".");
+		otherClass = $"{CatpuredAttributes.GetValueOrDefault("class")}";
 	}
 
 	void InnerValueChanged(ChangeEventArgs args)
@@ -75,6 +108,14 @@ else
 			{
 				ValueChanged.InvokeAsync(Value);
 			}
+		}
+	}
+
+	void BlurHandler(FocusEventArgs args)
+	{
+		if (LostFocus.HasDelegate)
+		{
+			LostFocus.InvokeAsync();
 		}
 	}
 

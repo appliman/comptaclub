@@ -6,3 +6,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Style", "IDE1006:Naming Styles")]
+[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]

@@ -3,6 +3,7 @@
 [Table("IncomeStatements")]
 public class IncomeStatementData : IPrimaryKey
 {
+    [Key]
     public Guid Id { get; set; }
     public Guid ExerciceId { get; set; }
     public int CreationDate { get; set; }

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using ComptaClub.Extensions;
+﻿using ComptaClub.Extensions;
 using ComptaClub.Requests;
+using ComptaClub.Requests.Accounts;
 
 using FluentAssertions;
 
