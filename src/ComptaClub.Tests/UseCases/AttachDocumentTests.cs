@@ -1,5 +1,6 @@
 ﻿using ComptaClub.Models;
 using ComptaClub.Requests;
+using ComptaClub.Requests.Accounts;
 
 using FluentAssertions;
 

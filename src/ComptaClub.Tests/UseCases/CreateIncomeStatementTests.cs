@@ -1,12 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-using ComptaClub.Extensions;
+﻿using ComptaClub.Datas;
+using ComptaClub.Requests;
+using ComptaClub.Requests.IncomeStatements;
+using ComptaClub.Requests.Accounts;
 
 using FluentAssertions;
-using ComptaClub.Requests.IncomeStatements;
-using ComptaClub.Handlers.IncomeStatements;
-using ComptaClub.Requests;
-using ComptaClub.Datas;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ComptaClub.Tests.UseCases;
 
@@ -34,15 +33,15 @@ public class CreateIncomeStatementTests
 
         var licenceAccount = leafPlan.Single(i => i.Code == "756001");
 
-		var entry1 = await mediator.CreateAndSaveRandomCreditEntry(exercice, user, bank, licenceAccount.Id, DateTime.Now);
-        var entry3 = await mediator.CreateAndSaveRandomCreditEntry(exercice, user, bank, licenceAccount.Id, DateTime.Now);
+        await mediator.CreateAndSaveRandomCreditEntry(exercice, user, bank, licenceAccount.Id, DateTime.Now);
+        await mediator.CreateAndSaveRandomCreditEntry(exercice, user, bank, licenceAccount.Id, DateTime.Now);
 
-		var materialAccount = leafPlan.Single(i => i.Code == "605001");
-		var gaz = leafPlan.Single(i => i.Code == "606101");
-		var entry2 = await mediator.CreateAndSaveRandomDebitEntry(exercice, user, bank, gaz.Id, DateTime.Now);
-		var entry4 = await mediator.CreateAndSaveRandomDebitEntry(exercice, user, bank, materialAccount.Id, DateTime.Now);
+        var materialAccount = leafPlan.Single(i => i.Code == "605001");
+        var gaz = leafPlan.Single(i => i.Code == "606101");
+        await mediator.CreateAndSaveRandomDebitEntry(exercice, user, bank, gaz.Id, DateTime.Now);
+        await mediator.CreateAndSaveRandomDebitEntry(exercice, user, bank, materialAccount.Id, DateTime.Now);
 
-		var closeExerciceResult = await mediator.Send(new Requests.Exercices.CloseExerciceRequest(exercice.Id));
+        var closeExerciceResult = await mediator.Send(new Requests.Exercices.CloseExerciceRequest(exercice.Id));
         closeExerciceResult.HasError.Should().BeFalse();
 
         var incomeStatementResult = await mediator.Send(new CreateAndSaveIncomeStatementRequest(exercice.Id));
@@ -53,7 +52,7 @@ public class CreateIncomeStatementTests
 
         // Recupération du compte de résultat
         var incomeStatementList = await mediator.Send(new GetPagedEntityListRequest<IncomeStatementListFilter, IncomeStatementData>(filter));
-		incomeStatementList.Should().NotBeNull();
+        incomeStatementList.Should().NotBeNull();
 
         var incomeStatement = incomeStatementList.List.Single();
 

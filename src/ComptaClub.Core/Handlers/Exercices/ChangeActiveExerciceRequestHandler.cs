@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Azure.Storage.Blobs.Models;
-using ComptaClub.Requests.Exercices;
+﻿using ComptaClub.Requests.Exercices;
 using ComptaClub.Results;
 
 namespace ComptaClub.Handlers.Exercices;

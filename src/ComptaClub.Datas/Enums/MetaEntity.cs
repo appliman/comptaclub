@@ -13,5 +13,7 @@ public enum MetaEntity
     [Display(Name = "Membre")]
     Member = 5,
     [Display(Name = "Document")]
-    Document = 6
+    Document = 6,
+    [Display(Name = "Budget Prévisionnel")]
+    ForecastBudget = 7
 }

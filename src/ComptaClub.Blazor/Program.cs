@@ -2,19 +2,16 @@ using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-using Azure.Storage;
-using Azure.Storage.Blobs;
-
 using ComptaClub;
 
 using EFScriptableMigration;
 
 using FluentEmail.MailKitSmtp;
 
+using LogRWebMonitor;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
-
-using LogRWebMonitor;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,26 +47,13 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
     });
 
-var rootUri = new Uri($"https://{globalSettings.AzureStorageAccountName}.blob.core.windows.net");
-var storageCredential = new StorageSharedKeyCredential(globalSettings.AzureStorageAccountName, globalSettings.AzureStorageAccountKey);
-var blobServiceClient = new BlobServiceClient(rootUri, storageCredential);
-
-var response = blobServiceClient.GetBlobContainerClient(globalSettings.AzureStorageWebAppDataProtectionContainerName);
-if (!await response.ExistsAsync())
-{
-    await blobServiceClient.CreateBlobContainerAsync(globalSettings.AzureStorageWebAppDataProtectionContainerName);
-}
-
-var keyUri = new Uri($"https://{globalSettings.AzureStorageAccountName}.blob.core.windows.net/{globalSettings.AzureStorageWebAppDataProtectionContainerName}/{globalSettings.DataProtectionFileName}");
-var blobClient = new BlobClient(keyUri, storageCredential);
-
 builder.Services.AddDataProtection()
         .SetApplicationName(globalSettings.ApplicationName)
         .AddKeyManagementOptions(options =>
         {
             options.AutoGenerateKeys = true;
         })
-        .PersistKeysToAzureBlobStorage(blobClient)
+        .PersistKeysToDbContext<ComptaClub.Datas.ComptaClubDbContext>()
         .SetDefaultKeyLifetime(TimeSpan.FromDays(400));
 
 builder.Services.AddLocalization();
@@ -129,7 +113,7 @@ else if (globalSettings.SmtpProviderName == "mimekit")
 builder.AddLogRWebMonitor(config =>
 {
     config.EnvironmentName = builder.Environment.EnvironmentName;
-    config.HostName = "ComptaClub"; 
+    config.HostName = "ComptaClub";
 });
 
 /* ----------------------------------------------------------------------- */

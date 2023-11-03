@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace ComptaClub.Datas;
 
-public class ComptaClubDbContext : DbContext
+public class ComptaClubDbContext : DbContext, IDataProtectionKeyContext
 {
     private readonly DbConfiguration _dbConfiguration;
 
@@ -25,7 +25,7 @@ public class ComptaClubDbContext : DbContext
         optionsBuilder.AddInterceptors(new VarcharOptimizationInterceptor());
         optionsBuilder.UseSqlServer(_dbConfiguration.ConnectionString);
     }
-
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
     public DbSet<AccountData> Accounts { get; set; }
     public DbSet<BankData> Banks { get; set; }
     public DbSet<DocumentData> Documents { get; set; }
@@ -40,4 +40,6 @@ public class ComptaClubDbContext : DbContext
     public DbSet<IncomeStatementData> IncomeStatements { get; set; }
     public DbSet<IncomeStatementItemData> IncomeStatementItems { get; set; }
     public DbSet<ClubData> ClubDatas { get; set; }
+    public DbSet<ForecastBudgetData> ForecastBudgets { get; set; }
+    public DbSet<ForecastBudgetItemData> ForecastBudgetItems { get; set; }
 }
