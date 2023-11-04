@@ -69,10 +69,10 @@
 			<_ForcastBudgetItemList AccountDirection="direction" ItemList="forecastBudget.ItemList" Recompute="Recompute" LevelMax="levelMax" />
 		}
 		<tr>
-			<td colspan="4">
+			<td colspan="@(levelMax + 2)">
 				<span class="h2">Résultat Net</span>
 			</td>
-			<td class="cell-header">
+			<td class="cell-header" style="text-align:end">
 				@{
 					var netIncome = forecastBudget.CreditTotal - forecastBudget.DebitTotal;
 				}

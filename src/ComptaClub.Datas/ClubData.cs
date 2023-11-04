@@ -17,4 +17,7 @@ public class ClubData : IPrimaryKey
     public string? WebSite { get; set; }
     public string? PhoneNumber { get; set; }
     public string? ContactName { get; set; }
+	public string? LogoBase64String { get; set; }
+    public string? LogoContentType { get; set; }
+
 }
