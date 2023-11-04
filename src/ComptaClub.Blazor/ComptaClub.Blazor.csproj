@@ -21,6 +21,7 @@
 		</None>
 		<None Include="Pages\ForecastBudgetList.razor" />
 		<None Include="Pages\IncomeStatementList.razor" />
+		<None Include="Pages\Reports\ForecastBudget.razor" />
 	</ItemGroup>
 
 

@@ -143,6 +143,7 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+app.MapRazorPages();
 
 var migration = new DbMigration()
 {

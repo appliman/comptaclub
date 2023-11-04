@@ -10,7 +10,7 @@
   <ItemGroup>
     <None Remove="Scripts\ComptaClub\0001-CreateTable-Accounts.sql" />
     <None Remove="Scripts\ComptaClub\0002-CreateTable-Banks.sql" />
-    <None Remove="Scripts\ComptaClub\0003-CreateTable-Documents - Copy.sql" />
+    <None Remove="Scripts\ComptaClub\0003-CreateTable-Documents.sql" />
     <None Remove="Scripts\ComptaClub\0004-CreateTable-Entries.sql" />
     <None Remove="Scripts\ComptaClub\0005-CreateTable-Exercices.sql" />
     <None Remove="Scripts\ComptaClub\0006-CreateTable-Members.sql" />
@@ -45,13 +45,15 @@
     <None Remove="Scripts\ComptaClub\0036-CreateTable-Clubs.sql" />
     <None Remove="Scripts\ComptaClub\0037-CreateTable-DataProtectionKey - Copy.sql" />
     <None Remove="Scripts\ComptaClub\0038-CreateTables-ForecastBudget.sql" />
+    <None Remove="Scripts\ComptaClub\0039-AlterTable-Clubs.sql" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\ComptaClub\0039-AlterTable-Clubs.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0037-CreateTable-DataProtectionKey - Copy.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0038-CreateTables-ForecastBudget.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0036-CreateTable-Clubs.sql" />
-    <EmbeddedResource Include="Scripts\ComptaClub\0003-CreateTable-Documents - Copy.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0003-CreateTable-Documents.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0031-AlterTable-Entries.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0035-AlterTable-DocumentByEntity.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0034-AlterTable-DocumentByEntity.sql" />

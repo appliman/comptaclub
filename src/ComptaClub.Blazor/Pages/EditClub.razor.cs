@@ -12,6 +12,9 @@ public partial class EditClub
 	[Inject]
 	MediatR.IMediator Mediator { get; set; } = default!;
 
+	[Inject]
+	NotificationService NotificationService { get; set; } = default!;
+
 	Datas.ClubData club = new();
 	CustomValidator customValidator = default!;
 
@@ -38,4 +41,26 @@ public partial class EditClub
 		}
 	}
 
+	async Task OnInputFileChange(InputFileChangeEventArgs args)
+	{
+		IBrowserFile file = args.File;
+		if (file == null)
+		{
+			NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier sélectionné");
+			return;
+		}
+
+		// Verifier s'il s'agit bien d'une image
+		if (!file.ContentType.StartsWith("image/"))
+		{
+			NotificationService.Notify(NotificationSeverity.Error, "Le fichier sélectionné n'est pas une image");
+			return;
+		}
+
+		using var ms = new MemoryStream();
+		await file.OpenReadStream().CopyToAsync(ms);
+		club.LogoBase64String = Convert.ToBase64String(ms.ToArray());
+		club.LogoContentType = file.ContentType;
+		StateHasChanged();
+	}
 }
