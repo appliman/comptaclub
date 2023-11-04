@@ -34,11 +34,13 @@ public partial class EditForecastBudget
 			IconName = "save",
 			Text = "Enregistrer",
 			OnClick = Save
-		}).AddItem(new ViewModels.Toolbar.ToolbarButton
+		}).AddItem(new ViewModels.Toolbar.ToolbarLink
 		{
 			IconName = "print",
 			Text = "Imprimer",
-			// OnClick = Print
+			Target = "_blank",
+			Description = "Imprimer le bilan prévisionnel",
+			Url = $"/reports/bilan-previsionnel/{ForecastBudgetId}"
 		})
 		.Display();
 

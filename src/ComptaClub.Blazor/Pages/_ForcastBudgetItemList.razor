@@ -10,13 +10,23 @@
 		<td colspan="@(LevelMax - Level + 1)">
 			<b>@item.AccountCode</b> @item.AccountLabel
 		</td>
+		@if (DisplayIncomeStatementAmount)
+		{
+			<td>
+				<PriceLabel Value="@item.IncomeStatementAmount" />
+			</td>
+		}
 		<td>
-			<PriceLabel Value="@item.IncomeStatementAmount" />
-		</td>
-		<td>
-			@if (!item.Children.Any())
+			@if (DisplayIncomeStatementAmount)
 			{
-				<SuperInputCurrency @bind-Value="item.Amount" WithValidation="false" style="width:80px; text-align:right;" LostFocus="LostFocus" />
+				if (!item.Children.Any())
+				{
+					<SuperInputCurrency @bind-Value="item.Amount" WithValidation="false" style="width:80px; text-align:right;" LostFocus="LostFocus" />
+				}
+				else
+				{
+					<PriceLabel Value="@item.Amount" />
+				}
 			}
 			else
 			{
@@ -28,7 +38,8 @@
 		ItemList="item.Children" 
 		Level="@(Level + 1)" 
 		Recompute="Recompute" 
-		LevelMax="LevelMax" />
+		LevelMax="LevelMax"
+		DisplayIncomeStatementAmount="DisplayIncomeStatementAmount"/>
 }
 
 @code {
@@ -46,6 +57,9 @@
 
 	[Parameter]
 	public int LevelMax { get; set; }
+
+	[Parameter]
+	public bool DisplayIncomeStatementAmount { get; set; } = true;
 
 	void LostFocus()
 	{
