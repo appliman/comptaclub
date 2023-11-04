@@ -8,6 +8,8 @@ using ComptaClub.Requests;
 
 using ComptaClub.Requests.Accounts;
 
+using Microsoft.AspNetCore.WebUtilities;
+
 namespace ComptaClub.Blazor.Pages;
 
 public partial class EntryList : ComponentBase
@@ -184,7 +186,11 @@ public partial class EntryList : ComponentBase
 
     Task EditRow(ViewModels.EntryRow entry)
     {
-        NavigationManager.NavigateTo($"/ecriture/edition/{entry.Id}");
+        QueryHelpers.ParseQuery(NavigationManager.ToAbsoluteUri(NavigationManager.Uri).Query)
+			.TryGetValue("filter", out var filterValue);
+		var editUrl = $"/ecriture/edition/{entry.Id}";
+		editUrl = QueryHelpers.AddQueryString(editUrl, "filter", $"{filterValue}");
+		NavigationManager.NavigateTo(editUrl);
         return Task.CompletedTask;
     }
 
