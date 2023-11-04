@@ -4,6 +4,9 @@ using ComptaClub.Blazor.ViewModels;
 
 using ComptaClub.Requests.Accounts;
 
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
+
 namespace ComptaClub.Blazor.Pages;
 
 public partial class EditEntry : ComponentBase
@@ -162,4 +165,18 @@ public partial class EditEntry : ComponentBase
         selectedTabIndex = tabId;
         MainLayout.Toolbar.Refresh();
     }
+
+    string GetEntriesUrl()
+    {
+        var url = "/ecritures";
+        if (QueryHelpers.ParseQuery(NavigationManager.ToAbsoluteUri(NavigationManager.Uri).Query)
+            .TryGetValue("filter", out var filterValue))
+        {
+            url = QueryHelpers.AddQueryString(url, "filter", $"{filterValue}");
+        }
+        return url;
+
+
+
+	}
 }
