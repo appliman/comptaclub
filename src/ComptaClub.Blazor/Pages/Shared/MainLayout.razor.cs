@@ -2,46 +2,45 @@ using ComptaClub.Blazor.Extensions;
 using ComptaClub.Blazor.Pages.Components;
 using ComptaClub.Blazor.ViewModels.Toolbar;
 
-namespace ComptaClub.Blazor.Pages.Shared
+namespace ComptaClub.Blazor.Pages.Shared;
+
+public partial class MainLayout
 {
-    public partial class MainLayout
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
+    [Inject]
+    public NotificationService NotificationService { get; set; } = default!;
+
+    [Inject]
+    public DialogService DialogService { get; set; } = default!;
+
+
+    bool sidebarExpanded = false;
+    bool loaderVisible = false;
+    Toolbar toolbar = default!;
+    ViewModels.User? user = new();
+    string version = $"{typeof(Program).Assembly.GetName()?.Version}";
+    public Toolbar Toolbar => toolbar;
+
+    protected override async Task OnInitializedAsync()
     {
-        [CascadingParameter]
-        Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+        user = (await AuthenticationState).User.GetUserInfos() ?? new();
+    }
 
-        [Inject]
-        public NotificationService NotificationService { get; set; } = default!;
+    public ViewModels.User GetCurrentUser()
+    {
+        return user!;
+    }
 
-        [Inject]
-        public DialogService DialogService { get; set; } = default!;
-
-
-        bool sidebarExpanded = false;
-        bool loaderVisible = false;
-        Toolbar toolbar = default!;
-        ViewModels.User? user = new();
-        string version = $"{typeof(Program).Assembly.GetName()?.Version}";
-        public Toolbar Toolbar => toolbar;
-
-        protected override async Task OnInitializedAsync()
+    public Toolbar AddToolbarItem(ViewModels.Toolbar.ToolbarItem item)
+    {
+        if (toolbar is null)
         {
-            user = (await AuthenticationState).User.GetUserInfos() ?? new();
+            return new Toolbar();
         }
-
-        public ViewModels.User GetCurrentUser()
-        {
-            return user!;
-        }
-
-        public Toolbar AddToolbarItem(ViewModels.Toolbar.ToolbarItem item)
-        {
-            if (toolbar is null)
-            {
-                return new Toolbar();
-            }
-            toolbar.InitializeToolbar();
-            toolbar.AddItem(item);
-            return toolbar;
-        }
+        toolbar.InitializeToolbar();
+        toolbar.AddItem(item);
+        return toolbar;
     }
 }
