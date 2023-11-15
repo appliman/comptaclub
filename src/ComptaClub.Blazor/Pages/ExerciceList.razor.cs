@@ -10,7 +10,7 @@ namespace ComptaClub.Blazor.Pages;
 public partial class ExerciceList : ComponentBase
 {
 	[CascadingParameter]
-	Shared.MainLayout MainLayout { get; set; } = default!;
+	MainLayout MainLayout { get; set; } = default!;
 
 	[Inject]
     MediatR.IMediator Mediator { get; set; } = default!;

@@ -12,7 +12,7 @@ namespace ComptaClub.Blazor.Pages;
 public partial class EditEntry : ComponentBase
 {
     [CascadingParameter]
-    Shared.MainLayout MainLayout { get; set; } = default!;
+    MainLayout MainLayout { get; set; } = default!;
 
     [Parameter]
     public Guid? EntryId { get; set; }

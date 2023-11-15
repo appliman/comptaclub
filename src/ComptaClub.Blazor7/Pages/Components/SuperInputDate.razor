@@ -1,0 +1,39 @@
+﻿<div class="mb-3">
+	<label for="Name" class="form-label">@Label</label>
+	<div class="input-group">
+		<span class="input-group-text"><i class="fas fa-calendar-check"></i></span>
+		<InputDate class="form-control" Value="Value" ValueChanged="ValueChanged" ValueExpression="ValueExpression" placeholder="@PlaceHoder" required="@(Required ? "required" : null)" />
+	</div>
+	<small>
+		<ValidationMessage class="invalid-feedback" For="() => Value" />
+	</small>
+	@ChildContent
+</div>
+
+@code {
+
+	[Parameter]
+	public string? Label { get; set; }
+
+	[Parameter]
+	public DateTime Value { get; set; }
+
+	[Parameter]
+	public EventCallback<DateTime> ValueChanged { get; set; }
+
+	[Parameter]
+	public System.Linq.Expressions.Expression<Func<DateTime>>? ValueExpression { get; set; }
+
+	[Parameter]
+	public string? PlaceHoder { get; set; }
+
+	[Parameter]
+	public bool Required { get; set; }
+
+	[Parameter]
+	public string? Prepend { get; set; }
+
+	[Parameter]
+	public RenderFragment? ChildContent { get; set; }
+
+}

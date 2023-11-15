@@ -1,14 +1,8 @@
-using System.Collections.Generic;
-
 using AutoMapper;
 
 using ComptaClub.Blazor.ViewModels;
 using ComptaClub.Models;
 using ComptaClub.Requests;
-
-using DocumentFormat.OpenXml.Vml.Office;
-
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ComptaClub.Blazor.Pages.Shared;
 
@@ -115,8 +109,8 @@ public partial class AssociatedMemberByEntry
             associationToInsert = new();
             associationToInsert.Member = member;
             associationToInsert.Amount = Math.Max(0, entryAmount - total);
-			await grid.InsertRow(associationToInsert);
-			associatedMemberList!.Add(associationToInsert);
+            await grid.InsertRow(associationToInsert);
+            associatedMemberList!.Add(associationToInsert);
         }
     }
 

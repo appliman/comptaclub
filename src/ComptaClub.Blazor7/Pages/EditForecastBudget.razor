@@ -1,0 +1,85 @@
+﻿@page "/bilan-previsionnel/{ForecastBudgetId:guid}"
+
+<PageTitle>Bilan prévisionnel</PageTitle>
+
+<table class="table table-bordered table-hover" id="printable">
+	<thead>
+		<tr>
+			<th colspan="@(levelMax + 3)">
+				<div class="row">
+					<div class="col-3">
+						<label for="forecastBudgetName" class="col-form-label">Nom du bilan :</label>
+					</div>
+					<div class="col-9">
+						<input id="forecastBudgetName" class="form-control-lg w-100" type="text" @bind-value="forecastBudget.Name" />
+					</div>
+				</div>
+			</th>
+		</tr>
+		<tr>
+			<th colspan="@(levelMax + 1)">
+				<div class="row">
+					<div class="col-3">
+						<label for="forecastBudgetDescription" class="col-form-label">Description :</label>
+					</div>
+					<div class="col-9">
+						<input id="forecastBudgetDescription" class="form-control w-100" type="text" @bind-value="forecastBudget.Description" />
+					</div>
+				</div>
+			</th>
+			<th class="cell-total">Exercice N-1</th>
+			<th>Prevision</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var direction in new List<AccountDirection>() { AccountDirection.Debit, AccountDirection.Credit })
+		{
+			<tr>
+				<td colspan="@(levelMax + 1)">
+					@if (direction == AccountDirection.Credit)
+					{
+						<span class="h2">Produit</span>
+					}
+					else
+					{
+						<span class="h2">Charge</span>
+					}
+				</td>
+				<td class="cell-header" style="text-align:right;">
+					@if (direction == AccountDirection.Credit)
+					{
+						<PriceLabel class="" Value="@forecastBudget.IncomeStatementCreditTotal" />
+					}
+					else
+					{
+						<PriceLabel class="" Value="@forecastBudget.IncomeStatementDebitTotal" />
+					}
+				</td>
+				<td class="cell-header" style="text-align:right;">
+					@if (direction == AccountDirection.Credit)
+					{
+						<PriceLabel class="" Value="@forecastBudget.CreditTotal" />
+					}
+					else
+					{
+						<PriceLabel class="" Value="@forecastBudget.DebitTotal" />
+					}
+				</td>
+			</tr>
+			<_ForcastBudgetItemList AccountDirection="direction" ItemList="forecastBudget.ItemList" Recompute="Recompute" LevelMax="levelMax" />
+		}
+		<tr>
+			<td colspan="@(levelMax + 2)">
+				<span class="h2">Résultat Net</span>
+			</td>
+			<td class="cell-header" style="text-align:end">
+				@{
+					var netIncome = forecastBudget.CreditTotal - forecastBudget.DebitTotal;
+				}
+				<PriceLabel class="" Value="@netIncome" />
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+

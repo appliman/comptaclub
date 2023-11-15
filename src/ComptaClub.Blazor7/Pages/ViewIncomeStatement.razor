@@ -1,0 +1,85 @@
+﻿@page "/compte-de-resultat/{IncomeStatementId:guid}"
+
+<PageTitle>@incomeStatement.Description</PageTitle>
+
+<table class="table table-bordered table-hover" id="printable">
+    <thead>
+        <tr>
+            <th colspan="4" class="text-center">@incomeStatement.Description</th>
+            <th class="cell-total">Exercice N</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var direction in new List<AccountDirection>() { AccountDirection.Debit, AccountDirection.Credit })
+        {
+            <tr>
+                <td colspan="4">
+                    @if (direction == AccountDirection.Credit)
+                    {
+                        <span class="h2">Produit</span>
+                    }
+                    else
+                    {
+                        <span class="h2">Charge</span>
+                    }
+                </td>
+                <td class="cell-header">
+                    @if (direction == AccountDirection.Credit)
+                    {
+                        <PriceLabel class="" Value="@incomeStatement.CreditTotal" />
+                    }
+                    else
+                    {
+                        <PriceLabel class="" Value="@incomeStatement.DebitTotal" />
+                    }
+                </td>
+            </tr>
+            @foreach (var incomeStatementItem in incomeStatement.ItemList.Where(i => i.Direction == direction))
+            {
+                <tr>
+                    <td class="cell-indent"></td>
+                    <td colspan="3"><b>@incomeStatementItem.Code</b> @incomeStatementItem.Label</td>
+                    <td>
+                        <PriceLabel Value="@incomeStatementItem.Amount" />
+                    </td>
+                </tr>
+                @foreach (var subIncomeStatementItem in incomeStatementItem.Children)
+                {
+                    <tr>
+                        <td class="cell-indent"></td>
+                        <td class="cell-indent"></td>
+                        <td colspan="2"><b>@subIncomeStatementItem.Code</b> @subIncomeStatementItem.Label</td>
+                        <td>
+                            <PriceLabel Value="@subIncomeStatementItem.Amount" />
+                        </td>
+                    </tr>
+                    @foreach (var subSubIncomeStatementItem in subIncomeStatementItem.Children)
+                    {
+                        <tr>
+                            <td class="cell-indent"></td>
+                            <td class="cell-indent"></td>
+                            <td class="cell-indent"></td>
+                            <td><b>@subSubIncomeStatementItem.Code</b> @subSubIncomeStatementItem.Label</td>
+                            <td>
+                                <PriceLabel Value="@subSubIncomeStatementItem.Amount" />
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+        <tr>
+            <td colspan="4">
+                <span class="h2">Résultat Net</span>
+            </td>
+            <td class="cell-header">
+                @{
+                    var netIncome = incomeStatement.CreditTotal - incomeStatement.DebitTotal;
+                }
+                <PriceLabel class="" Value="@netIncome" />
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+

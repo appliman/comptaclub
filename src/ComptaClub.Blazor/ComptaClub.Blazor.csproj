@@ -1,77 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
-		<Nullable>enable</Nullable>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<UserSecretsId>7f5b4ec5-f9b7-42b1-84f9-4c4e889af653</UserSecretsId>
-		<MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
-		<PreserveCompilationContext>true</PreserveCompilationContext>
-		<MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
-		<Version>0.10.13.0</Version>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+	  <PreserveCompilationContext>true</PreserveCompilationContext>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<Content Remove="Pages\EmailTemplates\Digicode.cshtml" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Radzen.Blazor" Version="4.21.1" />
+	  <PackageReference Include="AutoMapper" Version="12.0.1" />
+	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+	  <PackageReference Include="LogRWebMonitor" Version="1.2.26.1" />
+	  <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<None Include="Pages\EmailTemplates\Digicode.cshtml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Include="Pages\ForecastBudgetList.razor" />
-		<None Include="Pages\IncomeStatementList.razor" />
-		<None Include="Pages\Reports\ForecastBudget.razor" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ComptaClub.Core\ComptaClub.Core.csproj" />
+  </ItemGroup>
 
-
-	<ItemGroup>
-		<None Update="appsettings.local.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
-		</None>
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="12.0.1" />
-		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-		<PackageReference Include="LogRWebMonitor" Version="1.2.26.1" />
-		<PackageReference Include="Radzen.Blazor" Version="4.18.1" />
-		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\ComptaClub.Core\ComptaClub.Core.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Update="appsettings.local.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Update="appsettings.Production.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Update="appsettings.Development.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-		<Content Update="Pages\Shared\MainLayout.razor">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-		</Content>
-		<Content Update="Pages\_Host.cshtml">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
-		<UpToDateCheckInput Remove="Pages\IncomeStatementList.razor" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<_ContentIncludedByDefault Remove="Pages\IncomeStatementList.razor" />
-	</ItemGroup>
+  <ItemGroup>
+    <Content Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="appsettings.local.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="appsettings.Production.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Pages\EmailTemplates\Digicode.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
 </Project>
