@@ -11,6 +11,7 @@ global using Microsoft.Extensions.DependencyInjection;
 
 global using ComptaClub.Extensions;
 global using ComptaClub.Blazor.Extensions;
+global using ComptaClub.Blazor.Pages.Layout;
 global using ComptaClub.Enums;
 
 global using Radzen;

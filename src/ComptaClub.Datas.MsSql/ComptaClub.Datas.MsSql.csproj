@@ -1,12 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>ComptaClub.Datas</RootNamespace>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="Scripts\ComptaClub\0001-CreateTable-Accounts.sql" />
     <None Remove="Scripts\ComptaClub\0002-CreateTable-Banks.sql" />
@@ -47,7 +45,6 @@
     <None Remove="Scripts\ComptaClub\0038-CreateTables-ForecastBudget.sql" />
     <None Remove="Scripts\ComptaClub\0039-AlterTable-Clubs.sql" />
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="Scripts\ComptaClub\0039-AlterTable-Clubs.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0037-CreateTable-DataProtectionKey - Copy.sql" />
@@ -88,20 +85,14 @@
     <EmbeddedResource Include="Scripts\ComptaClub\0002-CreateTable-Banks.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0001-CreateTable-Accounts.sql" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="EFScriptableMigration" Version="6.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.13" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.13">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.13" />
-	  <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\ComptaClub.Datas\ComptaClub.Datas.csproj" />
   </ItemGroup>
-
 </Project>

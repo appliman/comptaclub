@@ -1,0 +1,71 @@
+﻿@page "/exercices"
+
+<PageTitle>Exercices</PageTitle>
+<div style="height:100%">
+<RadzenDataGrid @ref="grid" 
+    AllowFiltering="true" 
+    AllowSorting="true" 
+    AllowColumnResize="true"
+    Data="@exerciceList"
+    LoadData="@LoadDatas"
+    TItem="ViewModels.Exercice"
+    SelectionMode="DataGridSelectionMode.Single"
+    AllowRowSelectOnRowClick="true"
+    @bind-Value="selectedExercices"
+    Style="height:100%">
+    <Columns>
+        <RadzenDataGridColumn TItem="ViewModels.Exercice" Context="exercice" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="90px">
+            <Template Context="exercice">
+                @if (exercice.ExerciceState != ExerciceState.Closed)
+                {
+                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(exercice))" @onclick:stopPropagation="true" title="Supprimer cet exercice">
+                        </RadzenButton>
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(exercice))" @onclick:stopPropagation="true" title="Editer cet exercice">
+                    </RadzenButton>
+                }
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Exercice" Property="Code" Title="Code Exercice" Width="200px" Filterable="false">
+        </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ViewModels.Exercice" Title="Actif" Width="90px" Filterable="false">
+                <Template Context="exercice">
+                    @if (exercice.Active)
+                    {
+                        <input type="radio" checked @onchange="@((args) => ChangeActiveExercice(args, exercice))" />
+                    }
+                    else
+                    {
+                        <input type="radio" @onchange="@((args) => ChangeActiveExercice(args, exercice))" />
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ViewModels.Exercice" Property="Label" Title="Libellé" Filterable="false">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Exercice" Property="InitialAmount" Title="Solde de départ" Width="150px" Filterable="false">
+            <Template Context="data">
+                <PriceLabel Value="data.InitialAmount" />
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Exercice" Property="BalanceAmount" Title="Solde courant" Width="150px" Filterable="false">
+            <Template Context="data">
+                <PriceLabel Value="data.BalanceAmount"/>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Exercice" Property="StartDate" Title="Date de départ" Width="150px" Filterable="false" FormatString="{0:dd/MM/yy}">
+            <Template Context="data">
+                <DateLabel Value="data.StartDate" />
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Exercice" Property="EndDate" Title="Date de fin" Width="150px" Filterable="false" FormatString="{0:dd/MM/yy}">
+            <Template Context="data">
+                <DateLabel Value="data.EndDate" />
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Exercice" Property="ExerciceState" Title="Etat" Width="100px" Filterable="false">
+            <Template Context="exercice">
+                <SuperEnumLabel Value="@exercice.ExerciceState"/>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+</div>

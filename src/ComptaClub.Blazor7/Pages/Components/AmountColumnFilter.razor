@@ -1,0 +1,95 @@
+﻿<button class="btn btn-light btn-sm w-100" role="button" @onclick="ShowDialog">
+    <i class="fa fa-search" aria-hidden="true"></i>
+	@buttonLabel
+</button>
+
+<div class="modal" tabindex="-1" style="@modalStyle">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Filtrer la colonne @Title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="Close"></button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="AmountFilter">
+                    <SuperInputCurrency @bind-Value="AmountFilter.Amount" Label="Montant" Required="true"/>
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Précision +/-</label>
+                        <InputSelect class="form-select" @bind-Value="AmountFilter.PrecisionInCentime" >
+                            <option value="10000">1ct</option>
+                            <option value="100000">10ct</option>
+                            <option value="1000000">1€</option>
+                            <option value="10000000">10€</option>
+                        </InputSelect>
+                    </div>
+                </EditForm>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="Reset">Retirer</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="Close">Annuler</button>
+                <button type="button" class="btn btn-primary" @onclick="Apply">Appliquer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = default!;
+
+    [Parameter]
+    public Models.AmountFilter AmountFilter { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<Models.AmountFilter> AmountFilterChanged { get; set; }
+
+    [Parameter]
+    public System.Linq.Expressions.Expression<Func<Models.AmountFilter>> AmountFilterExpression { get; set; } = null!;
+
+
+    string buttonLabel = "Montant";
+    string modalStyle = "display: none;";
+
+    [Parameter]
+    public EventCallback ApplyFilter { get; set; }
+
+    void ShowDialog()
+    {
+        modalStyle = "display: block;";
+    }
+
+    void Close()
+    {
+        modalStyle = "display: none;";
+    }
+
+    async Task Reset()
+    {
+        modalStyle = "display: none;";
+        AmountFilter.Amount = 0;
+        await Apply();
+    }
+
+    async Task Apply()
+    {
+        modalStyle = "display: none;";
+        if (AmountFilterChanged.HasDelegate)
+        {
+            await AmountFilterChanged.InvokeAsync(AmountFilter);
+        }
+
+        if (AmountFilter.Amount != 0)
+        {
+            buttonLabel = $"{AmountFilter.Amount / 1000000m}€";
+        }
+        else
+        {
+            buttonLabel = "Montant";
+        }
+
+        if (ApplyFilter.HasDelegate)
+		{
+			await ApplyFilter.InvokeAsync();
+		}
+    }
+}

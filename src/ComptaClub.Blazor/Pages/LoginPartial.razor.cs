@@ -105,9 +105,8 @@ public partial class LoginPartial : ComponentBase
 				}
 				else
 				{
-					var pathWithToken = NavigationManager.GetUriWithQueryParameter("Token", loginForm.TokenId);
-					NavigationManager.NavigateTo(pathWithToken, true);
-				}
+					NavigationManager.NavigateTo($"/authenticate/{loginForm.TokenId}", true);
+                }
 			}
 		}
 

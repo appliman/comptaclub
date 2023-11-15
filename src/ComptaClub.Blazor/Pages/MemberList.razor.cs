@@ -12,7 +12,7 @@ namespace ComptaClub.Blazor.Pages;
 public partial class MemberList : ComponentBase
 {
 	[CascadingParameter]
-	Shared.MainLayout MainLayout { get; set; } = default!;
+	MainLayout MainLayout { get; set; } = default!;
 
 	[Inject]
 	IMediator Mediator { get; set; } = default!;

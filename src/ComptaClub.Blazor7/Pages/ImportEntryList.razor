@@ -1,0 +1,58 @@
+﻿@page "/importation-ecritures"
+
+<h3>Importation des écriture à partir d'un fichier ".ofx"</h3>
+
+<InputFile OnChange="LoadFile" />
+
+<RadzenDataGrid @ref="grid"
+    AllowFiltering="true" 
+    AllowSorting="true" 
+    AllowColumnResize="true"
+    Data="@entryList" 
+    TItem="ViewModels.EntryRow"
+    GridLines="DataGridGridLines.Both">
+    <Columns>
+        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Property="RowIndex" Title="#" Width="50px" Filterable="false" FormatString="" Frozen="true">
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Context="entry" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="70px">
+            <Template Context="entry">
+                <RadzenButton Icon="save" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => SaveRow(entry))" @onclick:stopPropagation="true" title="Editer cette ecriture">
+                </RadzenButton>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Property="CreationDate" Title="Date" Width="150px" Filterable="false" Frozen="false">
+            <Template Context="data">
+                <DateIdLabel Value="data.Entity.CreationDate"/>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Title="Compte" Filterable="false" Width="300px">
+            <Template Context="entry">
+                <AccountLinkSelector @bind-AccountId="entry.Entity.AccountId" AccountDirection="entry.Entity.AccountDirection" />
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Property="PartNumber" Title="N°" Filterable="false" Frozen="false">
+            <Template Context="data">
+                <div class="w-100">
+                    @data.Entity.PartNumber<br />
+                    @data.Entity.Label
+                </div>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Title="Débit" Width="120px" Filterable="false">
+            <Template Context="entry">
+                @if (entry.Entity.AccountDirection == Enums.AccountDirection.Debit)
+                {
+                    <PriceLabel Value="@entry.Entity.Amount" />
+                }
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Title="Crédit" Width="120px" Filterable="false">
+            <Template Context="entry">
+                @if (entry.Entity.AccountDirection == Enums.AccountDirection.Credit)
+                {
+                    <PriceLabel Value="@entry.Entity.Amount" />
+                }
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>

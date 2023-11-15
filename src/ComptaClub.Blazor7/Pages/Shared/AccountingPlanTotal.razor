@@ -1,0 +1,44 @@
+﻿@using ComptaClub.Blazor.Services;
+@using ComptaClub.Models;
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th colspan="3" class="text-center">@Title</th>
+            <th class="cell-total">Exercice N</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var account in Plan.Where(i => i.Direction == Direction))
+        {
+            <tr @onclick="@(() => DisplayEntries(account.Id))">
+                <td colspan="3"><b>@account.Code</b> @account.Label</td>
+                <td>
+                    <PriceLabel Value="@account.DeepTotal" />
+                </td>
+            </tr>
+            @foreach (var subAccount in account.Children)
+            {
+                <tr @onclick="@(() => DisplayEntries(subAccount.Id))">
+                    <td class="cell-indent"></td>
+                    <td colspan="2"><b>@subAccount.Code</b> @subAccount.Label</td>
+                    <td>
+                        <PriceLabel Value="@subAccount.DeepTotal" />
+                    </td>
+                </tr>
+                @foreach (var subsubAccount in subAccount.Children)
+                {
+                    <tr @onclick="@(() => DisplayEntries(subsubAccount.Id))">
+                        <td class="cell-indent"></td>
+                        <td class="cell-indent"></td>
+                        <td><b>@subsubAccount.Code</b> @subsubAccount.Label</td>
+                        <td>
+                            <PriceLabel Value="@subsubAccount.DeepTotal" />
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+
+

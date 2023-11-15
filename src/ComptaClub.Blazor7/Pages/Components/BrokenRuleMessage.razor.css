@@ -1,0 +1,6 @@
+﻿.broken-rule {
+    color: red;
+    font-weight : bold;
+    word-wrap : normal;
+    white-space : nowrap;
+}

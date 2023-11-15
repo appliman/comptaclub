@@ -1,0 +1,71 @@
+﻿@using MediatR;
+<select class="form-select" @onchange="PeriodChanged">
+	@foreach (var item in periodList)
+	{
+		<option value="@item.Name" title="@item.Name">@item.Name</option>
+	}
+</select>
+
+
+@code {
+
+	[Parameter]
+	public Guid ExerciceId { get; set; }
+
+	[Inject]
+	IMediator Mediator { get; set; } = default!;
+
+	[Parameter]
+	public Models.PeriodFilter? Value { get; set; }
+
+	[Parameter]
+	public EventCallback<Models.PeriodFilter?> ValueChanged { get; set; }
+
+	[Parameter]
+	public EventCallback ApplyFilter { get; set; }
+
+	[Parameter]
+	public System.Linq.Expressions.Expression<Func<Models.PeriodFilter?>> ValueExpression { get; set; } = default!;
+
+	List<Models.PeriodFilter> periodList = new();
+
+
+	protected override async Task OnParametersSetAsync()
+	{
+		if (ExerciceId != Guid.Empty)
+		{
+			await LoadPeriodList();	
+		}
+	}
+
+	async Task LoadPeriodList()
+	{
+		if (periodList.Any())
+		{
+			return;
+		}
+		periodList = await Mediator.Send(new Requests.Exercices.GetPeriodListFromExerciceRequest(ExerciceId));
+		periodList.Insert(0, new Models.PeriodFilter
+			{
+				Name = "<Tous>",
+				FromDayId = null,
+				ToDayId = null
+			});
+	}
+
+	async void PeriodChanged(ChangeEventArgs args)
+	{
+		var selectedPeriod = periodList.FirstOrDefault(i => i.Name == $"{args.Value}");
+		if (selectedPeriod is not null)
+		{
+			if (ValueChanged.HasDelegate)
+			{
+				await ValueChanged.InvokeAsync(selectedPeriod);
+			}
+			if (ApplyFilter.HasDelegate)
+			{
+				await ApplyFilter.InvokeAsync();
+			}
+		}
+	}
+}
