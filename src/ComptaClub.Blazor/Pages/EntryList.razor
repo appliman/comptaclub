@@ -1,7 +1,26 @@
 ﻿@page "/ecritures"
 
 <SectionContent SectionName="toolbar">
-	<ToolbarButton ToolbarItem="(() => new ToolbarItem"
+	<RadzenButton Text="Dépense"
+				  Click="@(() => InsertRow("charge"))"
+				  Icon="add_circle_outline"
+				  ButtonStyle="ButtonStyle.Success"
+				  class="btn btn-primary m-1"
+				  title="Ajouter une dépense" />
+
+	<RadzenButton Text="Rentrée"
+				  Click="@(() => InsertRow("produit"))"
+				  Icon="add_circle_outline"
+				  ButtonStyle="ButtonStyle.Success"
+				  class="btn btn-primary m-1"
+				  title="Ajouter une rentrée" />
+
+	<RadzenLink Text="Import" 
+				Path="/importation-ecritures" 
+				Icon="cloud_upload" 
+				class="btn btn-primary m-1"
+				title="Importer" />
+
 </SectionContent>
 
 <PageTitle>Ecritures</PageTitle>

@@ -13,10 +13,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ComptaClub.Contracts\ComptaClub.Contracts.csproj" />
     <ProjectReference Include="..\ComptaClub.Datas.MsSql\ComptaClub.Datas.MsSql.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="lib\" />
+    <ProjectReference Include="..\ComptaClub.Datas\ComptaClub.Datas.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.102.1" />

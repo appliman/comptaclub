@@ -1,4 +1,4 @@
-﻿using ComptaClub.Requests.Clubs;
+﻿using ComptaClub.Contracts.Models.Clubs;
 
 namespace ComptaClub.Handlers.Clubs;
 internal class GetClubRequestHandler : IRequestHandler<GetClubRequest, Datas.ClubData>

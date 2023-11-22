@@ -34,6 +34,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2119745F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComptaClub.Blazor", "src\ComptaClub.Blazor\ComptaClub.Blazor.csproj", "{912CA749-6745-42A1-85A5-AC84D346909E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComptaClub.Contracts", "ComptaClub.Contracts\ComptaClub.Contracts.csproj", "{9FA80D34-237F-47F3-B05E-FA2EA4BB1F4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{912CA749-6745-42A1-85A5-AC84D346909E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{912CA749-6745-42A1-85A5-AC84D346909E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{912CA749-6745-42A1-85A5-AC84D346909E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FA80D34-237F-47F3-B05E-FA2EA4BB1F4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FA80D34-237F-47F3-B05E-FA2EA4BB1F4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FA80D34-237F-47F3-B05E-FA2EA4BB1F4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FA80D34-237F-47F3-B05E-FA2EA4BB1F4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{8360445B-C642-402D-AAA8-4077ECF8A50F} = {9212FCBE-8489-45B7-957F-3A6031EA4D69}
 		{82D6992E-D6A9-4E2C-8F0B-E8348495E231} = {6656B29B-6A18-4BD6-84D7-BCDCFD297AC7}
 		{ED880762-988B-439F-BBCC-3D2C447B10DC} = {9212FCBE-8489-45B7-957F-3A6031EA4D69}
+		{9FA80D34-237F-47F3-B05E-FA2EA4BB1F4C} = {6656B29B-6A18-4BD6-84D7-BCDCFD297AC7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC6283DD-DD4F-4CF4-9C2F-19B6C69E4E89}

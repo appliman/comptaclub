@@ -1,9 +1,10 @@
-﻿using ComptaClub.Handlers.Banks;
-using ComptaClub.Requests;
+﻿using ComptaClub.Contracts.Models.Stats;
+using ComptaClub.Contracts.Results;
+using ComptaClub.Handlers.Banks;
 
 namespace ComptaClub.Handlers.Exercices;
 
-internal class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHandler<SaveEntityRequest<ExerciceData>, Results.PersistResult>
+internal class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHandler<SaveEntityRequest<ExerciceData>, PersistResult>
 {
     private readonly IValidator<ExerciceData> _validator;
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
@@ -20,7 +21,7 @@ internal class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHand
         _mediator = mediator;
     }
 
-    public async Task<Results.PersistResult> Handle(SaveEntityRequest<ExerciceData> request, CancellationToken cancellationToken)
+    public async Task<PersistResult> Handle(SaveEntityRequest<ExerciceData> request, CancellationToken cancellationToken)
     {
         var valid = await _validator.ValidateAsync(request.Entity, cancellationToken);
         if (!valid.IsValid)
@@ -39,7 +40,7 @@ internal class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHand
 
         if (request.Entity.Active)
         {
-            var balance = await _mediator.Send(new Requests.Stats.GetCurrentBalanceRequest());
+            var balance = await _mediator.Send(new GetCurrentBalanceRequest());
             request.Entity.BalanceAmount = balance;
         }
 

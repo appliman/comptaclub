@@ -1,5 +1,5 @@
-﻿using ComptaClub.Requests.Exercices;
-using ComptaClub.Results;
+﻿using ComptaClub.Contracts.Models.Exercices;
+using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Exercices;
 

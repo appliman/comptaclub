@@ -1,4 +1,6 @@
-﻿namespace ComptaClub.Blazor.Pages.Components;
+﻿using ComptaClub.Contracts.Results;
+
+namespace ComptaClub.Blazor.Pages.Components;
 
 public class CustomValidator : ComponentBase
 {
@@ -26,7 +28,7 @@ public class CustomValidator : ComponentBase
         CurrentEditContext!.NotifyValidationStateChanged();
     }
 
-    public void DisplayErrors(Results.CommandResult validationResult)
+    public void DisplayErrors(CommandResult validationResult)
     {
         foreach (var brokenRule in validationResult.ErrorBrokenRuleList)
         {
@@ -38,7 +40,7 @@ public class CustomValidator : ComponentBase
         CurrentEditContext!.NotifyValidationStateChanged();
     }
 
-    public void DisplayErrors(IList<Results.BrokenRule> brokenRuleList)
+    public void DisplayErrors(IList<BrokenRule> brokenRuleList)
     {
         foreach (var brokenRule in brokenRuleList)
         {

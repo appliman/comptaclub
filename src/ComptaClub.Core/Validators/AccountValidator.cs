@@ -1,4 +1,6 @@
-﻿namespace ComptaClub.Validators;
+﻿using ComptaClub.Contracts.Models.Accounts;
+
+namespace ComptaClub.Validators;
 
 internal class AccountValidator : FluentValidation.AbstractValidator<Datas.AccountData>
 {
@@ -9,7 +11,7 @@ internal class AccountValidator : FluentValidation.AbstractValidator<Datas.Accou
         RuleFor(i => i.Code).CustomAsync(async (code, ctx, cancel) =>
         {
             var current = ctx.InstanceToValidate;
-            var existing = await mediator.Send(new  Requests.Accounts.GetAccountByFilterRequest(i => i.Code = code));
+            var existing = await mediator.Send(new  GetAccountByFilterRequest(i => i.Code = code));
             if (existing != null && current.Id != existing.Id)
             {
                 ctx.AddFailure(nameof(Datas.AccountData.Code), "Ce code est déjà utilisé");

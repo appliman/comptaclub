@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using ComptaClub.Requests.IncomeStatements;
-using ComptaClub.Results;
+using ComptaClub.Contracts.Models.IncomeStatements;
+using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.IncomeStatements;
 internal class DeleteIncomeStatementRequestHandler : IRequestHandler<DeleteIncomeStatementRequest, CommandResult>

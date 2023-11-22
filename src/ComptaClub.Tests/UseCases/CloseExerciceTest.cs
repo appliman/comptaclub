@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
 
 using ComptaClub.Extensions;
-using ComptaClub.Requests.Accounts;
 
 using Microsoft.Extensions.DependencyInjection;
+using ComptaClub.Contracts.Models.Exercices;
 
 
 namespace ComptaClub.Tests.UseCases;
@@ -42,7 +42,7 @@ public class CloseExerciceTest
 		var entry2 = await mediator.CreateAndSaveRandomCreditEntry(exercice, user, bank, licenceAccount.Id, DateTime.Now);
 		var entry3 = await mediator.CreateAndSaveRandomCreditEntry(exercice, user, bank, licenceAccount.Id, DateTime.Now);
 
-		var closeExerciceResult = await mediator.Send(new Requests.Exercices.CloseExerciceRequest(exercice.Id));
+		var closeExerciceResult = await mediator.Send(new CloseExerciceRequest(exercice.Id));
 		closeExerciceResult.HasError.Should().BeFalse();
 
 		var entry4 = await mediator.CreateAndSaveRandomCreditEntry(exercice, user, bank, licenceAccount.Id, DateTime.Now);

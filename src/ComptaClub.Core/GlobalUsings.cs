@@ -11,4 +11,4 @@ global using FluentValidation;
 
 global using ComptaClub.Extensions;
 global using ComptaClub.Datas;
-global using ComptaClub.Models;
+global using ComptaClub.Contracts.Models;

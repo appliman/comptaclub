@@ -1,5 +1,5 @@
-using ComptaClub.Requests.Clubs;
-using ComptaClub.Requests.ForecastBudget;
+using ComptaClub.Contracts.Models.Clubs;
+using ComptaClub.Contracts.Models.ForecastBudget;
 
 using MediatR;
 

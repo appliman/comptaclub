@@ -1,21 +1,13 @@
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Runtime.CompilerServices;
 
 using ComptaClub.Blazor.Pages.Components;
-using ComptaClub.Blazor.Pages.Shared;
 using ComptaClub.Datas;
-using ComptaClub.Enums;
-using ComptaClub.Models;
-using ComptaClub.Requests;
-using ComptaClub.Requests.Documents;
 
 using MediatR;
 
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
-
-using static Microsoft.AspNetCore.Razor.Language.TagHelperMetadata;
 
 namespace ComptaClub.Blazor.Pages.Dialogs;
 
@@ -52,33 +44,40 @@ public partial class AddDocumentDialog
 
 		Document.FileName = file.Name;
 		Document.Description = file.Name;
-		Document.Size= file.Size;
+		Document.Size = file.Size;
 		Document.MimeType = file.ContentType;
 		documentContent = new MemoryStream();
 		await file.OpenReadStream().CopyToAsync(documentContent);
 		StateHasChanged();
 	}
 
-	void OnDragEnter(DragEventArgs e) => HoverClass = "hover";
-	void OnDragLeave(DragEventArgs e) => HoverClass = string.Empty;
+	void OnDragEnter(DragEventArgs e)
+	{
+		HoverClass = "hover";
+	}
+
+	void OnDragLeave(DragEventArgs e)
+	{
+		HoverClass = string.Empty;
+	}
 
 	async Task Select()
 	{
-        if (frameUri is not null)
-        {
-            await JSRuntime.InvokeVoidAsync("camera.stopCamera", "videoFeed");
-        }
-        DialogService.Close(documentContent);
-    }
+		if (frameUri is not null)
+		{
+			await JSRuntime.InvokeVoidAsync("camera.stopCamera", "videoFeed");
+		}
+		DialogService.Close(documentContent);
+	}
 
 	async Task CloseDialog()
-    {
-        if (frameUri is not null)
-        {
-            await JSRuntime.InvokeVoidAsync("camera.stopCamera", "videoFeed");
-        }
-        DialogService.Close();
-    }
+	{
+		if (frameUri is not null)
+		{
+			await JSRuntime.InvokeVoidAsync("camera.stopCamera", "videoFeed");
+		}
+		DialogService.Close();
+	}
 
 	void TabChanged(int tabId)
 	{
@@ -94,7 +93,7 @@ public partial class AddDocumentDialog
 
 	void StartCamera()
 	{
-		frameUri = null;	
+		frameUri = null;
 		JSRuntime.InvokeVoidAsync("camera.startCamera", "videoFeed");
 		StateHasChanged();
 	}
@@ -109,7 +108,7 @@ public partial class AddDocumentDialog
 		{
 			Console.WriteLine(ex.Message);
 		}
-    }
+	}
 
 	[JSInvokable]
 	public async Task ProcessImage(string imageString)

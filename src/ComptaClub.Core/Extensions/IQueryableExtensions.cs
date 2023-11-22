@@ -1,13 +1,13 @@
 ﻿
 using System.Linq.Expressions;
-
+using ComptaClub.Contracts.Models;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ComptaClub.Extensions;
 
 public static class IQueryableExtensions
 {
-	public static void EnsureGoodFilter(this Models.IListFilter filter)
+	public static void EnsureGoodFilter(this IListFilter filter)
 	{
 		filter.PageIndex = Math.Max(0, filter.PageIndex);
 		filter.PageIndex = Math.Min(5000, filter.PageIndex);
@@ -21,7 +21,7 @@ public static class IQueryableExtensions
 	}
 
 	public static IOrderedQueryable<T> OrderWithFilter<T, TKey>(this IQueryable<T> query, 
-		Models.IListFilter filter, 
+		IListFilter filter, 
 		Expression<Func<T, TKey>> defaultSortColumn, 
 		System.ComponentModel.ListSortDirection defaultSortDirection = System.ComponentModel.ListSortDirection.Ascending, 
 		string? thenByColumnName = null, 
@@ -68,7 +68,7 @@ public static class IQueryableExtensions
 		return orderedQuery;
 	}
 
-	public static IQueryable<T> GetPagedWithFilter<T>(this IQueryable<T> query, Models.IListFilter filter)
+	public static IQueryable<T> GetPagedWithFilter<T>(this IQueryable<T> query, IListFilter filter)
 	{
 		if (filter.Skip.HasValue)
 		{
@@ -163,7 +163,7 @@ public static class IQueryableExtensions
 		return false;
 	}
 
-	public static async Task<(int Count, IEnumerable<T> List)> GetPagedDataList<T, TKey>(this IQueryable<T> query, Expression<Func<T, TKey>> defaultSort, Models.IListFilter filter, CancellationToken cancellationToken)
+	public static async Task<(int Count, IEnumerable<T> List)> GetPagedDataList<T, TKey>(this IQueryable<T> query, Expression<Func<T, TKey>> defaultSort, IListFilter filter, CancellationToken cancellationToken)
 		where T : IPrimaryKey
 	{
 		var count = 0;
