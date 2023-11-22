@@ -1,67 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Users;
 
 namespace ComptaClub.Handlers.Users;
 
 internal class GetPagedUserListRequestHandler : GetEntityPagedListRequestHandlerBase<UserListFilter, UserData>
 {
-    public GetPagedUserListRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory)
-    : base(dbContextFactory)
-    {
+	public GetPagedUserListRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+	: base(dbContextFactory)
+	{
 
-    }
+	}
 
-    public override async Task<PagedList<IEnumerable<UserData>>> Handle(GetPagedEntityListRequest<UserListFilter, UserData> request, CancellationToken cancellationToken)
-    {
-        var filter = request.GetFilter(new UserListFilter());
+	public override async Task<PagedList<IEnumerable<UserData>>> Handle(GetPagedEntityListRequest<UserListFilter, UserData> request, CancellationToken cancellationToken)
+	{
+		var filter = request.GetFilter(new UserListFilter());
 
-        var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
+		var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
 
-        var query = from user in db.Users
-                    select user;
+		var query = from user in db.Users
+					select user;
 
-        if (!string.IsNullOrWhiteSpace(filter.Search))
-        {
-            query = query.Where(i => EF.Functions.Like($"{i.Name}", $"%{filter.Search}%")
-                                    || EF.Functions.Like($"{i.Email}", $"%{filter.Search}%"));
-        }
+		if (!string.IsNullOrWhiteSpace(filter.Search))
+		{
+			query = query.Where(i => EF.Functions.Like($"{i.Name}", $"%{filter.Search}%")
+									|| EF.Functions.Like($"{i.Email}", $"%{filter.Search}%"));
+		}
 
-        switch (filter.Options.DeletedState)
-        {
-            case DeletedState.Undeleted:
-                query = query.Where(i => i.DisableDate == null);
-                break;
-            case DeletedState.Delete:
-                query = query.Where(i => i.DisableDate != null);
-                break;
-            case DeletedState.Both:
-                break;
-            default:
-                break;
-        }
+		switch (filter.Options.DeletedState)
+		{
+			case DeletedState.Undeleted:
+				query = query.Where(i => i.DisableDate == null);
+				break;
+			case DeletedState.Delete:
+				query = query.Where(i => i.DisableDate != null);
+				break;
+			case DeletedState.Both:
+				break;
+			default:
+				break;
+		}
 
-        if (!string.IsNullOrWhiteSpace(filter.Email))
-        {
-            query = query.Where(i => i.Email == filter.Email);
-        }
+		if (!string.IsNullOrWhiteSpace(filter.Email))
+		{
+			query = query.Where(i => i.Email == filter.Email);
+		}
 
-        var page = await query.GetPagedDataList(i => i.CreationDate, filter, cancellationToken);
+		var page = await query.GetPagedDataList(i => i.CreationDate, filter, cancellationToken);
 
-        var result = new PagedList<IEnumerable<UserData>>()
-        {
-            List = page.List,
-            Total = new PagedTotal
-            {
-                RowCount = page.Count
-            }
-        };
+		var result = new PagedList<IEnumerable<UserData>>()
+		{
+			List = page.List,
+			Total = new PagedTotal
+			{
+				RowCount = page.Count
+			}
+		};
 
-        return result;
+		return result;
 
-    }
+	}
 
 }

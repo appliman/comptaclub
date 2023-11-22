@@ -1,4 +1,5 @@
-﻿using ComptaClub.Contracts.Notifications;
+﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Notifications;
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Entries;

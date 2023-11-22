@@ -1,4 +1,5 @@
-﻿using ComptaClub.Contracts.Models.Accounts;
+﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models.Accounts;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Results;
 

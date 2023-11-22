@@ -1,11 +1,12 @@
-﻿using ComptaClub.Contracts.Models.Accounts;
+﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models.Accounts;
 
 namespace ComptaClub.Extensions;
 public static class AccountExtensions
 {
 	public static async Task<AccountData?> GetAccountById(this IMediator mediator, Guid accountId)
 	{
-		var account = await mediator.Send(new GetAccountByFilterRequest(f => f.SetById(accountId)));
+		var account = await mediator.Send(new GetAccountByFilterRequest(f => f.GetById(accountId)));
 		return account;
 	}
 
