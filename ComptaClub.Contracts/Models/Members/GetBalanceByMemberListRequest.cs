@@ -1,6 +1,4 @@
-﻿using ComptaClub.Contracts.Results;
-
-namespace ComptaClub.Contracts.Models.Members;
+﻿namespace ComptaClub.Contracts.Models.Members;
 
 public record GetBalanceByMemberListRequest : IRequest<List<BalanceByMember>>
 {
