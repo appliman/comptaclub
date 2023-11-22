@@ -1,6 +1,5 @@
 ﻿using ComptaClub.Blazor.ViewModels;
-using ComptaClub.Models;
-
+using ComptaClub.Contracts.Models;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
 

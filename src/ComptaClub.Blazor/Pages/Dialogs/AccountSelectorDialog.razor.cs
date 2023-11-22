@@ -1,5 +1,7 @@
 using AutoMapper;
 
+using ComptaClub.Contracts.Models.Accounts;
+
 using MediatR;
 
 namespace ComptaClub.Blazor.Pages.Dialogs;
@@ -32,7 +34,7 @@ public partial class AccountSelectorDialog
 
     async Task LoadDatas()
     {
-        var datas = await Mediator!.Send(new Requests.Accounts.GetPlanRequest());
+        var datas = await Mediator!.Send(new GetPlanRequest());
         var list = MapPlan(datas);
         accountList = list;
         ExpandAll(accountList);

@@ -158,6 +158,6 @@ var migration = new DbMigration()
 await migration.Start();
 
 var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
-await mediator.Send(new ComptaClub.Requests.WarmupRequest());
+await mediator.Send(new WarmupRequest());
 
 app.Run();

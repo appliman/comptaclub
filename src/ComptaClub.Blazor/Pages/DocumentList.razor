@@ -2,6 +2,17 @@
 
 <PageTitle>Documents</PageTitle>
 
+<SectionContent SectionName="toolbar">
+
+	<RadzenButton Text="Document"
+				  Click="AddDocument"
+				  Icon="upload_file"
+				  ButtonStyle="ButtonStyle.Success"
+				  class="btn btn-primary m-1"
+				  title="Ajouter un document" />
+
+</SectionContent>
+
 <div style="height:100%">
 	<RadzenDataGrid @ref="grid"
 					AllowFiltering="true"

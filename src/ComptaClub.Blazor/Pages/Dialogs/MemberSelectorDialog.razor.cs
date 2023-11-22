@@ -1,5 +1,4 @@
-using ComptaClub.Models;
-using ComptaClub.Requests;
+using ComptaClub.Contracts.Models.Members;
 
 using MediatR;
 
@@ -17,7 +16,7 @@ public partial class MemberSelectorDialog
 	AutoMapper.IMapper Mapper { get; set; } = default!;
 
 	List<ViewModels.MemberRow>? memberList;
-	RadzenDataGrid<ViewModels.MemberRow>? grid = new();
+	RadzenDataGrid<ViewModels.MemberRow>? grid = default!;
 	MemberListFilter filter = new();
 	IList<ViewModels.MemberRow>? selectedMembers;
 
@@ -25,7 +24,7 @@ public partial class MemberSelectorDialog
 	{
 		if (args is not null)
 		{
-			var searchFilter = args.Filters.Where(i => i.Property == "Entity.Name").FirstOrDefault();
+			var searchFilter = args.Filters.FirstOrDefault(i => i.Property == "Entity.Name");
 			if (searchFilter is not null)
 			{
 				filter.Search = $"{searchFilter.FilterValue}";

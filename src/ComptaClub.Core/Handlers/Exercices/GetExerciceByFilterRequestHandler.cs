@@ -1,4 +1,4 @@
-﻿using ComptaClub.Requests.Exercices;
+﻿using ComptaClub.Contracts.Models.Exercices;
 
 namespace ComptaClub.Handlers.Exercices;
 

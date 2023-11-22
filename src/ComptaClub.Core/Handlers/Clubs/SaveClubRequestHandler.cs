@@ -1,5 +1,5 @@
-﻿using ComptaClub.Requests.Clubs;
-using ComptaClub.Results;
+﻿using ComptaClub.Contracts.Models.Clubs;
+using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Clubs;
 internal class SaveClubRequestHandler : IRequestHandler<SaveClubRequest, PersistResult>

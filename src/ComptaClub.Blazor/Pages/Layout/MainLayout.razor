@@ -16,7 +16,7 @@
                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
                         <RadzenSidebarToggle Click="@(args => { sidebarExpanded = !sidebarExpanded; })">
                         </RadzenSidebarToggle>
-                        <RadzenLabel Text="Compta Club" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" />
+                        <RadzenLabel Text="Compta Club" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis" />
                     </RadzenStack>
                 </RadzenColumn>
                 <RadzenColumn Size="7">
@@ -39,7 +39,7 @@
             </RadzenRow>
         </ChildContent>
     </RadzenHeader>
-    <RadzenSidebar @bind-Expanded="sidebarExpanded" Visible="@user!.IsAuthenticated" class="d-print-block">
+    <RadzenSidebar @bind-Expanded="sidebarExpanded" Visible="@user!.IsAuthenticated">
         <RadzenPanelMenu Match="NavLinkMatch.Prefix">
             <RadzenPanelMenuItem Text="Accueil" Path="/" Icon="assessment" />
             <RadzenPanelMenuItem Text="Ecritures" Path="/ecritures" Icon="receipt" />

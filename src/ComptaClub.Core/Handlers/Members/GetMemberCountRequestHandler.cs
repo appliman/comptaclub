@@ -1,8 +1,8 @@
-﻿using ComptaClub.Requests.Members;
+﻿using ComptaClub.Contracts.Models.Members;
 
 namespace ComptaClub.Handlers.Members;
 
-internal class GetMemberCountRequestHandler : IRequestHandler<Requests.Members.GetMemberCountRequest, int>
+internal class GetMemberCountRequestHandler : IRequestHandler<GetMemberCountRequest, int>
 {
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
 

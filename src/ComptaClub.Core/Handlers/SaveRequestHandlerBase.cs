@@ -1,4 +1,6 @@
 ﻿
+using ComptaClub.Contracts.Results;
+
 namespace ComptaClub.Handlers;
 
 internal abstract class SaveRequestHandlerBase
@@ -13,14 +15,14 @@ internal abstract class SaveRequestHandlerBase
         _dbContextFactory = dbContextFactory;
     }
 
-    public virtual async Task<Results.PersistResult> SaveEntity<T>(Datas.IPrimaryKey model, CancellationToken cancellationToken)
+    public virtual async Task<PersistResult> SaveEntity<T>(Datas.IPrimaryKey model, CancellationToken cancellationToken)
         where T : class, new()
     {
         using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
         return await SaveEntity<T>(db, model, cancellationToken);
     }
 
-    public virtual async Task<Results.PersistResult> SaveEntity<T>(ComptaClubDbContext db, Datas.IPrimaryKey model, CancellationToken cancellationToken)
+    public virtual async Task<PersistResult> SaveEntity<T>(ComptaClubDbContext db, Datas.IPrimaryKey model, CancellationToken cancellationToken)
     where T : class, new()
     {
         _logger.LogTrace("Try to save entity {Id} in table {Name}", model.Id, typeof(T).Name);
@@ -42,23 +44,26 @@ internal abstract class SaveRequestHandlerBase
             db.Entry(model).State = EntityState.Modified;
         }
 
-        var changeCount = await db.SaveChangesAsync(cancellationToken);
+		var pResult = new PersistResult();
 
-        var pResult = new Results.PersistResult();
-        var id = model as Datas.IPrimaryKey;
-        if (id != null) 
+		try
+		{
+            var changeCount = await db.SaveChangesAsync(cancellationToken);
+
+            pResult.Id = model.Id;
+            pResult.ChangeCount = changeCount;
+        }
+        catch(Exception ex)
         {
-            pResult.Id = id.Id;
+            error = ex.Message;
         }
 
-        pResult.ChangeCount = changeCount;
-
-        if (error != null)
+        if (error is not null)
         {
             pResult.HasError = true;
-            pResult.ErrorBrokenRuleList = new List<Results.BrokenRule>
+            pResult.ErrorBrokenRuleList = new List<BrokenRule>
             {
-                { new Results.BrokenRule("all", error!) }
+                { new BrokenRule("all", error!) }
             };
             _logger.LogValidationFailedResult("Failed to save entity", pResult);
         }

@@ -1,6 +1,9 @@
-﻿namespace ComptaClub.Handlers.Entries;
+﻿using ComptaClub.Contracts.Notifications;
+using ComptaClub.Contracts.Results;
 
-internal class SaveEntryRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.SaveEntityRequest<EntryData>, Results.PersistResult>
+namespace ComptaClub.Handlers.Entries;
+
+internal class SaveEntryRequestHandler : SaveRequestHandlerBase, IRequestHandler<SaveEntityRequest<EntryData>, PersistResult>
 {
     private readonly IValidator<EntryData> _validator;
     private readonly IMediator _mediator;
@@ -16,7 +19,7 @@ internal class SaveEntryRequestHandler : SaveRequestHandlerBase, IRequestHandler
         _mediator = mediator;
     }
 
-    public async Task<Results.PersistResult> Handle(Requests.SaveEntityRequest<EntryData> request, CancellationToken cancellationToken)
+    public async Task<PersistResult> Handle(SaveEntityRequest<EntryData> request, CancellationToken cancellationToken)
     {
         if (!request.BypassRules)
         {
@@ -30,7 +33,7 @@ internal class SaveEntryRequestHandler : SaveRequestHandlerBase, IRequestHandler
         var saveResult = await SaveEntity<EntryData>(request.Entity, cancellationToken);
         if (!saveResult.HasError)
         {
-            await _mediator.Publish(new Notifications.EntrySavedNotification()
+            await _mediator.Publish(new EntrySavedNotification()
             {
                 EntryId = request.Entity.Id,
                 ExerciceId = request.Entity.ExerciceId,

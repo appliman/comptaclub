@@ -18,7 +18,7 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   secureFile: 'comptaclubdev-ComptaClubDev-20230204.pfx'
-  dotnetVersion: 'net7.0'
+  dotnetVersion: 'net8.0'
   environment: 'production'
 
 steps:

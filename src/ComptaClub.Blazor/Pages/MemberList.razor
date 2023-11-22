@@ -1,5 +1,18 @@
 ﻿@page "/membres"
 
+<PageTitle>Liste des membres</PageTitle>
+
+<SectionContent SectionName="toolbar">
+
+    <RadzenButton Text="Importer"
+                  Click="ImportFile"
+                  Icon="upload_file"
+                  ButtonStyle="ButtonStyle.Success"
+                  class="btn btn-primary m-1"
+                  title="Importer à partir d'un fichier excel" />
+
+</SectionContent>
+
 <div style="height:100%">
 <RadzenDataGrid @ref="grid" 
     AllowFiltering="true" 

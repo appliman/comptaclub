@@ -1,4 +1,4 @@
-﻿using ComptaClub.Requests.Banks;
+﻿using ComptaClub.Contracts.Models.Banks;
 
 namespace ComptaClub.Handlers.Banks;
 

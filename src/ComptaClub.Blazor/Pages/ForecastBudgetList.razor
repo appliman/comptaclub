@@ -2,6 +2,17 @@
 
 <PageTitle>Les budgets previsionnels</PageTitle>
 
+<SectionContent SectionName="toolbar">
+
+    <RadzenButton Text="Ajouter"
+                  Click="CreateForecastBudget"
+                  Icon="add_circle_outline"
+                  ButtonStyle="ButtonStyle.Success"
+                  class="btn btn-primary m-1"
+                  title="Creer un bilan prévisionnel" />
+
+</SectionContent>
+
 <RadzenDataGrid @ref="grid" 
     AllowFiltering="true" 
     AllowSorting="true" 

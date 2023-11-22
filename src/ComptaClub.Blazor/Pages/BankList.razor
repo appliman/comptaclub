@@ -2,6 +2,17 @@
 
 <PageTitle>Banques</PageTitle>
 
+<SectionContent SectionName="toolbar">
+	<RadzenButton Text="Banque"
+				  Click="InsertRow"
+				  Icon="add_circle_outline"
+				  ButtonStyle="ButtonStyle.Success"
+				  Disabled ="(bankToUpdate != null || bankToInsert != null)"  
+				  class="btn btn-primary m-1"
+				  title="Ajouter une banque" />
+
+</SectionContent>
+
 <div style="height:100%">
 	<RadzenDataGrid @ref="grid"
 					AllowFiltering="true"

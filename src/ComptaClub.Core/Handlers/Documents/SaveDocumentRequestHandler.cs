@@ -1,8 +1,10 @@
-﻿    using System.Threading;
+﻿using System.Threading;
+using ComptaClub.Contracts.Models.Documents;
+using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Banks;
 
-internal class SaveDocumentRequestHandler : SaveRequestHandlerBase, IRequestHandler<Requests.Documents.SaveDocumentRequest, Results.PersistResult>
+internal class SaveDocumentRequestHandler : SaveRequestHandlerBase, IRequestHandler<SaveDocumentRequest, PersistResult>
 {
     private readonly IValidator<DocumentData> _validator;
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
@@ -19,7 +21,7 @@ internal class SaveDocumentRequestHandler : SaveRequestHandlerBase, IRequestHand
         _logger = logger;
     }
 
-    public async Task<Results.PersistResult> Handle(Requests.Documents.SaveDocumentRequest request, CancellationToken cancellationToken)
+    public async Task<PersistResult> Handle(SaveDocumentRequest request, CancellationToken cancellationToken)
     {
         var result = await _validator.ValidateAsync(request.Entity,cancellationToken);
         if (!result.IsValid)
@@ -58,7 +60,7 @@ internal class SaveDocumentRequestHandler : SaveRequestHandlerBase, IRequestHand
                 && existingContent == null)
             {
                 db.Database.RollbackTransaction();
-                saveResult.ErrorBrokenRuleList.Add(new Results.BrokenRule
+                saveResult.ErrorBrokenRuleList.Add(new BrokenRule
                 {
                     PropertyName = "Content",
                     MessageList = new List<string> { "Un document doit avoir un contenu" }

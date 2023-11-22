@@ -2,6 +2,17 @@
 
 <PageTitle>Les comptes de résulat</PageTitle>
 
+<SectionContent SectionName="toolbar">
+
+    <RadzenButton Text="Ajouter"
+                  Click="CreateIncomeStatement"
+                  Icon="add_circle_outline"
+                  ButtonStyle="ButtonStyle.Success"
+                  class="btn btn-primary m-1"
+                  title="Creer un compte de résultat" />
+
+</SectionContent>
+
 <RadzenDataGrid @ref="grid" 
     AllowFiltering="true" 
     AllowSorting="true" 
