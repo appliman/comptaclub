@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ComptaClub.Requests.Banks;
-using ComptaClub.Results;
+using ComptaClub.Contracts.Models.Banks;
+using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Banks;
 

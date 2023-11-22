@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using ComptaClub.Requests;
-using ComptaClub.Results;
+using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Users;
 

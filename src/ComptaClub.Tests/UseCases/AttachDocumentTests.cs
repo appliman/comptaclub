@@ -1,12 +1,11 @@
-﻿using ComptaClub.Models;
-using ComptaClub.Requests;
-using ComptaClub.Requests.Accounts;
+﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models.Documents;
+using ComptaClub.Contracts.Models.Entries;
+using ComptaClub.Extensions;
 
 using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
-
-using ComptaClub.Extensions;
 
 namespace ComptaClub.Tests.UseCases;
 
@@ -24,14 +23,14 @@ public class AttachDocumentTests
 		var currentFolder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!;
 		var pdftest = System.IO.Path.Combine(currentFolder, "docs", "test.pdf");
 
-		var document = await mediator.Send(new Requests.Documents.CreateDocumentRequest());
+		var document = await mediator.Send(new CreateDocumentRequest());
 		document.FileName = System.IO.Path.GetFileName(pdftest);
 		document.MimeType = "application/pdf";
 
 		var content = System.IO.File.ReadAllBytes(pdftest);
 		var ms = new System.IO.MemoryStream(content);
 
-		var saveResult = await mediator.Send(new Requests.Documents.SaveDocumentRequest(document, ms));
+		var saveResult = await mediator.Send(new SaveDocumentRequest(document, ms));
 		saveResult.HasError.Should().BeFalse();
 
 		var documentFilter = new DocumentListFilter();
@@ -56,7 +55,7 @@ public class AttachDocumentTests
 
 		var entry = await mediator.CreateAndSaveRandomCreditEntry(exercice, user, bank, licenceAccount.Id, DateTime.Now);
 
-		var entryDocument = await mediator.Send(new Requests.Entries.AttachDocumentToEntryRequest(entry!.Id, doc));
+		var entryDocument = await mediator.Send(new AttachDocumentToEntryRequest(entry!.Id, doc));
 		entryDocument.Should().NotBeNull();
 		entryDocument.HasError.Should().BeFalse();
 
@@ -71,7 +70,7 @@ public class AttachDocumentTests
 		doc.FileName.Should().Be("test.pdf");
 
 		// Supression du document associé a l'entrée
-		var removeResult = await mediator.Send(new Requests.Entries.RemoveDocumentFromEntryRequest(entry.Id, doc.Id));
+		var removeResult = await mediator.Send(new RemoveDocumentFromEntryRequest(entry.Id, doc.Id));
 		removeResult.Should().NotBeNull();
 
 		page = await mediator.Send(new GetPagedEntityListRequest<DocumentListFilter, Datas.DocumentData>(documentFilter));

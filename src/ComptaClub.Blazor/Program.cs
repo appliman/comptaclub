@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using ComptaClub;
+using ComptaClub.Blazor;
 
 using EFScriptableMigration;
 
@@ -29,13 +30,9 @@ builder.Services.AddScoped<Radzen.ContextMenuService>();
 builder.Services.AddScoped<ComptaClub.Blazor.Services.PrintService>();
 builder.Services.AddScoped<ComptaClub.Blazor.Services.ListFilterQueryStringParametersService>();
 
-// Add services to the container.
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor()
-            .AddHubOptions(o =>
-             {
-                 o.MaximumReceiveMessageSize = 2 * 1024 * 1024;
-             });
+builder.Services.AddRazorComponents()
+            .AddInteractiveServerComponents();
+
 builder.Services.AddMemoryCache();
 
 builder.Services.AddControllers()
@@ -133,17 +130,23 @@ else
 
 app.UseRequestLocalization("fr-FR");
 
-app.UseStaticFiles();
-
 app.UseRouting();
+app.MapControllers();
+
+app.UseStaticFiles();
+app.UseAntiforgery();
+
+app.MapRazorComponents<ComptaClub.Blazor.Pages.App>()
+        .AddInteractiveServerRenderMode();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
-app.MapBlazorHub();
+/*
 app.MapFallbackToPage("/_Host");
+app.MapBlazorHub();
 app.MapRazorPages();
+*/
 
 var migration = new DbMigration()
 {
@@ -155,6 +158,6 @@ var migration = new DbMigration()
 await migration.Start();
 
 var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
-await mediator.Send(new ComptaClub.Requests.WarmupRequest());
+await mediator.Send(new WarmupRequest());
 
 app.Run();

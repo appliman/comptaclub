@@ -1,6 +1,7 @@
 using AutoMapper;
 
 using ComptaClub.Blazor.Pages.Components;
+using ComptaClub.Contracts.Models.Exercices;
 
 namespace ComptaClub.Blazor.Pages
 {
@@ -27,12 +28,12 @@ namespace ComptaClub.Blazor.Pages
             if (ExerciceId == null
                 || ExerciceId == Guid.Empty)
             {
-                var data = await Mediator.Send(new Requests.Exercices.CreateExerciceRequest());
+                var data = await Mediator.Send(new CreateExerciceRequest());
 				exercice = Mapper.Map<ViewModels.Exercice>(data);
 			}
             else
             {
-                var data = await Mediator.Send(new Requests.Exercices.GetExerciceByFilterRequest(f => f.Id == ExerciceId.Value));
+                var data = await Mediator.Send(new GetExerciceByFilterRequest(f => f.Id == ExerciceId.Value));
                 if (data != null)
                 {
 					exercice = Mapper.Map<ViewModels.Exercice>(data);
@@ -43,7 +44,7 @@ namespace ComptaClub.Blazor.Pages
         async Task ValidateAndSave()
         {
 			var data = Mapper.Map<Datas.ExerciceData>(exercice);
-			var saveResult = await Mediator!.Send(new Requests.SaveEntityRequest<Datas.ExerciceData>(data));
+			var saveResult = await Mediator!.Send(new SaveEntityRequest<Datas.ExerciceData>(data));
 			if (saveResult!.HasError)
 			{
                 customValidator.DisplayErrors(saveResult.ErrorBrokenRuleList);

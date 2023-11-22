@@ -1,5 +1,17 @@
 ﻿@page "/club"
 
+<PageTitle>Club</PageTitle>
+
+<SectionContent SectionName="toolbar">
+
+	<RadzenButton Text="Sauvegarder"
+				  Click="ValidateAndSave"
+				  Icon="save"
+				  ButtonStyle="ButtonStyle.Success"
+				  class="btn btn-primary m-1" />
+
+</SectionContent>
+
 <div class="panel-body">
 	<EditForm Model="club" OnValidSubmit="ValidateAndSave">
 		<ValidationSummary></ValidationSummary>

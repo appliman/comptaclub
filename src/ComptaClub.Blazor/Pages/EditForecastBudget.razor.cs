@@ -1,6 +1,5 @@
-using ComptaClub.Blazor.Pages.Shared;
+using ComptaClub.Contracts.Models.ForecastBudget;
 using ComptaClub.Datas;
-using ComptaClub.Requests.ForecastBudget;
 
 namespace ComptaClub.Blazor.Pages;
 
@@ -29,21 +28,6 @@ public partial class EditForecastBudget
 
 	protected override async Task OnInitializedAsync()
 	{
-		MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarButton
-		{
-			IconName = "save",
-			Text = "Enregistrer",
-			OnClick = Save
-		}).AddItem(new ViewModels.Toolbar.ToolbarLink
-		{
-			IconName = "print",
-			Text = "Imprimer",
-			Target = "_blank",
-			Description = "Imprimer le bilan prévisionnel",
-			Url = $"/reports/bilan-previsionnel/{ForecastBudgetId}"
-		})
-		.Display();
-
 		forecastBudget = (await Mediator.GetForecastBudgetById(ForecastBudgetId))!;
 
 		var filter = new ForecastBudgetItemListFilter();

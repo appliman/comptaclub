@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ComptaClub.Requests.Stats;
+using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models.Exercices;
+using ComptaClub.Contracts.Models.Stats;
 
 namespace ComptaClub.Handlers.Stats;
 
@@ -21,7 +23,7 @@ internal class GetBalanceByDayRequestHandler : IRequestHandler<GetBalanceByDayRe
 
     public async Task<IEnumerable<BalanceByDay>> Handle(GetBalanceByDayRequest request, CancellationToken cancellationToken)
     {
-        var currentExercice = await _mediator.Send(new Requests.Exercices.GetActiveExerciceRequest());
+        var currentExercice = await _mediator.Send(new GetActiveExerciceRequest());
         if (currentExercice == null)
         {
             return new List<BalanceByDay>();

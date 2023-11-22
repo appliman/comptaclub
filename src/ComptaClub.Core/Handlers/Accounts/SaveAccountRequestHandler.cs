@@ -1,10 +1,10 @@
 ﻿using Azure.Core;
-
-using ComptaClub.Requests;
+using ComptaClub.Contracts.Models.Accounts;
+using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Accounts;
 
-internal class SaveAccountRequestHandler : SaveRequestHandlerBase, IRequestHandler<SaveEntityRequest<AccountData>, Results.PersistResult>
+internal class SaveAccountRequestHandler : SaveRequestHandlerBase, IRequestHandler<SaveEntityRequest<AccountData>, PersistResult>
 {
     private readonly IValidator<AccountData> _validator;
     private readonly IMediator _mediator;
@@ -20,9 +20,9 @@ internal class SaveAccountRequestHandler : SaveRequestHandlerBase, IRequestHandl
         _mediator = mediator;
     }
 
-    public async Task<Results.PersistResult> Handle(SaveEntityRequest<AccountData> request, CancellationToken cancellationToken)
+    public async Task<PersistResult> Handle(SaveEntityRequest<AccountData> request, CancellationToken cancellationToken)
     {
-        var existing = await _mediator.Send(new Requests.Accounts.GetAccountByFilterRequest(f => f.GetById(request.Entity.Id)), cancellationToken);
+        var existing = await _mediator.Send(new GetAccountByFilterRequest(f => f.GetById(request.Entity.Id)), cancellationToken);
         if (existing != null
             && existing.Direction != request.Entity.Direction)
         {

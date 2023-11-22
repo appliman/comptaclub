@@ -1,6 +1,6 @@
-﻿using ComptaClub.Requests.Documents;
-using ComptaClub.Requests.Entries;
-using ComptaClub.Results;
+﻿using ComptaClub.Contracts.Models.Documents;
+using ComptaClub.Contracts.Models.Entries;
+using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Entries;
 internal class AttachDocumentToEntryRequestHandler : IRequestHandler<AttachDocumentToEntryRequest, CommandResult>
@@ -45,9 +45,9 @@ internal class AttachDocumentToEntryRequestHandler : IRequestHandler<AttachDocum
 		}
 
 		var existingRelationQry = from dbe in db.DocumentsByEntities
-							   where dbe.EntityId == request.EntryId
-							   && dbe.DocumentId == document!.Id
-							   select dbe;
+								  where dbe.EntityId == request.EntryId
+								  && dbe.DocumentId == document!.Id
+								  select dbe;
 
 		var relation = await existingRelationQry.FirstOrDefaultAsync(cancellationToken);
 		if (relation is null)

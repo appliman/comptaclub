@@ -1,4 +1,4 @@
-﻿using ComptaClub.Models;
+﻿using ComptaClub.Contracts.Models;
 
 namespace ComptaClub.Blazor.ViewModels;
 
