@@ -1,7 +1,6 @@
 ﻿using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Contracts.Models.Members;
-using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Stats;
 
