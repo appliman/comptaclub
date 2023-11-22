@@ -1,7 +1,6 @@
 ﻿using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Exercices;
-using ComptaClub.Contracts.Notifications;
 
 namespace ComptaClub.Handlers.Entries;
 internal class ComputeBalanceForAllEntriesNotificationHandler : INotificationHandler<EntrySavedNotification>

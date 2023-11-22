@@ -1,4 +1,4 @@
-﻿namespace ComptaClub.Contracts.Notifications;
+﻿namespace ComptaClub.Contracts.Models.Entries;
 
 public record EntrySavedNotification : INotification
 {
