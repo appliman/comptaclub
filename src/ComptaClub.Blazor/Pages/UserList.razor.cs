@@ -1,8 +1,7 @@
 using AutoMapper;
 
-using ComptaClub.Blazor.ViewModels;
-using ComptaClub.Models;
-using ComptaClub.Requests;
+using ComptaClub.Contracts.Models.Users;
+using ComptaClub.Contracts.Results;
 
 using MediatR;
 
@@ -11,7 +10,7 @@ namespace ComptaClub.Blazor.Pages;
 public partial class UserList
 {
 	[CascadingParameter]
-	Shared.MainLayout MainLayout { get; set; } = default!;
+	MainLayout MainLayout { get; set; } = default!;
 
 	[Inject]
 	IMediator Mediator { get; set; } = default!;
@@ -22,20 +21,12 @@ public partial class UserList
 	List<ViewModels.User>? userList;
 	RadzenDataGrid<ViewModels.User>? grid = new();
 	readonly UserListFilter filter = new();
-	List<Results.BrokenRule> brokenRules = new();
+	List<BrokenRule> brokenRules = new();
 	ViewModels.User? userToInsert;
 	ViewModels.User? userToUpdate;
 
 	protected override void OnInitialized()
 	{
-		MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarButton
-		{
-			IconName = "person_add",
-			Text = "Ajouter",
-			Title = "Ajouter un utilisateur",
-			OnClick = InsertRow
-		}).Display();
-
 		filter.PageSize = 100;
 	}
 
@@ -53,7 +44,7 @@ public partial class UserList
 
 	async Task InsertRow()
 	{
-		var data = await Mediator.Send(new Requests.Users.CreateUserRequest());
+		var data = await Mediator.Send(new CreateUserRequest());
 		userToInsert = Mapper.Map<ViewModels.User>(data);
 		await grid!.InsertRow(userToInsert);
 	}
@@ -74,7 +65,7 @@ public partial class UserList
 		userToUpdate = null;
 
 		var data = Mapper!.Map<Datas.UserData>(user);
-		var saveResult = await Mediator.Send(new Requests.SaveEntityRequest<Datas.UserData>(data));
+		var saveResult = await Mediator.Send(new SaveEntityRequest<Datas.UserData>(data));
 		if (saveResult.HasError)
 		{
 			brokenRules = saveResult.ErrorBrokenRuleList;
@@ -84,7 +75,7 @@ public partial class UserList
 		await grid!.UpdateRow(user);
 	}
 
-	void CancelEdit(ViewModels.User	user)
+	void CancelEdit(ViewModels.User user)
 	{
 		if (user == userToInsert)
 		{

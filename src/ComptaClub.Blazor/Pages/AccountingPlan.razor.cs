@@ -1,24 +1,12 @@
-using ComptaClub.Models;
-using ComptaClub.Blazor.Pages.Components;
-
-using Microsoft.AspNetCore.Components;
-
-using Radzen;
-using Radzen.Blazor;
-using Microsoft.Extensions.Azure;
-using ComptaClub.Blazor.Extensions;
-using ComptaClub.Requests;
-using ComptaClub.Blazor.Pages.Shared;
-using System.Reflection.Metadata.Ecma335;
-using Microsoft.AspNetCore.Mvc.Localization;
-using System.Collections.Generic;
+using ComptaClub.Contracts.Models.Accounts;
+using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Blazor.Pages;
 
 public partial class AccountingPlan : ComponentBase
 {
 	[CascadingParameter]
-	Shared.MainLayout MainLayout { get; set; } = default!;
+	MainLayout MainLayout { get; set; } = default!;
 
 	[Inject]
 	MediatR.IMediator Mediator { get; set; } = default!;
@@ -30,58 +18,23 @@ public partial class AccountingPlan : ComponentBase
 	NavigationManager NavigationManager { get; set; } = default!;
 
 
-    IEnumerable<ViewModels.Account> accountList = new List<ViewModels.Account>();
+	IEnumerable<ViewModels.Account> accountList = new List<ViewModels.Account>();
 	RadzenDataGrid<ViewModels.Account>? grid;
 	ViewModels.Account? accountToUpdate;
 	ViewModels.Account? accountToInsert;
-	List<Results.BrokenRule> brokenRules = new();
+	List<BrokenRule> brokenRules = new();
 	bool uploadEnabled = false;
 	string? uploadError = null;
 	string? uploadSuccess = null;
 
 	protected override async Task OnInitializedAsync()
 	{
-		MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarButton
-		{
-			OnClick = InsertRow,
-			IconName = "add_circle_outline",
-			Text = "Ajouter un compte",
-			Disabled = (accountToInsert != null || accountToUpdate != null)
-		}).AddItem(new ViewModels.Toolbar.ToolbarButton
-		{
-			OnClick = ExportToJson,
-			IconName = "file_download",
-			Text = "Exporter"
-		}).AddItem(new ViewModels.Toolbar.ToolbarButton
-		{
-			OnClick = async () =>
-			{
-				uploadEnabled = !uploadEnabled;
-				StateHasChanged();
-				await Task.Delay(0);
-            },
-			IconName = "upload_file",
-			Text = "Importer"
-		}).AddItem(new ViewModels.Toolbar.ToolbarButton
-		{
-			OnClick = async () =>
-			{
-				foreach (var row in accountList)
-				{
-					await grid!.ExpandRow(row);
-				}
-			},
-			IconName = "expand_content",
-			Text = "Déployer",
-			Title = "Voir tous les comptes"
-		}).Display();
-
 		await LoadDatas();
 	}
 
 	async Task LoadDatas()
 	{
-		var dataPlan = await Mediator.Send(new Requests.Accounts.GetPlanRequest());
+		var dataPlan = await Mediator.Send(new GetPlanRequest());
 		var list = MapPlan(dataPlan);
 		accountList = list;
 	}
@@ -124,7 +77,7 @@ public partial class AccountingPlan : ComponentBase
 		accountToUpdate = null;
 
 		var data = Mapper.Map<Datas.AccountData>(account);
-		var saveResult = await Mediator.Send(new Requests.SaveEntityRequest<Datas.AccountData>(data));
+		var saveResult = await Mediator.Send(new SaveEntityRequest<Datas.AccountData>(data));
 		if (saveResult.HasError)
 		{
 			brokenRules = saveResult.ErrorBrokenRuleList;
@@ -149,7 +102,7 @@ public partial class AccountingPlan : ComponentBase
 
 	async Task InsertRow()
 	{
-		var data = await Mediator.Send(new Requests.Accounts.CreateAccountRequest());
+		var data = await Mediator.Send(new CreateAccountRequest());
 		accountToInsert = Mapper.Map<ViewModels.Account>(data);
 		await grid!.InsertRow(accountToInsert);
 	}
@@ -157,7 +110,7 @@ public partial class AccountingPlan : ComponentBase
 	async Task InsertRow(ViewModels.Account account)
 	{
 		await grid!.ExpandRow(account);
-		var data = await Mediator.Send(new Requests.Accounts.CreateAccountRequest()
+		var data = await Mediator.Send(new CreateAccountRequest()
 		{
 			Direction = account.Direction,
 			ParentId = account.Id
@@ -175,7 +128,7 @@ public partial class AccountingPlan : ComponentBase
 		{
 			return;
 		}
-		var result = await Mediator!.Send(new Requests.Accounts.DeleteAccountRequest(account.Id));
+		var result = await Mediator!.Send(new DeleteAccountRequest(account.Id));
 		if (result.HasError)
 		{
 			MainLayout.NotificationService.NotifyError(result);
@@ -196,7 +149,7 @@ public partial class AccountingPlan : ComponentBase
 	{
 		var fileName = $"{Guid.NewGuid()}.json";
 		var path = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-		var request = new Requests.Accounts.ExportPlanToJsonFileRequest(System.IO.Path.Combine(path, fileName));
+		var request = new ExportPlanToJsonFileRequest(System.IO.Path.Combine(path, fileName));
 		var result = await Mediator.Send(request);
 		if (result.HasError)
 		{
@@ -215,9 +168,9 @@ public partial class AccountingPlan : ComponentBase
 			uploadError = "Ce fichier n'est pas au bon format";
 			return;
 		}
-        var ms = new MemoryStream();
-        await args.File.OpenReadStream().CopyToAsync(ms);
-        var result = await Mediator.Send(new Requests.Accounts.ImportAccountingPlanFromFileStreamRequest(ms));
+		var ms = new MemoryStream();
+		await args.File.OpenReadStream().CopyToAsync(ms);
+		var result = await Mediator.Send(new ImportAccountingPlanFromFileStreamRequest(ms));
 		if (result.HasError)
 		{
 			uploadError = "Une erreur est survenue pendant l'import";
@@ -225,10 +178,24 @@ public partial class AccountingPlan : ComponentBase
 		}
 
 		uploadEnabled = false;
-        uploadSuccess = "Import terminé";
+		uploadSuccess = "Import terminé";
 
 		await LoadDatas();
 		await grid!.Reload();
-    }
+	}
 
+	async Task Import()
+	{
+		await Task.Yield();
+		uploadEnabled = !uploadEnabled;
+		StateHasChanged();
+	}
+
+	async Task DeployAll()
+	{
+		foreach (var row in accountList)
+		{
+			await grid!.ExpandRow(row);
+		}
+	}
 }

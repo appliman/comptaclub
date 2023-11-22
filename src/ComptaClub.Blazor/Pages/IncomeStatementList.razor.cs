@@ -1,15 +1,12 @@
-﻿using ComptaClub.Datas;
-using ComptaClub.Requests;
-using ComptaClub.Requests.IncomeStatements;
-
-using MediatR;
+﻿using ComptaClub.Contracts.Models.IncomeStatements;
+using ComptaClub.Datas;
 
 namespace ComptaClub.Blazor.Pages;
 
 public partial class IncomeStatementList : ComponentBase
 {
 	[CascadingParameter]
-	Shared.MainLayout MainLayout { get; set; } = default!;
+	MainLayout MainLayout { get; set; } = default!;
 
 	[Inject]
 	MediatR.IMediator Mediator { get; set; } = default!;
@@ -32,17 +29,9 @@ public partial class IncomeStatementList : ComponentBase
 	IList<ViewModels.IncomeStatement>? selectedRow;
 
 	protected override async Task OnInitializedAsync()
-    {
-		MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarButton
-		{
-			IconName = "add_circle_outline",
-			Text = "Creer un compte de résultat",
-			OnClick = CreateIncomeStatement
-		})
-		.Display();
-
-        await LoadDatas();
-    }
+	{
+		await LoadDatas();
+	}
 
 	async Task LoadDatas()
 	{
@@ -63,16 +52,16 @@ public partial class IncomeStatementList : ComponentBase
 		});
 
 		if (dialog == false)
-        {
-            return;
-        }
+		{
+			return;
+		}
 
 		var deleteResult = await Mediator.Send(new DeleteIncomeStatementRequest(item.Id));
 		if (deleteResult.HasError)
-        {
-            NotificationService.NotifyError(deleteResult);
-            return;
-        }
+		{
+			NotificationService.NotifyError(deleteResult);
+			return;
+		}
 
 		await LoadDatas();
 	}

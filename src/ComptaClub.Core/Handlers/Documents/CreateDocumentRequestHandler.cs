@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using ComptaClub.Requests.Documents;
+using ComptaClub.Contracts.Models.Documents;
 
 namespace ComptaClub.Handlers.Documents;
 
-internal class CreateDocumentRequestHandler : IRequestHandler<Requests.Documents.CreateDocumentRequest, Datas.DocumentData>
+internal class CreateDocumentRequestHandler : IRequestHandler<CreateDocumentRequest, Datas.DocumentData>
 {
     public Task<DocumentData> Handle(CreateDocumentRequest request, CancellationToken cancellationToken)
     {

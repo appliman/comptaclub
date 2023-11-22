@@ -1,0 +1,35 @@
+﻿@page "/club"
+
+<div class="panel-body">
+	<EditForm Model="club" OnValidSubmit="ValidateAndSave">
+		<ValidationSummary></ValidationSummary>
+		<DataAnnotationsValidator />
+		<CustomValidator @ref="customValidator"></CustomValidator>
+		<div class="row">
+			<SuperInputText @bind-Value="club.Name" PlaceHoder="Nom" Required="true" Label="Nom :" />
+			<SuperInputText @bind-Value="club.Object" PlaceHoder="Objet" Label="Objet :" />
+			<hr />
+			<small>Taille du logo 180px / 180px</small>
+			<InputFile class="form-control" OnChange="@OnInputFileChange" />
+			@if (club.LogoBase64String is not null)
+			{
+				<img class="img-thumbnail m-3" style="width:180px; height:180px;" width="180" height="180" src="data:@club.LogoContentType;base64,@club.LogoBase64String">
+			}
+			else
+			{
+				<EmptyImage Width="180" Height="180" />
+			}
+			<hr />
+			<SuperInputArea @bind-Value="club.Address" PlaceHoder="Adresse" Label="Adresse :" />
+			<SuperInputText @bind-Value="club.SiretNumber" PlaceHoder="N°Siret" Label="N°Siret :" />
+			<SuperInputText @bind-Value="club.RNA" PlaceHoder="N°RNA" Label="N°Rna :" />
+			<SuperInputText @bind-Value="club.Email" PlaceHoder="contact@exemple.com" Label="Email :" />
+			<SuperInputText @bind-Value="club.ContactName" PlaceHoder="contact" Label="Nom d'envoi :" />
+			<SuperInputText @bind-Value="club.WebSite" PlaceHoder="https://www.exemple.com" Label="Site Web :" />
+			<SuperInputText @bind-Value="club.PhoneNumber" PlaceHoder="https://www.exemple.com" Label="N°Téléphone :" />
+		</div>
+	</EditForm>
+</div>
+
+
+

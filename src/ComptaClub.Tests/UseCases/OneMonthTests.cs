@@ -1,6 +1,7 @@
-﻿using ComptaClub.Extensions;
-using ComptaClub.Requests;
-using ComptaClub.Requests.Accounts;
+﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models.Entries;
+using ComptaClub.Contracts.Models.Exercices;
+using ComptaClub.Extensions;
 
 using FluentAssertions;
 
@@ -45,7 +46,7 @@ public class OneMonthTests
 		var licenceAccount = leafPlan.Single(i => i.Code == "756001");
 		var bankFeeAccount = leafPlan.Single(i => i.Code == "61/62");
 
-		var entry = await mediator.Send(new Requests.Entries.CreateEntryRequest());
+		var entry = await mediator.Send(new CreateEntryRequest());
 		entry.CreationDate = entry.ValueDate = new DateTime(DateTime.Now.Year, 2, 1).ToDayId();
 		entry.Label = "B70027L NICOLAS GIRARD 2/2\r\nB70027L Adhesion Nicolas Girard 2/2";
 		entry.PartNumber = "VIR M NICOLAS GIRARD";
@@ -60,10 +61,10 @@ public class OneMonthTests
 		var saveEntryResult = await mediator.Send(new SaveEntityRequest<Datas.EntryData>(entry));
 		saveEntryResult.HasError.Should().BeFalse();
 
-		exercice = await mediator.Send(new Requests.Exercices.GetExerciceByFilterRequest(i => i.Id == exercice.Id));
+		exercice = await mediator.Send(new GetExerciceByFilterRequest(i => i.Id == exercice.Id));
 		exercice!.BalanceAmount.Should().Be(70 * 1000000);
 
-		entry = await mediator.Send(new Requests.Entries.CreateEntryRequest());
+		entry = await mediator.Send(new CreateEntryRequest());
 		entry.CreationDate = entry.ValueDate = new DateTime(DateTime.Now.Year, 2, 3).ToDayId();
 		entry.Label = "F FRAIS UTIL DOMIWEB DECE.19";
 		entry.PartNumber = "NE05093530\r\n";
@@ -79,10 +80,10 @@ public class OneMonthTests
 		saveEntryResult.HasError.Should().BeFalse();
 
 		var balance = exercice.BalanceAmount - entry.Amount;
-		exercice = await mediator.Send(new Requests.Exercices.GetExerciceByFilterRequest(i => i.Id == exercice.Id));
+		exercice = await mediator.Send(new GetExerciceByFilterRequest(i => i.Id == exercice.Id));
 		exercice!.BalanceAmount.Should().Be(balance);
 
-		entry = await mediator.Send(new Requests.Entries.CreateEntryRequest());
+		entry = await mediator.Send(new CreateEntryRequest());
 		entry.CreationDate = entry.ValueDate = new DateTime(DateTime.Now.Year, 2, 3).ToDayId();
 		entry.Label = "REM CHQ 3730053 0536 010 CHQ";
 		entry.PartNumber = "REM CHQ 3730053 0536 010 CHQ";
@@ -98,7 +99,7 @@ public class OneMonthTests
 		saveEntryResult.HasError.Should().BeFalse();
 
 		balance = exercice.BalanceAmount + entry.Amount;
-		exercice = await mediator.Send(new Requests.Exercices.GetExerciceByFilterRequest(i => i.Id == exercice.Id));
+		exercice = await mediator.Send(new GetExerciceByFilterRequest(i => i.Id == exercice.Id));
 		exercice!.BalanceAmount.Should().Be(balance);
 	}
 }

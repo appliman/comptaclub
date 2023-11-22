@@ -1,5 +1,4 @@
 using ComptaClub.Blazor.ViewModels;
-using ComptaClub.Requests.Accounts;
 
 using MediatR;
 

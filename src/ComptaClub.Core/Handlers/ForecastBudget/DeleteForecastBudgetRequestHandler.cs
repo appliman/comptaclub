@@ -1,5 +1,5 @@
-﻿using ComptaClub.Requests.ForecastBudget;
-using ComptaClub.Results;
+﻿using ComptaClub.Contracts.Models.ForecastBudget;
+using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.ForecastBudget;
 internal class DeleteForecastBudgetRequestHandler : IRequestHandler<DeleteForecastBudgetRequest, CommandResult>

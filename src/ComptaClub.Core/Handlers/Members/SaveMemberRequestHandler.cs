@@ -1,7 +1,5 @@
 ﻿using Azure.Core;
-
-using ComptaClub.Requests;
-using ComptaClub.Results;
+using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Members;
 

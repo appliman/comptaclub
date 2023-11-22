@@ -1,6 +1,5 @@
 ﻿using System.Text;
-
-using ComptaClub.Results;
+using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Blazor.Extensions;
 

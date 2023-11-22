@@ -1,6 +1,6 @@
-﻿using ComptaClub.Enums;
-using ComptaClub.Requests.Exercices;
-using ComptaClub.Results;
+﻿using ComptaClub.Contracts.Models.Exercices;
+using ComptaClub.Contracts.Results;
+using ComptaClub.Enums;
 
 namespace ComptaClub.Handlers.Exercices;
 internal class CloseExerciceRequestHandler : IRequestHandler<CloseExerciceRequest, CommandResult>

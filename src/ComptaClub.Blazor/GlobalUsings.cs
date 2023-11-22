@@ -9,8 +9,10 @@ global using Microsoft.AspNetCore.Components.Forms;
 
 global using Microsoft.Extensions.DependencyInjection;
 
+global using ComptaClub.Contracts.Models;
 global using ComptaClub.Extensions;
 global using ComptaClub.Blazor.Extensions;
+global using ComptaClub.Blazor.Pages.Layout;
 global using ComptaClub.Enums;
 
 global using Radzen;

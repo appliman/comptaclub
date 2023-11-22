@@ -1,5 +1,5 @@
-﻿using ComptaClub.Requests;
-using ComptaClub.Requests.Accounts;
+﻿using ComptaClub.Contracts.Models.Accounts;
+using ComptaClub.Contracts.Models.Entries;
 
 using DocumentFormat.OpenXml.Wordprocessing;
 

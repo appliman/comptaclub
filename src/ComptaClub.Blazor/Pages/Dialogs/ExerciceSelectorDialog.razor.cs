@@ -1,3 +1,5 @@
+using ComptaClub.Contracts.Models.Exercices;
+
 using MediatR;
 
 namespace ComptaClub.Blazor.Pages.Dialogs;
@@ -14,12 +16,12 @@ public partial class ExerciceSelectorDialog
 	AutoMapper.IMapper Mapper { get; set; } = default!;
 
 	List<ViewModels.Exercice>? exerciceList;
-	RadzenDataGrid<ViewModels.Exercice>? grid = new();
+	RadzenDataGrid<ViewModels.Exercice>? grid = default!;
 	IList<ViewModels.Exercice>? selectedRow;
 
 	async Task LoadDatas(LoadDataArgs args)
 	{
-		var datas = await Mediator!.Send(new Requests.Exercices.GetAllExercicesRequest());
+		var datas = await Mediator!.Send(new GetAllExercicesRequest());
 		datas.RemoveAll(i => i.ExerciceState != ExerciceState.Closed);
 		exerciceList = Mapper.Map<List<ViewModels.Exercice>>(datas);
 		var rowIndex = 1;
@@ -34,7 +36,7 @@ public partial class ExerciceSelectorDialog
 		if (selectedRow != null
 			&& selectedRow.Any())
 		{
-			DialogService.Close(selectedRow.First());
+			DialogService.Close(selectedRow[0]);
 		}
 		else
 		{

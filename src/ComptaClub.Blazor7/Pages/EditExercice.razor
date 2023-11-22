@@ -1,0 +1,23 @@
+﻿@page "/exercice/ajout"
+@page "/exercice/edition/{ExerciceId:guid}"
+
+<PageTitle>Exercice</PageTitle>
+
+<div class="panel-body">
+	<EditForm Model="exercice" OnValidSubmit="ValidateAndSave">
+		<ValidationSummary></ValidationSummary>
+		<DataAnnotationsValidator />
+		<CustomValidator @ref="customValidator"></CustomValidator>
+		<div class="row">
+			<SuperInputText @bind-Value="exercice.Code" PlaceHoder="Code" Required="true" Label="Code :"/>
+			<SuperInputText @bind-Value="exercice.Label" PlaceHoder="Libellé" Required="true" Label="Libellé :"/>
+			<SuperInputCurrency @bind-Value="exercice.InitialAmount" PlaceHoder="Solde" Required="true" Label="Solde initial :" style="width:200px;" />
+			<SuperInputDate @bind-Value="exercice.StartDate" PlaceHoder="Date de début" Required="true" Label="Date de début :" />
+			<SuperInputDate @bind-Value="exercice.EndDate" PlaceHoder="Date de début" Required="true" Label="Date de fin :" />
+		</div>
+		<div class="form-group" style="margin-top:10px">
+			<button type="submit" class="btn btn-primary">Enregistrer</button>
+		</div>
+	</EditForm>
+</div>
+

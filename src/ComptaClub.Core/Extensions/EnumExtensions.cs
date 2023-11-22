@@ -6,8 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-
-using ComptaClub.Models;
+using ComptaClub.Contracts.Models;
 
 namespace ComptaClub.Extensions
 {
@@ -27,7 +26,7 @@ namespace ComptaClub.Extensions
 			return attribute == null ? $"{value}" : attribute.Name!;
 		}
 
-		public static List<Models.EnumExtension<E>> GetEnumExtensions<E>()
+		public static List<EnumExtension<E>> GetEnumExtensions<E>()
 			where E : struct
 		{
 			var result = new List<EnumExtension<E>>();

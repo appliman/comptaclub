@@ -1,0 +1,77 @@
+﻿@page "/plan"
+
+<PageTitle>Plan</PageTitle>
+
+@if (uploadEnabled)
+{
+    <div class="m-4">
+        <label class="form-label">Veuillez indiquer le fichier à envoyer :</label>
+        <InputFile OnChange="ImportFromJson" class="form-control" />
+        @if (!string.IsNullOrWhiteSpace(uploadError))
+        {
+            <div class="danger">@uploadError</div>
+        }
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(uploadSuccess))
+{
+    <div class="success m-4">@uploadError</div>
+}
+<div style="height:100%">
+<RadzenDataGrid @ref="grid" 
+    AllowFiltering="false" 
+    AllowSorting="false" 
+    AllowColumnResize="true" 
+    ExpandMode="DataGridExpandMode.Multiple"
+    Data="@accountList"
+    TItem="ViewModels.Account" 
+    RowRender="@RowRender" 
+    LoadChildData="@LoadChildData"
+    GridLines="DataGridGridLines.Both"
+    Style="height:100%">
+    <Columns>
+        <RadzenDataGridColumn TItem="ViewModels.Account" Context="account" Width="230px" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
+            <Template Context="account">
+                    <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(account))" @onclick:stopPropagation="true" title="Supprimer ce compte">
+                    </RadzenButton>
+                <RadzenButton Icon="add_circle_outline" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => InsertRow(account))" @onclick:stopPropagation="true" title="Ajouter un sous-compte">
+                </RadzenButton>
+                    <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(account))" @onclick:stopPropagation="true" title="Editer ce compte">
+                    </RadzenButton>
+                </Template>
+            <EditTemplate Context="account">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(account))">
+                </RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelEdit(account))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ViewModels.Account" Property="Direction" Title="Débit / Crédit" Width="150px">
+                <EditTemplate Context="account">
+                    @if (!account.ParentAccountId.HasValue)
+                    {
+                        <RadzenDropDown @bind-Value="account.Direction"
+                                        Data="ComptaClub.Extensions.EnumExtensions.GetEnumExtensions<Enums.AccountDirection>()"
+                                        ValueProperty="Key"
+                                        TextProperty="Name"
+                                        Style="width:100%; display: block;">
+                        </RadzenDropDown>
+                    }
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ViewModels.Account" Property="Code" Title="Code Compta" Width="120px" Filterable="false">
+            <EditTemplate Context="account">
+                <RadzenTextBox @bind-Value="account.Code" Style="width:100%" />
+                <BrokenRuleMessage For="() => account.Code" BrokenRuleList="brokenRules"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ViewModels.Account" Property="Label" Title="Libellé du code compta" Filterable="false">
+            <EditTemplate Context="account">
+                <RadzenTextBox @bind-Value="account.Label" Style="width:100%" />
+                <BrokenRuleMessage For="() => account.Label" BrokenRuleList="brokenRules"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+</div>

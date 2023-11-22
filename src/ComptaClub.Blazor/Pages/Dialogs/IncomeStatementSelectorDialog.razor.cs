@@ -1,5 +1,4 @@
-using ComptaClub.Requests;
-using ComptaClub.Requests.IncomeStatements;
+using ComptaClub.Contracts.Models.IncomeStatements;
 
 using MediatR;
 
@@ -17,23 +16,23 @@ public partial class IncomeStatementSelectorDialog
 	AutoMapper.IMapper Mapper { get; set; } = default!;
 
 	List<ViewModels.IncomeStatement>? incomeStatementList;
-	RadzenDataGrid<ViewModels.IncomeStatement>? grid = new();
+	RadzenDataGrid<ViewModels.IncomeStatement>? grid = default!;
 	IList<ViewModels.IncomeStatement>? selectedRow;
 
 	async Task LoadDatas(LoadDataArgs args)
 	{
-		var filter = new Requests.IncomeStatements.IncomeStatementListFilter();
+		var filter = new IncomeStatementListFilter();
 		filter.SortDirection = System.ComponentModel.ListSortDirection.Descending;
 		filter.SortByName = "CreationDate";
 		filter.PageSize = int.MaxValue;
 
 		var page = await Mediator.Send(new GetPagedEntityListRequest<IncomeStatementListFilter, Datas.IncomeStatementData>(filter));
-        var list = new List<ViewModels.IncomeStatement>();
+		var list = new List<ViewModels.IncomeStatement>();
 		foreach (var item in page.List)
 		{
-            list.Add(Mapper.Map<ViewModels.IncomeStatement>(item));
+			list.Add(Mapper.Map<ViewModels.IncomeStatement>(item));
 		}
-		incomeStatementList = list;	
+		incomeStatementList = list;
 	}
 
 	Task Select()
