@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ComptaClub.Contracts.Results;
+﻿using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Contracts.Models.Banks;
 
 public record DeleteBankRequest : IRequest<CommandResult>
 {
-    public DeleteBankRequest(Guid bankId)
-    {
-        BankId = bankId;
-    }
+	public DeleteBankRequest(Guid bankId)
+	{
+		BankId = bankId;
+	}
 
-    public Guid BankId { get; init; }
+	public Guid BankId { get; init; }
 }

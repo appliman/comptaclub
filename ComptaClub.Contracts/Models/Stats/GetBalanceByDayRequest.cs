@@ -1,6 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
-
-namespace ComptaClub.Contracts.Models.Stats;
+﻿namespace ComptaClub.Contracts.Models.Stats;
 
 public record GetBalanceByDayRequest : IRequest<IEnumerable<BalanceByDay>>
 {

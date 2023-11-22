@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections;
 
-namespace ComptaClub.Contracts.Models
+namespace ComptaClub.Contracts.Models;
+
+public class PagedList<TList>
+	where TList : IEnumerable
 {
-    public class PagedList<TList>
-        where TList : IEnumerable
-    {
-        public TList List { get; set; } = default!;
-        public PagedTotal Total { get; set; } = new();
-    }
+	public TList List { get; set; } = default!;
+	public PagedTotal Total { get; set; } = new();
 }

@@ -1,12 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace ComptaClub.Contracts.Models.Accounts;
 
-namespace ComptaClub.Contracts.Models.Accounts;
-
-public class GetPlanRequest : IRequest<List<AccountData>>
-{
-
-}
+public record GetPlanRequest : IRequest<List<AccountData>>;
