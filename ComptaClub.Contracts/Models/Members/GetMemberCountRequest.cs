@@ -1,7 +1,3 @@
-﻿using MediatR;
+﻿namespace ComptaClub.Contracts.Models.Members;
 
-namespace ComptaClub.Contracts.Models.Members;
-
-public class GetMemberCountRequest : IRequest<int>
-{
-}
+public record GetMemberCountRequest : IRequest<int>;

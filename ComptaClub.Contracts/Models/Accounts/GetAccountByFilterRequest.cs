@@ -1,16 +1,13 @@
-﻿
-using System.Linq.Expressions;
-
-namespace ComptaClub.Contracts.Models.Accounts;
+﻿namespace ComptaClub.Contracts.Models.Accounts;
 
 public record GetAccountByFilterRequest : IRequest<AccountData?>
 {
-    public GetAccountByFilterRequest(Action<AccountListFilter> filter)
-    {
-        var defaultFilter = new AccountListFilter();
-        filter(defaultFilter);
-        Filter = filter;
-    }
+	public GetAccountByFilterRequest(Action<AccountListFilter> filter)
+	{
+		var defaultFilter = new AccountListFilter();
+		filter(defaultFilter);
+		Filter = filter;
+	}
 
-    public Action<AccountListFilter> Filter { get; init; } = null!;
+	public Action<AccountListFilter> Filter { get; init; } = null!;
 }

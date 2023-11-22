@@ -1,5 +1,3 @@
 ﻿namespace ComptaClub.Contracts.Models.Banks;
 
-public record GetAllBanksRequest : IRequest<List<BankData>>
-{
-}
+public record GetAllBanksRequest : IRequest<List<BankData>>;
