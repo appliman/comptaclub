@@ -1,4 +1,5 @@
-﻿using ComptaClub.Contracts.Models.Documents;
+﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models.Documents;
 
 namespace ComptaClub.Handlers.Documents;
 

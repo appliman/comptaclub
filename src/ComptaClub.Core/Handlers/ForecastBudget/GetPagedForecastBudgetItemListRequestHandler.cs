@@ -1,4 +1,5 @@
-﻿using ComptaClub.Contracts.Models.ForecastBudget;
+﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models.ForecastBudget;
 
 namespace ComptaClub.Handlers.ForecastBudget;
 

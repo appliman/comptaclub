@@ -1,5 +1,6 @@
 ﻿using System.Text;
 
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Import.Models;
 

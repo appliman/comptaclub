@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using ComptaClub.Configuration;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Users;
 using ComptaClub.Contracts.Results;
 

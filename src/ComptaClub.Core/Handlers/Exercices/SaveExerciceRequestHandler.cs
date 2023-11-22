@@ -1,4 +1,5 @@
-﻿using ComptaClub.Contracts.Models.Stats;
+﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models.Stats;
 using ComptaClub.Contracts.Results;
 using ComptaClub.Handlers.Banks;
 

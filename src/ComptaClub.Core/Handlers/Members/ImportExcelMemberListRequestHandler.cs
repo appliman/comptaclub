@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Members;
 
 namespace ComptaClub.Handlers.Members;

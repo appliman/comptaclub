@@ -1,4 +1,5 @@
-﻿using ComptaClub.Contracts.Models.Members;
+﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models.Members;
 
 namespace ComptaClub.Handlers.Members;
 

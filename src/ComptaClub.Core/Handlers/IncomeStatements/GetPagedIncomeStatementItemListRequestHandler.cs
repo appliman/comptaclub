@@ -1,4 +1,5 @@
-﻿using ComptaClub.Contracts.Models.IncomeStatements;
+﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models.IncomeStatements;
 
 namespace ComptaClub.Handlers.IncomeStatements;
 
