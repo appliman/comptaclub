@@ -1,6 +1,6 @@
 ﻿namespace ComptaClub.Contracts.Models.Members;
 
-public class ImportExcelMemberListRequest : IRequest<IEnumerable<MemberData>?>
+public record ImportExcelMemberListRequest : IRequest<IEnumerable<MemberData>?>
 {
     public ImportExcelMemberListRequest(MemoryStream? contentStream)
     {

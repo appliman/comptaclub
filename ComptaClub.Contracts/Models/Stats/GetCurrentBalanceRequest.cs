@@ -1,5 +1,3 @@
 ﻿namespace ComptaClub.Contracts.Models.Stats;
 
-public record GetCurrentBalanceRequest : IRequest<long>
-{
-}
+public record GetCurrentBalanceRequest : IRequest<long>;
