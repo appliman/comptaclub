@@ -1,4 +1,4 @@
-﻿<EditForm Model="documentContent">
+﻿<EditForm Model="this">
 	<ValidationSummary></ValidationSummary>
 	<DataAnnotationsValidator />
 	<CustomValidator @ref="customValidator"></CustomValidator>
@@ -11,7 +11,7 @@
 		<div class="col-md-3 dialog-title">
 			Fichier
 		</div>
-		<div class="col-md-9 file-drop-zone @HoverClass" @ref="fileDropContainer" @ondragenter="OnDragEnter" @ondragleave="OnDragLeave" @ondragover="OnDragEnter">
+		<div class="col-md-9 file-drop-zone @HoverClass" @ondragenter="OnDragEnter" @ondragleave="OnDragLeave" @ondragover="OnDragEnter">
 			<div class="row text-center">
 				<small>vous pouvez glisser déposer une image dans cette zone</small>
 			</div>
@@ -20,7 +20,7 @@
 			</div>
 		</div>
 	</div>
-	@if (documentContent.Length > 0)
+	@if (!string.IsNullOrWhiteSpace(tempFileName))
 	{
 		<div class="row mb-3">
 			<div class="col-md-3 dialog-title">
@@ -33,7 +33,7 @@
 				Taille
 			</div>
 			<div class="col-md-9">
-				<FileSizeLabel FileSize="@documentContent.Length" />
+				<FileSizeLabel FileSize="@fileSize" />
 			</div>
 		</div>
 	}
@@ -44,6 +44,6 @@
 		<RadzenButton ButtonStyle="ButtonStyle.Info" Icon="cancel" Text="Annuler" Click="@((args) => DialogService.Close())" />
 	</div>
 	<div class="col-auto">
-		<RadzenButton ButtonType="ButtonType.Submit" Icon="add_circle" Text="Importer" Click="@Select" Disabled="@(documentContent.Length == 0)"/>
+		<RadzenButton ButtonType="ButtonType.Submit" Icon="add_circle" Text="Importer" Click="@Select" Disabled="@(fileSize == 0)" />
 	</div>
 </div>

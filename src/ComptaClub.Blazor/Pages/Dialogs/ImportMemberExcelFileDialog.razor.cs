@@ -17,10 +17,10 @@ public partial class ImportMemberExcelFileDialog
 	DialogService DialogService { get; set; } = default!;
 
 	CustomValidator customValidator = default!;
-	ElementReference fileDropContainer;
 	string HoverClass = null!;
-	MemoryStream documentContent = new();
+	string? tempFileName;
 	string? fileName;
+	long fileSize = 0;
 
 	async Task OnInputFileChange(InputFileChangeEventArgs e)
 	{
@@ -41,9 +41,13 @@ public partial class ImportMemberExcelFileDialog
 		}
 
 		fileName = file.Name;
+		fileSize = file.Size;
 
-		documentContent = new MemoryStream();
-		await file.OpenReadStream().CopyToAsync(documentContent);
+		// Ecrire le stream dans un fichier temporaire
+		tempFileName = System.IO.Path.Combine(Path.GetTempPath(), $"{Path.GetRandomFileName()}.xlsx");
+		using var fileStream = new FileStream(tempFileName, FileMode.Create, FileAccess.Write);
+		await file.OpenReadStream().CopyToAsync(fileStream);
+		fileStream.Close();
 		StateHasChanged();
 	}
 
@@ -59,6 +63,6 @@ public partial class ImportMemberExcelFileDialog
 
 	void Select()
 	{
-		DialogService.Close(documentContent);
+		DialogService.Close(tempFileName);
 	}
 }

@@ -63,15 +63,20 @@ public partial class MemberList : ComponentBase
 			return;
 		}
 
-		var ms = uploadDialog as MemoryStream;
-		if (ms is null)
+		var tempFileName = uploadDialog as string;
+		if (string.IsNullOrWhiteSpace(tempFileName))
 		{
 			return;
 		}
-		ms.Seek(0, SeekOrigin.Begin);
 
-		// Mediator.Send(new Importmem
-
-		await grid.Reload();
+		try
+		{
+			await Mediator.Send(new ImportExcelMemberListRequest(tempFileName));
+			await grid.Reload();
+		}
+		catch (Exception ex)
+		{
+			NotificationService.Notify(NotificationSeverity.Error, $"La lecture de ce fichier a échoué pour la raison suivante : {ex.Message}");
+		}
 	}
 }
