@@ -8,22 +8,32 @@ namespace ComptaClub.Handlers.Members;
 public class ImportExcelMemberListRequestHandler : IRequestHandler<ImportExcelMemberListRequest, IEnumerable<MemberData>?>
 {
 	private readonly IMediator _mediator;
+	private readonly ILogger<ImportExcelMemberListRequestHandler> _logger;
 
-	public ImportExcelMemberListRequestHandler(IMediator mediator)
+	public ImportExcelMemberListRequestHandler(IMediator mediator,
+		ILogger<ImportExcelMemberListRequestHandler> logger)
 	{
 		_mediator = mediator;
+		_logger = logger;
 	}
 
 	public async Task<IEnumerable<MemberData>?> Handle(ImportExcelMemberListRequest request, CancellationToken cancellationToken)
 	{
 		XLWorkbook? workbook = null;
-		if (request.ContentStream is not null)
+		try
 		{
-			workbook = new XLWorkbook(request.ContentStream);
+			if (request.ContentStream is not null)
+			{
+				workbook = new XLWorkbook(request.ContentStream);
+			}
+			else if (request.FileName is not null)
+			{
+				workbook = new XLWorkbook(request.FileName);
+			}
 		}
-		else if (request.FileName is not null)
+		catch (Exception ex)
 		{
-			workbook = new XLWorkbook(request.FileName);
+			_logger.LogError(ex, ex.Message);
 		}
 
 		if (workbook == null)
