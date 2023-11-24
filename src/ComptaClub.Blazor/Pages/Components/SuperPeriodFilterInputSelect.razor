@@ -1,4 +1,7 @@
-﻿@using MediatR;
+﻿@using ComptaClub.Contracts.Models.Exercices
+@using MediatR;
+@using ComptaClub.Contracts.Models;
+
 <select class="form-select" @onchange="PeriodChanged">
 	@foreach (var item in periodList)
 	{
@@ -16,18 +19,18 @@
 	IMediator Mediator { get; set; } = default!;
 
 	[Parameter]
-	public Models.PeriodFilter? Value { get; set; }
+	public PeriodFilter? Value { get; set; }
 
 	[Parameter]
-	public EventCallback<Models.PeriodFilter?> ValueChanged { get; set; }
+	public EventCallback<PeriodFilter?> ValueChanged { get; set; }
 
 	[Parameter]
 	public EventCallback ApplyFilter { get; set; }
 
 	[Parameter]
-	public System.Linq.Expressions.Expression<Func<Models.PeriodFilter?>> ValueExpression { get; set; } = default!;
+	public System.Linq.Expressions.Expression<Func<PeriodFilter?>> ValueExpression { get; set; } = default!;
 
-	List<Models.PeriodFilter> periodList = new();
+	List<PeriodFilter> periodList = new();
 
 
 	protected override async Task OnParametersSetAsync()
@@ -44,8 +47,8 @@
 		{
 			return;
 		}
-		periodList = await Mediator.Send(new Requests.Exercices.GetPeriodListFromExerciceRequest(ExerciceId));
-		periodList.Insert(0, new Models.PeriodFilter
+		periodList = await Mediator.Send(new GetPeriodListFromExerciceRequest(ExerciceId));
+		periodList.Insert(0, new PeriodFilter
 			{
 				Name = "<Tous>",
 				FromDayId = null,

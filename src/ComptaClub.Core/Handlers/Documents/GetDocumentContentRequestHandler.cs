@@ -1,8 +1,8 @@
-﻿using ComptaClub.Requests.Documents;
+﻿using ComptaClub.Contracts.Models.Documents;
 
 namespace ComptaClub.Handlers.Documents;
 
-internal class GetDocumentContentRequestHandler : IRequestHandler<Requests.Documents.GetDocumentContentRequest, DocumentData?>
+internal class GetDocumentContentRequestHandler : IRequestHandler<GetDocumentContentRequest, DocumentData?>
 {
     private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
 

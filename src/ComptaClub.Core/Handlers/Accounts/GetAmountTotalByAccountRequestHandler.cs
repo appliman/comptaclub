@@ -1,4 +1,5 @@
-﻿using ComptaClub.Requests.Accounts;
+﻿using ComptaClub.Contracts.Models.Accounts;
+using ComptaClub.Contracts.Models.Exercices;
 
 namespace ComptaClub.Handlers.Accounts;
 
@@ -19,11 +20,11 @@ internal class GetAmountTotalByAccountRequestHandler : IRequestHandler<GetAmount
         Datas.ExerciceData? exercice = null;
         if (request.ExerciceId.HasValue)
         {
-            exercice = await _mediator.Send(new Requests.Exercices.GetExerciceByFilterRequest(i => i.Id == request.ExerciceId.Value));
+            exercice = await _mediator.Send(new GetExerciceByFilterRequest(i => i.Id == request.ExerciceId.Value));
         }
         else
         {
-            exercice = await _mediator.Send(new Requests.Exercices.GetActiveExerciceRequest(), cancellationToken);
+            exercice = await _mediator.Send(new GetActiveExerciceRequest(), cancellationToken);
         }
 
         if (exercice == null)

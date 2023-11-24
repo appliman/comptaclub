@@ -1,23 +1,13 @@
-using System.Security.Claims;
-
-using Azure;
-
 using ComptaClub.Blazor.ViewModels;
-using ComptaClub.Requests;
+using ComptaClub.Contracts.Models.Users;
+using ComptaClub.Contracts.Results;
 
 using FluentEmail.Core;
 using FluentEmail.Core.Models;
 
 using MediatR;
 
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
-
-using Radzen;
 
 namespace ComptaClub.Blazor.Pages;
 
@@ -43,14 +33,14 @@ public partial class LoginPartial : ComponentBase
 
 	public async Task Validate()
 	{
-		var errors = new List<Results.BrokenRule>();
+		var errors = new List<BrokenRule>();
 		if (loginForm.Step == "Email")
 		{
-			var user = await Mediator.Send(new Requests.Users.GetUserByFilterRequest(i => i.Email = loginForm.Email));
+			var user = await Mediator.Send(new GetUserByFilterRequest(i => i.Email = loginForm.Email));
 			if (user == null)
 			{
 				errors.Add(
-					new Results.BrokenRule
+					new BrokenRule
 					{
 						PropertyName = "Email",
 						MessageList = new List<string>() { "Adresse email inconnue" }
@@ -68,7 +58,7 @@ public partial class LoginPartial : ComponentBase
 				{
 					Logger.LogError(string.Join(",", sendResult.ErrorMessages));
 					errors.Add(
-						new Results.BrokenRule
+						new BrokenRule
 						{
 							PropertyName = "Email",
 							MessageList = new List<string>() { "L'envoi du mail a échoué" }
@@ -86,7 +76,7 @@ public partial class LoginPartial : ComponentBase
 		{
 			if (!loginForm.Digicode.HasValue)
 			{
-				errors.Add(new Results.BrokenRule()
+				errors.Add(new BrokenRule()
 				{
 					PropertyName = "Digicode",
 					MessageList = new List<string>() { "Vous devez indiquer un digicode" }
@@ -97,7 +87,7 @@ public partial class LoginPartial : ComponentBase
 			{
 				if (loginForm.Digicode.Value != loginForm.GeneratedDigicode)
 				{
-					errors.Add(new Results.BrokenRule()
+					errors.Add(new BrokenRule()
 					{
 						PropertyName = "Digicode",
 						MessageList = new List<string>() { "Digicode invalide" }
@@ -105,8 +95,7 @@ public partial class LoginPartial : ComponentBase
 				}
 				else
 				{
-					var pathWithToken = NavigationManager.GetUriWithQueryParameter("Token", loginForm.TokenId);
-					NavigationManager.NavigateTo(pathWithToken, true);
+					NavigationManager.NavigateTo($"/authenticate/{loginForm.TokenId}", true);
 				}
 			}
 		}
@@ -154,8 +143,11 @@ public partial class LoginPartial : ComponentBase
 			var sendResult = await email.SendAsync();
 			return sendResult;
 		}
-		catch(Exception ex) 
+		catch (Exception ex)
 		{
+			ex.Data["TemplateFolder"] = emailTemplatesFolder;
+			ex.Data["From"] = GlobalSettings.ContactEmailAdress;
+			ex.Data["Email"] = loginForm.Email;
 			Logger.LogError(ex, ex.Message);
 			errorMessage = ex.Message;
 		}

@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using System.Text;
-
+using ComptaClub.Contracts.Results;
 using FluentValidation.Results;
 
 using Microsoft.Extensions.Logging;
@@ -9,19 +9,19 @@ namespace ComptaClub.Extensions;
 
 public static class FluentValidationExtensions
 {
-    public static List<Results.BrokenRule> ToBrokenRules(this List<ValidationFailure> validationFailures)
+    public static List<BrokenRule> ToBrokenRules(this List<ValidationFailure> validationFailures)
     {
         if (validationFailures.IsNullOrEmpty())
         {
-            return new List<Results.BrokenRule>();
+            return new List<BrokenRule>();
         }
 
-        return validationFailures.GroupBy(x => x.ErrorCode).Select(x => new Results.BrokenRule { PropertyName = x.Key, MessageList = x.Select(g => g.ErrorMessage).ToList() }).ToList();
+        return validationFailures.GroupBy(x => x.ErrorCode).Select(x => new BrokenRule { PropertyName = x.Key, MessageList = x.Select(g => g.ErrorMessage).ToList() }).ToList();
     }
 
-    public static List<Results.BrokenRule> ToBrokenRules(this ValidationResult validationResult)
+    public static List<BrokenRule> ToBrokenRules(this ValidationResult validationResult)
     {
-        var brokenRules = new List<Results.BrokenRule>();
+        var brokenRules = new List<BrokenRule>();
 
         if (validationResult == null)
         {
@@ -34,26 +34,26 @@ public static class FluentValidationExtensions
 
             foreach (var item in validationErrors)
             {
-                var severity = Results.Severity.Error;
+                var severity = Contracts.Results.Severity.Error;
 
                 switch (item.Severity)
                 {
                     case FluentValidation.Severity.Warning:
-                        severity = Results.Severity.Warning;
+                        severity = Contracts.Results.Severity.Warning;
                         break;
                     case FluentValidation.Severity.Info:
-                        severity = Results.Severity.Info;
+                        severity = Contracts.Results.Severity.Info;
                         break;
                     default:
-                        severity = Results.Severity.Error;
+                        severity = Contracts.Results.Severity.Error;
                         break;
                 }
 
-                var br = brokenRules.FirstOrDefault(i => i.PropertyName == item.PropertyName && i.Severity == severity);
+                var br = brokenRules.Find(i => i.PropertyName == item.PropertyName && i.Severity == severity);
 
                 if (br == null)
                 {
-                    br = new Results.BrokenRule { PropertyName = item.PropertyName };
+                    br = new BrokenRule { PropertyName = item.PropertyName };
                     br.Severity = severity;
                     brokenRules.Add(br);
                 }
@@ -65,55 +65,54 @@ public static class FluentValidationExtensions
         return brokenRules;
     }
 
-    public static Results.PersistResult? ToPersistResult<T>(this List<Results.BrokenRule> brokenRules)
+    public static PersistResult? ToPersistResult(this List<BrokenRule> brokenRules)
     {
         if (brokenRules.IsNullOrEmpty())
         {
             return null;
         }
-        return new Results.PersistResult()
+        return new PersistResult()
         {
-			ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Error).ToList(),
-            WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Warning).ToList(),
-            HasError = brokenRules.Count(x => x.Severity == Results.Severity.Error) > 0
+			ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Contracts.Results.Severity.Error).ToList(),
+            WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Contracts.Results.Severity.Warning).ToList(),
+            HasError = brokenRules.Exists(x => x.Severity == Contracts.Results.Severity.Error)
         };
     }
-
-
-    public static List<Results.PersistResult> ToPersistResultList<T>(this List<Results.BrokenRule> brokenRules)
-    {
-        var result = new List<Results.PersistResult>();
-
-        if (!brokenRules.IsNullOrEmpty())
-        {
-            result.Add(new Results.PersistResult
-            {
-                ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Error).ToList(),
-                WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Warning).ToList(),
-                HasError = brokenRules.Count(x => x.Severity == Results.Severity.Error) > 0
-            });
-        }
-
-        return result;
-    }
-
-	public static Results.PersistResult? ToPersistResult(this ValidationResult validationResult)
+	public static PersistResult? ToPersistResult(this ValidationResult validationResult)
 	{
 		if (validationResult == null)
 		{
 			return null;
 		}
 		var brokenRules = validationResult.ToBrokenRules();
-		
-		return new Results.PersistResult
+
+		return new PersistResult
 		{
-			ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Error).ToList(),
-			WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Results.Severity.Warning).ToList(),
-			HasError = brokenRules.Any(x => x.Severity == Results.Severity.Error)
+			ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Contracts.Results.Severity.Error).ToList(),
+			WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Contracts.Results.Severity.Warning).ToList(),
+			HasError = brokenRules.Exists(x => x.Severity == Contracts.Results.Severity.Error)
 		};
 	}
 
-	public static void LogValidationFailedResult(this ILogger logger, string message, Results.PersistResult validationResult)
+
+	public static List<PersistResult> ToPersistResultList(this List<BrokenRule> brokenRules)
+    {
+        var result = new List<PersistResult>();
+
+        if (!brokenRules.IsNullOrEmpty())
+        {
+            result.Add(new PersistResult
+            {
+                ErrorBrokenRuleList = brokenRules.Where(i => i.Severity == Contracts.Results.Severity.Error).ToList(),
+                WarningBrokenRuleList = brokenRules.Where(i => i.Severity == Contracts.Results.Severity.Warning).ToList(),
+                HasError = brokenRules.Count(x => x.Severity == Contracts.Results.Severity.Error) > 0
+            });
+        }
+
+        return result;
+    }
+
+	public static void LogValidationFailedResult(this ILogger logger, string message, PersistResult validationResult)
 	{
 		if (validationResult == null)
 		{

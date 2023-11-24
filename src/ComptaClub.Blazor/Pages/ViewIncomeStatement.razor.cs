@@ -1,9 +1,7 @@
+using ComptaClub.Contracts.Models.IncomeStatements;
 using ComptaClub.Datas;
-using ComptaClub.Requests.IncomeStatements;
-using ComptaClub.Requests;
+
 using MediatR;
-using ComptaClub.Blazor.Pages.Shared;
-using System.Security.AccessControl;
 
 namespace ComptaClub.Blazor.Pages;
 
@@ -51,14 +49,6 @@ public partial class ViewIncomeStatement
 
 		// Hierarchize
 		incomeStatement.ItemList.Hierarchize();
-
-		MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarButton
-		{
-			IconName = "print",
-			Text = "Imprimer ce compte de résultat",
-			OnClick = Print
-		})
-		.Display();
 
 		StateHasChanged();
 	}

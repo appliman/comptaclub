@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using FluentValidation;
+﻿using ComptaClub.Contracts.Models.Exercices;
 
 namespace ComptaClub.Validators;
 
@@ -16,7 +10,7 @@ internal class ExerciceValidator : FluentValidation.AbstractValidator<Datas.Exer
 		RuleFor(i => i.Code).CustomAsync(async (code, ctx, cancel) =>
 		{
 			var current = ctx.InstanceToValidate;
-			var existing = await mediator.Send(new Requests.Exercices.GetExerciceByFilterRequest(f => f.Code == code));
+			var existing = await mediator.Send(new GetExerciceByFilterRequest(f => f.Code == code));
 			if (existing != null
 				&& current.Id != existing.Id)
 			{
@@ -54,7 +48,7 @@ internal class ExerciceValidator : FluentValidation.AbstractValidator<Datas.Exer
 		{
 			if (active)
 			{
-				var alreadyActiveExercice = await mediator.Send(new Requests.Exercices.GetActiveExerciceRequest());
+				var alreadyActiveExercice = await mediator.Send(new GetActiveExerciceRequest());
 				if (alreadyActiveExercice != null
 					&& alreadyActiveExercice.Id != ctx.InstanceToValidate.Id)
 				{

@@ -1,41 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using ComptaClub.Requests;
-using ComptaClub.Results;
+﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Users;
 
 internal class SaveUserRequestHandler : SaveRequestHandlerBase,
-    IRequestHandler<SaveEntityRequest<UserData>, PersistResult>
+	IRequestHandler<SaveEntityRequest<UserData>, PersistResult>
 {
-    private readonly IValidator<UserData> _validator;
+	private readonly IValidator<UserData> _validator;
 
-    public SaveUserRequestHandler(
-        IValidator<UserData> validator,
-        IDbContextFactory<ComptaClubDbContext> dbContextFactory,
-        ILogger<SaveUserRequestHandler> logger)
-        : base(dbContextFactory, logger)
-    {
-        _validator = validator;
-    }
+	public SaveUserRequestHandler(
+		IValidator<UserData> validator,
+		IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+		ILogger<SaveUserRequestHandler> logger)
+		: base(dbContextFactory, logger)
+	{
+		_validator = validator;
+	}
 
-    public async Task<PersistResult> Handle(SaveEntityRequest<UserData> request, CancellationToken cancellationToken)
-    {
-        if (!request.BypassRules)
-        {
-            var result = await _validator.ValidateAsync(request.Entity, cancellationToken);
-            if (!result.IsValid)
-            {
-                return result.ToPersistResult()!;
-            }
-        }
+	public async Task<PersistResult> Handle(SaveEntityRequest<UserData> request, CancellationToken cancellationToken)
+	{
+		if (!request.BypassRules)
+		{
+			var result = await _validator.ValidateAsync(request.Entity, cancellationToken);
+			if (!result.IsValid)
+			{
+				return result.ToPersistResult()!;
+			}
+		}
 
-        var saveResult = await SaveEntity<UserData>(request.Entity, cancellationToken);
+		var saveResult = await SaveEntity<UserData>(request.Entity, cancellationToken);
 
-        return saveResult;
-    }
+		return saveResult;
+	}
 }

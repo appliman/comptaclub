@@ -1,4 +1,4 @@
-﻿using ComptaClub.Requests.Stats;
+﻿using ComptaClub.Contracts.Models.Stats;
 
 namespace ComptaClub.Handlers.Stats;
 

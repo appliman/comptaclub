@@ -1,9 +1,4 @@
-
-using AutoMapper;
-
-using ComptaClub.Blazor.Pages.Shared;
-using ComptaClub.Models;
-using ComptaClub.Requests;
+using ComptaClub.Contracts.Models.Members;
 
 using MediatR;
 
@@ -12,13 +7,13 @@ namespace ComptaClub.Blazor.Pages;
 public partial class MemberList : ComponentBase
 {
 	[CascadingParameter]
-	Shared.MainLayout MainLayout { get; set; } = default!;
+	MainLayout MainLayout { get; set; } = default!;
 
 	[Inject]
 	IMediator Mediator { get; set; } = default!;
 
 	[Inject]
-	IMapper Mapper { get; set; } = default!;
+	ILogger<MemberList> Logger { get; set; } = default!;
 
 	[Inject]
 	NotificationService NotificationService { get; set; } = default!;
@@ -33,14 +28,6 @@ public partial class MemberList : ComponentBase
 
 	protected override void OnInitialized()
 	{
-		MainLayout.AddToolbarItem(new ViewModels.Toolbar.ToolbarButton
-		{
-			IconName = "upload_file",
-			Text = "Importer",
-			Title = "Importer à partir d'un fichier excel",
-			OnClick = ImportFile
-		}).Display();
-
 		filter.PageSize = 100;
 	}
 
@@ -49,7 +36,7 @@ public partial class MemberList : ComponentBase
 		var page = await Mediator.Send(new GetPagedEntityListRequest<MemberListFilter, Datas.MemberData>(filter));
 		var rowList = new List<ViewModels.MemberRow>();
 
-		var balanceByMemberList = await Mediator.Send(new Requests.Members.GetBalanceByMemberListRequest(filter));
+		var balanceByMemberList = await Mediator.Send(new GetBalanceByMemberListRequest(filter));
 		int rowIndex = 1;
 		foreach (var item in page.List)
 		{
@@ -76,12 +63,20 @@ public partial class MemberList : ComponentBase
 			return;
 		}
 
-		var ms = uploadDialog as MemoryStream;
-		if (ms is null)
+		var tempFileName = uploadDialog as string;
+		if (string.IsNullOrWhiteSpace(tempFileName))
 		{
 			return;
 		}
-		ms.Seek(0, SeekOrigin.Begin);
-		await grid.Reload();
+
+		try
+		{
+			await Mediator.Send(new ImportExcelMemberListRequest(tempFileName));
+			await grid.Reload();
+		}
+		catch (Exception ex)
+		{
+			NotificationService.Notify(NotificationSeverity.Error, $"La lecture de ce fichier a échoué pour la raison suivante : {ex.Message}");
+		}
 	}
 }

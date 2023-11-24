@@ -2,6 +2,24 @@
 
 <PageTitle>Bilan prévisionnel</PageTitle>
 
+<SectionContent SectionName="toolbar">
+
+	<RadzenButton Text="Sauvegarder"
+				  Click="Save"
+				  Icon="save"
+				  ButtonStyle="ButtonStyle.Success"
+				  class="btn btn-primary m-1" />
+
+	<RadzenLink Text="Imprimer"
+				  Path="@($"/reports/bilan-previsionnel/{ForecastBudgetId}")"
+				  Icon="print"
+				  Target="_blank"
+				  ButtonStyle="ButtonStyle.Success"
+				  class="btn btn-primary m-1"
+				  title="Imprimer le bilan prévisionnel" />
+
+</SectionContent>
+
 <table class="table table-bordered table-hover" id="printable">
 	<thead>
 		<tr>

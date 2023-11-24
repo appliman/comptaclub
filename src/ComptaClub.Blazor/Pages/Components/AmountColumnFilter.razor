@@ -38,13 +38,13 @@
     public string Title { get; set; } = default!;
 
     [Parameter]
-    public Models.AmountFilter AmountFilter { get; set; } = default!;
+    public AmountFilter AmountFilter { get; set; } = default!;
 
     [Parameter]
-    public EventCallback<Models.AmountFilter> AmountFilterChanged { get; set; }
+    public EventCallback<AmountFilter> AmountFilterChanged { get; set; }
 
     [Parameter]
-    public System.Linq.Expressions.Expression<Func<Models.AmountFilter>> AmountFilterExpression { get; set; } = null!;
+    public System.Linq.Expressions.Expression<Func<AmountFilter>> AmountFilterExpression { get; set; } = null!;
 
 
     string buttonLabel = "Montant";

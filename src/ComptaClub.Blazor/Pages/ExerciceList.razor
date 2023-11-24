@@ -1,6 +1,26 @@
 ﻿@page "/exercices"
 
 <PageTitle>Exercices</PageTitle>
+
+<SectionContent SectionName="toolbar">
+
+    <RadzenLink Text="Ajouter"
+                Path="/exercice/ajout"
+                Icon="add_circle_outline"
+                Target="_blank"
+                ButtonStyle="ButtonStyle.Success"
+                class="btn btn-primary m-1"
+                title="Ajouter un exercice" />
+
+    <RadzenButton Text="Clore"
+                  Click="CloseExercice"
+                  Icon="collapse_all"
+                  ButtonStyle="ButtonStyle.Success"
+                  class="btn btn-primary m-1" 
+                  title="Clore l'exercice" />
+
+</SectionContent>
+
 <div style="height:100%">
 <RadzenDataGrid @ref="grid" 
     AllowFiltering="true" 

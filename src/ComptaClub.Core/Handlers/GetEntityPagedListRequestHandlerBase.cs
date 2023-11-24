@@ -1,8 +1,8 @@
-﻿using ComptaClub.Requests;
+﻿using ComptaClub.Contracts.Models;
 
 namespace ComptaClub.Handlers;
 
-internal abstract class GetEntityPagedListRequestHandlerBase<F,D> : IRequestHandler<Requests.GetPagedEntityListRequest<F,D>, Models.PagedList<IEnumerable<D>>>
+internal abstract class GetEntityPagedListRequestHandlerBase<F,D> : IRequestHandler<GetPagedEntityListRequest<F,D>, PagedList<IEnumerable<D>>>
     where F : class, IListFilter, new()
     where D : class, Datas.IPrimaryKey, new()
 {

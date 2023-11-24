@@ -1,4 +1,4 @@
-﻿using ComptaClub.Requests.Members;
+﻿using ComptaClub.Contracts.Models.Members;
 
 namespace ComptaClub.Handlers.Members;
 

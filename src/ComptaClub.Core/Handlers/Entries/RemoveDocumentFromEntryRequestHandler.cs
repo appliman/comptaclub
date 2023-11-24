@@ -1,5 +1,5 @@
-﻿using ComptaClub.Requests.Entries;
-using ComptaClub.Results;
+﻿using ComptaClub.Contracts.Models.Entries;
+using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Entries;
 internal class RemoveDocumentFromEntryRequestHandler : IRequestHandler<RemoveDocumentFromEntryRequest, CommandResult>

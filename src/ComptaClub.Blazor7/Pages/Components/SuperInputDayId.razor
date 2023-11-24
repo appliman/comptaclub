@@ -1,0 +1,59 @@
+﻿<div class="mb-3">
+	<label for="Name" class="form-label">@Label</label>
+	<div class="input-group w-50">
+		<span class="input-group-text"><i class="fas fa-calendar-check"></i></span>
+		<InputDate @attributes="@CatpuredAttributes" class="@($"{otherClass} form-control")" @bind-Value="@day" placeholder="@PlaceHoder" required="@(Required ? "required" : null)" />
+	</div>
+	<small>
+		<ValidationMessage class="invalid-feedback" For="() => day" />
+	</small>
+	@ChildContent
+</div>
+
+@code {
+
+	[Parameter]
+	public string? Label { get; set; }
+
+	[Parameter]
+	public int DayId 
+	{ 
+		get
+		{
+			return day.ToDayId();
+		}
+		set
+		{
+			day = value.FromDayId();
+		}
+	}
+
+	[Parameter]
+	public EventCallback<int> DayIdChanged { get; set; }
+
+	[Parameter]
+	public System.Linq.Expressions.Expression<Func<int>>? DayIdExpression { get; set; }
+
+	[Parameter]
+	public string? PlaceHoder { get; set; }
+
+	[Parameter]
+	public bool Required { get; set; }
+
+	[Parameter]
+	public string? Prepend { get; set; }
+
+	[Parameter]
+	public RenderFragment? ChildContent { get; set; }
+
+	[Parameter(CaptureUnmatchedValues = true)]
+	public Dictionary<string, object> CatpuredAttributes { get; set; } = new();
+
+	DateTime day = DateTime.Now;
+	string? otherClass = null;
+
+	protected override void OnInitialized()
+	{
+		otherClass = $"{CatpuredAttributes.GetValueOrDefault("class")}";
+	}
+}

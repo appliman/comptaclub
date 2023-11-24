@@ -1,5 +1,18 @@
 ﻿@page "/utilisateurs"
 
+<PageTitle>Liste des utilisateurs</PageTitle>
+
+<SectionContent SectionName="toolbar">
+
+    <RadzenButton Text="Ajouter"
+                  Click="InsertRow"
+                  Icon="person_add"
+                  ButtonStyle="ButtonStyle.Success"
+                  class="btn btn-primary m-1"
+                  title="Ajouter un utilisateur" />
+
+</SectionContent>
+
 <RadzenDataGrid @ref="grid"
                 AllowFiltering="true"
                 AllowSorting="true"

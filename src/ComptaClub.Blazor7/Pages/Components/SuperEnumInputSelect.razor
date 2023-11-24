@@ -1,0 +1,21 @@
+﻿@typeparam E
+
+<div class="mb-3">
+	@if (!string.IsNullOrWhiteSpace(Label))
+	{
+		<label class="form-label">@Label</label>
+	}
+	<div>
+		<InputSelect TValue="E" class="form-select" Value="Value" ValueChanged="ValueChanged" ValueExpression="ValueExpression">
+			@foreach (var item in ComptaClub.Extensions.EnumExtensions.GetEnumExtensions<E>())
+			{
+				var selected = Value.Equals(item.Key);
+				<option value="@item.Key" selected="@selected" title="@item.Description">@item.Name</option>
+			}
+		</InputSelect>
+		<ValidationMessage For="() => Value"></ValidationMessage>
+	</div>
+</div>
+
+
+

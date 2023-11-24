@@ -3,6 +3,44 @@
 
 <PageTitle>Edition d'une ecriture</PageTitle>
 
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="#">Accueil</a></li>
+		<li class="breadcrumb-item"><a href="@GetEntriesUrl()">Ecritures</a></li>
+		<li class="breadcrumb-item active" aria-current="page">@entry.Label</li>
+	</ol>
+</nav>
+
+<SectionContent SectionName="toolbar">
+
+	<RadzenButton Text="Sauvegarder"
+				  Click="ValidateAndSave"
+				  Icon="save"
+				  ButtonStyle="ButtonStyle.Success"
+				  class="btn btn-primary m-1" />
+
+	@if(selectedTabIndex == 1)
+	{
+		<RadzenButton Text="Associer"
+					  Click="associatedMembers.InsertRow"
+					  Icon="person_add"
+					  ButtonStyle="ButtonStyle.Success"
+					  class="btn btn-primary m-1" 
+					  title="Associer un membre à cette écriture" />
+	}
+
+	@if (selectedTabIndex == 2)
+	{
+		<RadzenButton Text="Associer"
+					  Click="associatedDocuments.InsertRow"
+					  Icon="upload_file"
+					  ButtonStyle="ButtonStyle.Success"
+					  class="btn btn-primary m-1"
+					  title="Associer un document à cette écriture" />
+	}
+
+</SectionContent>
+
 <RadzenTabs TabPosition="TabPosition.Left" SelectedIndexChanged="RefreshToolbar" @ref="tabs">
 	<Tabs>
 		<RadzenTabsItem Text="Informations" Icon="feed">

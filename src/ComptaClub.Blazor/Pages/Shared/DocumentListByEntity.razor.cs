@@ -1,7 +1,8 @@
 using AutoMapper;
 
-using ComptaClub.Models;
-using ComptaClub.Requests;
+using ComptaClub.Contracts.Models.Documents;
+using ComptaClub.Contracts.Models.Entries;
+using ComptaClub.Contracts.Results;
 
 using MediatR;
 
@@ -32,7 +33,7 @@ public partial class DocumentListByEntity
 	RadzenDataGrid<ViewModels.Document> grid = default!;
 	DocumentListFilter filter = new();
 	ViewModels.Document? documentToUpdate;
-	List<Results.BrokenRule> brokenRules = new();
+	List<BrokenRule> brokenRules = new();
 
 	async Task LoadDatas(LoadDataArgs args)
 	{
@@ -60,7 +61,7 @@ public partial class DocumentListByEntity
 		documentToUpdate = null;
 
 		var data = Mapper!.Map<Datas.DocumentData>(doc);
-		var saveResult = await Mediator.Send(new Requests.Documents.SaveDocumentRequest(data));
+		var saveResult = await Mediator.Send(new SaveDocumentRequest(data));
 		if (saveResult.HasError)
 		{
 			brokenRules = saveResult.ErrorBrokenRuleList;
@@ -84,7 +85,7 @@ public partial class DocumentListByEntity
 			return;
 		}
 
-		var removeResult = await Mediator.Send(new Requests.Entries.RemoveDocumentFromEntryRequest(EntityId, doc.Id));
+		var removeResult = await Mediator.Send(new RemoveDocumentFromEntryRequest(EntityId, doc.Id));
 		if (removeResult.HasError)
 		{
 			NotificationService.NotifyError(removeResult);
@@ -94,7 +95,7 @@ public partial class DocumentListByEntity
 
 	public async Task InsertRow()
 	{
-        var result = await DialogService.OpenAsync<Dialogs.AddOrAttachDocumentToEntityDialog>("Ajouter ou selectionner un document",
+		var result = await DialogService.OpenAsync<Dialogs.AddOrAttachDocumentToEntityDialog>("Ajouter ou selectionner un document",
 			options: new DialogOptions
 			{
 				CloseDialogOnEsc = true,
@@ -106,7 +107,7 @@ public partial class DocumentListByEntity
 			return;
 		}
 
-        var documentList = result as IEnumerable<ViewModels.Document>;
+		var documentList = result as IEnumerable<ViewModels.Document>;
 		if (documentList is null)
 		{
 			return;
@@ -117,7 +118,7 @@ public partial class DocumentListByEntity
 			if (MetaEntity == MetaEntity.Entry)
 			{
 				var documentData = Mapper.Map<Datas.DocumentData>(item);
-				var attachResult = await Mediator.Send(new Requests.Entries.AttachDocumentToEntryRequest(EntityId, documentData));
+				var attachResult = await Mediator.Send(new AttachDocumentToEntryRequest(EntityId, documentData));
 				if (attachResult.HasError)
 				{
 					NotificationService.NotifyError(attachResult);
@@ -127,5 +128,5 @@ public partial class DocumentListByEntity
 		}
 
 		await grid.Reload();
-    }
+	}
 }

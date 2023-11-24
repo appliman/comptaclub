@@ -1,7 +1,7 @@
 ﻿using System;
 
 using Azure.Core;
-using ComptaClub.Requests.Exercices;
+using ComptaClub.Contracts.Models.Exercices;
 
 namespace ComptaClub.Blazor.Mapping;
 

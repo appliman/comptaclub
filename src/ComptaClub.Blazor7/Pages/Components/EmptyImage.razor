@@ -1,0 +1,31 @@
+﻿@using System.IO
+@using System.Drawing;
+@using System.Drawing.Imaging;
+
+<img src="data:image/png;base64,@ContentInBase64" width="@Width" height="@Height" class="img-fluid" />
+
+@code {
+
+    [Parameter]
+    public int Width { get; set; } = 40;
+
+    [Parameter]
+    public int Height { get; set; } = 40;
+
+    [Parameter]
+    public System.Drawing.Color Color { get; set; } = System.Drawing.Color.White;
+
+    public string ContentInBase64 { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        using var bitmap = new System.Drawing.Bitmap(Width, Height);
+        using var graphics = Graphics.FromImage(bitmap);
+        graphics.Clear(Color);
+        
+        using var stream = new MemoryStream();
+        bitmap.Save(stream, ImageFormat.Png);
+
+        ContentInBase64 = Convert.ToBase64String(stream.ToArray());
+    }
+}
