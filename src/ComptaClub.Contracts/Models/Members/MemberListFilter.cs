@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 
+using ComptaClub.Datas.Enums;
+
 namespace ComptaClub.Contracts.Models.Members;
 
 public class MemberListFilter : IListFilter
@@ -16,6 +18,7 @@ public class MemberListFilter : IListFilter
     public string? LicenseNumber { get; set; }
     public string? Email { get; set; }
     public List<Guid> EntryIdList { get; set; } = new();
+    public MemberState? MemberState { get; set; } = Datas.Enums.MemberState.Active;
 
     public void GetById(Guid entryId)
     {
