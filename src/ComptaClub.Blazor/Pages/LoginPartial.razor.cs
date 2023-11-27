@@ -36,7 +36,7 @@ public partial class LoginPartial : ComponentBase
 		var errors = new List<BrokenRule>();
 		if (loginForm.Step == "Email")
 		{
-			var user = await Mediator.Send(new GetUserByFilterRequest(i => i.Email = loginForm.Email));
+			var user = await Mediator.Send(new GetUserByFilterRequest(i => i.Email = loginForm.Email)) ;
 			if (user == null)
 			{
 				errors.Add(

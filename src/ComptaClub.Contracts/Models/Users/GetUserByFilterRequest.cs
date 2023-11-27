@@ -8,6 +8,7 @@ public record GetUserByFilterRequest : IRequest<UserData?>
     {
         var defaultFilter = new UserListFilter();
         defaultFilter.Options.DeletedState = DeletedState.Undeleted;
+        defaultFilter.PageSize = 1;
         filter(defaultFilter);
         Filter = filter;
     }
