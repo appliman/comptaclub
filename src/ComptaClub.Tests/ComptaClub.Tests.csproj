@@ -29,6 +29,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ComptaClub.Contracts\ComptaClub.Contracts.csproj" />
     <ProjectReference Include="..\ComptaClub.Core\ComptaClub.Core.csproj" />
     <ProjectReference Include="..\ComptaClub.Import\ComptaClub.Import.csproj" />
   </ItemGroup>

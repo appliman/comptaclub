@@ -90,7 +90,7 @@ public partial class ForecastBudgetList : ComponentBase
 			return;
 		}
 
-		var createResult = await Mediator.Send(new CreateAndSaveForecastBudgetRequest(incomeStatement.Id,
+		var createResult = await Mediator.Send(new CreateAndSaveForecastBudgetFromIncomeStatementRequest(incomeStatement.Id,
 			"Bilan prévisionnel",
 			incomeStatement.Description));
 
