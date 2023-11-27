@@ -23,9 +23,11 @@ namespace ComptaClub.Tests.Cruds
 			var name = $"Ex{Guid.NewGuid()}";
 			exercice = await mediator.Send(new CreateExerciceRequest(name,
 				"test",
-				new DateTime(DateTime.Now.Year, 1, 1, 0, 0, 0, DateTimeKind.Local).ToDayId(),
-				new DateTime(DateTime.Now.Year, 1, 1, 23, 59, 59, DateTimeKind.Local).AddYears(1).AddDays(-1).ToDayId(),
 				100 * 1000000));
+
+			exercice.StartDate = new DateTime(DateTime.Now.Year, 1, 1, 0, 0, 0, DateTimeKind.Local).ToDayId();
+			exercice.EndDate = new DateTime(DateTime.Now.Year, 1, 1, 23, 59, 59, DateTimeKind.Local).AddYears(1).AddDays(-1).ToDayId();
+
 
 			var saveResult = await mediator.Send(new SaveEntityRequest<Datas.ExerciceData>(exercice));
 			saveResult.HasError.Should().BeFalse();
@@ -59,9 +61,10 @@ namespace ComptaClub.Tests.Cruds
 
 			var exercice1 = await mediator.Send(new CreateExerciceRequest($"Ex{Guid.NewGuid()}",
 				"Exercice1",
-				new DateTime(DateTime.Now.Year - 1, 1, 1, 0, 0, 0, DateTimeKind.Local).ToDayId(),
-				new DateTime(DateTime.Now.Year - 1, 1, 1, 23, 59, 59, DateTimeKind.Local).AddYears(1).AddDays(-1).ToDayId(),
 				100 * 1000000));
+
+			exercice1.StartDate = new DateTime(DateTime.Now.Year - 1, 1, 1, 0, 0, 0, DateTimeKind.Local).ToDayId();
+            exercice1.EndDate = new DateTime(DateTime.Now.Year - 1, 1, 1, 23, 59, 59, DateTimeKind.Local).AddYears(1).AddDays(-1).ToDayId();
 
 			var saveResult = await mediator.Send(new SaveEntityRequest<Datas.ExerciceData>(exercice1));
 			saveResult.HasError.Should().BeFalse();
@@ -71,9 +74,10 @@ namespace ComptaClub.Tests.Cruds
 
 			var exercice2 = await mediator.Send(new CreateExerciceRequest($"Ex{Guid.NewGuid()}",
 				"Exercice2",
-				new DateTime(DateTime.Now.Year, 1, 1, 0, 0, 0, DateTimeKind.Local).ToDayId(),
-				new DateTime(DateTime.Now.Year, 1, 1, 23, 59, 59, DateTimeKind.Local).AddYears(1).AddDays(-1).ToDayId(),
 				100 * 1000000));
+
+			exercice2.StartDate = new DateTime(DateTime.Now.Year, 1, 1, 0, 0, 0, DateTimeKind.Local).ToDayId();
+			exercice2.EndDate = new DateTime(DateTime.Now.Year, 1, 1, 23, 59, 59, DateTimeKind.Local).AddYears(1).AddDays(-1).ToDayId();
 
 			saveResult = await mediator.Send(new SaveEntityRequest<Datas.ExerciceData>(exercice2));
 			saveResult.HasError.Should().BeFalse();
