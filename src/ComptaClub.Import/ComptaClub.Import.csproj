@@ -13,7 +13,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ComptaClub.Contracts\ComptaClub.Contracts.csproj" />
+    <ProjectReference Include="..\ComptaClub.Contracts\ComptaClub.Contracts.csproj" />
     <ProjectReference Include="..\ComptaClub.Datas.MsSql\ComptaClub.Datas.MsSql.csproj" />
     <ProjectReference Include="..\ComptaClub.Datas\ComptaClub.Datas.csproj" />
   </ItemGroup>
