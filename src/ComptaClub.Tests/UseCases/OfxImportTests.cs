@@ -32,9 +32,10 @@ public class OfxImportTests
 
 		var exercice = await mediator.Send(new CreateExerciceRequest($"Exercice {Guid.NewGuid()}",
 			"Exercice 2022",
-			8300,
-			8400,
 			100 * 1000000));
+
+		exercice.StartDate = 8000;
+		exercice.EndDate = 8600;
 
 		var saveResult = await mediator.Send(new SaveEntityRequest<Datas.ExerciceData>(exercice));
 		saveResult.HasError.Should().BeFalse();

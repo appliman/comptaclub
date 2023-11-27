@@ -8,7 +8,7 @@
             Label = "A completer";
         }
 
-        public CreateExerciceRequest(string code, string label, int startDate, int endDate, long initialAmount)
+        public CreateExerciceRequest(string code, string label, long initialAmount)
         {
             Code = code;
             Label = label;

@@ -87,7 +87,7 @@ namespace ComptaClub.Tests
 			var exercice = await mediator.Send(new GetExerciceByFilterRequest(i => i.Code == code));
 			if (exercice == null)
 			{
-				exercice = await mediator.Send(new CreateExerciceRequest(code, "test", DateTime.Today.FirstDateOfCurrentYear(), DateTime.Today.LastDateOfCurrentYear(), 0));
+				exercice = await mediator.Send(new CreateExerciceRequest(code, "test", 0));
 				await mediator.Send(new SaveEntityRequest<Datas.ExerciceData>(exercice));
 			}
 			return exercice;
