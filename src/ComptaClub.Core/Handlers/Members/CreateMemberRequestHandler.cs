@@ -9,6 +9,8 @@ internal class CreateMemberRequestHandler : IRequestHandler<CreateMemberRequest,
         var result = new MemberData();
         result.Id = Guid.NewGuid();
         result.CreationDate = DateTime.Today.ToDayId();
+        result.LastUpdate = DateTime.Today.ToDayId();
+        result.State = Datas.Enums.MemberState.Active;
 
         return Task.FromResult(result);
     }

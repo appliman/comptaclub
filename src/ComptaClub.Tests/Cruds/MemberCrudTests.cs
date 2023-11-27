@@ -52,5 +52,17 @@ public class MemberCrudTests
 		memberList.Should().NotBeNull();
 		memberList.List.Should().NotBeNull();
 		memberList.List.Any().Should().BeTrue();
-	}
+
+		var m1 = memberList.List.First();
+		m1.State = Datas.Enums.MemberState.Disabled;
+
+		saveResult = await mediator.Send(new SaveEntityRequest<Datas.MemberData>(m1));
+		saveResult.HasError.Should().BeFalse();
+
+        memberList = await mediator.Send(new GetPagedEntityListRequest<MemberListFilter, Datas.MemberData>(f => f.PageSize = int.MaxValue));
+        memberList.Should().NotBeNull();
+        memberList.List.Should().NotBeNull();
+        memberList.List.Any().Should().BeFalse();
+
+    }
 }

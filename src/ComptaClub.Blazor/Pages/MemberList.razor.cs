@@ -1,4 +1,8 @@
+using AutoMapper;
+
+using ComptaClub.Contracts.Models.Documents;
 using ComptaClub.Contracts.Models.Members;
+using ComptaClub.Contracts.Results;
 
 using MediatR;
 
@@ -25,10 +29,11 @@ public partial class MemberList : ComponentBase
 	RadzenDataGrid<ViewModels.MemberRow> grid = default!;
 	MemberListFilter filter = new();
 	IList<ViewModels.MemberRow>? selectedMembers;
+    List<BrokenRule> brokenRules = new();
 
-	protected override void OnInitialized()
+    protected override void OnInitialized()
 	{
-		filter.PageSize = 100;
+		filter.PageSize = 500;
 	}
 
 	async Task LoadDatas(LoadDataArgs args)
@@ -55,6 +60,11 @@ public partial class MemberList : ComponentBase
 		memberList = rowList;
 	}
 
+	async Task ApplyFilter()
+	{
+		await grid!.Reload();
+    }
+
 	async Task ImportFile()
 	{
 		var uploadDialog = await DialogService.OpenAsync<Dialogs.ImportMemberExcelFileDialog>("Importer un fichier excel des membres");
@@ -79,4 +89,40 @@ public partial class MemberList : ComponentBase
 			NotificationService.Notify(NotificationSeverity.Error, $"La lecture de ce fichier a échoué pour la raison suivante : {ex.Message}");
 		}
 	}
+
+    async Task EditRow(ViewModels.MemberRow item)
+    {
+        await grid!.EditRow(item);
+    }
+
+    async Task SaveRow(ViewModels.MemberRow item)
+    {
+		brokenRules.Clear();
+
+		var saveResult = await Mediator.Send(new SaveEntityRequest<Datas.MemberData>(item.Entity));
+        if (saveResult.HasError)
+        {
+            brokenRules = saveResult.ErrorBrokenRuleList;
+            return;
+        }
+
+        await grid!.UpdateRow(item);
+    }
+
+    void CancelEdit(ViewModels.MemberRow item)
+    {
+        grid!.CancelEditRow(item);
+    }
+
+    async Task DeleteRow(ViewModels.MemberRow item)
+    {
+        var dialogResult = await DialogService.Confirm("Confirmez-vous la suppression de ce membre ?", "Suppression");
+        if (!dialogResult.Value)
+        {
+            return;
+        }
+
+        await Mediator.Send(new DeleteMemberRequest(item.Id));
+        await grid!.Reload();
+    }
 }
