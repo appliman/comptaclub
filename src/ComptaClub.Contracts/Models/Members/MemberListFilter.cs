@@ -16,6 +16,7 @@ public class MemberListFilter : IListFilter
     public ComputeRowCount ComputeRowCount { get; set; } = ComputeRowCount.OnlyInFirstPage;
     public string? Name { get; set; }
     public string? LicenseNumber { get; set; }
+    public string? LicenseTypeName { get; set; }
     public string? Email { get; set; }
     public List<Guid> EntryIdList { get; set; } = new();
     public MemberState? MemberState { get; set; } = Datas.Enums.MemberState.Active;

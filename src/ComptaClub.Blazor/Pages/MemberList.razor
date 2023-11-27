@@ -44,32 +44,32 @@
                 </RadzenButton>
             </EditTemplate>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Name" Title="Nom" Filterable="false" Frozen="true">
+        <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Name" Title="Nom" Sortable="true" Filterable="true" Frozen="true">
             <EditTemplate Context="item">
                 <RadzenTextBox @bind-Value="item.Entity.Name" Style="width:100%" />
                 <BrokenRuleMessage For="() => item.Entity.Name" BrokenRuleList="brokenRules" />
             </EditTemplate>
         </RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Email" Title="Email" Width="120px" Filterable="false" Frozen="false">
+            <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Email" Title="Email" Width="120px" Sortable="true" Filterable="true" Frozen="false">
                 <EditTemplate Context="item">
                     <RadzenTextBox @bind-Value="item.Entity.Email" Style="width:100%" />
                     <BrokenRuleMessage For="() => item.Entity.Email" BrokenRuleList="brokenRules" />
                 </EditTemplate>
         </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.LicenseNumber" Title="Licence" Filterable="false" Frozen="false">
+            <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.LicenseNumber" Title="Licence" Sortable="true" Filterable="true" Frozen="false">
                 <EditTemplate Context="item">
                     <RadzenTextBox @bind-Value="item.Entity.LicenseNumber" Style="width:100%" />
                     <BrokenRuleMessage For="() => item.Entity.LicenseNumber" BrokenRuleList="brokenRules" />
                 </EditTemplate>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.LicenseTypeName" Title="Type" Width="100px" Filterable="false" Frozen="false">
+            <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.LicenseTypeName" Title="Type" Width="100px" Sortable="true" Filterable="true" Frozen="false">
         </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Amount" Title="Réglé" Width="80px" Filterable="false" Frozen="false">
             <Template Context="data">
                 <PriceLabel Value="data.Amount"/>
             </Template>
         </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.State" Title="Etat" Width="80px" Filterable="true" Frozen="false">
+            <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="State" Title="Etat" Width="80px" Filterable="true" Frozen="false">
                 <FilterTemplate>
                     <SuperNullableEnumDropdownFilterColumn @bind-Value="filter.MemberState" ApplyFilter="ApplyFilter"/>
                 </FilterTemplate>
@@ -80,7 +80,7 @@
                     <SuperEnumInputSelect @bind-Value="item.Entity.State"/>
                 </EditTemplate>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.LastUpdate" Title="M.a.j." Width="80px" Filterable="false" Frozen="true">
+            <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="LastUpdate" Title="M.a.j." Width="80px" Filterable="false" Frozen="true">
                 <Template Context="data">
                     <DateIdLabel Value="data.Entity.LastUpdate"/>
                 </Template>
