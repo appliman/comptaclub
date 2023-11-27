@@ -44,8 +44,12 @@
     <None Remove="Scripts\ComptaClub\0037-CreateTable-DataProtectionKey - Copy.sql" />
     <None Remove="Scripts\ComptaClub\0038-CreateTables-ForecastBudget.sql" />
     <None Remove="Scripts\ComptaClub\0039-AlterTable-Clubs.sql" />
+    <None Remove="Scripts\ComptaClub\0040-AlterTable-Members.sql" />
+    <None Remove="Scripts\ComptaClub\0041-AlterTable-Members.sql" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\ComptaClub\0041-AlterTable-Members.sql" />
+    <EmbeddedResource Include="Scripts\ComptaClub\0040-AlterTable-Members.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0039-AlterTable-Clubs.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0037-CreateTable-DataProtectionKey - Copy.sql" />
     <EmbeddedResource Include="Scripts\ComptaClub\0038-CreateTables-ForecastBudget.sql" />

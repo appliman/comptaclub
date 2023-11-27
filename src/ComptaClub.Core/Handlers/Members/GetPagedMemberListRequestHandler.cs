@@ -43,6 +43,11 @@ internal class GetPagedMemberListRequestHandler : GetEntityPagedListRequestHandl
 			query = query.Where(i => i.Name == filter.Name);
 		}
 
+		if (filter.MemberState.HasValue)
+        {
+            query = query.Where(i => i.State == filter.MemberState.Value);
+        }
+
 		if (filter.EntryIdList.Any())
 		{
 			// On regroupe tous les membres distincts pour la liste des entrées indiquée

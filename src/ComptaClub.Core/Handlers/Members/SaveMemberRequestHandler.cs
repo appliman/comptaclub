@@ -29,6 +29,8 @@ internal class SaveMemberRequestHandler : SaveRequestHandlerBase,
 			}
 		}
 
+		request.Entity.LastUpdate = DateTime.Today.ToDayId();
+
 		var saveResult = await SaveEntity<MemberData>(request.Entity, cancellationToken);
 		return saveResult;
 	}

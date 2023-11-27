@@ -15,7 +15,7 @@ internal class GetMemberCountRequestHandler : IRequestHandler<GetMemberCountRequ
     {
         var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
-        var result = await db.Members.CountAsync();
+        var result = await db.Members.Where(i => i.State == Datas.Enums.MemberState.Active).CountAsync();
 
         return result;
     }
