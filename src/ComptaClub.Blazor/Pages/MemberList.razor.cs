@@ -38,6 +38,51 @@ public partial class MemberList : ComponentBase
 
 	async Task LoadDatas(LoadDataArgs args)
 	{
+		if (args.Filters.Any())
+		{
+			foreach (var filterItem in args.Filters)
+			{
+				switch ($"{filterItem.Property}".ToLower())
+				{
+					case "entity.name":
+						filter.Name = $"{filterItem.FilterValue}";
+						break;
+					case "entity.email":
+						filter.Email = $"{filterItem.FilterValue}";
+						break;
+					case "entity.licensenumber":
+						filter.LicenseNumber = $"{filterItem.FilterValue}";
+						break;
+					case "entity.licensetypename":
+						filter.LicenseTypeName = $"{filterItem.FilterValue}";
+						break;
+				}
+			}
+		}
+		if (args.Sorts.Any())
+		{
+			foreach (var sortItem in args.Sorts)
+            {
+				filter.SortDirection = sortItem.SortOrder == SortOrder.Ascending ? System.ComponentModel.ListSortDirection.Ascending : System.ComponentModel.ListSortDirection.Descending;
+
+                switch ($"{sortItem.Property}".ToLower())
+                {
+                    case "entity.name":
+                        filter.SortByName = "Name";
+						break;
+                    case "entity.email":
+						filter.SortByName = "Email";
+                        break;
+                    case "entity.licensenumber":
+						filter.SortByName = "licensenumber";
+                        break;
+                    case "entity.licensetypename":
+						filter.SortByName = "licensetypeName";
+                        break;
+                }
+            }
+		}
+
 		var page = await Mediator.Send(new GetPagedEntityListRequest<MemberListFilter, Datas.MemberData>(filter));
 		var rowList = new List<ViewModels.MemberRow>();
 

@@ -30,17 +30,26 @@ internal class GetPagedMemberListRequestHandler : GetEntityPagedListRequestHandl
 
 		if (!string.IsNullOrWhiteSpace(filter.Email))
 		{
-			query = query.Where(i => i.Email == filter.Email);
+            var pattern = $"%{filter.Email}%";
+            query = query.Where(i => EF.Functions.Like(i.Email, pattern));
 		}
 
 		if (!string.IsNullOrWhiteSpace(filter.LicenseNumber))
 		{
-			query = query.Where(i => i.LicenseNumber == filter.LicenseNumber);
+            var pattern = $"%{filter.LicenseNumber}%";
+            query = query.Where(i => EF.Functions.Like(i.LicenseNumber, pattern));
 		}
 
 		if (!string.IsNullOrWhiteSpace(filter.Name))
 		{
-			query = query.Where(i => i.Name == filter.Name);
+            var pattern = $"%{filter.Name}%";
+            query = query.Where(i => EF.Functions.Like(i.Name, pattern));
+		}
+
+		if (!string.IsNullOrWhiteSpace(filter.LicenseTypeName))
+		{
+			var pattern = $"%{filter.LicenseTypeName}%";
+            query = query.Where(i => EF.Functions.Like(i.LicenseTypeName, pattern));
 		}
 
 		if (filter.MemberState.HasValue)
