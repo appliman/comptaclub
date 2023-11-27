@@ -28,6 +28,11 @@ public partial class IncomeStatementSelectorDialog
 
 		var page = await Mediator.Send(new GetPagedEntityListRequest<IncomeStatementListFilter, Datas.IncomeStatementData>(filter));
 		var list = new List<ViewModels.IncomeStatement>();
+		list.Add(new ViewModels.IncomeStatement()
+		{
+			Id = Guid.Empty,
+			Description = "Sans compte de résultat"
+		});
 		foreach (var item in page.List)
 		{
 			list.Add(Mapper.Map<ViewModels.IncomeStatement>(item));

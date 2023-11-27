@@ -7,15 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\ComptaClub.Datas\ComptaClub.Datas.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="_Rename\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ComptaClub.Datas\ComptaClub.Datas.csproj" />
   </ItemGroup>
 
 </Project>

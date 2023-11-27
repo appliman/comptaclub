@@ -26,7 +26,7 @@
     <PackageReference Include="FluentEmail.Razor" Version="3.0.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ComptaClub.Contracts\ComptaClub.Contracts.csproj" />
+    <ProjectReference Include="..\ComptaClub.Contracts\ComptaClub.Contracts.csproj" />
     <ProjectReference Include="..\ComptaClub.Datas.MsSql\ComptaClub.Datas.MsSql.csproj" />
     <ProjectReference Include="..\ComptaClub.Import\ComptaClub.Import.csproj" />
   </ItemGroup>

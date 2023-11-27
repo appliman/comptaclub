@@ -52,7 +52,7 @@ public class CreateForecastBudgetTests
 		var incomeStatementDebitTotal = incomeStatement.DebitTotal;
 
 
-		var saveForecastBudgetResult = await mediator.Send(new CreateAndSaveForecastBudgetRequest(incomeStatementResult.Id,
+		var saveForecastBudgetResult = await mediator.Send(new CreateAndSaveForecastBudgetFromIncomeStatementRequest(incomeStatementResult.Id,
 			"Test",
 			"Test"));
 		saveForecastBudgetResult.Should().NotBeNull();
