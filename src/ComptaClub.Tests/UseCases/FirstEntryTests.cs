@@ -37,7 +37,7 @@ public class FirstEntryTests
 		var exercice = await mediator.Send(new GetExerciceByFilterRequest(f => f.Code == "Exercice 2022"));
 		if (exercice == null)
 		{
-			exercice = await mediator.Send(new CreateExerciceRequest("Exercice 2022", "Exercice 2022", DateTime.Now.FirstDateOfCurrentYear(), DateTime.Now.LastDateOfCurrentYear(), 100 * 1000000));
+			exercice = await mediator.Send(new CreateExerciceRequest("Exercice 2022", "Exercice 2022", 100 * 1000000));
 			var saveResult = await mediator.Send(new SaveEntityRequest<Datas.ExerciceData>(exercice));
 			saveResult.HasError.Should().BeFalse();
 		}
