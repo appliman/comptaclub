@@ -46,6 +46,10 @@ public partial class AddDocumentDialog
 		Document.Description = file.Name;
 		Document.Size = file.Size;
 		Document.MimeType = file.ContentType;
+		if (string.IsNullOrWhiteSpace(Document.MimeType))
+		{
+			Document.MimeType = "application/octet-stream";
+		}
 		documentContent = new MemoryStream();
 		await file.OpenReadStream().CopyToAsync(documentContent);
 		StateHasChanged();
