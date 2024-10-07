@@ -3,7 +3,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using ComptaClub;
-using ComptaClub.Blazor;
 
 using EFScriptableMigration;
 
@@ -29,6 +28,7 @@ builder.Services.AddScoped<Radzen.TooltipService>();
 builder.Services.AddScoped<Radzen.ContextMenuService>();
 builder.Services.AddScoped<ComptaClub.Blazor.Services.PrintService>();
 builder.Services.AddScoped<ComptaClub.Blazor.Services.ListFilterQueryStringParametersService>();
+builder.Services.AddSingleton<ComptaClub.Blazor.Services.EntityContextService>();
 
 builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();

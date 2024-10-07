@@ -1,32 +1,11 @@
-﻿<div class="mb-3">
-	<label for="Name" class="form-label">@Label</label>
-	<div class="input-group w-50">
-		<span class="input-group-text"><i class="fas fa-calendar-check"></i></span>
-		<InputDate @attributes="@CatpuredAttributes" class="@($"{otherClass} form-control")" @bind-Value="@day" placeholder="@PlaceHoder" required="@(Required ? "required" : null)" />
-	</div>
-	<small>
-		<ValidationMessage class="invalid-feedback" For="() => day" />
-	</small>
-	@ChildContent
-</div>
-
+﻿@using System.Globalization
 @code {
 
 	[Parameter]
 	public string? Label { get; set; }
 
 	[Parameter]
-	public int DayId 
-	{ 
-		get
-		{
-			return day.ToDayId();
-		}
-		set
-		{
-			day = value.FromDayId();
-		}
-	}
+	public int DayId { get; set; }
 
 	[Parameter]
 	public EventCallback<int> DayIdChanged { get; set; }
@@ -49,11 +28,45 @@
 	[Parameter(CaptureUnmatchedValues = true)]
 	public Dictionary<string, object> CatpuredAttributes { get; set; } = new();
 
-	DateTime day = DateTime.Now;
+	CultureInfo ci = new("en-US");
 	string? otherClass = null;
+	string innerValue = DateTime.Today.ToString("yyyy-MM-dd");
 
 	protected override void OnInitialized()
 	{
 		otherClass = $"{CatpuredAttributes.GetValueOrDefault("class")}";
+		innerValue = DayId.FromDayId().ToString("yyyy-MM-dd");
+		StateHasChanged();
+	}
+
+	void InnerValueChanged(ChangeEventArgs args)
+	{
+		if (string.IsNullOrWhiteSpace($"{args.Value}"))
+		{
+			return;
+		}
+		innerValue = $"{args.Value}";
+		var date = DateTime.Parse(innerValue, ci);
+		DayId = date.ToDayId();
+		DayIdChanged.InvokeAsync(DayId);
 	}
 }
+
+<div class="mb-3">
+	<label for="Name" class="form-label">@Label</label>
+	<div class="input-group w-50">
+		<span class="input-group-text"><i class="fas fa-calendar-check"></i></span>
+		<input @onchange="InnerValueChanged"
+			   type="date"
+			   @attributes="@CatpuredAttributes"
+			   class="@($"{otherClass} form-control")"
+			   value="@innerValue"
+			   placeholder="@PlaceHoder"
+			   required="@(Required ? "required" : null)" />
+	</div>
+	<small>
+		<ValidationMessage class="invalid-feedback" For="() => innerValue" />
+	</small>
+	@ChildContent
+</div>
+

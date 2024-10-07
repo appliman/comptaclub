@@ -18,6 +18,6 @@
     <ProjectReference Include="..\ComptaClub.Datas\ComptaClub.Datas.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ClosedXML" Version="0.102.1" />
+    <PackageReference Include="ClosedXML" Version="0.104.1" />
   </ItemGroup>
 </Project>

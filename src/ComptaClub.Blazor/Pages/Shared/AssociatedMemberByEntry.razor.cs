@@ -20,12 +20,12 @@ public partial class AssociatedMemberByEntry
 	[Inject]
 	DialogService DialogService { get; set; } = default!;
 
-	RadzenDataGrid<AssociatedMemberToEntryRow> grid = default!;
-	List<AssociatedMemberToEntryRow>? associatedMemberList;
-	AssociatedMemberToEntryRow? associationToInsert;
-	AssociatedMemberToEntryRow? associationToUpdate;
-	List<AssociatedMemberToEntryRow> unlinkedAssociationList = new();
-	long total = 0;
+	protected RadzenDataGrid<AssociatedMemberToEntryRow> grid = default!;
+    protected List<AssociatedMemberToEntryRow>? associatedMemberList;
+    protected AssociatedMemberToEntryRow? associationToInsert;
+    protected AssociatedMemberToEntryRow? associationToUpdate;
+    protected List<AssociatedMemberToEntryRow> unlinkedAssociationList = new();
+    protected long total = 0;
 
 	public async Task LoadDatas(LoadDataArgs args)
 	{
@@ -66,6 +66,7 @@ public partial class AssociatedMemberByEntry
 			total = total + association.Amount;
 		}
 		associatedMemberList = list;
+		StateHasChanged();
 	}
 
 	public async Task SaveAssociations()
@@ -114,13 +115,13 @@ public partial class AssociatedMemberByEntry
 		}
 	}
 
-	async Task EditRow(AssociatedMemberToEntryRow row)
+	protected async Task EditRow(AssociatedMemberToEntryRow row)
 	{
 		associationToUpdate = row;
 		await grid.EditRow(row);
 	}
 
-	void CancelEdit(AssociatedMemberToEntryRow row)
+    protected void CancelEdit(AssociatedMemberToEntryRow row)
 	{
 		if (row == associationToInsert)
 		{
@@ -133,7 +134,7 @@ public partial class AssociatedMemberByEntry
 	}
 
 
-	Task DeleteRow(AssociatedMemberToEntryRow row)
+    protected Task DeleteRow(AssociatedMemberToEntryRow row)
 	{
 		if (row == associationToInsert)
 		{
@@ -150,5 +151,4 @@ public partial class AssociatedMemberByEntry
 		}
 		return Task.CompletedTask;
 	}
-
 }
