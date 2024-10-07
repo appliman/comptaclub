@@ -35,4 +35,14 @@ public static class ModelExtensions
 			}
 		}
 	}
+
+	public static bool IgnoreCaseEquals(this string? input, string? value)
+	{
+		if (input is null)
+		{
+			return value is null;
+		}
+
+		return input.Equals(value, StringComparison.InvariantCultureIgnoreCase);
+	}
 }

@@ -1,5 +1,7 @@
 ﻿@page "/ecritures"
 
+@layout ListMainLayout
+
 <SectionContent SectionName="toolbar">
 	<RadzenButton Text="Dépense"
 				  Click="@(() => InsertRow("charge"))"
@@ -23,6 +25,10 @@
 
 </SectionContent>
 
+<SectionContent SectionName="EntityContext">
+	<EntityContext @ref="entityContext" />
+</SectionContent>
+
 <PageTitle>Ecritures</PageTitle>
 <div style="height:100%">
 	<RadzenDataGrid @ref="grid"
@@ -34,7 +40,8 @@
 					TItem="ViewModels.EntryRow"
 					GridLines="DataGridGridLines.Both"
 					FilterMode="FilterMode.Simple"
-					Style="height:100%">
+					Style="height:100%"
+					RowSelect="RowSelected" >
 		<Columns>
 			<RadzenDataGridColumn TItem="ViewModels.EntryRow" Property="RowIndex" Title="#" Width="60px" Filterable="false" FormatString="" Frozen="true" SortOrder="SortOrder.Ascending">
 			</RadzenDataGridColumn>

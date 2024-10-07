@@ -1,5 +1,6 @@
 using System.Linq.Dynamic.Core;
 
+using ComptaClub.Blazor.Pages.Shared;
 using ComptaClub.Blazor.Services;
 using ComptaClub.Blazor.ViewModels;
 using ComptaClub.Contracts.Models.Accounts;
@@ -7,6 +8,7 @@ using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Datas;
 
+using Microsoft.AspNetCore.Components.Sections;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace ComptaClub.Blazor.Pages;
@@ -42,6 +44,8 @@ public partial class EntryList : ComponentBase
 	EntryListFilter filter = new();
 	bool filterFirstInitialize = false;
 	PeriodFilter? selectedPeriodFilter;
+	ViewModels.EntryRow? selectedEntry = default!;
+	EntityContext entityContext = default!;
 
 	protected override void OnAfterRender(bool firstRender)
 	{
@@ -142,6 +146,11 @@ public partial class EntryList : ComponentBase
 			entryList = list;
 		}
 		filterFirstInitialize = false;
+
+		if (list.Any())
+		{
+			entityContext?.ContextChanged(this, list[0], ContextLocation.Bottom);
+		}
 	}
 
 	async Task ApplyFilter()
@@ -207,4 +216,10 @@ public partial class EntryList : ComponentBase
 		return credit - debit;
 	}
 
+	async Task RowSelected(EntryRow entry)
+	{
+		await Task.Yield();
+		selectedEntry = entry;
+		entityContext?.ContextChanged(this, entry, ContextLocation.Bottom);
+	}
 }

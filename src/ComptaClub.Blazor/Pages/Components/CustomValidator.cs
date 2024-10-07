@@ -58,4 +58,8 @@ public class CustomValidator : ComponentBase
         CurrentEditContext.NotifyValidationStateChanged();
     }
 
+    public void Reset()
+    {
+        _messageStore?.Clear();
+    }
 }
