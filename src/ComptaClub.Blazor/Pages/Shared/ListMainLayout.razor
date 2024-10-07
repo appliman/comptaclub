@@ -1,0 +1,11 @@
+﻿@inherits LayoutComponentBase
+@layout MainLayout
+
+<RadzenSplitter Orientation="Orientation.Vertical" style="height: 100%;">
+	<RadzenSplitterPane Size="60%">
+		@Body
+	</RadzenSplitterPane>
+	<RadzenSplitterPane Size="40%">
+		<SectionOutlet SectionName="EntityContext"/>
+	</RadzenSplitterPane>
+</RadzenSplitter>

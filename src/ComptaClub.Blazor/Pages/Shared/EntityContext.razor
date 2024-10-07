@@ -1,0 +1,86 @@
+﻿@using ComptaClub.Blazor.Services
+@using ComptaClub.Blazor.ViewModels
+
+@inject EntityContextService EntityContextService
+
+@inject NavigationManager NavigationManager
+
+@code {
+
+    List<ContextInfo> contextInfoList = new();
+    int selectedTab = 0;
+
+    protected override void OnInitialized()
+    {
+        EntityContextService.ChangeTabByName += (s, arg) =>
+        {
+            ChangeTabByName(arg);
+        };
+    }
+
+    public void ContextChanged<T>(object parent, T entity, ContextLocation contextLocation) 
+    where T : IMetaEntity
+    {
+        var pathAndQuery = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+
+        contextInfoList.RemoveAll(i => i.MetaEntity == entity.MetaEntity);
+        var list = EntityContextService.GetContextInfoList(entity.MetaEntity, contextLocation);
+        foreach (var ctx in list)
+        {
+            var routes = $"{ctx.ExcludeRoutes}".Split(',').ToList();
+            routes.RemoveAll(i => string.IsNullOrWhiteSpace(i));
+            if (routes.Any(i => pathAndQuery.StartsWith(i, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                continue;
+            }
+
+            ctx.Parent = parent;
+            ctx.SelectedEntity = entity;
+            contextInfoList.Add(ctx);
+        }
+        StateHasChanged();
+    }
+
+    public void ChangeTabByName(string name)
+    {
+        var tab = contextInfoList.FirstOrDefault(i => i.Title.IgnoreCaseEquals(name));
+        if (tab is not null)
+        {
+            selectedTab = contextInfoList.IndexOf(tab);
+            base.StateHasChanged();
+        }
+    }
+
+    void TabChanged(int selectedTab)
+    {
+        var tab = contextInfoList[selectedTab];
+        EntityContextService.OnTabChanged(tab.Title);
+    }
+}
+
+<RadzenTabs TabPosition="TabPosition.Bottom" Style="height:100%" @bind-SelectedIndex="selectedTab" Change="TabChanged">
+    <Tabs>
+        @foreach (var item in contextInfoList.OrderByDescending(i => i.DefaultPosition))
+        {
+
+            if (item.Parent is IContextRefreshable refreshable)
+            {
+                item.ReloadBodyPanel = EventCallback.Factory.Create<IMetaEntity>(refreshable, refreshable.RefreshFromContext);
+            }
+
+            var parameters = new Dictionary<string, object>()
+            {
+                { "ContextInfo", item }
+              };
+            <RadzenTabsItem IconColor="@item.IconColor">
+                <Template>
+                    <RadzenIcon Icon="@item.Icon" /><div style="text-overflow: ellipsis;white-space:nowrap;">@item.Title</div>
+                </Template>
+                <ChildContent>
+                    <DynamicComponent Type="@item.ComponentType" Parameters="@parameters" />
+                </ChildContent>
+            </RadzenTabsItem>
+        }
+    </Tabs>
+</RadzenTabs>
+

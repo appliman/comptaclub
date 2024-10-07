@@ -112,7 +112,9 @@ public partial class EditEntry : ComponentBase
 
 	async Task ValidateAndSave()
 	{
+		customValidator?.Reset();
 		entry.AccountDirection = direction;
+		entry.ValueDate = entry.CreationDate;
 		var data = Mapper.Map<Datas.EntryData>(entry);
 		var saveResult = await Mediator!.Send(new SaveEntityRequest<Datas.EntryData>(data));
 		if (saveResult!.HasError)

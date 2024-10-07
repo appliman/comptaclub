@@ -1,4 +1,26 @@
-﻿@using ComptaClub.Blazor.ViewModels;
+﻿@using ComptaClub.Blazor.Services
+@using ComptaClub.Blazor.ViewModels
+
+@attribute [EntityContextAttribute(MetaEntity = MetaEntity.Entry,
+	Title = "Membre",
+	Icon = "user")]
+
+@inherits AssociatedMemberByEntry
+
+@code {
+
+    [Parameter]
+    public ContextInfo ContextInfo { get; set; } = default!;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        EntryId = ContextInfo.SelectedEntity.Id;
+        if (grid is not null)
+        {
+            await grid.Reload();
+        }
+    }
+}
 
 <SectionContent SectionName="toolbar-context">
     <RadzenButton Text="Associer"
@@ -57,3 +79,4 @@
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
+
