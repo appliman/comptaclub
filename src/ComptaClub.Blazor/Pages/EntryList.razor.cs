@@ -7,8 +7,8 @@ using ComptaClub.Contracts.Models.Accounts;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Datas;
+using ComptaClub.Extensions;
 
-using Microsoft.AspNetCore.Components.Sections;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace ComptaClub.Blazor.Pages;
@@ -139,7 +139,7 @@ public partial class EntryList : ComponentBase
 		}
 		if (!string.IsNullOrEmpty(args.OrderBy))
 		{
-			entryList = list.AsQueryable().OrderBy(args.OrderBy).ToList();
+			entryList = IQueryableExtensions.OrderBy(list.AsQueryable(),args.OrderBy).ToList();
 		}
 		else
 		{
