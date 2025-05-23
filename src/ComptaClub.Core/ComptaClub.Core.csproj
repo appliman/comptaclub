@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>ComptaClub</RootNamespace>
+		<Version>9.0.1.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Models\**" />
@@ -14,13 +15,13 @@
     <None Remove="Requests\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.3.2" />
-    <PackageReference Include="Azure.Identity" Version="1.12.1" />
-    <PackageReference Include="Azure.Security.KeyVault.Keys" Version="4.6.0" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.4.0" />
+    <PackageReference Include="Azure.Identity" Version="1.13.2" />
+    <PackageReference Include="Azure.Security.KeyVault.Keys" Version="4.7.0" />
     <PackageReference Include="FluentEmail.MailKit" Version="3.0.2" />
-    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.22.0" />
-    <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.6.0" />
-    <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.23.0" />
+    <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.7.0" />
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
     <PackageReference Include="FluentEmail.Smtp" Version="3.0.2" />
     <PackageReference Include="FluentEmail.Razor" Version="3.0.2" />

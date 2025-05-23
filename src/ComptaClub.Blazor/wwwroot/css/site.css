@@ -1,4 +1,4 @@
-@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -95,4 +95,31 @@ a, .btn-link {
 ::placeholder {
     color: lightgrey;
     font-size: 0.7em;
+}
+
+.rz-body {
+    padding: 3px !important;
+}
+
+.rz-tabview-bottom .rz-tabview-panel {
+    padding: 0 !important;
+    height: 100% !important;
+    border-color: red !important;
+}
+
+.rz-state-highlight .rz-link {
+    color: white !important;
+}
+
+.rz-tabview-title {
+    cursor: pointer;
+}
+
+[role="tab"] a {
+    display: block;
+}
+
+[role="tablist"] {
+    display: flex;
+    flex-wrap: wrap;
 }

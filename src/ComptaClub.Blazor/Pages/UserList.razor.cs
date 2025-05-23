@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 using AutoMapper;
 
 using ComptaClub.Contracts.Models.Users;
@@ -17,6 +19,9 @@ public partial class UserList
 
 	[Inject]
 	IMapper Mapper { get; set; } = default!;
+
+	[Inject]
+	NotificationService NotificationService { get; set; } = default!;
 
 	List<ViewModels.User>? userList;
 	RadzenDataGrid<ViewModels.User>? grid = new();
@@ -87,8 +92,14 @@ public partial class UserList
 		grid!.CancelEditRow(user);
 	}
 
-	void DeleteRow(ViewModels.User user)
+	async Task DeleteRow(ViewModels.User user)
 	{
-		// Todo
+		var result = await Mediator.Send(new DisableUserRequest(user.Id));
+		if (result.HasError)
+		{
+			NotificationService.NotifyError(result);
+		}
+		await LoadDatas(new LoadDataArgs());
+		StateHasChanged();
 	}
 }
