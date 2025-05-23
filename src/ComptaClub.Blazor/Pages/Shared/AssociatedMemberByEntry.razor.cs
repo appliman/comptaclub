@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 
 using ComptaClub.Blazor.ViewModels;
 using ComptaClub.Contracts.Models.Entries;
@@ -90,6 +90,7 @@ public partial class AssociatedMemberByEntry
 
 		associationToUpdate = null;
 		total = total + row.Amount;
+		await SaveAssociations();
 		await grid.UpdateRow(row);
 	}
 
