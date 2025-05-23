@@ -1,24 +1,21 @@
-parameters:
+﻿parameters:
   - name: AllowUnitTests
     displayName: Allow unit tests
     type: boolean
     default : true
 
 trigger:
-  batch: 'true'
-  branches:
-    include:
-      - prod
+- none
 
 pool:
-  vmImage: 'windows-2022'
+  vmImage: 'windows-latest'
 
 variables:
   solution: 'ComptaClub.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   secureFile: 'comptaclubdev-ComptaClubDev-20230204.pfx'
-  dotnetVersion: 'net8.0'
+  dotnetVersion: 'net9.0'
   environment: 'production'
 
 steps:
