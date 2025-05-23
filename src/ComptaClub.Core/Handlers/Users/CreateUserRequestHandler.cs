@@ -10,6 +10,7 @@ internal class CreateUserRequestHandler : IRequestHandler<CreateUserRequest, Use
         result.Id = Guid.NewGuid();
         result.Name = request.Name;
         result.Email = request.Email;
+        result.CreationDate = DateTime.Now.ToDayId();
 
         return Task.FromResult(result);
     }

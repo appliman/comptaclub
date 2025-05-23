@@ -28,11 +28,17 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.User" Filterable="false" Sortable="false" TextAlign="TextAlign.Left" Width="100px">
             <Template Context="user">
-                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(user))" @onclick:stopPropagation="true" title="Editer cet utilisateur">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(user))" title="Editer cet utilisateur">
                 </RadzenButton>
-                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(user))" @onclick:stopPropagation="true" title="Supprimer cet utilisateur">
+                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(user))" title="Supprimer cet utilisateur">
                 </RadzenButton>
             </Template>
+            <EditTemplate Context="user">
+                <RadzenButton Icon="cancel" ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => CancelEdit(user))" title="Annuler">
+                </RadzenButton>
+                <RadzenButton Icon="save" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => SaveRow(user))" title="Sauvegarder">
+                </RadzenButton>
+            </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ViewModels.User" Property="Name" Title="Nom" Width="250px" Filterable="false" Frozen="true">
             <EditTemplate Context="user">

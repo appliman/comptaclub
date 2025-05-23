@@ -1,4 +1,4 @@
-using AutoMapper;
+ï»¿using AutoMapper;
 
 using ComptaClub.Contracts.Models.Documents;
 using ComptaClub.Contracts.Models.Entries;
@@ -28,14 +28,13 @@ public partial class DocumentListByEntity
 	[Inject]
 	NotificationService NotificationService { get; set; } = default!;
 
+	protected List<ViewModels.Document>? documentList;
+	protected RadzenDataGrid<ViewModels.Document> grid = default!;
+	protected DocumentListFilter filter = new();
+	protected ViewModels.Document? documentToUpdate;
+	protected List<BrokenRule> brokenRules = new();
 
-	List<ViewModels.Document>? documentList;
-	RadzenDataGrid<ViewModels.Document> grid = default!;
-	DocumentListFilter filter = new();
-	ViewModels.Document? documentToUpdate;
-	List<BrokenRule> brokenRules = new();
-
-	async Task LoadDatas(LoadDataArgs args)
+	protected async Task LoadDatas(LoadDataArgs args)
 	{
 		filter.MetaEntityIdList = new MetaEntityIdList(MetaEntity, new List<Guid> { EntityId });
 		filter.PageSize = int.MaxValue;
@@ -50,13 +49,13 @@ public partial class DocumentListByEntity
 		documentList = vmList;
 	}
 
-	async Task EditRow(ViewModels.Document doc)
+	protected async Task EditRow(ViewModels.Document doc)
 	{
 		documentToUpdate = doc;
 		await grid!.EditRow(doc);
 	}
 
-	async Task SaveRow(ViewModels.Document doc)
+	protected async Task SaveRow(ViewModels.Document doc)
 	{
 		documentToUpdate = null;
 
@@ -71,15 +70,15 @@ public partial class DocumentListByEntity
 		await grid!.UpdateRow(doc);
 	}
 
-	void CancelEdit(ViewModels.Document doc)
+	protected void CancelEdit(ViewModels.Document doc)
 	{
 		documentToUpdate = null;
 		grid!.CancelEditRow(doc);
 	}
 
-	async Task DeleteRow(ViewModels.Document doc)
+	protected async Task DeleteRow(ViewModels.Document doc)
 	{
-		var dialogResult = await DialogService.Confirm("Confirmez-vous le détachement de ce document à cette entrée ?", "Détachement");
+		var dialogResult = await DialogService.Confirm("Confirmez-vous le dÃ©tachement de ce document Ã  cette entrÃ©e ?", "DÃ©tachement");
 		if (dialogResult.Value == false)
 		{
 			return;
