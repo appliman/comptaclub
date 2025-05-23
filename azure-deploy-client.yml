@@ -2,7 +2,7 @@
   - name: environment
     displayName: 'Environment (staging/production)'
     type: string
-    default: 'staging'
+    default: 'production'
     values:
       - 'staging'
       - 'production'
