@@ -1,6 +1,4 @@
-﻿// REDACTED/V2jc032c5x4qFi6rkruRgW6umZtbFqx7QVjQFFIBW8E3I1
-
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
 
 using DeployToClustiis;
@@ -47,8 +45,8 @@ var projectListToDeploy = new List<Project>()
 	new Project
 	{
 		Name = "ComptaClub",
-		CsprojFileName = System.IO.Path.Combine(directory.FullName, "ComptaClub.Blazor\\ComptaClub.Blazor.csproj"),
-		PublishPath = System.IO.Path.Combine(directory.FullName, "ComptaClub.Blazor\\bin\\debug\\net9.0\\publish"),
+		CsprojFileName = System.IO.Path.Combine(directory.FullName, "ComptaClub.Blazor","ComptaClub.Blazor.csproj"),
+		PublishPath = System.IO.Path.Combine(directory.FullName, "ComptaClub.Blazor","bin","debug","net10.0","publish"),
 	},
 };
 
@@ -83,7 +81,15 @@ foreach (var project in projectListToDeploy)
 	{
 		System.IO.File.Delete(zipFileName);
 	}
-	Helpers.Process(@"""C:\Program Files\7-Zip\7z.exe""", @$"a -tzip -r {project.PublishPath} *", project.PublishPath);
+
+	if (System.OperatingSystem.IsWindows())
+	{
+		Helpers.Process(@"""C:\Program Files\7-Zip\7z.exe""", @$"a -tzip -r {project.PublishPath} *", project.PublishPath);
+	}
+	else
+	{
+        Helpers.Process(@"7z", @$"a -tzip -r {project.PublishPath} *", project.PublishPath);
+    }
 
 	var fileInfo = new System.IO.FileInfo(zipFileName);
 

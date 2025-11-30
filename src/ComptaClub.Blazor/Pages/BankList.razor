@@ -7,7 +7,6 @@
 				  Click="InsertRow"
 				  Icon="add_circle_outline"
 				  ButtonStyle="ButtonStyle.Success"
-				  Disabled ="(bankToUpdate != null || bankToInsert != null)"  
 				  class="btn btn-primary m-1"
 				  title="Ajouter une banque" />
 
@@ -46,18 +45,13 @@
 			</RadzenDataGridColumn>
 			<RadzenDataGridColumn TItem="ViewModels.BankRow" Title="Actif" Width="90px" Filterable="false">
 				<Template Context="bank">
-					@if (bankToInsert is null
-							&& bankToUpdate is null)
+					@if (bank.Entity.Active)
 					{
-
-						@if (bank.Entity.Active)
-						{
-							<input type="radio" checked @onchange="@((args) => ChangeActiveBank(args, bank))" />
-						}
-						else
-						{
-							<input type="radio" @onchange="@((args) => ChangeActiveBank(args, bank))" />
-						}
+						<input type="radio" checked @onchange="@((args) => ChangeActiveBank(args, bank))" />
+					}
+					else
+					{
+						<input type="radio" @onchange="@((args) => ChangeActiveBank(args, bank))" />
 					}
 				</Template>
 			</RadzenDataGridColumn>

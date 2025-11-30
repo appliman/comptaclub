@@ -1,25 +1,51 @@
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using ComptaClub;
+using ComptaClub.Blazor.Services;
+using ComptaClub.Datas;
 
 using EFScriptableMigration;
 
 using FluentEmail.MailKitSmtp;
 
-using LogRWebMonitor;
-
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 
-var builder = WebApplication.CreateBuilder(args);
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Resources;
+
+var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
+var currentPath = Path.GetDirectoryName(entryAssembly!.Location)!;
+
+var env = ComptaClub.StartupExtensions.GetEnvironmentName(args);
+
+var webOptions = new WebApplicationOptions
+{
+    EnvironmentName = env,
+    Args = args,
+    ContentRootPath = currentPath,
+    WebRootPath = Path.Combine(currentPath, "wwwroot")
+};
+
+if (env.Equals("Development", StringComparison.InvariantCultureIgnoreCase))
+{
+    webOptions = new WebApplicationOptions
+    {
+        EnvironmentName = env,
+        Args = args
+    };
+}
+
+var builder = WebApplication.CreateBuilder(webOptions);
 
 var globalSettings = await builder.ConfigureComptaClub(args);
 
 builder.Services.AddAutoMapper(cfg =>
 {
-    cfg.AddProfile<ComptaClub.Blazor.Mapping.Profile>();
+	cfg.AddProfile<ComptaClub.Blazor.Mapping.Profile>();
 });
 
 builder.Services.AddScoped<Radzen.DialogService>();
@@ -31,101 +57,108 @@ builder.Services.AddScoped<ComptaClub.Blazor.Services.ListFilterQueryStringParam
 builder.Services.AddSingleton<ComptaClub.Blazor.Services.EntityContextService>();
 
 builder.Services.AddRazorComponents()
-            .AddInteractiveServerComponents();
+			.AddInteractiveServerComponents();
 
 builder.Services.AddMemoryCache();
 
 builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-        options.JsonSerializerOptions.PropertyNamingPolicy = null;
-        options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-    });
+	.AddJsonOptions(options =>
+	{
+		options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+		options.JsonSerializerOptions.PropertyNamingPolicy = null;
+		options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+		options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+	});
 
 builder.Services.AddDataProtection()
-        .SetApplicationName(globalSettings.ApplicationName)
-        .AddKeyManagementOptions(options =>
-        {
-            options.AutoGenerateKeys = true;
-        })
-        .PersistKeysToDbContext<ComptaClub.Datas.ComptaClubDbContext>()
-        .SetDefaultKeyLifetime(TimeSpan.FromDays(400));
+		.SetApplicationName(globalSettings.ApplicationName)
+		.AddKeyManagementOptions(options =>
+		{
+			options.AutoGenerateKeys = true;
+		})
+		.PersistKeysToDbContext<ComptaClub.Datas.ComptaClubDbContext>()
+		.SetDefaultKeyLifetime(TimeSpan.FromDays(400));
 
 builder.Services.AddLocalization();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-        .AddCookie(options =>
-        {
-            options.Cookie.Name = "ComptaClub";
-            options.SlidingExpiration = true;
-            options.ExpireTimeSpan = TimeSpan.FromDays(15);
-            options.Cookie.HttpOnly = true;
-        });
+		.AddCookie(options =>
+		{
+			options.Cookie.Name = "ComptaClub";
+			options.SlidingExpiration = true;
+			options.ExpireTimeSpan = TimeSpan.FromDays(15);
+			options.Cookie.HttpOnly = true;
+		});
 
 var rootFolder = System.IO.Path.GetDirectoryName(typeof(Program).Assembly.Location)!;
 var emailTemplatesFolder = System.IO.Path.Combine(rootFolder, @$"Pages\EmailTemplates");
 var outputEmails = System.IO.Path.Combine(rootFolder, @$"emailout");
 if (!System.IO.Directory.Exists(outputEmails))
 {
-    System.IO.Directory.CreateDirectory(outputEmails);
+	System.IO.Directory.CreateDirectory(outputEmails);
 }
 
 var fluentEmail = builder.Services.AddFluentEmail(globalSettings.AdminUserEmail)
-    .AddRazorRenderer(emailTemplatesFolder);
+	.AddRazorRenderer(emailTemplatesFolder);
 
 if (globalSettings.SmtpProviderName == "local")
 {
-    fluentEmail.AddSmtpSender(new System.Net.Mail.SmtpClient()
-    {
-        DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.SpecifiedPickupDirectory,
-        PickupDirectoryLocation = outputEmails
-    });
+	fluentEmail.AddSmtpSender(new System.Net.Mail.SmtpClient()
+	{
+		DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.SpecifiedPickupDirectory,
+		PickupDirectoryLocation = outputEmails
+	});
 }
 else if (globalSettings.SmtpProviderName == "smtp")
 {
-    var credentials = new NetworkCredential(globalSettings.SmtpUserName, globalSettings.SmtpPassword);
-    fluentEmail.AddSmtpSender(new System.Net.Mail.SmtpClient()
-    {
-        EnableSsl = globalSettings.SmtpEnableSsl,
-        Host = globalSettings.SmtpHost,
-        Port = globalSettings.SmtpPort,
-        Credentials = credentials
-    });
+	var credentials = new NetworkCredential(globalSettings.SmtpUserName, globalSettings.SmtpPassword);
+	fluentEmail.AddSmtpSender(new System.Net.Mail.SmtpClient()
+	{
+		EnableSsl = globalSettings.SmtpEnableSsl,
+		Host = globalSettings.SmtpHost,
+		Port = globalSettings.SmtpPort,
+		Credentials = credentials
+	});
 }
 else if (globalSettings.SmtpProviderName == "mimekit")
 {
-    fluentEmail.AddMailKitSender(new SmtpClientOptions
-    {
-        UseSsl = globalSettings.SmtpEnableSsl,
-        Server = globalSettings.SmtpHost,
-        Port = globalSettings.SmtpPort,
-        User = globalSettings.SmtpUserName,
-        Password = globalSettings.SmtpPassword,
-        RequiresAuthentication = true
-    });
+	fluentEmail.AddMailKitSender(new SmtpClientOptions
+	{
+		UseSsl = globalSettings.SmtpEnableSsl,
+		Server = globalSettings.SmtpHost,
+		Port = globalSettings.SmtpPort,
+		User = globalSettings.SmtpUserName,
+		Password = globalSettings.SmtpPassword,
+		RequiresAuthentication = true
+	});
 }
 
-builder.AddLogRWebMonitor(config =>
+builder.Logging.AddOpenTelemetry(options =>
 {
-    config.EnvironmentName = builder.Environment.EnvironmentName;
-    config.HostName = "ComptaClub";
+	options.IncludeScopes = true;
+	options.IncludeFormattedMessage = true;
+	options.ParseStateValues = true;
+	options.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService($"{builder.Environment.EnvironmentName}.ComptaClub"));
+	options.AddOtlpExporter(opt =>
+	{
+		opt.Endpoint = new Uri($"{globalSettings.OtlpEndpoint}");
+		// opt.Headers = settings.OltpHeaders;
+		opt.Protocol = OtlpExportProtocol.Grpc;
+	});
 });
+
 
 /* ----------------------------------------------------------------------- */
 
 var app = builder.Build();
 
-app.UseLogRWebMonitor();
-
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+	app.UseExceptionHandler("/Error");
 }
 else
 {
-    app.UseDeveloperExceptionPage();
+	app.UseDeveloperExceptionPage();
 }
 
 app.UseRequestLocalization("fr-FR");
@@ -137,7 +170,7 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<ComptaClub.Blazor.Pages.App>()
-        .AddInteractiveServerRenderMode();
+		.AddInteractiveServerRenderMode();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -150,9 +183,9 @@ app.MapRazorPages();
 
 var migration = new DbMigration()
 {
-    ConnectionString = globalSettings.SqlConnectionString,
-    SchemaName = "ComptaClub",
-    EmbededTypeReference = typeof(ComptaClub.Datas.StartupExtensions)
+	ConnectionString = globalSettings.SqlConnectionString,
+	SchemaName = "ComptaClub",
+	EmbededTypeReference = typeof(ComptaClub.Datas.StartupExtensions)
 };
 
 await migration.Start();
@@ -160,4 +193,6 @@ await migration.Start();
 var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
 await mediator.Send(new WarmupRequest());
 
-app.Run();
+_ = new ShutdownDetector(app);
+
+await app.RunAsync();
