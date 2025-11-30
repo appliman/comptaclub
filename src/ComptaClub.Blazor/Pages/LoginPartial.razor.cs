@@ -1,4 +1,4 @@
-using ComptaClub.Blazor.ViewModels;
+ï»¿using ComptaClub.Blazor.ViewModels;
 using ComptaClub.Contracts.Models.Users;
 using ComptaClub.Contracts.Results;
 
@@ -29,7 +29,7 @@ public partial class LoginPartial : ComponentBase
 
 	LoginForm loginForm = new();
 	Components.CustomValidator? customValidator = new();
-	string submitMessage = "Envoyer le code d'accès";
+	string submitMessage = "Envoyer le code d'accÃ¨s";
 
 	public async Task Validate()
 	{
@@ -61,7 +61,7 @@ public partial class LoginPartial : ComponentBase
 						new BrokenRule
 						{
 							PropertyName = "Email",
-							MessageList = new List<string>() { "L'envoi du mail a échoué" }
+							MessageList = new List<string>() { "L'envoi du mail a Ã©chouÃ©" }
 						}
 					);
 				}
@@ -128,12 +128,11 @@ public partial class LoginPartial : ComponentBase
 	async Task<SendResponse> SendEmailConnection()
 	{
 		var emailTemplatesFolder = Path.GetDirectoryName(typeof(Program).Assembly.Location)!;
-		emailTemplatesFolder = Path.Combine(emailTemplatesFolder, @$"Pages\EmailTemplates\digicode.cshtml");
-
+		emailTemplatesFolder = Path.Combine(emailTemplatesFolder, "Pages", "EmailTemplates", "digicode.cshtml");
 
 		var email = FluentEmail.SetFrom(GlobalSettings.ContactEmailAdress, GlobalSettings.ContactName);
 		email.To(loginForm.Email);
-		email.Subject("Votre code d'accès");
+		email.Subject("Votre code d'accÃ¨s");
 		email.UsingTemplateFromFile(emailTemplatesFolder, loginForm);
 		email.Tag("workaround");
 
