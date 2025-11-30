@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using ComptaClub;
+using ComptaClub.Blazor.Pages;
 using ComptaClub.Blazor.Services;
 using ComptaClub.Datas;
 
@@ -91,7 +92,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 		});
 
 var rootFolder = System.IO.Path.GetDirectoryName(typeof(Program).Assembly.Location)!;
-var emailTemplatesFolder = System.IO.Path.Combine(rootFolder, @$"Pages\EmailTemplates");
+var emailTemplatesFolder = System.IO.Path.Combine(rootFolder, $"Pages","EmailTemplates");
 var outputEmails = System.IO.Path.Combine(rootFolder, @$"emailout");
 if (!System.IO.Directory.Exists(outputEmails))
 {
@@ -169,17 +170,12 @@ app.MapControllers();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.MapRazorComponents<ComptaClub.Blazor.Pages.App>()
-		.AddInteractiveServerRenderMode();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
-/*
-app.MapFallbackToPage("/_Host");
-app.MapBlazorHub();
-app.MapRazorPages();
-*/
+
+app.MapRazorComponents<App>()
+		.AddInteractiveServerRenderMode();
 
 var migration = new DbMigration()
 {
