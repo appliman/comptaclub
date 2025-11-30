@@ -1,4 +1,4 @@
-using ComptaClub.Contracts.Models.Banks;
+﻿using ComptaClub.Contracts.Models.Banks;
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Blazor.Pages;
@@ -23,8 +23,6 @@ public partial class BankList : ComponentBase
 
 	IEnumerable<ViewModels.BankRow>? bankList = null;
 	RadzenDataGrid<ViewModels.BankRow> grid = default!;
-	ViewModels.BankRow? bankToUpdate;
-	ViewModels.BankRow? bankToInsert;
 	List<BrokenRule> brokenRules = new();
 
 	async Task LoadDatas()
@@ -46,7 +44,7 @@ public partial class BankList : ComponentBase
 	async Task InsertRow()
 	{
 		var data = await Mediator.Send(new CreateBankRequest());
-		bankToInsert = new ViewModels.BankRow
+		var bankToInsert = new ViewModels.BankRow
 		{
 			Entity = data,
 			RowIndex = bankList!.Count() + 1
@@ -56,15 +54,11 @@ public partial class BankList : ComponentBase
 
 	void EditRow(ViewModels.BankRow bank)
 	{
-		bankToUpdate = bank;
 		grid.EditRow(bank);
 	}
 
 	async Task SaveRow(ViewModels.BankRow bank)
 	{
-		bankToInsert = null;
-		bankToUpdate = null;
-
 		var saveResult = await Mediator.Send(new SaveEntityRequest<Datas.BankData>(bank.Entity));
 		if (saveResult.HasError)
 		{
@@ -77,8 +71,6 @@ public partial class BankList : ComponentBase
 
 	void CancelEdit(ViewModels.BankRow bank)
 	{
-		bankToInsert = null;
-		bankToUpdate = null;
 		grid!.CancelEditRow(bank);
 	}
 
