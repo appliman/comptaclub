@@ -25,9 +25,10 @@ public partial class LoginPartial : ComponentBase
 	IFluentEmail FluentEmail { get; set; } = default!;
 	[Inject]
 	Configuration.ComptaClubSettings GlobalSettings { get; set; } = default!;
+	[Inject]
+	IWebHostEnvironment WebHostEnvironment { get; set; } = default!;
 
-
-	LoginForm loginForm = new();
+    LoginForm loginForm = new();
 	Components.CustomValidator? customValidator = new();
 	string submitMessage = "Envoyer le code d'accès";
 
@@ -127,8 +128,8 @@ public partial class LoginPartial : ComponentBase
 
 	async Task<SendResponse> SendEmailConnection()
 	{
-		var emailTemplatesFolder = Path.GetDirectoryName(typeof(Program).Assembly.Location)!;
-		emailTemplatesFolder = Path.Combine(emailTemplatesFolder, "Pages", "EmailTemplates", "digicode.cshtml");
+		var emailTemplatesFolder = WebHostEnvironment.WebRootPath!;
+        emailTemplatesFolder = Path.Combine(emailTemplatesFolder, "EmailTemplates", "digicode.cshtml");
 
 		var email = FluentEmail.SetFrom(GlobalSettings.ContactEmailAdress, GlobalSettings.ContactName);
 		email.To(loginForm.Email);
