@@ -76,7 +76,7 @@ foreach (var project in projectListToDeploy)
 	}
 
 	// Supprimer le fichier zip
-	var zipFileName = System.IO.Path.Combine(project.PublishPath, "..\\", $"publish.zip");
+	var zipFileName = System.IO.Path.Combine(project.PublishPath, "..", $"publish.zip");
 	if (System.IO.File.Exists(zipFileName))
 	{
 		System.IO.File.Delete(zipFileName);
