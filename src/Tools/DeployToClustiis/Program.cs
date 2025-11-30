@@ -46,7 +46,7 @@ var projectListToDeploy = new List<Project>()
 	{
 		Name = "ComptaClub",
 		CsprojFileName = System.IO.Path.Combine(directory.FullName, "ComptaClub.Blazor","ComptaClub.Blazor.csproj"),
-		PublishPath = System.IO.Path.Combine(directory.FullName, "ComptaClub.Blazor","bin","debug","net10.0","publish"),
+		PublishPath = System.IO.Path.Combine(directory.FullName, "ComptaClub.Blazor","bin","Debug","net10.0","publish"),
 	},
 };
 
