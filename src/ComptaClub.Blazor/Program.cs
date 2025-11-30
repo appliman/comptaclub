@@ -91,26 +91,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 			options.Cookie.HttpOnly = true;
 		});
 
-var rootFolder = System.IO.Path.GetDirectoryName(typeof(Program).Assembly.Location)!;
-var emailTemplatesFolder = System.IO.Path.Combine(rootFolder, $"Pages","EmailTemplates");
-var outputEmails = System.IO.Path.Combine(rootFolder, @$"emailout");
-if (!System.IO.Directory.Exists(outputEmails))
-{
-	System.IO.Directory.CreateDirectory(outputEmails);
-}
-
+var emailTemplatesFolder = System.IO.Path.Combine(webOptions.WebRootPath!, "EmailTemplates");
 var fluentEmail = builder.Services.AddFluentEmail(globalSettings.AdminUserEmail)
 	.AddRazorRenderer(emailTemplatesFolder);
 
-if (globalSettings.SmtpProviderName == "local")
-{
-	fluentEmail.AddSmtpSender(new System.Net.Mail.SmtpClient()
-	{
-		DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.SpecifiedPickupDirectory,
-		PickupDirectoryLocation = outputEmails
-	});
-}
-else if (globalSettings.SmtpProviderName == "smtp")
+if (globalSettings.SmtpProviderName == "smtp")
 {
 	var credentials = new NetworkCredential(globalSettings.SmtpUserName, globalSettings.SmtpPassword);
 	fluentEmail.AddSmtpSender(new System.Net.Mail.SmtpClient()
