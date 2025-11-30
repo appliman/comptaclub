@@ -48,5 +48,7 @@ namespace ComptaClub.Configuration
             = new System.Globalization.CultureInfo("fr-FR");
 
         public System.TimeZoneInfo TimeZoneInfo { get; set; } = TimeZoneInfo.Local;
-    }
+
+        public string OtlpEndpoint { get; set; } = null!;
+	}
 }

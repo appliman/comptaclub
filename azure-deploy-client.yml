@@ -1,49 +1,48 @@
-﻿parameters:
-  - name: environment
-    displayName: 'Environment (staging/production)'
-    type: string
-    default: 'production'
-    values:
-      - 'staging'
-      - 'production'
-
-trigger: 
+﻿trigger: 
 - prod
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
 # pool:
 #   name: 'Aspicot'
 
 variables:
-  solution: '**/*.sln'
+  solution: 'ComptaClub.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Debug'
-  dotnetVersion: 'net9.0'
+  dotnetVersion: 'net10.0'
       
 steps:
-
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
-  displayName: 'nuget restore'
+- task: UseDotNet@2
+  displayName: 'Install .NET 10 SDK'
   inputs:
-    restoreSolution: '$(solution)'
-    includeNuGetOrg: true
+    packageType: 'sdk'
+    version: '10.0.x'
+
+- task: NuGetAuthenticate@1
+  displayName: 'Authenticate to Azure Artifacts'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    projects: '$(solution)'
+    command: 'restore'
+    includeNuGetOrg: true   
 
 - task: DotNetCoreCLI@2
   displayName: 'Build DeployToClustiis'
   inputs:
-    command: 'build'
-    projects: '**\DeployToClustiis.csproj'
+    command: 'build' 
+    projects: '**/DeployToClustiis.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
-- task: CmdLine@2
+- task: Bash@3
   displayName: Deploy To ClustIIS
   condition: succeeded()
   inputs:    
     workingDirectory : '$(System.DefaultWorkingDirectory)'
+    targetType: 'inline'
     script: |
-        cd $(System.DefaultWorkingDirectory)\src\Tools\DeployToClustiis\bin\Debug\$(dotnetVersion)\
-        DeployToClustiis.exe --env ${{parameters.environment}} --wd $(System.DefaultWorkingDirectory)
+        cd $(System.DefaultWorkingDirectory)/src/Tools/DeployToClustiis/bin/$(buildConfiguration)/$(dotnetVersion)/
+        dotnet DeployToClustiis.dll --env production --wd $(System.DefaultWorkingDirectory)
