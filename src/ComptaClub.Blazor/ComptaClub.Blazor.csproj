@@ -4,7 +4,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PreserveCompilationContext>true</PreserveCompilationContext>
-    <Version>9.10.16.0</Version>
+    <Version>10.11.17.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Radzen.Blazor" Version="8.3.4" />
@@ -43,6 +43,7 @@
     </Content>
     <Content Update="wwwroot\EmailTemplates\Digicode.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
