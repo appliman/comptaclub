@@ -40,7 +40,7 @@ steps:
       docker build \
         -f src/ComptaClub.Blazor/Dockerfile \
         -t ${IMAGE_NAME}:$(Build.BuildId) \
-        -t ${IMAGE_NAME}:${{parameters.environment}} \
+        -t ${IMAGE_NAME}:latest \
         .
 
       echo "Pushing Docker image with build ID: ${IMAGE_NAME}:$(Build.BuildId)"
