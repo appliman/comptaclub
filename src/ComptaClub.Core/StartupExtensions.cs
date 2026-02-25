@@ -19,7 +19,8 @@ public static class StartupExtensions
 {
     public static async Task<Configuration.ComptaClubSettings> ConfigureComptaClub(this WebApplicationBuilder builder, params string[] args)
     {
-        builder.Environment.EnvironmentName = GetEnvironmentName(args);
+		var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "development";
+		builder.Environment.EnvironmentName = env;
 
         var currentFolder = System.IO.Path.GetDirectoryName(typeof(StartupExtensions).Assembly.Location);
         builder.Configuration
@@ -86,31 +87,6 @@ public static class StartupExtensions
 		return settings;
     }
 
-    public static string GetEnvironmentName(params string[] args)
-    {
-        var envParam = args.GetParameterValue("env");
-        if (!string.IsNullOrWhiteSpace(envParam))
-        {
-            return envParam;
-        }
-        var currentFolder = System.IO.Path.GetDirectoryName(typeof(StartupExtensions).Assembly.Location);
-        var environmentFileName = System.IO.Path.Combine(currentFolder!, "env.txt");
-        if (!System.IO.File.Exists(environmentFileName))
-        {
-            return "Development";
-        }
-        var lines = System.IO.File.ReadAllLines(environmentFileName);
-        if (lines == null)
-        {
-            return "Development";
-        }
-        var result = lines.FirstOrDefault();
-        if (result == null)
-        {
-            return "Development";
-        }
-        return result.Trim();
-    }
 
     public static string GetParameterValue(this string[] args, string parameterName)
     {

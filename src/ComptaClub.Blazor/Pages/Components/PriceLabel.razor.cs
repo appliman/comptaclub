@@ -23,7 +23,7 @@ public partial class PriceLabel
     {
         get
         {
-            return new MarkupString(string.Format("{0:#,##0.00}&nbsp;€", Value.GetValueOrDefault(0) / 1000000m));
+            return new MarkupString(string.Format("{0:#,##0.00}&nbsp;â‚¬", Value.GetValueOrDefault(0) / 1000000m));
         }
     }
 

@@ -1,0 +1,31 @@
+<Solution>
+  <Folder Name="/1.Datas/">
+    <Project Path="src/ComptaClub.Datas.MsSql/ComptaClub.Datas.MsSql.csproj" />
+    <Project Path="src/ComptaClub.Datas/ComptaClub.Datas.csproj" />
+  </Folder>
+  <Folder Name="/2.Core/">
+    <Project Path="src/ComptaClub.Contracts/ComptaClub.Contracts.csproj" />
+    <Project Path="src/ComptaClub.Core/ComptaClub.Core.csproj" />
+    <Project Path="src/ComptaClub.Import/ComptaClub.Import.csproj" />
+  </Folder>
+  <Folder Name="/3.Clients/">
+    <Project Path="src/ComptaClub.Blazor/ComptaClub.Blazor.csproj" />
+  </Folder>
+  <Folder Name="/4.Tools/" />
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="azure-deploy-client.yml" />
+    <File Path="azure-deploy-docker.yml" />
+    <File Path="azure-pipelines.yml" />
+    <File Path="build-publish-docker-dev.cmd" />
+    <File Path="Doc/2022-11-11_14h53-releve_COMPTE_CHEQUES_1.ofx" />
+    <File Path="Doc/BILAN TRIATHLON .xlsx" />
+    <File Path="Doc/Compta Club.emmx" />
+    <File Path="Doc/ManageComptaClub.sql" />
+    <File Path="Doc/modele-document-livre-comptable.pdf" />
+    <File Path="Doc/RLV_001_76093130_40_20200131.pdf" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="src/ComptaClub.Tests/ComptaClub.Tests.csproj" />
+  </Folder>
+</Solution>
