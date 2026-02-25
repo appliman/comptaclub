@@ -128,8 +128,7 @@ public partial class LoginPartial : ComponentBase
 
 	async Task<SendResponse> SendEmailConnection()
 	{
-		var emailTemplatesFolder = WebHostEnvironment.WebRootPath!;
-        emailTemplatesFolder = Path.Combine(emailTemplatesFolder, "EmailTemplates", "digicode.cshtml");
+        var emailTemplatesFolder = Path.Combine(GlobalSettings.EmailTemplateFolder, "digicode.cshtml");
 
 		var email = FluentEmail.SetFrom(GlobalSettings.ContactEmailAdress, GlobalSettings.ContactName);
 		email.To(loginForm.Email);

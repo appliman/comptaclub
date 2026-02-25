@@ -1,4 +1,4 @@
-using System.Drawing;
+ï»¿using System.Drawing;
 using System.Drawing.Imaging;
 
 using ComptaClub.Blazor.Pages.Components;
@@ -38,7 +38,7 @@ public partial class AddDocumentDialog
 		IBrowserFile file = e.File;
 		if (file == null)
 		{
-			NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier sélectionné");
+			NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier sÃ©lectionnÃ©");
 			return;
 		}
 
@@ -112,26 +112,5 @@ public partial class AddDocumentDialog
 		{
 			Console.WriteLine(ex.Message);
 		}
-	}
-
-	[JSInvokable]
-	public async Task ProcessImage(string imageString)
-	{
-		if (string.IsNullOrWhiteSpace(imageString))
-		{
-			return;
-		}
-		imageDataBase64 = imageString.Split(',')[1];
-		frameUri = imageString;
-
-		using var image = Image.FromStream(new MemoryStream(Convert.FromBase64String(imageDataBase64)));
-		documentContent = new MemoryStream();
-		image.Save(documentContent, ImageFormat.Jpeg);
-		Document.FileName = $"image{DateTime.Now:dd-MM-yy}.jpg";
-		Document.Description = "Photo";
-		Document.Size = documentContent.Length;
-		Document.MimeType = "image/jpg";
-		await JSRuntime.InvokeVoidAsync("camera.stopCamera", "videoFeed");
-		StateHasChanged();
 	}
 }

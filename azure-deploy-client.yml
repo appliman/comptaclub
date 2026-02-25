@@ -1,5 +1,5 @@
 ﻿trigger: 
-- prod
+- none
 
 pool:
   vmImage: 'ubuntu-latest'

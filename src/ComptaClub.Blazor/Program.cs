@@ -5,7 +5,6 @@ using System.Text.Json.Serialization;
 using ComptaClub;
 using ComptaClub.Blazor.Pages;
 using ComptaClub.Blazor.Services;
-using ComptaClub.Datas;
 
 using EFScriptableMigration;
 
@@ -18,29 +17,7 @@ using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Resources;
 
-var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
-var currentPath = Path.GetDirectoryName(entryAssembly!.Location)!;
-
-var env = ComptaClub.StartupExtensions.GetEnvironmentName(args);
-
-var webOptions = new WebApplicationOptions
-{
-    EnvironmentName = env,
-    Args = args,
-    ContentRootPath = currentPath,
-    WebRootPath = Path.Combine(currentPath, "wwwroot")
-};
-
-if (env.Equals("Development", StringComparison.InvariantCultureIgnoreCase))
-{
-    webOptions = new WebApplicationOptions
-    {
-        EnvironmentName = env,
-        Args = args
-    };
-}
-
-var builder = WebApplication.CreateBuilder(webOptions);
+var builder = WebApplication.CreateBuilder(args);
 
 var globalSettings = await builder.ConfigureComptaClub(args);
 
@@ -91,9 +68,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 			options.Cookie.HttpOnly = true;
 		});
 
-var emailTemplatesFolder = System.IO.Path.Combine(webOptions.WebRootPath!, "EmailTemplates");
 var fluentEmail = builder.Services.AddFluentEmail(globalSettings.AdminUserEmail)
-	.AddRazorRenderer(emailTemplatesFolder);
+	.AddRazorRenderer(globalSettings.EmailTemplateFolder);
 
 if (globalSettings.SmtpProviderName == "smtp")
 {
@@ -173,7 +149,5 @@ await migration.Start();
 
 var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
 await mediator.Send(new WarmupRequest());
-
-_ = new ShutdownDetector(app);
 
 await app.RunAsync();

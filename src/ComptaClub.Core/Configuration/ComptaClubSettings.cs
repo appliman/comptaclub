@@ -21,9 +21,10 @@ namespace ComptaClub.Configuration
         public string ContactEmailAdress { get; set; } = null!;
         public string ContactName { get; set; } = null!;
         public string SmtpProviderName { get; set; } = "local";
+        public string EmailTemplateFolder { get; set; } = null!;
 
-        // Smtp
-        public string SmtpHost { get; set; } = null!;
+		// Smtp
+		public string SmtpHost { get; set; } = null!;
         public int SmtpPort { get; set; }
         public string SmtpUserName { get; set; } = null!;
         public string SmtpPassword { get; set; } = null!;
