@@ -1,0 +1,42 @@
+﻿name: comptaclub
+
+services:
+  comptaclub:
+    container_name: comptaclub
+    image: rg.fr-par.scw.cloud/appliman-registry/comptaclub:latest
+    environment:
+      - ASPNETCORE_ENVIRONMENT=production
+      - ASPNETCORE_URLS=http://0.0.0.0:33001
+      - ComptaClub__KeyVaultCertificatePath=/app/certificates/comptaclubprod-ComptaClubProd-20230204.pfx
+      - ComptaClub__EmailTemplateFolder=/app/wwwroot/EmailTemplates
+    volumes:
+      - /etc/certs:/app/certificates:ro
+
+    networks:
+      - traefik-public
+
+    labels:
+      - "traefik.enable=true"
+
+      # Route HTTP -> HTTPS
+      - "traefik.http.routers.comptaclub-http.rule=Host(`compta.andernos-triathlon.club`)"
+      - "traefik.http.routers.comptaclub-http.entrypoints=web"
+      - "traefik.http.routers.comptaclub-http.middlewares=comptaclub-redirect@docker"
+
+      # Route HTTPS
+      - "traefik.http.routers.comptaclub.rule=Host(`compta.andernos-triathlon.club`)"
+      - "traefik.http.routers.comptaclub.entrypoints=websecure"
+      - "traefik.http.routers.comptaclub.tls=true"
+      - "traefik.http.routers.comptaclub.tls.certresolver=letsencrypt"
+
+      # Le port interne de l'app DANS le container
+      - "traefik.http.services.comptaclub.loadbalancer.server.port=33001"
+
+      # Middleware unique
+      - "traefik.http.middlewares.comptaclub-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.comptaclub-redirect.redirectscheme.permanent=true"
+
+networks:
+  traefik-public:
+    external: true
+    name: traefik-public

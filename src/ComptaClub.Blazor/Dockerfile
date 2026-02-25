@@ -32,4 +32,5 @@ RUN dotnet publish "./ComptaClub.Blazor.csproj" -c $BUILD_CONFIGURATION -o /app/
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY ["src/ComptaClub.Blazor/wwwroot/EmailTemplates/Digicode.cshtml", "wwwroot/EmailTemplates/"]
 ENTRYPOINT ["dotnet", "ComptaClub.Blazor.dll"]
