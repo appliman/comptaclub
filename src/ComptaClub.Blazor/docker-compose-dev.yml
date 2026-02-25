@@ -1,0 +1,37 @@
+﻿name: comptaclub
+
+services:
+  coreapi:
+    build:
+      context: ../..
+      dockerfile: src/ComptaClub.Blazor/Dockerfile
+      args:
+        AZURE_DEVOPS_PAT: ${AZURE_DEVOPS_PAT}
+    image: comptaclub:dev
+    container_name: comptaclub
+    restart: no
+    environment:
+      - ASPNETCORE_ENVIRONMENT=development
+      - ASPNETCORE_URLS=http://+:8080
+      - ComptaClub__KeyVaultCertificatePath=/app/certs/comptaclubdev-ComptaClubDev-20230204.pfx
+      - ComptaClub__EmailTemplateFolder=/app/data/email-templates
+    ports:
+      - "34503:8080"
+    volumes:
+      - c:/Certificats:/app/certs:ro
+      - E:/S5/chouteau/ComptaClub/src/ComptaClub.Blazor/wwwroot/EmailTemplates:/app/data/email-templates:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  actuasso-network:
+    driver: bridge
