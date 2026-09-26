@@ -1,7 +1,7 @@
 ﻿
 @echo off
 SETLOCAL EnableDelayedExpansion
-
+ 
 echo ===================================================================
 echo Building StockAssoPro Docker Images with Base Image
 echo ===================================================================
