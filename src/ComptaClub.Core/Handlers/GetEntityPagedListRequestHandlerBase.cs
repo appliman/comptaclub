@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 
 namespace ComptaClub.Handlers;
 
@@ -6,12 +6,12 @@ internal abstract class GetEntityPagedListRequestHandlerBase<F,D> : IRequestHand
     where F : class, IListFilter, new()
     where D : class, Datas.IPrimaryKey, new()
 {
-    protected GetEntityPagedListRequestHandlerBase(IDbContextFactory<Datas.ComptaClubDbContext> dbContextFactory)
+    protected GetEntityPagedListRequestHandlerBase(IComptaClubDbContextFactory dbContextFactory)
     {
         DbContextFactory = dbContextFactory;
     }
 
-    protected IDbContextFactory<ComptaClubDbContext> DbContextFactory { get; }
+    protected IComptaClubDbContextFactory DbContextFactory { get; }
 
     public abstract Task<PagedList<IEnumerable<D>>> Handle(GetPagedEntityListRequest<F, D> request, CancellationToken cancellationToken);
 }

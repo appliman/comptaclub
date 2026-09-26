@@ -1,27 +1,24 @@
-﻿<RadzenDataGrid @ref="grid"
+<SuperDataGrid @ref="grid"
                 AllowFiltering="false"
                 AllowSorting="true"
                 AllowColumnResize="false"
-                Data="@incomeStatementList"
-                LoadData="LoadDatas"
+                ItemsProvider="LoadDatas"
                 TItem="ViewModels.IncomeStatement"
-                ColumnWidth="100px"
-                GridLines="DataGridGridLines.Both"
-                FilterMode="FilterMode.Simple"
-                SelectionMode="DataGridSelectionMode.Single"
-                @bind-Value="@selectedRow"
-                Style="height:400px;">
-    <Columns>
-        <RadzenDataGridColumn TItem="ViewModels.IncomeStatement" Property="Description" Title="Description">
-        </RadzenDataGridColumn>
-    </Columns>
-</RadzenDataGrid>
+                SelectionMode="SuperDataGridSelectionMode.Single"
+                DisplayRowNumberColumn="false"
+                SelectionChanged="OnSelectionChanged"
+                Height="400px">
+
+        <DataGridColumn TItem="ViewModels.IncomeStatement" Property="Description" Title="Description">
+        </DataGridColumn>
+
+</SuperDataGrid>
 
 <div class="row mt-2 dialog-btns justify-content-end">
     <div class="col-auto">
-        <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="cancel" Text="Annuler" Click="@((args) => DialogService.Close())" />
+        <SuperButton Style="SuperButtonStyle.Info" Icon="fa-xmark" Text="Annuler" Click="@((args) => DialogService.Close())" />
     </div>
     <div class="col-auto">
-        <RadzenButton ButtonType="ButtonType.Submit" Icon="add_circle" Text="Creer" Click="@Select" Disabled="@(selectedRow?.Count != 1)" />
+        <SuperButton type="submit" Icon="fa-circle-plus" Text="Creer" Click="@Select" Disabled="@(selectedRow?.Count != 1)" />
     </div>
 </div>

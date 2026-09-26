@@ -4,7 +4,7 @@ namespace ComptaClub.Validators;
 
 internal class ExerciceValidator : FluentValidation.AbstractValidator<Datas.ExerciceData>
 {
-	public ExerciceValidator(MediatR.IMediator mediator)
+	public ExerciceValidator(ChannelMediator.IMediator mediator)
 	{
 		RuleFor(i => i.Id).ValidGuid();
 		RuleFor(i => i.Code).CustomAsync(async (code, ctx, cancel) =>

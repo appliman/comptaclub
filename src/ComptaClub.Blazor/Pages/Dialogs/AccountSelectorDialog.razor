@@ -1,31 +1,14 @@
-﻿<RadzenDataGrid @ref="grid"
-                AllowFiltering="true"
-                AllowSorting="false"
-                AllowColumnResize="true"
-                ExpandMode="DataGridExpandMode.Multiple"
-                Data="@accountList"
-                TItem="ViewModels.Account"
-                RowRender="@RowRender"
-                LoadChildData="@LoadChildData"
-                GridLines="DataGridGridLines.Both"
-                SelectionMode="DataGridSelectionMode.Single"
-                AllowRowSelectOnRowClick="true"
-                RowSelect="AccountSelected"
-                Style="height:90%">
-    <Columns>
-        <RadzenDataGridColumn TItem="ViewModels.Account" Property="Code" Title="Code Compta" Width="180px" Filterable="false">
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.Account" Property="Label" Title="Libellé du code compta" Filterable="false">
-        </RadzenDataGridColumn>
-    </Columns>
-</RadzenDataGrid>
+<SuperDataGrid @ref="grid" AllowFiltering="false" AllowSorting="false" AllowColumnResize="true" Hierarchical="true" HierarchyKeySelector="@(account => account.Id)" ItemsProvider="LoadItems" TItem="ViewModels.Account" SelectionMode="SuperDataGridSelectionMode.Single" SelectionChanged="OnSelectionChanged" DisplayRowNumberColumn="false" Height="500px">
+    <DataGridColumn TItem="ViewModels.Account" Property="Code" Title="Code Compta" Width="180px" Filterable="false" />
+    <DataGridColumn TItem="ViewModels.Account" Property="Label" Title="Libellé du code compta" Filterable="false" />
+</SuperDataGrid>
 
 <div class="row mt-2 dialog-btns justify-content-end">
     <div class="col-auto">
-        <RadzenButton ButtonStyle="ButtonStyle.Light" Icon="cancel" Text="Annuler" Click="@((args) => DialogService.Close())" />
+        <SuperButton Style="SuperButtonStyle.Light" Icon="fa-xmark" Text="Annuler" Click="@((args) => DialogService.Close())" />
     </div>
     <div class="col-auto">
-        <RadzenButton ButtonType="ButtonType.Submit" Icon="add_circle" Text="Selectionner" Click="@Select" Disabled="@(selectedRow is null)" />
+        <SuperButton type="submit" Icon="fa-circle-plus" Text="Selectionner" Click="@Select" Disabled="@(selectedRow is null)" />
     </div>
 </div>
 

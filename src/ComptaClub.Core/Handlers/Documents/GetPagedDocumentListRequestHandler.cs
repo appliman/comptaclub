@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +11,7 @@ namespace ComptaClub.Handlers.Documents;
 
 internal class GetPagedDocumentListRequestHandler : GetEntityPagedListRequestHandlerBase<DocumentListFilter, DocumentData>
 {
-    public GetPagedDocumentListRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+    public GetPagedDocumentListRequestHandler(IComptaClubDbContextFactory dbContextFactory)
     : base(dbContextFactory)
     {
 
@@ -21,15 +21,16 @@ internal class GetPagedDocumentListRequestHandler : GetEntityPagedListRequestHan
     {
         var filter = request.GetFilter(new DocumentListFilter());
 
-        var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
+        await using var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
 
         var query = from document in db.Documents
                     select document;
 
         if (!string.IsNullOrWhiteSpace(filter.Search))
         {
-            query = query.Where(i => EF.Functions.Like($"{i.FileName}", $"%{filter.Search}%")
-                                    || EF.Functions.Like($"{i.Description}", $"%{filter.Search}%"));
+            var pattern = $"%{filter.Search}%";
+            query = query.Where(i => EF.Functions.Like(i.FileName, pattern)
+                                    || EF.Functions.Like(i.Description ?? "", pattern));
         }
 
         if (filter.MetaEntityIdList is not null)

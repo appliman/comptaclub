@@ -1,6 +1,6 @@
 using ComptaClub.Blazor.ViewModels;
 
-using MediatR;
+using ChannelMediator;
 
 namespace ComptaClub.Blazor.Pages.Components;
 
@@ -39,21 +39,21 @@ public partial class AccountLinkSelector
         var title = "Selection d'un compte";
         if (AccountDirection == AccountDirection.Debit)
         {
-            title += " de Débit";
+            title += " de Dï¿½bit";
         }
         else if (AccountDirection == AccountDirection.Credit)
         {
-            title += " de Crédit";
+            title += " de Crï¿½dit";
         }
         var dialog = await DialogService.OpenAsync<Dialogs.AccountSelectorDialog>(title,
             parameters: new Dictionary<string, object>
             {
                 { "AccountDirection", AccountDirection },
-                { "AccountId", AccountId }  
+                { "AccountId", AccountId }
             },
             options: new DialogOptions
             {
-                CloseDialogOnEsc = true,
+
                 Height = "600px",
             });
 

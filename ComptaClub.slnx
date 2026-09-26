@@ -1,6 +1,8 @@
 <Solution>
   <Folder Name="/1.Datas/">
+    <Project Path="src/ComptaClub.EntityFramework/ComptaClub.EntityFramework.csproj" />
     <Project Path="src/ComptaClub.Datas.MsSql/ComptaClub.Datas.MsSql.csproj" />
+    <Project Path="src/ComptaClub.Datas.Sqlite/ComptaClub.Datas.Sqlite.csproj" />
     <Project Path="src/ComptaClub.Datas/ComptaClub.Datas.csproj" />
   </Folder>
   <Folder Name="/2.Core/">

@@ -5,7 +5,7 @@ namespace ComptaClub.Blazor.Extensions;
 
 public static class NotificationServiceExtensions
 {
-	public static void NotifyError(this NotificationService notificationService, CommandResult commandResult)
+	public static async Task NotifyError(this NotificationService notificationService, CommandResult commandResult)
 	{
 		var notificationMessage = new NotificationMessage
 		{
@@ -24,10 +24,10 @@ public static class NotificationServiceExtensions
 			}
 		}
 		notificationMessage.Detail = detail.ToString();
-		notificationService.Notify(notificationMessage);
+		await notificationService.Notify(notificationMessage);
 	}
 
-	public static void NotifyWarning(this NotificationService notificationService, CommandResult commandResult)
+	public static async Task NotifyWarning(this NotificationService notificationService, CommandResult commandResult)
 	{
 		var notificationMessage = new NotificationMessage
 		{
@@ -44,6 +44,11 @@ public static class NotificationServiceExtensions
 			}
 		}
 
-		notificationService.Notify(notificationMessage);
+		notificationMessage.Detail = detail.ToString();
+		await notificationService.Notify(notificationMessage);
 	}
+
+	public static Task Notify(this NotificationService notificationService, NotificationMessage message) =>
+		notificationService.Notify(message.Severity, message.Summary, message.Detail ?? "", message.Duration ?? 3000,
+			message.Click, message.CloseOnClick, message.Payload, message.Close, isHtml: false);
 }

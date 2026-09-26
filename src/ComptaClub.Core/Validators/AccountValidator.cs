@@ -4,7 +4,7 @@ namespace ComptaClub.Validators;
 
 internal class AccountValidator : FluentValidation.AbstractValidator<Datas.AccountData>
 {
-    public AccountValidator(MediatR.IMediator mediator)
+    public AccountValidator(ChannelMediator.IMediator mediator)
     {
         RuleFor(i => i.Id).ValidGuid();
         RuleFor(i => i.ParentAccountId).ValidGuid();

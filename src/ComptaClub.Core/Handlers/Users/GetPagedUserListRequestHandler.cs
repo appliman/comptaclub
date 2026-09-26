@@ -1,11 +1,11 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Users;
 
 namespace ComptaClub.Handlers.Users;
 
 internal class GetPagedUserListRequestHandler : GetEntityPagedListRequestHandlerBase<UserListFilter, UserData>
 {
-	public GetPagedUserListRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+	public GetPagedUserListRequestHandler(IComptaClubDbContextFactory dbContextFactory)
 	: base(dbContextFactory)
 	{
 
@@ -15,15 +15,16 @@ internal class GetPagedUserListRequestHandler : GetEntityPagedListRequestHandler
 	{
 		var filter = request.GetFilter(new UserListFilter());
 
-		var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
 
 		var query = from user in db.Users
 					select user;
 
 		if (!string.IsNullOrWhiteSpace(filter.Search))
 		{
-			query = query.Where(i => EF.Functions.Like($"{i.Name}", $"%{filter.Search}%")
-									|| EF.Functions.Like($"{i.Email}", $"%{filter.Search}%"));
+			var pattern = $"%{filter.Search}%";
+			query = query.Where(i => EF.Functions.Like(i.Name, pattern)
+									|| EF.Functions.Like(i.Email, pattern));
 		}
 
 		switch (filter.Options.DeletedState)

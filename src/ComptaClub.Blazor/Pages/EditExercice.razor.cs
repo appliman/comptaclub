@@ -1,4 +1,3 @@
-using AutoMapper;
 
 using ComptaClub.Blazor.Pages.Components;
 using ComptaClub.Contracts.Models.Exercices;
@@ -10,11 +9,9 @@ namespace ComptaClub.Blazor.Pages
         [Parameter]
         public Guid? ExerciceId { get; set; }
 
-		[Inject]
-		AutoMapper.IMapper Mapper { get; set; } = default!;
 
 		[Inject]
-        MediatR.IMediator Mediator { get; set; } = default!;
+        ChannelMediator.IMediator Mediator { get; set; } = default!;
 
 		[Inject]
 		NavigationManager NavigationManager { get; set; } = default!;
@@ -29,21 +26,21 @@ namespace ComptaClub.Blazor.Pages
                 || ExerciceId == Guid.Empty)
             {
                 var data = await Mediator.Send(new CreateExerciceRequest());
-				exercice = Mapper.Map<ViewModels.Exercice>(data);
+				exercice = Mapping.Profile.ToViewModel(data);
 			}
             else
             {
                 var data = await Mediator.Send(new GetExerciceByFilterRequest(f => f.Id == ExerciceId.Value));
                 if (data != null)
                 {
-					exercice = Mapper.Map<ViewModels.Exercice>(data);
+					exercice = Mapping.Profile.ToViewModel(data);
 				}
 			}
         }
 
         async Task ValidateAndSave()
         {
-			var data = Mapper.Map<Datas.ExerciceData>(exercice);
+			var data = Mapping.Profile.ToData(exercice);
 			var saveResult = await Mediator!.Send(new SaveEntityRequest<Datas.ExerciceData>(data));
 			if (saveResult!.HasError)
 			{

@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Contracts.Models.Members;
 
@@ -7,10 +7,10 @@ namespace ComptaClub.Handlers.Stats;
 internal class GetBalanceByMemberListRequestHandler : IRequestHandler<GetBalanceByMemberListRequest, List<BalanceByMember>>
 {
 	private readonly IMediator _mediator;
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 
 	public GetBalanceByMemberListRequestHandler(IMediator mediator,
-		IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+		IComptaClubDbContextFactory dbContextFactory)
 	{
 		_mediator = mediator;
 		_dbContextFactory = dbContextFactory;
@@ -33,7 +33,7 @@ internal class GetBalanceByMemberListRequestHandler : IRequestHandler<GetBalance
 			exerciceId = activeExercice!.Id;
 		}
 
-		var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 		var query = from entry in db.Entries
 					join mbe in db.AssociatedMemberListByEntries on entry.Id equals mbe.EntryId
 					where memberIdList.Contains(mbe.MemberId)

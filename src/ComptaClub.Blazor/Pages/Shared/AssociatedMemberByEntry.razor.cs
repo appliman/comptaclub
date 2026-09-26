@@ -1,8 +1,8 @@
-﻿using AutoMapper;
 
 using ComptaClub.Blazor.ViewModels;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Members;
+using SuperBlazorComponents.Components.SuperDataGrid;
 
 namespace ComptaClub.Blazor.Pages.Shared;
 
@@ -12,24 +12,23 @@ public partial class AssociatedMemberByEntry
 	public Guid? EntryId { get; set; }
 
 	[Inject]
-	MediatR.IMediator Mediator { get; set; } = default!;
+	ChannelMediator.IMediator Mediator { get; set; } = default!;
 
-	[Inject]
-	IMapper Mapper { get; set; } = default!;
 
 	[Inject]
 	DialogService DialogService { get; set; } = default!;
 
-	protected RadzenDataGrid<AssociatedMemberToEntryRow> grid = default!;
+	protected SuperDataGrid<AssociatedMemberToEntryRow> grid = default!;
     protected List<AssociatedMemberToEntryRow>? associatedMemberList;
     protected AssociatedMemberToEntryRow? associationToInsert;
     protected AssociatedMemberToEntryRow? associationToUpdate;
     protected List<AssociatedMemberToEntryRow> unlinkedAssociationList = new();
     protected long total = 0;
 
-	public async Task LoadDatas(LoadDataArgs args)
+	public async Task LoadDatas()
 	{
 		associatedMemberList = new();
+		total = 0;
 
 		if (EntryId == null)
 		{
@@ -66,7 +65,21 @@ public partial class AssociatedMemberByEntry
 			total = total + association.Amount;
 		}
 		associatedMemberList = list;
-		StateHasChanged();
+	}
+
+	protected async ValueTask<GridItemsProviderResult<AssociatedMemberToEntryRow>> LoadItems(GridItemsProviderRequest<AssociatedMemberToEntryRow> request)
+	{
+		if (associatedMemberList is null)
+			await LoadDatas();
+		var rows = associatedMemberList ?? [];
+		return GridItemsProviderResult<AssociatedMemberToEntryRow>.From(
+			rows.Skip(request.StartIndex).Take(request.Count ?? rows.Count).ToList(), rows.Count);
+	}
+
+	protected async Task ReloadItems()
+	{
+		associatedMemberList = null;
+		await grid.ReloadAsync();
 	}
 
 	public async Task SaveAssociations()
@@ -89,9 +102,9 @@ public partial class AssociatedMemberByEntry
 		}
 
 		associationToUpdate = null;
-		total = total + row.Amount;
 		await SaveAssociations();
-		await grid.UpdateRow(row);
+		await grid.EndEditAsync(row);
+		await ReloadItems();
 	}
 
 	public async Task InsertRow()
@@ -99,7 +112,7 @@ public partial class AssociatedMemberByEntry
 		var result = await DialogService.OpenAsync<Dialogs.MemberSelectorDialog>("Selection d'un membre",
 			options: new DialogOptions
 			{
-				CloseDialogOnEsc = true,
+
 			});
 
 		var member = result as MemberRow;
@@ -111,18 +124,20 @@ public partial class AssociatedMemberByEntry
 			associationToInsert = new();
 			associationToInsert.Member = member;
 			associationToInsert.Amount = Math.Max(0, entryAmount - total);
-			await grid.InsertRow(associationToInsert);
+			associatedMemberList ??= [];
 			associatedMemberList!.Add(associationToInsert);
+			await grid.ReloadAsync();
+			await grid.BeginEditAsync(associationToInsert);
 		}
 	}
 
 	protected async Task EditRow(AssociatedMemberToEntryRow row)
 	{
 		associationToUpdate = row;
-		await grid.EditRow(row);
+		await grid.BeginEditAsync(row);
 	}
 
-    protected void CancelEdit(AssociatedMemberToEntryRow row)
+    protected async Task CancelEdit(AssociatedMemberToEntryRow row)
 	{
 		if (row == associationToInsert)
 		{
@@ -131,11 +146,12 @@ public partial class AssociatedMemberByEntry
 
 		associationToUpdate = null;
 
-		grid.CancelEditRow(row);
+		await grid.CancelEditAsync(row);
+		await ReloadItems();
 	}
 
 
-    protected Task DeleteRow(AssociatedMemberToEntryRow row)
+    protected async Task DeleteRow(AssociatedMemberToEntryRow row)
 	{
 		if (row == associationToInsert)
 		{
@@ -148,8 +164,7 @@ public partial class AssociatedMemberByEntry
 		if (!unlinkedAssociationList.Any(i => i.Id == row.Id))
 		{
 			unlinkedAssociationList.Add(row);
-			grid.Reload();
+			await ReloadItems();
 		}
-		return Task.CompletedTask;
 	}
 }

@@ -1,75 +1,75 @@
-﻿@page "/membres"
+@page "/membres"
 
 <PageTitle>Liste des membres</PageTitle>
 
 <SectionContent SectionName="toolbar">
 
-	<RadzenButton Text="Importer"
+	<SuperButton Text="Importer"
 				  Click="ImportFile"
-				  Icon="upload_file"
-				  ButtonStyle="ButtonStyle.Success"
+				  Icon="fa-file-arrow-up"
+				  Style="SuperButtonStyle.Success"
 				  class="btn btn-primary m-1"
 				  title="Importer à partir d'un fichier excel" />
 
 </SectionContent>
 
 <div style="height:100%">
-	<RadzenDataGrid @ref="grid"
+	<SuperDataGrid @ref="grid"
 					AllowFiltering="true"
 					AllowSorting="true"
 					AllowColumnResize="true"
-					Data="@memberList"
-					LoadData="LoadDatas"
+					ItemsProvider="LoadItems"
+
 					TItem="ViewModels.MemberRow"
-					ColumnWidth="100px"
-					GridLines="DataGridGridLines.Both"
-					FilterMode="FilterMode.Simple"
-					SelectionMode="DataGridSelectionMode.Multiple"
-					@bind-Value="@selectedMembers"
-					Style="height:100%">
-		<Columns>
-			<RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="RowIndex" Title="#" Width="30px" Filterable="false" Frozen="true">
-			</RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.MemberRow" Context="doc" Filterable="false" Sortable="false" Width="80px">
+
+
+					DisplayRowNumberColumn="false"
+					SelectionMode="SuperDataGridSelectionMode.Multiple"
+					SelectionChanged="OnSelectionChanged"
+					Height="500px">
+
+			<DataGridColumn TItem="ViewModels.MemberRow" Property="RowIndex" Title="#" Width="30px" Filterable="false" >
+			</DataGridColumn>
+			<DataGridColumn TItem="ViewModels.MemberRow" Context="doc" Filterable="false" Sortable="false" Width="80px">
 				<Template Context="item">
-					<RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(item))" title="Supprimer ce membre">
-					</RadzenButton>
-					<RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(item))" title="Editer ce membre">
-					</RadzenButton>
+					<SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(item))" title="Supprimer ce membre">
+					</SuperButton>
+					<SuperButton Icon="fa-pen" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Click="@(args => EditRow(item))" title="Editer ce membre">
+					</SuperButton>
 				</Template>
 				<EditTemplate Context="item">
-					<RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(item))">
-					</RadzenButton>
-					<RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelEdit(item))">
-					</RadzenButton>
+					<SuperButton Icon="fa-check" Style="SuperButtonStyle.Success"  Size="SuperButtonSize.Default" Click="@((args) => SaveRow(item))">
+					</SuperButton>
+					<SuperButton Icon="fa-xmark" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Class="my-1 ms-1" Click="@((args) => CancelEdit(item))">
+					</SuperButton>
 				</EditTemplate>
-			</RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Name" Title="Nom" Sortable="true" Filterable="true" Frozen="true">
+			</DataGridColumn>
+			<DataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Name" Title="Nom" Sortable="true" Filterable="true" >
 				<EditTemplate Context="item">
-					<RadzenTextBox @bind-Value="item.Entity.Name" Style="width:100%" />
+					<input class="form-control w-100" @bind="item.Entity.Name" />
 					<BrokenRuleMessage For="() => item.Entity.Name" BrokenRuleList="brokenRules" />
 				</EditTemplate>
-			</RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Email" Title="Email" Width="120px" Sortable="true" Filterable="true" Frozen="false">
+			</DataGridColumn>
+			<DataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Email" Title="Email" Width="120px" Sortable="true" Filterable="true" >
 				<EditTemplate Context="item">
-					<RadzenTextBox @bind-Value="item.Entity.Email" Style="width:100%" />
+					<input class="form-control w-100" @bind="item.Entity.Email" />
 					<BrokenRuleMessage For="() => item.Entity.Email" BrokenRuleList="brokenRules" />
 				</EditTemplate>
-			</RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.LicenseNumber" Title="Licence" Sortable="true" Filterable="true" Frozen="false">
+			</DataGridColumn>
+			<DataGridColumn TItem="ViewModels.MemberRow" Property="Entity.LicenseNumber" Title="Licence" Sortable="true" Filterable="true" >
 				<EditTemplate Context="item">
-					<RadzenTextBox @bind-Value="item.Entity.LicenseNumber" Style="width:100%" />
+					<input class="form-control w-100" @bind="item.Entity.LicenseNumber" />
 					<BrokenRuleMessage For="() => item.Entity.LicenseNumber" BrokenRuleList="brokenRules" />
 				</EditTemplate>
-			</RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.LicenseTypeName" Title="Type" Width="100px" Sortable="true" Filterable="true" Frozen="false">
-			</RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Amount" Title="Réglé" Width="80px" Filterable="false" Frozen="false">
+			</DataGridColumn>
+			<DataGridColumn TItem="ViewModels.MemberRow" Property="Entity.LicenseTypeName" Title="Type" Width="100px" Sortable="true" Filterable="true" >
+			</DataGridColumn>
+			<DataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Amount" Title="Réglé" Width="80px" Filterable="false" >
 				<Template Context="data">
 					<PriceLabel Value="data.Amount" />
 				</Template>
-			</RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="State" Title="Etat" Width="80px" Filterable="true" Frozen="false">
+			</DataGridColumn>
+			<DataGridColumn TItem="ViewModels.MemberRow" Property="State" Title="Etat" Width="80px" Filterable="true" >
 				<FilterTemplate>
 					<SuperNullableEnumDropdownFilterColumn @bind-Value="filter.MemberState" ApplyFilter="ApplyFilter" />
 				</FilterTemplate>
@@ -79,12 +79,12 @@
 				<EditTemplate Context="item">
 					<SuperEnumInputSelect @bind-Value="item.Entity.State" />
 				</EditTemplate>
-			</RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="LastUpdate" Title="M.a.j." Width="80px" Filterable="false" Frozen="true">
+			</DataGridColumn>
+			<DataGridColumn TItem="ViewModels.MemberRow" Property="LastUpdate" Title="M.a.j." Width="80px" Filterable="false" >
 				<Template Context="data">
 					<DateIdLabel Value="data.Entity.LastUpdate" />
 				</Template>
-			</RadzenDataGridColumn>
-		</Columns>
-	</RadzenDataGrid>
+			</DataGridColumn>
+
+	</SuperDataGrid>
 </div>

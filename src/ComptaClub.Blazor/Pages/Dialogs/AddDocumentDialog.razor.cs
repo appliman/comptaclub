@@ -1,10 +1,10 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Drawing.Imaging;
 
 using ComptaClub.Blazor.Pages.Components;
 using ComptaClub.Datas;
 
-using MediatR;
+using ChannelMediator;
 
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
@@ -38,7 +38,7 @@ public partial class AddDocumentDialog
 		IBrowserFile file = e.File;
 		if (file == null)
 		{
-			NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier sélectionné");
+			await NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier sélectionné");
 			return;
 		}
 
@@ -71,7 +71,7 @@ public partial class AddDocumentDialog
 		{
 			await JSRuntime.InvokeVoidAsync("camera.stopCamera", "videoFeed");
 		}
-		DialogService.Close(documentContent);
+		await DialogService.Close(documentContent);
 	}
 
 	async Task CloseDialog()
@@ -80,7 +80,7 @@ public partial class AddDocumentDialog
 		{
 			await JSRuntime.InvokeVoidAsync("camera.stopCamera", "videoFeed");
 		}
-		DialogService.Close();
+		await DialogService.Close();
 	}
 
 	void TabChanged(int tabId)

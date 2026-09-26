@@ -12,7 +12,6 @@ public partial class MainLayout
 	public DialogService DialogService { get; set; } = default!;
 
 
-	bool sidebarExpanded = false;
 	bool loaderVisible = false;
 	ViewModels.User? user = new();
 	string version = $"{typeof(Program).Assembly.GetName()?.Version}";

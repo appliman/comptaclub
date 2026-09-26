@@ -3,7 +3,7 @@ using ComptaClub.Contracts.Models.Members;
 
 using FluentAssertions;
 
-using MediatR;
+using ChannelMediator;
 
 using Microsoft.Extensions.DependencyInjection;
 

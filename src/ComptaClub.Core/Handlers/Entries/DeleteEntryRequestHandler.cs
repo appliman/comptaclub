@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Contracts.Results;
@@ -7,10 +7,10 @@ namespace ComptaClub.Handlers.Entries;
 
 internal class DeleteEntryRequestHandler : IRequestHandler<DeleteEntryRequest, CommandResult>
 {
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 	private readonly IMediator _mediator;
 
-	public DeleteEntryRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+	public DeleteEntryRequestHandler(IComptaClubDbContextFactory dbContextFactory,
 		IMediator mediator)
 	{
 		_dbContextFactory = dbContextFactory;
@@ -19,7 +19,7 @@ internal class DeleteEntryRequestHandler : IRequestHandler<DeleteEntryRequest, C
 
 	public async Task<CommandResult> Handle(DeleteEntryRequest request, CancellationToken cancellationToken)
 	{
-		var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
 		var entry = await db.Entries.FindAsync(request.EntryId);
 		if (entry == null)

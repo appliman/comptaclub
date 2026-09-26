@@ -1,6 +1,7 @@
 using ComptaClub.Contracts.Models.Members;
 
-using MediatR;
+using ChannelMediator;
+using SuperBlazorComponents.Components.SuperDataGrid;
 
 namespace ComptaClub.Blazor.Pages.Dialogs;
 
@@ -12,24 +13,17 @@ public partial class MemberSelectorDialog
 	[Inject]
 	public DialogService DialogService { get; set; } = default!;
 
-	[Inject]
-	AutoMapper.IMapper Mapper { get; set; } = default!;
 
 	List<ViewModels.MemberRow>? memberList;
-	RadzenDataGrid<ViewModels.MemberRow>? grid = default!;
+	SuperDataGrid<ViewModels.MemberRow>? grid = default!;
 	MemberListFilter filter = new();
 	IList<ViewModels.MemberRow>? selectedMembers;
 
-	async Task LoadDatas(LoadDataArgs args)
+	void OnSelectionChanged(IEnumerable<ViewModels.MemberRow> selected) => selectedMembers = selected.ToList();
+
+	async ValueTask<GridItemsProviderResult<ViewModels.MemberRow>> LoadItems(GridItemsProviderRequest<ViewModels.MemberRow> request)
 	{
-		if (args is not null)
-		{
-			var searchFilter = args.Filters.FirstOrDefault(i => i.Property == "Entity.Name");
-			if (searchFilter is not null)
-			{
-				filter.Search = $"{searchFilter.FilterValue}";
-			}
-		}
+		filter.Search = request.Filters.FirstOrDefault(i => i.PropertyName == "Entity.Name")?.PropertyValue;
 		var page = await Mediator.Send(new GetPagedEntityListRequest<MemberListFilter, Datas.MemberData>(filter));
 		memberList = new();
 		int rowIndex = 1;
@@ -40,20 +34,29 @@ public partial class MemberSelectorDialog
 			item.RowIndex = rowIndex++;
 			memberList.Add(item);
 		}
+		IEnumerable<ViewModels.MemberRow> rows = memberList;
+		var descending = request.SortDirection == SortDirection.Descending;
+		rows = request.SortColumn switch
+		{
+			"Entity.Name" => descending ? rows.OrderByDescending(x => x.Entity.Name) : rows.OrderBy(x => x.Entity.Name),
+			"Entity.Email" => descending ? rows.OrderByDescending(x => x.Entity.Email) : rows.OrderBy(x => x.Entity.Email),
+			_ => rows.OrderBy(x => x.RowIndex)
+		};
+		var items = rows.ToList();
+		return GridItemsProviderResult<ViewModels.MemberRow>.From(items.Skip(request.StartIndex).Take(request.Count ?? items.Count).ToList(), items.Count);
 	}
 
-	Task Select()
+	async Task Select()
 	{
 		if (selectedMembers != null
 			&& selectedMembers.Any())
 		{
-			DialogService.Close(selectedMembers.First());
+			await DialogService.Close(selectedMembers.First());
 		}
 		else
 		{
-			DialogService.Close();
+			await DialogService.Close();
 		}
-		return Task.CompletedTask;
 	}
 
 }

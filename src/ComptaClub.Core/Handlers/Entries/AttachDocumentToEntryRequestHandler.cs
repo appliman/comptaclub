@@ -1,16 +1,16 @@
-﻿using ComptaClub.Contracts.Models.Documents;
+using ComptaClub.Contracts.Models.Documents;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Entries;
 internal class AttachDocumentToEntryRequestHandler : IRequestHandler<AttachDocumentToEntryRequest, CommandResult>
 {
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 	private readonly ILogger<AttachDocumentToEntryRequestHandler> _logger;
 	private readonly IMediator _mediator;
 
 	public AttachDocumentToEntryRequestHandler(
-		IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+		IComptaClubDbContextFactory dbContextFactory,
 		ILogger<AttachDocumentToEntryRequestHandler> logger,
 		IMediator mediator)
 	{

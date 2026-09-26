@@ -1,11 +1,11 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Members;
 
 namespace ComptaClub.Handlers.Members;
 
 internal class GetPagedMemberListRequestHandler : GetEntityPagedListRequestHandlerBase<MemberListFilter, MemberData>
 {
-	public GetPagedMemberListRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+	public GetPagedMemberListRequestHandler(IComptaClubDbContextFactory dbContextFactory)
 		: base(dbContextFactory)
 	{
 
@@ -15,7 +15,7 @@ internal class GetPagedMemberListRequestHandler : GetEntityPagedListRequestHandl
 	{
 		var filter = request.GetFilter(new MemberListFilter());
 
-		var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
 
 		var query = from member in db.Members
 					select member;

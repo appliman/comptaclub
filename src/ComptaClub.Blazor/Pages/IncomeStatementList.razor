@@ -1,63 +1,63 @@
-﻿@page "/comptes-resultats"
+@page "/comptes-resultats"
 
 <PageTitle>Les comptes de résulat</PageTitle>
 
 <SectionContent SectionName="toolbar">
 
-    <RadzenButton Text="Ajouter"
+    <SuperButton Text="Ajouter"
                   Click="CreateIncomeStatement"
-                  Icon="add_circle_outline"
-                  ButtonStyle="ButtonStyle.Success"
+                  Icon="fa-circle-plus"
+                  Style="SuperButtonStyle.Success"
                   class="btn btn-primary m-1"
                   title="Creer un compte de résultat" />
 
 </SectionContent>
 
-<RadzenDataGrid @ref="grid" 
-    AllowFiltering="true" 
-    AllowSorting="true" 
+<SuperDataGrid @ref="grid"
+    AllowFiltering="false"
+    AllowSorting="true"
     AllowColumnResize="true"
-    Data="@incomeStatementList"
-    LoadData="@LoadDatas"
+    ItemsProvider="LoadItems"
+
     TItem="ViewModels.IncomeStatement"
-    SelectionMode="DataGridSelectionMode.Single"
-    AllowRowSelectOnRowClick="true"
-    GridLines="DataGridGridLines.Both"
-    @bind-Value="selectedRow">
-    <Columns>
-        <RadzenDataGridColumn TItem="ViewModels.IncomeStatement" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="80px">
+    SelectionMode="SuperDataGridSelectionMode.None" DisplaySelectionColumn="false" DisplayRowNumberColumn="false"
+
+
+    Height="500px">
+
+        <DataGridColumn TItem="ViewModels.IncomeStatement" Filterable="false" Sortable="false" TextAlign="SuperTextAlignment.Right" Width="80px">
             <Template Context="incomeStatement">
-                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(incomeStatement))" @onclick:stopPropagation="true" title="Supprimer ce compte de résultat">
-                </RadzenButton>
+                <SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(incomeStatement))" @onclick:stopPropagation="true" title="Supprimer ce compte de résultat">
+                </SuperButton>
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.IncomeStatement" Property="Description" Title="Description" Filterable="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.IncomeStatement" Property="Description" Title="Description" Filterable="false">
             <Template Context="data">
                 <a href="/compte-de-resultat/@data.Id">@data.Description</a>
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.IncomeStatement" Property="CreationDate" Title="Date" Filterable="false" Width="150px">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.IncomeStatement" Property="CreationDate" Title="Date" Filterable="false" Width="150px">
             <Template Context="data">
                 <DateIdLabel Value="data.CreationDate" />
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.IncomeStatement" Title="Crédit" Width="120px" Filterable="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.IncomeStatement" Title="Crédit" Width="120px" Filterable="false">
             <Template Context="data">
                 <PriceLabel Value="data.CreditTotal"/>
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.IncomeStatement" Title="Débit" Width="120px" Filterable="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.IncomeStatement" Title="Débit" Width="120px" Filterable="false">
             <Template Context="data">
                 <PriceLabel Value="data.DebitTotal" />
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.IncomeStatement" Title="Résultat Net" Width="120px" Filterable="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.IncomeStatement" Title="Résultat Net" Width="120px" Filterable="false">
             <Template Context="data">
                 @{
                     var total = data.CreditTotal - data.DebitTotal;
                 }
                 <PriceLabel Value="@total" />
             </Template>
-        </RadzenDataGridColumn>
-    </Columns>
-</RadzenDataGrid>
+        </DataGridColumn>
+
+</SuperDataGrid>

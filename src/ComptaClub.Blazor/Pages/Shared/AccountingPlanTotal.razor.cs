@@ -3,7 +3,7 @@ using ComptaClub.Blazor.ViewModels;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Exercices;
 
-using MediatR;
+using ChannelMediator;
 
 namespace ComptaClub.Blazor.Pages.Shared
 {

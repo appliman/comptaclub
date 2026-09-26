@@ -1,15 +1,15 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Users;
 
 namespace ComptaClub.Handlers.Users;
 
 internal class GetUserByFilterRequestHandler : IRequestHandler<GetUserByFilterRequest, UserData?>
 {
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 	private readonly IMediator _mediator;
 
 	public GetUserByFilterRequestHandler(
-		IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+		IComptaClubDbContextFactory dbContextFactory,
 		IMediator mediator)
 	{
 		_dbContextFactory = dbContextFactory;

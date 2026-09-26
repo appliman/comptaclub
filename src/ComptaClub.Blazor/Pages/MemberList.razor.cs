@@ -1,10 +1,10 @@
-using AutoMapper;
 
 using ComptaClub.Contracts.Models.Documents;
 using ComptaClub.Contracts.Models.Members;
 using ComptaClub.Contracts.Results;
 
-using MediatR;
+using ChannelMediator;
+using SuperBlazorComponents.Components.SuperDataGrid;
 
 namespace ComptaClub.Blazor.Pages;
 
@@ -26,7 +26,7 @@ public partial class MemberList : ComponentBase
 	DialogService DialogService { get; set; } = default!;
 
 	List<ViewModels.MemberRow>? memberList;
-	RadzenDataGrid<ViewModels.MemberRow> grid = default!;
+	SuperDataGrid<ViewModels.MemberRow> grid = default!;
 	MemberListFilter filter = new();
 	IList<ViewModels.MemberRow>? selectedMembers;
     List<BrokenRule> brokenRules = new();
@@ -36,52 +36,35 @@ public partial class MemberList : ComponentBase
 		filter.PageSize = 500;
 	}
 
-	async Task LoadDatas(LoadDataArgs args)
+	void OnSelectionChanged(IEnumerable<ViewModels.MemberRow> selected) => selectedMembers = selected.ToList();
+
+	async ValueTask<GridItemsProviderResult<ViewModels.MemberRow>> LoadItems(GridItemsProviderRequest<ViewModels.MemberRow> request)
 	{
-		if (args.Filters.Any())
+		filter.Name = null;
+		filter.Email = null;
+		filter.LicenseNumber = null;
+		filter.LicenseTypeName = null;
+		foreach (var filterItem in request.Filters)
 		{
-			foreach (var filterItem in args.Filters)
+			switch (filterItem.PropertyName.ToLowerInvariant())
 			{
-				switch ($"{filterItem.Property}".ToLower())
-				{
-					case "entity.name":
-						filter.Name = $"{filterItem.FilterValue}";
-						break;
-					case "entity.email":
-						filter.Email = $"{filterItem.FilterValue}";
-						break;
-					case "entity.licensenumber":
-						filter.LicenseNumber = $"{filterItem.FilterValue}";
-						break;
-					case "entity.licensetypename":
-						filter.LicenseTypeName = $"{filterItem.FilterValue}";
-						break;
-				}
+				case "entity.name": filter.Name = filterItem.PropertyValue; break;
+				case "entity.email": filter.Email = filterItem.PropertyValue; break;
+				case "entity.licensenumber": filter.LicenseNumber = filterItem.PropertyValue; break;
+				case "entity.licensetypename": filter.LicenseTypeName = filterItem.PropertyValue; break;
 			}
 		}
-		if (args.Sorts.Any())
+		filter.SortByName = request.SortColumn switch
 		{
-			foreach (var sortItem in args.Sorts)
-            {
-				filter.SortDirection = sortItem.SortOrder == SortOrder.Ascending ? System.ComponentModel.ListSortDirection.Ascending : System.ComponentModel.ListSortDirection.Descending;
-
-                switch ($"{sortItem.Property}".ToLower())
-                {
-                    case "entity.name":
-                        filter.SortByName = "Name";
-						break;
-                    case "entity.email":
-						filter.SortByName = "Email";
-                        break;
-                    case "entity.licensenumber":
-						filter.SortByName = "licensenumber";
-                        break;
-                    case "entity.licensetypename":
-						filter.SortByName = "licensetypeName";
-                        break;
-                }
-            }
-		}
+			"Entity.Name" => "Name",
+			"Entity.Email" => "Email",
+			"Entity.LicenseNumber" => "licensenumber",
+			"Entity.LicenseTypeName" => "licensetypeName",
+			_ => null
+		};
+		filter.SortDirection = request.SortDirection == SortDirection.Descending
+			? System.ComponentModel.ListSortDirection.Descending
+			: System.ComponentModel.ListSortDirection.Ascending;
 
 		var page = await Mediator.Send(new GetPagedEntityListRequest<MemberListFilter, Datas.MemberData>(filter));
 		var rowList = new List<ViewModels.MemberRow>();
@@ -103,11 +86,13 @@ public partial class MemberList : ComponentBase
 			rowList.Add(row);
 		}
 		memberList = rowList;
+		return GridItemsProviderResult<ViewModels.MemberRow>.From(
+			rowList.Skip(request.StartIndex).Take(request.Count ?? rowList.Count).ToList(), rowList.Count);
 	}
 
 	async Task ApplyFilter()
 	{
-		await grid!.Reload();
+		await grid.ReloadAsync();
     }
 
 	async Task ImportFile()
@@ -127,17 +112,17 @@ public partial class MemberList : ComponentBase
 		try
 		{
 			await Mediator.Send(new ImportExcelMemberListRequest(tempFileName));
-			await grid.Reload();
+			await grid.ReloadAsync();
 		}
 		catch (Exception ex)
 		{
-			NotificationService.Notify(NotificationSeverity.Error, $"La lecture de ce fichier a échoué pour la raison suivante : {ex.Message}");
+			await NotificationService.Notify(NotificationSeverity.Error, $"La lecture de ce fichier a ï¿½chouï¿½ pour la raison suivante : {ex.Message}");
 		}
 	}
 
     async Task EditRow(ViewModels.MemberRow item)
     {
-        await grid!.EditRow(item);
+		await grid.BeginEditAsync(item);
     }
 
     async Task SaveRow(ViewModels.MemberRow item)
@@ -151,23 +136,25 @@ public partial class MemberList : ComponentBase
             return;
         }
 
-        await grid!.UpdateRow(item);
-    }
+		await grid.EndEditAsync(item);
+		await grid.ReloadAsync();
+	}
 
-    void CancelEdit(ViewModels.MemberRow item)
-    {
-        grid!.CancelEditRow(item);
+	async Task CancelEdit(ViewModels.MemberRow item)
+	{
+		await grid.CancelEditAsync(item);
+		await grid.ReloadAsync();
     }
 
     async Task DeleteRow(ViewModels.MemberRow item)
     {
-        var dialogResult = await DialogService.Confirm("Confirmez-vous la suppression de ce membre ?", "Suppression");
-        if (!dialogResult.Value)
+        var dialogResult = await DialogService.Confirm("Suppression", "Confirmez-vous la suppression de ce membre ?");
+        if (!dialogResult)
         {
             return;
         }
 
         await Mediator.Send(new DeleteMemberRequest(item.Id));
-        await grid!.Reload();
+		await grid.ReloadAsync();
     }
 }

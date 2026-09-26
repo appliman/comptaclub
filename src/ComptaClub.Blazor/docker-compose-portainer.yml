@@ -4,13 +4,17 @@ services:
   comptaclub:
     container_name: comptaclub
     image: rg.fr-par.scw.cloud/appliman-registry/comptaclub:latest
+    restart: unless-stopped
     environment:
       - ASPNETCORE_ENVIRONMENT=production
       - ASPNETCORE_URLS=http://0.0.0.0:33001
-      - ComptaClub__KeyVaultCertificatePath=/app/certificates/comptaclubprod-ComptaClubProd-20230204.pfx
-      - ComptaClub__EmailTemplateFolder=/app/wwwroot/EmailTemplates
+      - ComptaClub__DatabaseProvider=${COMPTACLUB_DATABASE_PROVIDER:-MsSql}
+      - ComptaClub__ConnectionString=${COMPTACLUB_CONNECTION_STRING-}
+      - ComptaClub__SqliteConnectionString=${COMPTACLUB_SQLITE_CONNECTION_STRING-}
+      - ComptaClub__AzureStorageConnectionString=${COMPTACLUB_AZURE_STORAGE_CONNECTION_STRING:?Define COMPTACLUB_AZURE_STORAGE_CONNECTION_STRING in .env}
+      - ComptaClub__SmtpPassword=${COMPTACLUB_SMTP_PASSWORD:?Define COMPTACLUB_SMTP_PASSWORD in .env}
     volumes:
-      - /etc/certs:/app/certificates:ro
+      - comptaclub-data:/app/data
 
     networks:
       - traefik-public
@@ -40,3 +44,6 @@ networks:
   traefik-public:
     external: true
     name: traefik-public
+
+volumes:
+  comptaclub-data:

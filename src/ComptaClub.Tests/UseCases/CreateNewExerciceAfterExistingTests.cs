@@ -21,7 +21,7 @@ public class CreateNewExerciceAfterExistingTests
 	public async Task Create_Exercice_And_Create_New_Exercice()
 	{
 		var app = await TestHelper.CreateWebApplication();
-		var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
+		var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 		var exerciceCode = $"{Guid.NewGuid()}";
 		var exercice = await mediator.GetOrCreateExercice(exerciceCode);

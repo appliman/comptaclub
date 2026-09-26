@@ -11,39 +11,28 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: 'ComptaClub.sln'
+  solution: 'ComptaClub.slnx'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  secureFile: 'comptaclubdev-ComptaClubDev-20230204.pfx'
-  dotnetVersion: 'net9.0'
+  dotnetVersion: 'net10.0'
   environment: 'production'
 
 steps:
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
+- task: UseDotNet@2
   inputs:
-    restoreSolution: '$(solution)'
+    packageType: 'sdk'
+    version: '10.0.x'
 
-- task: VSBuild@1
+- task: DotNetCoreCLI@2
   inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=false'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: 'restore'
+    projects: '$(solution)'
 
-- task: DownloadSecureFile@1
-  name: KeyvaultCertificat 
-  displayName: Download KeyVault Certificate from library
+- task: DotNetCoreCLI@2
   inputs:
-    secureFile: '$(secureFile)'
-
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: "$(Agent.TempDirectory)"
-    Contents: '$(secureFile)'
-    TargetFolder: '$(Build.repository.LocalPath)\src'
-    OverWrite: true
+    command: 'build'
+    projects: '$(solution)'
+    arguments: '--configuration $(buildConfiguration) --no-restore'
 
 - task: VSTest@2
   enabled: ${{parameters.AllowUnitTests}}

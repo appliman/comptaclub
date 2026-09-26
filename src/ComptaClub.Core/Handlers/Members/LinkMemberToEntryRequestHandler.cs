@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models.Members;
+using ComptaClub.Contracts.Models.Members;
 using ComptaClub.Contracts.Results;
 
 using DocumentFormat.OpenXml.Vml.Office;
@@ -7,11 +7,11 @@ namespace ComptaClub.Handlers.Members;
 
 public class LinkMemberToEntryRequestHandler : IRequestHandler<LinkMemberToEntryRequest, PersistResult>
 {
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IComptaClubDbContextFactory _dbContextFactory;
     private readonly IMediator _mediator;
     private readonly IValidator<AssociatedMemberListByEntryData> _validator;
 
-    public LinkMemberToEntryRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+    public LinkMemberToEntryRequestHandler(IComptaClubDbContextFactory dbContextFactory,
         IMediator mediator,
         IValidator<AssociatedMemberListByEntryData> validator)
     {
@@ -22,7 +22,7 @@ public class LinkMemberToEntryRequestHandler : IRequestHandler<LinkMemberToEntry
 
     public async Task<PersistResult> Handle(LinkMemberToEntryRequest request, CancellationToken cancellationToken)
     {
-        var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+        await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
         var data = await db.AssociatedMemberListByEntries.Where(i => i.MemberId == request.MemberId
                                                                   && i.EntryId == request.EntryId)

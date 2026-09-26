@@ -1,13 +1,13 @@
-﻿using ComptaClub.Contracts.Models.ForecastBudget;
+using ComptaClub.Contracts.Models.ForecastBudget;
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.ForecastBudget;
 internal class SaveForecastBugetRequestHandler : IRequestHandler<SaveForecastBudgetRequest, PersistResult>
 {
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 	private readonly ILogger<SaveForecastBugetRequestHandler> _logger;
 
-	public SaveForecastBugetRequestHandler(IDbContextFactory<Datas.ComptaClubDbContext> dbContextFactory,
+	public SaveForecastBugetRequestHandler(IComptaClubDbContextFactory dbContextFactory,
 		ILogger<SaveForecastBugetRequestHandler> logger)
 	{
 		_dbContextFactory = dbContextFactory;
@@ -16,7 +16,7 @@ internal class SaveForecastBugetRequestHandler : IRequestHandler<SaveForecastBud
 
 	public async Task<PersistResult> Handle(SaveForecastBudgetRequest request, CancellationToken cancellationToken)
 	{
-		var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
 		var persistResult = new PersistResult();
 
@@ -41,7 +41,7 @@ internal class SaveForecastBugetRequestHandler : IRequestHandler<SaveForecastBud
 		return persistResult;
 	}
 
-	void AttachItemsToDb(List<ForecastBudgetItemData> list, Datas.ComptaClubDbContext db)
+	void AttachItemsToDb(List<ForecastBudgetItemData> list, ComptaClubDbContext db)
 	{
 		foreach (var item in list)
 		{

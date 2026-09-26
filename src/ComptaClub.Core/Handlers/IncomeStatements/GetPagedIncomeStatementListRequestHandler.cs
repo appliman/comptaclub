@@ -1,11 +1,11 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.IncomeStatements;
 
 namespace ComptaClub.Handlers.IncomeStatements;
 
 internal class GetPagedIncomeStatementListRequestHandler : GetEntityPagedListRequestHandlerBase<IncomeStatementListFilter, IncomeStatementData>
 {
-    public GetPagedIncomeStatementListRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+    public GetPagedIncomeStatementListRequestHandler(IComptaClubDbContextFactory dbContextFactory)
         : base(dbContextFactory)
     {
 
@@ -15,7 +15,7 @@ internal class GetPagedIncomeStatementListRequestHandler : GetEntityPagedListReq
     {
         var filter = request.GetFilter(new IncomeStatementListFilter());
 
-        var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
+        await using var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
 
         var query = from incomeStatement in db.IncomeStatements
                     select incomeStatement;

@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.ForecastBudget;
 using ComptaClub.Contracts.Models.IncomeStatements;
 using ComptaClub.Contracts.Results;
@@ -7,11 +7,11 @@ using ComptaClub.Enums;
 namespace ComptaClub.Handlers.ForecastBudget;
 internal class CreateAndSaveForecastBudgetFromIncomeStatementRequestHandler : IRequestHandler<CreateAndSaveForecastBudgetFromIncomeStatementRequest, PersistResult>
 {
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 	private readonly IMediator _mediator;
 	private readonly ILogger<CreateAndSaveForecastBudgetFromIncomeStatementRequestHandler> _logger;
 
-	public CreateAndSaveForecastBudgetFromIncomeStatementRequestHandler(IDbContextFactory<Datas.ComptaClubDbContext> dbContextFactory,
+	public CreateAndSaveForecastBudgetFromIncomeStatementRequestHandler(IComptaClubDbContextFactory dbContextFactory,
 		IMediator mediator,
 		ILogger<CreateAndSaveForecastBudgetFromIncomeStatementRequestHandler> logger)
 	{
@@ -22,7 +22,7 @@ internal class CreateAndSaveForecastBudgetFromIncomeStatementRequestHandler : IR
 
 	public async Task<PersistResult> Handle(CreateAndSaveForecastBudgetFromIncomeStatementRequest request, CancellationToken cancellationToken)
 	{
-		var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
 		var persistResult = new PersistResult();
 

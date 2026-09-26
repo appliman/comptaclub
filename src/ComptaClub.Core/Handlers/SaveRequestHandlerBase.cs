@@ -1,14 +1,14 @@
-﻿
+
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers;
 
 internal abstract class SaveRequestHandlerBase
 {
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IComptaClubDbContextFactory _dbContextFactory;
     private readonly ILogger _logger;
 
-    protected SaveRequestHandlerBase(IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+    protected SaveRequestHandlerBase(IComptaClubDbContextFactory dbContextFactory,
         ILogger<SaveRequestHandlerBase> logger)
     {
         _logger = logger;

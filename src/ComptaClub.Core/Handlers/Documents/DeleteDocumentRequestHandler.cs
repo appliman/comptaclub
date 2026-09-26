@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models.Documents;
+using ComptaClub.Contracts.Models.Documents;
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Documents;
@@ -6,11 +6,11 @@ namespace ComptaClub.Handlers.Documents;
 internal class DeleteDocumentRequestHandler : IRequestHandler<DeleteDocumentRequest, CommandResult>
 {
 	private readonly IMediator _mediator;
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 	private readonly ILogger<DeleteDocumentRequestHandler> _logger;
 
 	public DeleteDocumentRequestHandler(IMediator mediator,
-		IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+		IComptaClubDbContextFactory dbContextFactory,
 		ILogger<DeleteDocumentRequestHandler> logger)
 	{
 		_mediator = mediator;
@@ -20,7 +20,7 @@ internal class DeleteDocumentRequestHandler : IRequestHandler<DeleteDocumentRequ
 
 	public async Task<CommandResult> Handle(DeleteDocumentRequest request, CancellationToken cancellationToken)
 	{
-		var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
 		db.Database.BeginTransaction();
 

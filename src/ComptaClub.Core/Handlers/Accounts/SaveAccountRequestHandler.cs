@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Accounts;
 using ComptaClub.Contracts.Results;
 
@@ -11,7 +11,7 @@ internal class SaveAccountRequestHandler : SaveRequestHandlerBase, IRequestHandl
 
 	public SaveAccountRequestHandler(
 		IValidator<AccountData> validator,
-		IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+		IComptaClubDbContextFactory dbContextFactory,
 		ILogger<SaveAccountRequestHandler> logger,
 		IMediator mediator)
 		: base(dbContextFactory, logger)

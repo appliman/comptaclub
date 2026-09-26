@@ -1,56 +1,56 @@
-﻿<RadzenDataGrid @ref="grid"
+<SuperDataGrid @ref="grid"
 				AllowFiltering="true"
 				AllowSorting="true"
 				AllowColumnResize="true"
-				Data="@documentList"
-				LoadData="LoadDatas"
+				ItemsProvider="LoadItems"
+
 				TItem="ViewModels.Document"
-				GridLines="DataGridGridLines.Both"
-				FilterMode="FilterMode.Simple"
-				Style="height:100%">
-	<Columns>
-		<RadzenDataGridColumn TItem="ViewModels.Document" Property="RowIndex" Title="#" Width="60px" Filterable="false" FormatString="" Frozen="true">
-		</RadzenDataGridColumn>
-		<RadzenDataGridColumn TItem="ViewModels.Document" Context="doc" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="100px">
+
+				DisplayRowNumberColumn="false"
+				Height="500px">
+
+		<DataGridColumn TItem="ViewModels.Document" Property="RowIndex" Title="#" Width="60px" Filterable="false"  >
+		</DataGridColumn>
+		<DataGridColumn TItem="ViewModels.Document" Context="doc" Filterable="false" Sortable="false" TextAlign="SuperTextAlignment.Right" Width="100px">
 			<Template Context="doc">
-				<RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(doc))" @onclick:stopPropagation="true" title="Supprimer ce fichier">
-				</RadzenButton>
-				<RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(doc))" @onclick:stopPropagation="true" title="Editer ce fichier">
-				</RadzenButton>
+				<SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(doc))" @onclick:stopPropagation="true" title="Supprimer ce fichier">
+				</SuperButton>
+				<SuperButton Icon="fa-pen" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Click="@(args => EditRow(doc))" @onclick:stopPropagation="true" title="Editer ce fichier">
+				</SuperButton>
 			</Template>
 			<EditTemplate Context="doc">
-				<RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(doc))">
-				</RadzenButton>
-				<RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelEdit(doc))">
-				</RadzenButton>
+				<SuperButton Icon="fa-check" Style="SuperButtonStyle.Success"  Size="SuperButtonSize.Default" Click="@((args) => SaveRow(doc))">
+				</SuperButton>
+				<SuperButton Icon="fa-xmark" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Class="my-1 ms-1" Click="@((args) => CancelEdit(doc))">
+				</SuperButton>
 			</EditTemplate>
-		</RadzenDataGridColumn>
-		<RadzenDataGridColumn TItem="ViewModels.Document" Property="FileName" Title="Fichier" Width="350px" Filterable="false">
+		</DataGridColumn>
+		<DataGridColumn TItem="ViewModels.Document" Property="FileName" Title="Fichier" Width="350px" Filterable="false">
 			<Template Context="data">
 				<a href="/document/@data.Id">@data.FileName</a>
 			</Template>
 			<EditTemplate Context="data">
-				<RadzenTextBox @bind-Value="data.FileName" Style="width:100%" />
+				<input class="form-control w-100" @bind="data.FileName" />
 				<BrokenRuleMessage For="() => data.FileName" BrokenRuleList="brokenRules" />
 			</EditTemplate>
-		</RadzenDataGridColumn>
-		<RadzenDataGridColumn TItem="ViewModels.Document" Property="Description" Title="Description" Filterable="false" Frozen="false">
+		</DataGridColumn>
+		<DataGridColumn TItem="ViewModels.Document" Property="Description" Title="Description" Filterable="false" >
 			<EditTemplate Context="data">
-				<RadzenTextBox @bind-Value="data.Description" Style="width:100%" />
+				<input class="form-control w-100" @bind="data.Description" />
 				<BrokenRuleMessage For="() => data.Description" BrokenRuleList="brokenRules" />
 			</EditTemplate>
-		</RadzenDataGridColumn>
-		<RadzenDataGridColumn TItem="ViewModels.Document" Property="LastUpdate" Title="Màj." Width="150px" Filterable="false" Frozen="false">
+		</DataGridColumn>
+		<DataGridColumn TItem="ViewModels.Document" Property="LastUpdate" Title="Màj." Width="150px" Filterable="false" >
 			<Template Context="data">
 				<DateLabel Value="data.LastUpdate" />
 			</Template>
-		</RadzenDataGridColumn>
-		<RadzenDataGridColumn TItem="ViewModels.Document" Property="Size" Title="Taille" Width="120px" TextAlign="TextAlign.Right" Filterable="false" Frozen="false">
+		</DataGridColumn>
+		<DataGridColumn TItem="ViewModels.Document" Property="Size" Title="Taille" Width="120px" TextAlign="SuperTextAlignment.Right" Filterable="false" >
 			<Template Context="doc">
 				<FileSizeLabel FileSize="@doc.Size"/>
 			</Template>
-		</RadzenDataGridColumn>
-	</Columns>
-</RadzenDataGrid>
+		</DataGridColumn>
+
+</SuperDataGrid>
 
 

@@ -1,14 +1,14 @@
-﻿using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using ComptaClub;
 using ComptaClub.Blazor.Pages;
 using ComptaClub.Blazor.Services;
+using ComptaClub.Datas.MsSql;
+using ComptaClub.Datas.Sqlite;
+using ComptaClub.EntityFramework;
+using ComptaClub.Mail;
 
-using EFScriptableMigration;
-
-using FluentEmail.MailKitSmtp;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
@@ -16,20 +16,26 @@ using Microsoft.AspNetCore.DataProtection;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Resources;
+using SuperBlazorComponents;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var globalSettings = await builder.ConfigureComptaClub(args);
+var globalSettings = builder.ConfigureComptaClub(args);
 
-builder.Services.AddAutoMapper(cfg =>
+switch (globalSettings.DatabaseProvider.Trim().ToLowerInvariant())
 {
-	cfg.AddProfile<ComptaClub.Blazor.Mapping.Profile>();
-});
+    case "mssql":
+        builder.Services.AddComptaClubMsSql(globalSettings.ConnectionString, builder.Environment.EnvironmentName);
+        break;
+    case "sqlite":
+        builder.Services.AddComptaClubSqlite(globalSettings.SqliteConnectionString ?? "", builder.Environment.EnvironmentName);
+        break;
+    default:
+        throw new InvalidOperationException($"Unsupported database provider: {globalSettings.DatabaseProvider}");
+}
 
-builder.Services.AddScoped<Radzen.DialogService>();
-builder.Services.AddScoped<Radzen.NotificationService>();
-builder.Services.AddScoped<Radzen.TooltipService>();
-builder.Services.AddScoped<Radzen.ContextMenuService>();
+builder.Services.AddSuperComponents();
+builder.Services.AddScoped(_ => new SuperBlazorComponents.Services.SuperNotificationService { DefaultIsHtml = false });
 builder.Services.AddScoped<ComptaClub.Blazor.Services.PrintService>();
 builder.Services.AddScoped<ComptaClub.Blazor.Services.ListFilterQueryStringParametersService>();
 builder.Services.AddSingleton<ComptaClub.Blazor.Services.EntityContextService>();
@@ -54,7 +60,7 @@ builder.Services.AddDataProtection()
 		{
 			options.AutoGenerateKeys = true;
 		})
-		.PersistKeysToDbContext<ComptaClub.Datas.ComptaClubDbContext>()
+		.PersistKeysToDbContext<ComptaClubDbContext>()
 		.SetDefaultKeyLifetime(TimeSpan.FromDays(400));
 
 builder.Services.AddLocalization();
@@ -68,32 +74,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 			options.Cookie.HttpOnly = true;
 		});
 
-var fluentEmail = builder.Services.AddFluentEmail(globalSettings.AdminUserEmail)
-	.AddRazorRenderer(globalSettings.EmailTemplateFolder);
-
-if (globalSettings.SmtpProviderName == "smtp")
-{
-	var credentials = new NetworkCredential(globalSettings.SmtpUserName, globalSettings.SmtpPassword);
-	fluentEmail.AddSmtpSender(new System.Net.Mail.SmtpClient()
-	{
-		EnableSsl = globalSettings.SmtpEnableSsl,
-		Host = globalSettings.SmtpHost,
-		Port = globalSettings.SmtpPort,
-		Credentials = credentials
-	});
-}
-else if (globalSettings.SmtpProviderName == "mimekit")
-{
-	fluentEmail.AddMailKitSender(new SmtpClientOptions
-	{
-		UseSsl = globalSettings.SmtpEnableSsl,
-		Server = globalSettings.SmtpHost,
-		Port = globalSettings.SmtpPort,
-		User = globalSettings.SmtpUserName,
-		Password = globalSettings.SmtpPassword,
-		RequiresAuthentication = true
-	});
-}
+builder.Services.AddSingleton<DigicodeEmailSender>();
 
 builder.Logging.AddOpenTelemetry(options =>
 {
@@ -138,16 +119,9 @@ app.UseAuthorization();
 app.MapRazorComponents<App>()
 		.AddInteractiveServerRenderMode();
 
-var migration = new DbMigration()
-{
-	ConnectionString = globalSettings.SqlConnectionString,
-	SchemaName = "ComptaClub",
-	EmbededTypeReference = typeof(ComptaClub.Datas.StartupExtensions)
-};
+await app.Services.GetRequiredService<IComptaClubDbContextFactory>().MigrateAsync();
 
-await migration.Start();
-
-var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
+var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 await mediator.Send(new WarmupRequest());
 
 await app.RunAsync();

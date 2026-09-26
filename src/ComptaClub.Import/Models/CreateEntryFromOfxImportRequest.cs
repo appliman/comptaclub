@@ -1,6 +1,6 @@
 ﻿using ComptaClub.Datas;
 
-using MediatR;
+using ChannelMediator;
 
 namespace ComptaClub.Import.Models;
 

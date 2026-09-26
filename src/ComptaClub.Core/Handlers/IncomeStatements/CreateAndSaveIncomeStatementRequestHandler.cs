@@ -1,14 +1,14 @@
-﻿using ComptaClub.Contracts.Models.Accounts;
+using ComptaClub.Contracts.Models.Accounts;
 using ComptaClub.Contracts.Models.IncomeStatements;
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.IncomeStatements;
 internal class CreateAndSaveIncomeStatementRequestHandler : IRequestHandler<CreateAndSaveIncomeStatementRequest, PersistResult>
 {
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 	private readonly IMediator _mediator;
 
-	public CreateAndSaveIncomeStatementRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+	public CreateAndSaveIncomeStatementRequestHandler(IComptaClubDbContextFactory dbContextFactory,
 		IMediator mediator)
 	{
 		_dbContextFactory = dbContextFactory;
@@ -17,7 +17,7 @@ internal class CreateAndSaveIncomeStatementRequestHandler : IRequestHandler<Crea
 
 	public async Task<PersistResult> Handle(CreateAndSaveIncomeStatementRequest request, CancellationToken cancellationToken)
 	{
-		var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
 		var exercice = await db.Exercices.FindAsync(request.ExerciceId);
 		if (exercice == null)

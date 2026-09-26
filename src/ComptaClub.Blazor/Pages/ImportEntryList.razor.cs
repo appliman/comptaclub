@@ -1,5 +1,4 @@
 
-using AutoMapper;
 
 using ComptaClub.Blazor.Extensions;
 using ComptaClub.Blazor.Pages.Components;
@@ -7,9 +6,10 @@ using ComptaClub.Blazor.ViewModels;
 using ComptaClub.Configuration;
 using ComptaClub.Contracts.Models.Entries;
 
-using MediatR;
+using ChannelMediator;
 
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
+using SuperBlazorComponents.Components.SuperDataGrid;
 
 namespace ComptaClub.Blazor.Pages;
 
@@ -21,14 +21,31 @@ public partial class ImportEntryList : ComponentBase
     [Inject]
     IMediator Mediator { get; set; } = default!;
 
-    [Inject]
-    IMapper Mapper { get; set; } = default!;
 
     [Inject]
     NotificationService NotificationService { get; set; } = default!;
 
     IEnumerable<ViewModels.EntryRow>? entryList;
-    RadzenDataGrid<ViewModels.EntryRow> grid = default!;
+    SuperDataGrid<ViewModels.EntryRow> grid = default!;
+
+    ValueTask<GridItemsProviderResult<ViewModels.EntryRow>> LoadItems(GridItemsProviderRequest<ViewModels.EntryRow> request)
+    {
+        IEnumerable<ViewModels.EntryRow> rows = entryList ?? [];
+        if (request.SortColumn is "RowIndex" or "CreationDate" or "PartNumber")
+        {
+            var descending = request.SortDirection == SortDirection.Descending;
+            rows = request.SortColumn switch
+            {
+                "RowIndex" => descending ? rows.OrderByDescending(x => x.RowIndex) : rows.OrderBy(x => x.RowIndex),
+                "CreationDate" => descending ? rows.OrderByDescending(x => x.Entity.CreationDate) : rows.OrderBy(x => x.Entity.CreationDate),
+                _ => descending ? rows.OrderByDescending(x => x.Entity.PartNumber) : rows.OrderBy(x => x.Entity.PartNumber)
+            };
+        }
+
+        var all = rows.ToList();
+        var page = all.Skip(request.StartIndex).Take(request.Count ?? all.Count).ToList();
+        return ValueTask.FromResult(GridItemsProviderResult<ViewModels.EntryRow>.From(page, all.Count));
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,6 +69,7 @@ public partial class ImportEntryList : ComponentBase
             });
         }
         entryList = list;
+        await grid.ReloadAsync();
     }
 
     async Task SaveRow(ViewModels.EntryRow entry)
@@ -61,12 +79,12 @@ public partial class ImportEntryList : ComponentBase
         var saveResult = await Mediator!.Send(new SaveEntityRequest<Datas.EntryData>(entry.Entity));
         if (saveResult!.HasError)
         {
-            NotificationService.NotifyError(saveResult);
+            await NotificationService.NotifyError(saveResult);
             return;
         }
         (entryList as List<EntryRow>)!.Remove(entry);
-        await grid.Reload();
-        NotificationService.Notify(NotificationSeverity.Success, "Sauvegarde", "Cette écriture est bien importée");
+        await grid.ReloadAsync();
+        await NotificationService.Notify(NotificationSeverity.Success, "Sauvegarde", "Cette ï¿½criture est bien importï¿½e");
         StateHasChanged();
     }
 

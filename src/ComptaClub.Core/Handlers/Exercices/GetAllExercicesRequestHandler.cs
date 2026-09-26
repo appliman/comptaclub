@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,10 +10,10 @@ namespace ComptaClub.Handlers.Exercices;
 internal class GetAllExercicesRequestHandler : IRequestHandler<GetAllExercicesRequest, List<ExerciceData>>
 {
     private readonly IMediator _mediator;
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IComptaClubDbContextFactory _dbContextFactory;
 
     public GetAllExercicesRequestHandler(IMediator mediator,
-        IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+        IComptaClubDbContextFactory dbContextFactory)
     {
         _mediator = mediator;
         _dbContextFactory = dbContextFactory;
@@ -21,7 +21,7 @@ internal class GetAllExercicesRequestHandler : IRequestHandler<GetAllExercicesRe
 
     public async Task<List<ExerciceData>> Handle(GetAllExercicesRequest request, CancellationToken cancellationToken)
     {
-        var db = await _dbContextFactory.CreateDbContextAsync();
+        await using var db = await _dbContextFactory.CreateDbContextAsync();
 
         var exercices = await db.Exercices.ToListAsync();
         return exercices;

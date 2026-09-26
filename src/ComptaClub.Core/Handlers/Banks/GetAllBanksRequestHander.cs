@@ -1,14 +1,14 @@
-﻿using ComptaClub.Contracts.Models.Banks;
+using ComptaClub.Contracts.Models.Banks;
 
 namespace ComptaClub.Handlers.Banks;
 
 internal class GetAllBanksRequestHander : IRequestHandler<GetAllBanksRequest, List<BankData>>
 {
     private readonly IMediator _mediator;
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IComptaClubDbContextFactory _dbContextFactory;
 
     public GetAllBanksRequestHander(IMediator mediator,
-        IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+        IComptaClubDbContextFactory dbContextFactory)
     {
         _mediator = mediator;
         _dbContextFactory = dbContextFactory;
@@ -16,7 +16,7 @@ internal class GetAllBanksRequestHander : IRequestHandler<GetAllBanksRequest, Li
 
     public async Task<List<BankData>> Handle(GetAllBanksRequest request, CancellationToken cancellationToken)
     {
-        var db = await _dbContextFactory.CreateDbContextAsync();
+        await using var db = await _dbContextFactory.CreateDbContextAsync();
 
         var datas = await db.Banks.ToListAsync();
         return datas;

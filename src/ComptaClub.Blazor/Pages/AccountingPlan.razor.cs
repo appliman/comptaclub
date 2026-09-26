@@ -1,5 +1,6 @@
 using ComptaClub.Contracts.Models.Accounts;
 using ComptaClub.Contracts.Results;
+using SuperBlazorComponents.Components.SuperDataGrid;
 
 namespace ComptaClub.Blazor.Pages;
 
@@ -9,17 +10,15 @@ public partial class AccountingPlan : ComponentBase
 	MainLayout MainLayout { get; set; } = default!;
 
 	[Inject]
-	MediatR.IMediator Mediator { get; set; } = default!;
+	ChannelMediator.IMediator Mediator { get; set; } = default!;
 
-	[Inject]
-	AutoMapper.IMapper Mapper { get; set; } = default!;
 
 	[Inject]
 	NavigationManager NavigationManager { get; set; } = default!;
 
 
 	IEnumerable<ViewModels.Account> accountList = new List<ViewModels.Account>();
-	RadzenDataGrid<ViewModels.Account>? grid;
+	SuperDataGrid<ViewModels.Account>? grid;
 	ViewModels.Account? accountToUpdate;
 	ViewModels.Account? accountToInsert;
 	List<BrokenRule> brokenRules = new();
@@ -35,48 +34,25 @@ public partial class AccountingPlan : ComponentBase
 	async Task LoadDatas()
 	{
 		var dataPlan = await Mediator.Send(new GetPlanRequest());
-		var list = MapPlan(dataPlan);
-		accountList = list;
+		accountList = Mapping.Profile.ToViewModels(dataPlan);
 	}
 
-	List<ViewModels.Account> MapPlan(List<Datas.AccountData> list)
+	ValueTask<GridItemsProviderResult<ViewModels.Account>> LoadItems(GridItemsProviderRequest<ViewModels.Account> request)
 	{
-		var result = new List<ViewModels.Account>();
-		foreach (var item in list)
-		{
-			var account = Mapper.Map<ViewModels.Account>(item);
-			account.Children = MapPlan(item.Children);
-			result.Add(account);
-		}
-		return result;
-	}
-
-	void RowRender(RowRenderEventArgs<ViewModels.Account> args)
-	{
-		args.Expandable = args.Data.Children.Any();
-	}
-
-	void LoadChildData(DataGridLoadChildDataEventArgs<ViewModels.Account> args)
-	{
-		args.Data = args.Item.Children;
+		var source = (request.ParentItem?.Children ?? accountList).ToList();
+		return ValueTask.FromResult(GridItemsProviderResult<ViewModels.Account>.From(
+			source.Skip(request.StartIndex).Take(request.Count ?? source.Count).ToList(), source.Count));
 	}
 
 	async Task EditRow(ViewModels.Account account)
 	{
 		accountToUpdate = account;
-		await grid!.EditRow(account);
+		await grid!.BeginEditAsync(account);
 	}
 
 	async Task SaveRow(ViewModels.Account account)
 	{
-		if (account == accountToInsert)
-		{
-			accountToInsert = null;
-		}
-
-		accountToUpdate = null;
-
-		var data = Mapper.Map<Datas.AccountData>(account);
+		var data = Mapping.Profile.ToData(account);
 		var saveResult = await Mediator.Send(new SaveEntityRequest<Datas.AccountData>(data));
 		if (saveResult.HasError)
 		{
@@ -84,11 +60,15 @@ public partial class AccountingPlan : ComponentBase
 			return;
 		}
 
-		await grid!.UpdateRow(account);
+		accountToInsert = null;
+		accountToUpdate = null;
+		await grid!.EndEditAsync(account);
+		await LoadDatas();
+		await grid.ReloadAsync();
 		brokenRules.Clear();
 	}
 
-	void CancelEdit(ViewModels.Account account)
+	async Task CancelEdit(ViewModels.Account account)
 	{
 		if (account == accountToInsert)
 		{
@@ -97,50 +77,54 @@ public partial class AccountingPlan : ComponentBase
 
 		accountToUpdate = null;
 
-		grid!.CancelEditRow(account);
+		await grid!.CancelEditAsync(account);
+		await LoadDatas();
+		await grid.ReloadAsync();
 	}
 
 	async Task InsertRow()
 	{
 		var data = await Mediator.Send(new CreateAccountRequest());
-		accountToInsert = Mapper.Map<ViewModels.Account>(data);
-		await grid!.InsertRow(accountToInsert);
+		accountToInsert = Mapping.Profile.ToViewModel(data);
+		accountList = new[] { accountToInsert }.Concat(accountList).ToList();
+		await grid!.ReloadAsync();
+		await grid.BeginEditAsync(accountToInsert);
 	}
 
 	async Task InsertRow(ViewModels.Account account)
 	{
-		await grid!.ExpandRow(account);
 		var data = await Mediator.Send(new CreateAccountRequest()
 		{
 			Direction = account.Direction,
 			ParentId = account.Id
 		});
-		accountToInsert = Mapper.Map<ViewModels.Account>(data);
+		accountToInsert = Mapping.Profile.ToViewModel(data);
 		account.Children.Add(accountToInsert);
-		await grid.SelectRow(accountToInsert);
-		await grid.EditRow(accountToInsert);
+		await grid!.ReloadAsync();
+		await grid.ExpandAllAsync();
+		await grid.BeginEditAsync(accountToInsert);
 	}
 
 	async Task DeleteRow(ViewModels.Account account)
 	{
-		var confirm = await MainLayout.DialogService.Confirm("Confirmez vous la suppression de ce compte", "Suppression");
-		if (!confirm.GetValueOrDefault(false))
+		var confirm = await MainLayout.DialogService.Confirm("Suppression", "Confirmez vous la suppression de ce compte");
+		if (!confirm)
 		{
 			return;
 		}
 		var result = await Mediator!.Send(new DeleteAccountRequest(account.Id));
 		if (result.HasError)
 		{
-			MainLayout.NotificationService.NotifyError(result);
+			await MainLayout.NotificationService.NotifyError(result);
 		}
 		else
 		{
 			await LoadDatas();
-			await grid!.Reload();
-			MainLayout.NotificationService.Notify(new NotificationMessage
+			await grid!.ReloadAsync();
+			await MainLayout.NotificationService.Notify(new NotificationMessage
 			{
 				Severity = NotificationSeverity.Info,
-				Summary = $"Ce compte ({account.Code}) vient d'etre supprimé"
+				Summary = $"Ce compte ({account.Code}) vient d'etre supprimï¿½"
 			});
 		}
 	}
@@ -153,7 +137,7 @@ public partial class AccountingPlan : ComponentBase
 		var result = await Mediator.Send(request);
 		if (result.HasError)
 		{
-			MainLayout.NotificationService.NotifyError(result);
+			await MainLayout.NotificationService.NotifyError(result);
 			return;
 		}
 
@@ -178,10 +162,10 @@ public partial class AccountingPlan : ComponentBase
 		}
 
 		uploadEnabled = false;
-		uploadSuccess = "Import terminé";
+		uploadSuccess = "Import terminï¿½";
 
 		await LoadDatas();
-		await grid!.Reload();
+		await grid!.ReloadAsync();
 	}
 
 	async Task Import()
@@ -193,9 +177,6 @@ public partial class AccountingPlan : ComponentBase
 
 	async Task DeployAll()
 	{
-		foreach (var row in accountList)
-		{
-			await grid!.ExpandRow(row);
-		}
+		await grid!.ExpandAllAsync();
 	}
 }

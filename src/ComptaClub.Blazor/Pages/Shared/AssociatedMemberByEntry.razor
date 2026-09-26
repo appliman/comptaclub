@@ -1,50 +1,50 @@
-﻿@using ComptaClub.Blazor.ViewModels;
+@using ComptaClub.Blazor.ViewModels;
 
 <SectionContent SectionName="toolbar-context">
-    <RadzenButton Text="Associer"
+    <SuperButton Text="Associer"
                   Click="InsertRow"
-                  Icon="person_add"
-                  ButtonStyle="ButtonStyle.Success"
+                  Icon="fa-user-plus"
+                  Style="SuperButtonStyle.Success"
                   class="btn btn-primary m-1"
                   title="Associer un membre à cette écriture" />
 </SectionContent>
 
 
-<RadzenDataGrid @ref="grid"
+<SuperDataGrid @ref="grid"
                 AllowFiltering="false"
                 AllowSorting="false"
                 AllowColumnResize="true"
-                Data="@associatedMemberList"
-                LoadData="LoadDatas"
+                ItemsProvider="LoadItems"
+
                 TItem="ViewModels.AssociatedMemberToEntryRow"
-                GridLines="DataGridGridLines.Both"
-                FilterMode="FilterMode.Simple">
-    <Columns>
-        <RadzenDataGridColumn TItem="ViewModels.AssociatedMemberToEntryRow" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="100px">
+
+                DisplayRowNumberColumn="false" Height="400px">
+
+        <DataGridColumn TItem="ViewModels.AssociatedMemberToEntryRow" Filterable="false" Sortable="false" TextAlign="SuperTextAlignment.Right" Width="100px">
             <Template Context="member">
-                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(member))" @onclick:stopPropagation="true" title="Supprimer cette liaison">
-                </RadzenButton>
-                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(member))" @onclick:stopPropagation="true" title="Modifier cette liaison">
-                </RadzenButton>
+                <SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(member))" @onclick:stopPropagation="true" title="Supprimer cette liaison">
+                </SuperButton>
+                <SuperButton Icon="fa-pen" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Click="@(args => EditRow(member))" @onclick:stopPropagation="true" title="Modifier cette liaison">
+                </SuperButton>
             </Template>
             <EditTemplate Context="member">
-                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => Save(member))">
-                </RadzenButton>
-                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelEdit(member))">
-                </RadzenButton>
+                <SuperButton Icon="fa-check" Style="SuperButtonStyle.Success"  Size="SuperButtonSize.Default" Click="@((args) => Save(member))">
+                </SuperButton>
+                <SuperButton Icon="fa-xmark" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Class="my-1 ms-1" Click="@((args) => CancelEdit(member))">
+                </SuperButton>
             </EditTemplate>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.AssociatedMemberToEntryRow" Property="Name" Title="Nom" Filterable="false" Frozen="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.AssociatedMemberToEntryRow" Property="Name" Title="Nom" Filterable="false" >
             <Template Context="data">
                 <span>@data.Member.Entity.Name</span>
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.AssociatedMemberToEntryRow" Property="Email" Title="Email" Width="300px" Filterable="false" Frozen="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.AssociatedMemberToEntryRow" Property="Email" Title="Email" Width="300px" Filterable="false" >
             <Template Context="data">
                 <span>@data.Member.Entity.Email</span>
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.AssociatedMemberToEntryRow" Property="Amount" Title="Montant" Width="220px" Filterable="false" Frozen="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.AssociatedMemberToEntryRow" Property="Amount" Title="Montant" Width="220px" Filterable="false" >
             <EditTemplate Context="data">
                 <SuperInputCurrency @bind-Value="data.Amount" />
             </EditTemplate>
@@ -54,6 +54,6 @@
             <FooterTemplate>
                 <PriceLabel Value="@total" />
             </FooterTemplate>
-        </RadzenDataGridColumn>
-    </Columns>
-</RadzenDataGrid>
+        </DataGridColumn>
+
+</SuperDataGrid>

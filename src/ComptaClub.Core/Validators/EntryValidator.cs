@@ -6,7 +6,7 @@ namespace ComptaClub.Validators;
 
 internal class EntryValidator : FluentValidation.AbstractValidator<Datas.EntryData>
 {
-	public EntryValidator(MediatR.IMediator mediator)
+	public EntryValidator(ChannelMediator.IMediator mediator)
 	{
 		RuleFor(i => i.Id).ValidGuid();
 		RuleFor(i => i.AccountId).ValidGuid();

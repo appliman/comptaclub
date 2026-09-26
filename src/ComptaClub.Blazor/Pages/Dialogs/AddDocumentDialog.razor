@@ -3,9 +3,9 @@
 	<DataAnnotationsValidator />
 	<CustomValidator @ref="customValidator"></CustomValidator>
 
-	<RadzenTabs SelectedIndexChanged="TabChanged">
+	<SuperTabs SelectedIndexChanged="TabChanged">
 		<Tabs>
-			<RadzenTabsItem Text="Fichier">
+			<TabItem Title="Fichier">
 				<div class="row media-area mb-4">
 					<div class="col-md-3 dialog-title">
 						Fichier
@@ -37,8 +37,8 @@
 						<FileSizeLabel FileSize="@Document.Size" />
 					</div>
 				</div>
-			</RadzenTabsItem>
-			<RadzenTabsItem Text="Photo">
+			</TabItem>
+			<TabItem Title="Photo">
 				@if (!string.IsNullOrWhiteSpace(frameUri))
 				{
 					<img src="@frameUri" class="img-thumbnail mb-1 w-100 h-100" />
@@ -50,17 +50,17 @@
 					<button class="btn btn-primary mb-3" @onclick="CaptureFrame">Prendre une photo</button>
 				}
 				<canvas class="d-none" id="currentFrame" height="720" width="1280" />
-			</RadzenTabsItem>
+			</TabItem>
 		</Tabs>
-	</RadzenTabs>
+	</SuperTabs>
 </EditForm>
 
 <div class="row mt-2 dialog-btns justify-content-end">
 	<div class="col-auto">
-		<RadzenButton ButtonStyle="ButtonStyle.Info" Icon="cancel" Text="Annuler" Click="CloseDialog" />
+		<SuperButton Style="SuperButtonStyle.Info" Icon="fa-xmark" Text="Annuler" Click="CloseDialog" />
 	</div>
 	<div class="col-auto">
-		<RadzenButton ButtonType="ButtonType.Submit" Icon="add_circle" Text="Ajouter" Click="@Select" />
+		<SuperButton type="submit" Icon="fa-circle-plus" Text="Ajouter" Click="@Select" />
 	</div>
 </div>
 

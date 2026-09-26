@@ -22,7 +22,7 @@ public class DocumentCrudTests
 	public async Task Document_Crud()
 	{
 		var app = await TestHelper.CreateWebApplication();
-		var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
+		var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 
 		var document = await mediator.Send(new CreateDocumentRequest());

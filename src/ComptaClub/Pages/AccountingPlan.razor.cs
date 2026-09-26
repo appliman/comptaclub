@@ -20,7 +20,7 @@ public partial class AccountingPlan : ComponentBase
 	Services.IAccountingService? AccountingService { get; set; }
 
 	[Inject]
-	MediatR.IMediator? Mediator { get; set; }
+	ChannelMediator.IMediator? Mediator { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{

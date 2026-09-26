@@ -1,6 +1,6 @@
 ﻿using ComptaClub.Contracts.Models.Documents;
 
-using MediatR;
+using ChannelMediator;
 
 using Microsoft.AspNetCore.Mvc;
 

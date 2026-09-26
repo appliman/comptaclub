@@ -8,6 +8,7 @@
 @code {
 
     List<ContextInfo> contextInfoList = new();
+    List<ContextInfo> OrderedContexts => contextInfoList.OrderByDescending(i => i.DefaultPosition).ToList();
     int selectedTab = 0;
 
     protected override void OnInitialized()
@@ -46,21 +47,24 @@
         var tab = contextInfoList.FirstOrDefault(i => i.Title.IgnoreCaseEquals(name));
         if (tab is not null)
         {
-            selectedTab = contextInfoList.IndexOf(tab);
+            selectedTab = OrderedContexts.IndexOf(tab);
             base.StateHasChanged();
         }
     }
 
     void TabChanged(int selectedTab)
     {
-        var tab = contextInfoList[selectedTab];
+        this.selectedTab = selectedTab;
+        var ordered = OrderedContexts;
+        if (selectedTab < 0 || selectedTab >= ordered.Count) return;
+        var tab = ordered[selectedTab];
         EntityContextService.OnTabChanged(tab.Title);
     }
 }
 
-<RadzenTabs TabPosition="TabPosition.Bottom" Style="height:100%" @bind-SelectedIndex="selectedTab" Change="TabChanged">
+<SuperTabs TabPosition="SuperTabPosition.Bottom" SelectedIndex="selectedTab" SelectedIndexChanged="TabChanged">
     <Tabs>
-        @foreach (var item in contextInfoList.OrderByDescending(i => i.DefaultPosition))
+        @foreach (var item in OrderedContexts)
         {
 
             if (item.Parent is IContextRefreshable refreshable)
@@ -72,15 +76,10 @@
             {
                 { "ContextInfo", item }
               };
-            <RadzenTabsItem IconColor="@item.IconColor">
-                <Template>
-                    <RadzenIcon Icon="@item.Icon" /><div style="text-overflow: ellipsis;white-space:nowrap;">@item.Title</div>
-                </Template>
-                <ChildContent>
-                    <DynamicComponent Type="@item.ComponentType" Parameters="@parameters" />
-                </ChildContent>
-            </RadzenTabsItem>
+            <TabItem Title="@item.Title" Icon="@item.Icon" IconColor="@item.IconColor">
+                <DynamicComponent Type="@item.ComponentType" Parameters="@parameters" />
+            </TabItem>
         }
     </Tabs>
-</RadzenTabs>
+</SuperTabs>
 

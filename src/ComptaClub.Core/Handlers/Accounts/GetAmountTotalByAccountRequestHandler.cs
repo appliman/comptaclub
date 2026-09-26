@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models.Accounts;
+using ComptaClub.Contracts.Models.Accounts;
 using ComptaClub.Contracts.Models.Exercices;
 
 namespace ComptaClub.Handlers.Accounts;
@@ -6,10 +6,10 @@ namespace ComptaClub.Handlers.Accounts;
 internal class GetAmountTotalByAccountRequestHandler : IRequestHandler<GetAmountTotalByAccountRequest, IEnumerable<AmountTotalByAccount>>
 {
     private readonly IMediator _mediator;
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IComptaClubDbContextFactory _dbContextFactory;
 
     public GetAmountTotalByAccountRequestHandler(IMediator mediator,
-        IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+        IComptaClubDbContextFactory dbContextFactory)
     {
         _mediator = mediator;
         _dbContextFactory = dbContextFactory;
@@ -32,7 +32,7 @@ internal class GetAmountTotalByAccountRequestHandler : IRequestHandler<GetAmount
             return new List<AmountTotalByAccount>();
         }
 
-        var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+        await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
         var query = from entry in db.Entries
                     join account in db.Accounts on entry.AccountId equals account.Id

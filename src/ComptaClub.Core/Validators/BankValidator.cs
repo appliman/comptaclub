@@ -2,7 +2,7 @@
 
 using FluentValidation;
 
-using MediatR;
+using ChannelMediator;
 
 namespace ComptaClub.Validators;
 

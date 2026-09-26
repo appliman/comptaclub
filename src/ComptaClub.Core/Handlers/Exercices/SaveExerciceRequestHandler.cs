@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Stats;
 using ComptaClub.Contracts.Results;
 using ComptaClub.Handlers.Banks;
@@ -8,11 +8,11 @@ namespace ComptaClub.Handlers.Exercices;
 internal class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHandler<SaveEntityRequest<ExerciceData>, PersistResult>
 {
     private readonly IValidator<ExerciceData> _validator;
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IComptaClubDbContextFactory _dbContextFactory;
     private readonly IMediator _mediator;
 
     public SaveExerciceRequestHandler(IValidator<ExerciceData> validator,
-        IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+        IComptaClubDbContextFactory dbContextFactory,
         ILogger<SaveBankRequestHandler> logger,
         IMediator mediator)
         : base(dbContextFactory, logger)
@@ -30,7 +30,7 @@ internal class SaveExerciceRequestHandler : SaveRequestHandlerBase, IRequestHand
             return valid.ToPersistResult()!;
         }
 
-        var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+        await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
         var exerciceCount = await db.Exercices.CountAsync(cancellationToken);
 
         // S'il n'y a aucun exercice, le nouveau doit etre actif

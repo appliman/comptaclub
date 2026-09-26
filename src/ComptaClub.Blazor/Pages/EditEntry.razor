@@ -13,27 +13,27 @@
 
 <SectionContent SectionName="toolbar">
 
-	<RadzenButton Text="Sauvegarder"
+	<SuperButton Text="Sauvegarder"
 				  Click="ValidateAndSave"
-				  Icon="save"
-				  ButtonStyle="ButtonStyle.Success"
+				  Icon="fa-floppy-disk"
+				  Style="SuperButtonStyle.Success"
 				  class="btn btn-primary m-1" />
 
 	@if (selectedTabIndex == 2)
 	{
-		<RadzenButton Text="Associer"
+		<SuperButton Text="Associer"
 					  Click="associatedDocuments.InsertRow"
-					  Icon="upload_file"
-					  ButtonStyle="ButtonStyle.Success"
+					  Icon="fa-file-arrow-up"
+					  Style="SuperButtonStyle.Success"
 					  class="btn btn-primary m-1"
 					  title="Associer un document à cette écriture" />
 	}
 
 </SectionContent>
 
-<RadzenTabs TabPosition="TabPosition.Left" SelectedIndexChanged="RefreshToolbar" @ref="tabs">
+<SuperTabs TabPosition="SuperTabPosition.Left" SelectedIndexChanged="RefreshToolbar" @ref="tabs">
 	<Tabs>
-		<RadzenTabsItem Text="Informations" Icon="feed">
+		<TabItem Title="Informations" Icon="fa-file-lines">
 			<EditForm Model="entry" OnValidSubmit="ValidateAndSave">
 				<ValidationSummary></ValidationSummary>
 				<DataAnnotationsValidator />
@@ -49,15 +49,15 @@
 					<SuperInputArea @bind-Value="entry.ExtraInfos" PlaceHoder="Informations supplémentaires" Label="Informations supplémentaires :" />
 				</div>
 			</EditForm>
-		</RadzenTabsItem>
-		<RadzenTabsItem Text="Membres" Icon="group_add">
+		</TabItem>
+		<TabItem Title="Membres" Icon="fa-user-plus">
 			<h4>Membres associés à l'écriture :</h4>
 			<AssociatedMemberByEntry @ref="associatedMembers" EntryId="EntryId" />
-		</RadzenTabsItem>
-		<RadzenTabsItem Text="documents" Icon="attach_file">
+		</TabItem>
+		<TabItem Title="Documents" Icon="fa-paperclip">
 			<h4>Documents associés à l'écriture</h4>
 			<DocumentListByEntity MetaEntity="MetaEntity.Entry" EntityId="EntryId.GetValueOrDefault(Guid.Empty)" @ref="associatedDocuments"/>
-		</RadzenTabsItem>
+		</TabItem>
 	</Tabs>
-</RadzenTabs>
+</SuperTabs>
 

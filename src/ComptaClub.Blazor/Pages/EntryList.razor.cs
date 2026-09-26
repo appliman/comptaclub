@@ -1,5 +1,3 @@
-using System.Linq.Dynamic.Core;
-
 using ComptaClub.Blazor.Pages.Shared;
 using ComptaClub.Blazor.Services;
 using ComptaClub.Blazor.ViewModels;
@@ -10,6 +8,7 @@ using ComptaClub.Datas;
 using ComptaClub.Extensions;
 
 using Microsoft.AspNetCore.WebUtilities;
+using SuperBlazorComponents.Components.SuperDataGrid;
 
 namespace ComptaClub.Blazor.Pages;
 
@@ -19,10 +18,8 @@ public partial class EntryList : ComponentBase
 	MainLayout MainLayout { get; set; } = default!;
 
 	[Inject]
-	MediatR.IMediator Mediator { get; set; } = default!;
+	ChannelMediator.IMediator Mediator { get; set; } = default!;
 
-	[Inject]
-	AutoMapper.IMapper Mapper { get; set; } = default!;
 
 	[Inject]
 	NotificationService NotificationService { get; set; } = default!;
@@ -37,7 +34,7 @@ public partial class EntryList : ComponentBase
 	ListFilterQueryStringParametersService ListFilterQueryStringParametersService { get; set; } = default!;
 
 	List<ViewModels.EntryRow>? entryList;
-	RadzenDataGrid<ViewModels.EntryRow>? grid = new();
+	SuperDataGrid<ViewModels.EntryRow>? grid;
 	List<ViewModels.Account> leafAccountList = new();
 	ViewModels.Exercice activeExercice = new();
 	long currentBalance = 0;
@@ -71,11 +68,11 @@ public partial class EntryList : ComponentBase
 		{
 			return;
 		}
-		activeExercice = Mapper.Map<ViewModels.Exercice>(exercice);
+		activeExercice = Mapping.Profile.ToViewModel(exercice);
 		currentBalance = activeExercice.BalanceAmount;
 
 		var accountList = t2.Result;
-		leafAccountList = Mapper.Map<List<ViewModels.Account>>(accountList.GetLeafList().ToList());
+		leafAccountList = Mapping.Profile.ToViewModels(accountList.GetLeafList().ToList());
 
 		InitializeFilter();
 
@@ -98,18 +95,18 @@ public partial class EntryList : ComponentBase
 		filterFirstInitialize = true;
 	}
 
-	async Task LoadDatas(LoadDataArgs args)
+	async ValueTask<GridItemsProviderResult<ViewModels.EntryRow>> LoadItems(GridItemsProviderRequest<ViewModels.EntryRow> request)
 	{
 		if (!filterFirstInitialize)
 		{
 			filter.Search = null;
-			if (!args.Filters.IsNullOrEmpty())
+			if (request.Filters.Any())
 			{
-				var searchFilter = args.Filters.FirstOrDefault();
+				var searchFilter = request.Filters.FirstOrDefault(i => i.PropertyName == nameof(EntryData.PartNumber));
 				if (searchFilter is not null
-					&& searchFilter.Property == nameof(EntryData.PartNumber))
+					&& searchFilter.PropertyName == nameof(EntryData.PartNumber))
 				{
-					filter.Search = $"{searchFilter.FilterValue}";
+					filter.Search = searchFilter.PropertyValue;
 				}
 			}
 		}
@@ -124,9 +121,9 @@ public partial class EntryList : ComponentBase
 			filter.ToDayId = null;
 		}
 
-		var request = new GetPagedEntityListRequest<EntryListFilter, Datas.EntryData>(filter);
+		var dataRequest = new GetPagedEntityListRequest<EntryListFilter, Datas.EntryData>(filter);
 
-		var dataPage = await Mediator.Send(request);
+		var dataPage = await Mediator.Send(dataRequest);
 		var list = new List<EntryRow>();
 		int rowId = 1;
 		foreach (var item in dataPage.List)
@@ -137,36 +134,29 @@ public partial class EntryList : ComponentBase
 				RowIndex = rowId++,
 			});
 		}
-		if (!string.IsNullOrEmpty(args.OrderBy))
-		{
-			entryList = IQueryableExtensions.OrderBy(list.AsQueryable(),args.OrderBy).ToList();
-		}
-		else
-		{
-			entryList = list;
-		}
+		entryList = list;
 		filterFirstInitialize = false;
 
 		if (list.Any())
 		{
 			entityContext?.ContextChanged(this, list[0], ContextLocation.Bottom);
 		}
+		return GridItemsProviderResult<ViewModels.EntryRow>.From(
+			list.Skip(request.StartIndex).Take(request.Count ?? list.Count).ToList(), list.Count);
 	}
 
 	async Task ApplyFilter()
 	{
 		filter.PageIndex = 0;
-		grid!.Reset(true, true);
-		if (grid.CurrentPage == 0)
-		{
-			await grid.Reload();
-		}
-		else
-		{
-			await grid.GoToPage(0);
-		}
-		StateHasChanged();
+		await grid!.ReloadAsync();
+	}
 
+	async Task OnAccountFilterChanged(ChangeEventArgs args)
+	{
+		var values = args.Value as string[] ?? [];
+		filter.AccountIdList = values.Select(value => Guid.TryParse(value, out var id) ? id : Guid.Empty)
+			.Where(id => id != Guid.Empty).ToList();
+		await ApplyFilter();
 	}
 
 	Task InsertRow(string direction)
@@ -187,8 +177,8 @@ public partial class EntryList : ComponentBase
 
 	async Task DeleteRow(ViewModels.EntryRow entry)
 	{
-		var confirm = await DialogService.Confirm("Confirmez-vous la suppression de cette écriture", "Suppression");
-		if (!confirm.HasValue || !confirm.Value)
+		var confirm = await DialogService.Confirm("Suppression", "Confirmez-vous la suppression de cette ï¿½criture");
+		if (!confirm)
 		{
 			return;
 		}
@@ -196,12 +186,12 @@ public partial class EntryList : ComponentBase
 		var deleteResult = await Mediator.Send(new DeleteEntryRequest(entry.Id));
 		if (deleteResult.HasError)
 		{
-			NotificationService.NotifyError(deleteResult);
+			await NotificationService.NotifyError(deleteResult);
 			return;
 		}
 
-		NotificationService.Notify(NotificationSeverity.Success, "L'ecriture est maintenant supprimée");
-		await grid!.Reload();
+		await NotificationService.Notify(NotificationSeverity.Success, "L'ecriture est maintenant supprimï¿½e");
+		await grid!.ReloadAsync();
 	}
 
 	long? GetProfit()

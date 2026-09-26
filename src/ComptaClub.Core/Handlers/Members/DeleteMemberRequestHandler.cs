@@ -1,14 +1,14 @@
-﻿using ComptaClub.Contracts.Models.Members;
+using ComptaClub.Contracts.Models.Members;
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Members;
 internal class DeleteMemberRequestHandler : IRequestHandler<DeleteMemberRequest, CommandResult>
 {
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IComptaClubDbContextFactory _dbContextFactory;
     private readonly ILogger<DeleteMemberRequestHandler> _logger;
 
     public DeleteMemberRequestHandler(
-        IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+        IComptaClubDbContextFactory dbContextFactory,
         ILogger<DeleteMemberRequestHandler> logger)
     {
         _dbContextFactory = dbContextFactory;
@@ -17,7 +17,7 @@ internal class DeleteMemberRequestHandler : IRequestHandler<DeleteMemberRequest,
 
     public async Task<CommandResult> Handle(DeleteMemberRequest request, CancellationToken cancellationToken)
     {
-        var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+        await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
         var member = await db.Members.FindAsync(request.MemberId, cancellationToken);
         if (member == null)
         {

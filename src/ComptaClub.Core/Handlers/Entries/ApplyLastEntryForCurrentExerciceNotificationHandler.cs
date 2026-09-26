@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Contracts.Models.Stats;
@@ -8,10 +8,10 @@ namespace ComptaClub.Handlers.Entries;
 internal class ApplyLastEntryForCurrentExerciceNotificationHandler : INotificationHandler<EntrySavedNotification>
 {
 	private readonly IMediator _mediator;
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 
 	public ApplyLastEntryForCurrentExerciceNotificationHandler(IMediator mediator,
-	IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+	IComptaClubDbContextFactory dbContextFactory)
 	{
 		_mediator = mediator;
 		_dbContextFactory = dbContextFactory;

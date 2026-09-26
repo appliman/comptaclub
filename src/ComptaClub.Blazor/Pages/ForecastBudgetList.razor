@@ -1,70 +1,69 @@
-﻿@page "/bilans-previsionnels"
+@page "/bilans-previsionnels"
 
 <PageTitle>Les budgets previsionnels</PageTitle>
 
 <SectionContent SectionName="toolbar">
 
-    <RadzenButton Text="Ajouter"
+    <SuperButton Text="Ajouter"
                   Click="CreateForecastBudget"
-                  Icon="add_circle_outline"
-                  ButtonStyle="ButtonStyle.Success"
+                  Icon="fa-circle-plus"
+                  Style="SuperButtonStyle.Success"
                   class="btn btn-primary m-1"
                   title="Creer un bilan prévisionnel" />
 
 </SectionContent>
 
-<RadzenDataGrid @ref="grid" 
-    AllowFiltering="true" 
-    AllowSorting="true" 
+<SuperDataGrid @ref="grid"
+    AllowFiltering="false"
+    AllowSorting="true"
     AllowColumnResize="true"
-    Data="@forecastBudgetList"
-    LoadData="@LoadDatas"
+    ItemsProvider="LoadItems"
     TItem="ViewModels.ForecastBudgetRow"
-    SelectionMode="DataGridSelectionMode.Single"
-    GridLines="DataGridGridLines.Both"
-    AllowRowSelectOnRowClick="true"
-    @bind-Value="selectedRow">
-    <Columns>
-        <RadzenDataGridColumn TItem="ViewModels.ForecastBudgetRow" Property="RowIndex" Title="#" Width="70px" Filterable="false" FormatString="" Frozen="true" Sortable="false">
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.ForecastBudgetRow" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="80px" Frozen="true">
+    SelectionMode="SuperDataGridSelectionMode.None"
+    DisplaySelectionColumn="false"
+    DisplayRowNumberColumn="false"
+    Height="500px">
+
+        <DataGridColumn TItem="ViewModels.ForecastBudgetRow" Property="RowIndex" Title="#" Width="70px" Filterable="false" Sortable="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.ForecastBudgetRow" Filterable="false" Sortable="false" TextAlign="SuperTextAlignment.Right" Width="80px">
             <Template Context="data">
-                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(data.Entity))" @onclick:stopPropagation="true" title="Supprimer ce budget prévisionnel">
-                </RadzenButton>
+                <SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(data.Entity))" @onclick:stopPropagation="true" title="Supprimer ce budget prévisionnel">
+                </SuperButton>
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.ForecastBudgetRow" Property="Name" Title="Nom" Filterable="false" Width="200px" Frozen="true">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.ForecastBudgetRow" Property="Name" Title="Nom" Filterable="false" Width="200px">
             <Template Context="data">
                 <a href="/bilan-previsionnel/@data.Id">@data.Entity.Name</a>
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.ForecastBudgetRow" Property="Description" Title="Description" Filterable="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.ForecastBudgetRow" Property="Description" Title="Description" Filterable="false">
             <Template Context="data">
                 @data.Entity.Description
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.ForecastBudgetRow" Property="CreationDate" Title="Date" Filterable="false" Width="150px">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.ForecastBudgetRow" Property="CreationDate" Title="Date" Filterable="false" Width="150px">
             <Template Context="data">
                 <DateIdLabel Value="data.Entity.CreationDate"/>
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.ForecastBudgetRow" Title="Crédit" Width="120px" Filterable="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.ForecastBudgetRow" Title="Crédit" Width="120px" Filterable="false">
             <Template Context="data">
                 <PriceLabel Value="data.Entity.CreditTotal"/>
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.ForecastBudgetRow" Title="Débit" Width="120px" Filterable="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.ForecastBudgetRow" Title="Débit" Width="120px" Filterable="false">
             <Template Context="data">
                 <PriceLabel Value="data.Entity.DebitTotal" />
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.ForecastBudgetRow" Title="Résultat Net" Width="120px" Filterable="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.ForecastBudgetRow" Title="Résultat Net" Width="120px" Filterable="false">
             <Template Context="data">
                 @{
                     var total = data.Entity.CreditTotal - data.Entity.DebitTotal;
                 }
                 <PriceLabel Value="@total" />
             </Template>
-        </RadzenDataGridColumn>
-    </Columns>
-</RadzenDataGrid>
+        </DataGridColumn>
+
+</SuperDataGrid>

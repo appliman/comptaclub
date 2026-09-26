@@ -30,7 +30,7 @@ public class FirstEntryTests
 	public async Task Write_First_Entry()
 	{
 		var app = await TestHelper.CreateWebApplication();
-		var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
+		var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 		var user = await mediator.GetOrCreateUser($"{Guid.NewGuid()}@email.com");
 

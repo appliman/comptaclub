@@ -6,7 +6,7 @@ using ComptaClub.Contracts.Models.Exercices;
 
 using FluentAssertions;
 
-using MediatR;
+using ChannelMediator;
 
 using Microsoft.Extensions.DependencyInjection;
 

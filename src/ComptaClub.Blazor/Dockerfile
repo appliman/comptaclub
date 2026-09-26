@@ -2,6 +2,7 @@
 
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+RUN mkdir -p /app/data && chown $APP_UID /app/data
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
@@ -17,6 +18,8 @@ COPY ["src/ComptaClub.Core/ComptaClub.Core.csproj", "src/ComptaClub.Core/"]
 COPY ["src/ComptaClub.Contracts/ComptaClub.Contracts.csproj", "src/ComptaClub.Contracts/"]
 COPY ["src/ComptaClub.Datas/ComptaClub.Datas.csproj", "src/ComptaClub.Datas/"]
 COPY ["src/ComptaClub.Datas.MsSql/ComptaClub.Datas.MsSql.csproj", "src/ComptaClub.Datas.MsSql/"]
+COPY ["src/ComptaClub.Datas.Sqlite/ComptaClub.Datas.Sqlite.csproj", "src/ComptaClub.Datas.Sqlite/"]
+COPY ["src/ComptaClub.EntityFramework/ComptaClub.EntityFramework.csproj", "src/ComptaClub.EntityFramework/"]
 COPY ["src/ComptaClub.Import/ComptaClub.Import.csproj", "src/ComptaClub.Import/"]
 RUN dotnet restore "./src/ComptaClub.Blazor/ComptaClub.Blazor.csproj"
 COPY . .
@@ -32,5 +35,4 @@ RUN dotnet publish "./ComptaClub.Blazor.csproj" -c $BUILD_CONFIGURATION -o /app/
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-COPY ["src/ComptaClub.Blazor/wwwroot/EmailTemplates/Digicode.cshtml", "wwwroot/EmailTemplates/"]
 ENTRYPOINT ["dotnet", "ComptaClub.Blazor.dll"]

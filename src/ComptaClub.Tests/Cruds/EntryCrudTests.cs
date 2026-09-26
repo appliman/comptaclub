@@ -22,7 +22,7 @@ public class EntryCrudTests
 	public async Task Entry_Crud()
 	{
 		var app = await TestHelper.CreateWebApplication();
-		var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
+		var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 		var exercice = await mediator.GetOrCreateExercice($"{Guid.NewGuid()}");
 		var bank = await mediator.GetOrCreateBank($"{Guid.NewGuid()}");
