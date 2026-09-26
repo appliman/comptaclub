@@ -16,9 +16,6 @@
   <Folder Name="/4.Tools/" />
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
-    <File Path="azure-deploy-client.yml" />
-    <File Path="azure-deploy-docker.yml" />
-    <File Path="azure-pipelines.yml" />
     <File Path="build-publish-docker-dev.cmd" />
   </Folder>
   <Folder Name="/Tests/">

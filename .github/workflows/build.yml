@@ -1,0 +1,46 @@
+name: Build and test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore ComptaClub.slnx
+
+      - name: Build
+        run: dotnet build ComptaClub.slnx --configuration Release --no-restore
+
+      - name: Test SQLite provider
+        run: dotnet test src/ComptaClub.Tests/ComptaClub.Tests.csproj --configuration Release --no-build --filter FullyQualifiedName~SqliteProviderTests
+
+      - name: Publish Blazor
+        run: dotnet publish src/ComptaClub.Blazor/ComptaClub.Blazor.csproj --configuration Release --no-restore --output artifacts/publish
+
+      - name: Add environment marker
+        run: echo production > artifacts/publish/env.txt
+
+      - name: Create deployment archive
+        run: cd artifacts/publish && zip -q -r ../ComptaClub.zip .
+
+      - name: Upload deployment archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: ComptaClub
+          path: artifacts/ComptaClub.zip
+          if-no-files-found: error
+
