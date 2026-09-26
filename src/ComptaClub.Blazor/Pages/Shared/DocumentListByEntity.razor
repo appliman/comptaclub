@@ -1,4 +1,4 @@
-<SuperDataGrid @ref="grid"
+<SuperDataGrid RowHeight="55" @ref="grid" DisplaySelectionColumn="false" DisplayColumnVisibilityToggle="false"
 				AllowFiltering="true"
 				AllowSorting="true"
 				AllowColumnResize="true"
@@ -6,25 +6,25 @@
 
 				TItem="ViewModels.Document"
 
-				DisplayRowNumberColumn="false"
-				Height="500px">
-
-		<DataGridColumn TItem="ViewModels.Document" Property="RowIndex" Title="#" Width="60px" Filterable="false"  >
-		</DataGridColumn>
-		<DataGridColumn TItem="ViewModels.Document" Context="doc" Filterable="false" Sortable="false" TextAlign="SuperTextAlignment.Right" Width="100px">
-			<Template Context="doc">
-				<SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(doc))" @onclick:stopPropagation="true" title="Supprimer ce fichier">
-				</SuperButton>
-				<SuperButton Icon="fa-pen" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Click="@(args => EditRow(doc))" @onclick:stopPropagation="true" title="Editer ce fichier">
-				</SuperButton>
-			</Template>
-			<EditTemplate Context="doc">
+				DisplayRowNumberColumn="true"
+				Height="500px" ActionsWidth="120">
+		<ActionsTemplate Context="doc">
+			@if (grid.IsRowInEditMode(doc))
+			{
 				<SuperButton Icon="fa-check" Style="SuperButtonStyle.Success"  Size="SuperButtonSize.Default" Click="@((args) => SaveRow(doc))">
 				</SuperButton>
 				<SuperButton Icon="fa-xmark" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Class="my-1 ms-1" Click="@((args) => CancelEdit(doc))">
 				</SuperButton>
-			</EditTemplate>
-		</DataGridColumn>
+			}
+			else
+			{
+				<SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(doc))" @onclick:stopPropagation="true" title="Supprimer ce fichier">
+				</SuperButton>
+				<SuperButton Icon="fa-pen" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Click="@(args => EditRow(doc))" @onclick:stopPropagation="true" title="Editer ce fichier">
+				</SuperButton>
+			}
+		</ActionsTemplate>
+		<ChildContent>
 		<DataGridColumn TItem="ViewModels.Document" Property="FileName" Title="Fichier" Width="350px" Filterable="false">
 			<Template Context="data">
 				<a href="/document/@data.Id">@data.FileName</a>
@@ -50,7 +50,7 @@
 				<FileSizeLabel FileSize="@doc.Size"/>
 			</Template>
 		</DataGridColumn>
-
+		</ChildContent>
 </SuperDataGrid>
 
 

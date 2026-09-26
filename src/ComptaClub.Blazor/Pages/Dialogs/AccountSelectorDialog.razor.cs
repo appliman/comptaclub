@@ -33,7 +33,9 @@ public partial class AccountSelectorDialog
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
+        {
             await grid.ExpandAllAsync();
+        }
     }
 
     async Task LoadDatas()
@@ -46,7 +48,9 @@ public partial class AccountSelectorDialog
     async ValueTask<GridItemsProviderResult<ViewModels.Account>> LoadItems(GridItemsProviderRequest<ViewModels.Account> request)
     {
         if (accountList is null)
+        {
             await LoadDatas();
+        }
 
         var source = request.ParentItem?.Children ?? accountList ?? [];
         return GridItemsProviderResult<ViewModels.Account>.From(

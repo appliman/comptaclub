@@ -13,25 +13,20 @@
 
 </SectionContent>
 
-<SuperDataGrid @ref="grid"
+<SuperDataGrid RowHeight="55" @ref="grid" DisplaySelectionColumn="false" DisplayColumnVisibilityToggle="false"
     AllowFiltering="false"
     AllowSorting="true"
     AllowColumnResize="true"
     ItemsProvider="LoadItems"
     TItem="ViewModels.ForecastBudgetRow"
     SelectionMode="SuperDataGridSelectionMode.None"
-    DisplaySelectionColumn="false"
-    DisplayRowNumberColumn="false"
-    Height="500px">
-
-        <DataGridColumn TItem="ViewModels.ForecastBudgetRow" Property="RowIndex" Title="#" Width="70px" Filterable="false" Sortable="false">
-        </DataGridColumn>
-        <DataGridColumn TItem="ViewModels.ForecastBudgetRow" Filterable="false" Sortable="false" TextAlign="SuperTextAlignment.Right" Width="80px">
-            <Template Context="data">
-                <SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(data.Entity))" @onclick:stopPropagation="true" title="Supprimer ce budget prévisionnel">
-                </SuperButton>
-            </Template>
-        </DataGridColumn>
+    DisplayRowNumberColumn="true"
+    Height="500px" ActionsWidth="70">
+        <ActionsTemplate Context="data">
+            <SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(data.Entity))" @onclick:stopPropagation="true" title="Supprimer ce budget prévisionnel">
+            </SuperButton>
+        </ActionsTemplate>
+        <ChildContent>
         <DataGridColumn TItem="ViewModels.ForecastBudgetRow" Property="Name" Title="Nom" Filterable="false" Width="200px">
             <Template Context="data">
                 <a href="/bilan-previsionnel/@data.Id">@data.Entity.Name</a>
@@ -65,5 +60,5 @@
                 <PriceLabel Value="@total" />
             </Template>
         </DataGridColumn>
-
+        </ChildContent>
 </SuperDataGrid>

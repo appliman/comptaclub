@@ -49,12 +49,19 @@ public partial class DocumentList : ComponentBase
 	async ValueTask<GridItemsProviderResult<ViewModels.Document>> LoadItems(GridItemsProviderRequest<ViewModels.Document> request)
 	{
 		if (documentList is null)
-			await LoadDatas();
-		IEnumerable<ViewModels.Document> rows = documentList ?? [];
+        {
+            await LoadDatas();
+        }
+
+        IEnumerable<ViewModels.Document> rows = documentList ?? [];
 		foreach (var filterInfo in request.Filters)
 		{
-			if (string.IsNullOrWhiteSpace(filterInfo.PropertyValue)) continue;
-			rows = filterInfo.PropertyName switch
+			if (string.IsNullOrWhiteSpace(filterInfo.PropertyValue))
+            {
+                continue;
+            }
+
+            rows = filterInfo.PropertyName switch
 			{
 				"FileName" => rows.Where(x => x.FileName.Contains(filterInfo.PropertyValue, StringComparison.OrdinalIgnoreCase)),
 				"Description" => rows.Where(x => x.Description.Contains(filterInfo.PropertyValue, StringComparison.OrdinalIgnoreCase)),

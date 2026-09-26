@@ -25,10 +25,12 @@ public partial class AccountingPlan : ComponentBase
 	bool uploadEnabled = false;
 	string? uploadError = null;
 	string? uploadSuccess = null;
+	bool isPlanLoaded;
 
 	protected override async Task OnInitializedAsync()
 	{
 		await LoadDatas();
+		isPlanLoaded = true;
 	}
 
 	async Task LoadDatas()

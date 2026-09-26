@@ -1,0 +1,12 @@
+﻿@using SuperBlazorComponents.Components.SuperSplitter
+@inherits LayoutComponentBase
+@layout MainLayout
+
+<SuperSplitter Orientation="SuperSplitterOrientation.Horizontal" FirstPaneSize="60">
+	<SplitPane>
+		@Body
+	</SplitPane>
+	<SplitPane data-ob-tour="bottomcontextlist">
+		<SectionOutlet SectionName="EntityContext"/>
+	</SplitPane>
+</SuperSplitter>

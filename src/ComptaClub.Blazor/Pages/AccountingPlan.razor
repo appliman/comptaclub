@@ -20,7 +20,7 @@
 				  Click="InsertRow"
 				  Icon="fa-circle-plus"
 				  Style="SuperButtonStyle.Success"
-				  Disabled="@(accountToInsert != null || accountToUpdate != null)"
+				  Disabled="@(!isPlanLoaded || accountToInsert != null || accountToUpdate != null)"
 				  class="btn btn-primary m-1"
 				  title="Ajouter un compte" />
 
@@ -28,6 +28,7 @@
 				  Click="ExportToJson"
 				  Icon="fa-file-arrow-down"
 				  Style="SuperButtonStyle.Success"
+				  Disabled="@(!isPlanLoaded)"
 				  class="btn btn-primary m-1"
 				  title="Exporter" />
 
@@ -35,6 +36,7 @@
 				  Click="Import"
 				  Icon="fa-file-arrow-up"
 				  Style="SuperButtonStyle.Success"
+				  Disabled="@(!isPlanLoaded)"
 				  class="btn btn-primary m-1"
 				  title="Importer" />
 
@@ -42,6 +44,7 @@
 				  Click="DeployAll"
 				  Icon="fa-expand"
 				  Style="SuperButtonStyle.Success"
+				  Disabled="@(!isPlanLoaded)"
 				  class="btn btn-primary m-1"
 				  title="Voir tous les comptes" />
 
@@ -51,35 +54,43 @@
 {
 	<div class="success m-4">@uploadError</div>
 }
+@if (!isPlanLoaded)
+{
+	<p class="m-4">Chargement du plan comptable…</p>
+}
+else
+{
 <div style="height:100%">
-	<SuperDataGrid @ref="grid"
+	<SuperDataGrid RowHeight="55" @ref="grid" DisplaySelectionColumn="false" DisplayColumnVisibilityToggle="false"
 					AllowFiltering="false"
 					AllowSorting="false"
 					AllowColumnResize="true"
-					Hierarchical="true" HierarchyKeySelector="@(account => account.Id)"
+					Hierarchical="true" HierarchyKeySelector="@(account => account.Id)" ActionsWidth="170"
 					ItemsProvider="LoadItems"
 					TItem="ViewModels.Account"
 
 
-					DisplayRowNumberColumn="false"
+					DisplayRowNumberColumn="true"
 					Height="500px">
-
-			<DataGridColumn TItem="ViewModels.Account" Context="account" Width="230px" Filterable="false" Sortable="false" TextAlign="SuperTextAlignment.Right">
-				<Template Context="account">
+			<ActionsTemplate Context="account">
+				@if (grid!.IsRowInEditMode(account))
+				{
+					<SuperButton Icon="fa-check" Style="SuperButtonStyle.Success"  Size="SuperButtonSize.Default" Click="@((args) => SaveRow(account))">
+					</SuperButton>
+					<SuperButton Icon="fa-xmark" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Class="my-1 ms-1" Click="@((args) => CancelEdit(account))">
+					</SuperButton>
+				}
+				else
+				{
 					<SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(account))" @onclick:stopPropagation="true" title="Supprimer ce compte">
 					</SuperButton>
 					<SuperButton Icon="fa-circle-plus" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Click="@(args => InsertRow(account))" @onclick:stopPropagation="true" title="Ajouter un sous-compte">
 					</SuperButton>
 					<SuperButton Icon="fa-pen" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Click="@(args => EditRow(account))" @onclick:stopPropagation="true" title="Editer ce compte">
 					</SuperButton>
-				</Template>
-				<EditTemplate Context="account">
-					<SuperButton Icon="fa-check" Style="SuperButtonStyle.Success"  Size="SuperButtonSize.Default" Click="@((args) => SaveRow(account))">
-					</SuperButton>
-					<SuperButton Icon="fa-xmark" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Class="my-1 ms-1" Click="@((args) => CancelEdit(account))">
-					</SuperButton>
-				</EditTemplate>
-			</DataGridColumn>
+				}
+			</ActionsTemplate>
+			<ChildContent>
 			<DataGridColumn TItem="ViewModels.Account" Property="Direction" Title="Débit / Crédit" Width="150px">
 				<EditTemplate Context="account">
 					@if (!account.ParentAccountId.HasValue)
@@ -105,6 +116,7 @@
 					<BrokenRuleMessage For="() => account.Label" BrokenRuleList="brokenRules" />
 				</EditTemplate>
 			</DataGridColumn>
-
+			</ChildContent>
 	</SuperDataGrid>
 </div>
+}

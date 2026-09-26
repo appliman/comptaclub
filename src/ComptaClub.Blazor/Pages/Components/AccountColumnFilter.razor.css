@@ -1,0 +1,58 @@
+.account-column-filter {
+    position: relative;
+    width: 100%;
+}
+
+.account-filter-trigger {
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.account-filter-menu {
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    z-index: 100;
+    width: max(100%, 250px);
+    padding: 0.5rem;
+    background: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    box-shadow: var(--bs-box-shadow);
+}
+
+.account-filter-options {
+    max-height: 220px;
+    margin: 0.5rem 0;
+    overflow-y: auto;
+}
+
+.account-filter-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+    padding: 0.25rem;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.account-filter-option:hover {
+    background: var(--bs-secondary-bg);
+}
+
+.account-filter-option input {
+    flex: none;
+    margin-top: 0.2rem;
+}
+
+.account-filter-option span {
+    overflow-wrap: anywhere;
+}
+
+.account-filter-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+}

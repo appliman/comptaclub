@@ -50,13 +50,19 @@ public partial class AddOrAttachDocumentToEntityDialog
 	async ValueTask<GridItemsProviderResult<ViewModels.Document>> LoadItems(GridItemsProviderRequest<ViewModels.Document> request)
 	{
 		if (documentList is null)
-			await LoadDatas();
+        {
+            await LoadDatas();
+        }
 
-		IEnumerable<ViewModels.Document> rows = documentList ?? [];
+        IEnumerable<ViewModels.Document> rows = documentList ?? [];
 		foreach (var filter in request.Filters)
 		{
-			if (string.IsNullOrWhiteSpace(filter.PropertyValue)) continue;
-			rows = filter.PropertyName switch
+			if (string.IsNullOrWhiteSpace(filter.PropertyValue))
+            {
+                continue;
+            }
+
+            rows = filter.PropertyName switch
 			{
 				"FileName" => rows.Where(x => x.FileName.Contains(filter.PropertyValue, StringComparison.OrdinalIgnoreCase)),
 				"Description" => rows.Where(x => x.Description.Contains(filter.PropertyValue, StringComparison.OrdinalIgnoreCase)),

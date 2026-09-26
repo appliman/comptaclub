@@ -31,7 +31,7 @@
 
 <PageTitle>Ecritures</PageTitle>
 <div style="height:100%">
-	<SuperDataGrid @ref="grid"
+	<SuperDataGrid RowHeight="55" @ref="grid" DisplaySelectionColumn="false" DisplayColumnVisibilityToggle="false"
 					AllowFiltering="true"
 					AllowSorting="false"
 					AllowColumnResize="true"
@@ -39,20 +39,14 @@
 
 					TItem="ViewModels.EntryRow"
 
-					DisplayRowNumberColumn="false"
+					DisplayRowNumberColumn="true"
 					Height="500px"
-					RowClicked="RowSelected" >
-
-			<DataGridColumn TItem="ViewModels.EntryRow" Property="RowIndex" Title="#" Width="60px" Filterable="false"   >
-			</DataGridColumn>
-			<DataGridColumn TItem="ViewModels.EntryRow" Context="entry" Filterable="false" Sortable="false" TextAlign="SuperTextAlignment.Right" Width="100px" >
-				<Template Context="entry">
-					<SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(entry))" @onclick:stopPropagation="true" title="Supprimer cette ecriture">
-					</SuperButton>
-					<SuperButton Icon="fa-pen" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Click="@(args => EditRow(entry))" @onclick:stopPropagation="true" title="Editer cette ecriture">
-					</SuperButton>
-				</Template>
-			</DataGridColumn>
+					RowClicked="RowSelected" ActionsWidth="120">
+			<ActionsTemplate Context="entry">
+				<SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning" Size="SuperButtonSize.Default" Click="@(args => DeleteRow(entry))" title="Supprimer cette écriture" />
+				<SuperLinkButton Icon="fa-pen" Style="SuperButtonStyle.Light" Size="SuperButtonSize.Default" Href="@GetEditUrl(entry)" title="Éditer cette écriture" aria-label="Éditer cette écriture" />
+			</ActionsTemplate>
+			<ChildContent>
 			<DataGridColumn TItem="ViewModels.EntryRow" Property="CreationDate" Title="Date" Width="150px" Filterable="true" >
 				<FilterTemplate>
 					<SuperPeriodFilterInputSelect @bind-Value="selectedPeriodFilter" ExerciceId="activeExercice.Id" ApplyFilter="ApplyFilter" />
@@ -78,12 +72,7 @@
 			</DataGridColumn>
 			<DataGridColumn TItem="ViewModels.EntryRow" Property="AccountId" Title="Compte" Width="250px" Filterable="true">
 				<FilterTemplate>
-					<select class="form-select" multiple @onchange="OnAccountFilterChanged">
-                        @foreach (var account in leafAccountList)
-                        {
-                            <option value="@account.Id" selected="@(filter.AccountIdList?.Contains(account.Id) == true)">@account.CodeAndLabel</option>
-                        }
-                    </select>
+					<AccountColumnFilter Accounts="leafAccountList" @bind-Value="filter.AccountIdList" ApplyFilter="ApplyFilter" />
 				</FilterTemplate>
 				<Template Context="data">
 					<div class="w-100">@leafAccountList.SingleOrDefault(i => data.Entity.AccountId == i.Id)?.CodeAndLabel</div>
@@ -145,6 +134,6 @@
 					<PriceLabel Value="@currentBalance" />
 				</FooterTemplate>
 			</DataGridColumn>
-
+			</ChildContent>
 	</SuperDataGrid>
 </div>

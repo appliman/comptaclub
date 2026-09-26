@@ -56,13 +56,16 @@
     {
         this.selectedTab = selectedTab;
         var ordered = OrderedContexts;
-        if (selectedTab < 0 || selectedTab >= ordered.Count) return;
+        if (selectedTab < 0 || selectedTab >= ordered.Count)
+        {
+            return;
+        }
         var tab = ordered[selectedTab];
         EntityContextService.OnTabChanged(tab.Title);
     }
 }
 
-<SuperTabs TabPosition="SuperTabPosition.Bottom" SelectedIndex="selectedTab" SelectedIndexChanged="TabChanged">
+<SuperTabs Position="SuperTabPosition.Bottom" SelectedIndex="selectedTab" SelectedIndexChanged="TabChanged">
     <Tabs>
         @foreach (var item in OrderedContexts)
         {

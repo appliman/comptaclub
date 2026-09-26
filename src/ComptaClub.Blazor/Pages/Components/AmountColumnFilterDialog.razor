@@ -1,0 +1,35 @@
+@inject SuperBlazorComponents.Services.SuperDialogService DialogService
+
+<EditForm Model="AmountFilter">
+    <SuperInputCurrency @bind-Value="AmountFilter.Amount" Label="Montant" Required="true" />
+    <div class="mb-3">
+        <label for="amount-filter-precision" class="form-label">Précision +/-</label>
+        <InputSelect id="amount-filter-precision" class="form-select" @bind-Value="AmountFilter.PrecisionInCentime">
+            <option value="10000">1 ct</option>
+            <option value="100000">10 ct</option>
+            <option value="1000000">1 €</option>
+            <option value="10000000">10 €</option>
+        </InputSelect>
+    </div>
+</EditForm>
+
+<div class="d-flex justify-content-end gap-2">
+    <button type="button" class="btn btn-secondary" @onclick="Reset">Retirer</button>
+    <button type="button" class="btn btn-secondary" @onclick="Cancel">Annuler</button>
+    <button type="button" class="btn btn-primary" @onclick="Apply">Appliquer</button>
+</div>
+
+@code {
+    [Parameter]
+    public AmountFilter AmountFilter { get; set; } = default!;
+
+    private async Task Reset()
+    {
+        AmountFilter.Amount = 0;
+        await DialogService.Close(AmountFilter);
+    }
+
+    private Task Cancel() => DialogService.Close();
+
+    private Task Apply() => DialogService.Close(AmountFilter);
+}

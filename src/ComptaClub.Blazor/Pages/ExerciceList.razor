@@ -22,7 +22,7 @@
 </SectionContent>
 
 <div style="height:100%">
-<SuperDataGrid @ref="grid"
+<SuperDataGrid RowHeight="55" @ref="grid" DisplaySelectionColumn="false" DisplayColumnVisibilityToggle="false"
     AllowFiltering="false"
     AllowSorting="true"
     AllowColumnResize="true"
@@ -32,19 +32,17 @@
     SelectionMode="SuperDataGridSelectionMode.Single" DisplayRowNumberColumn="false"
 
     SelectionChanged="OnSelectionChanged"
-    Height="500px">
-
-        <DataGridColumn TItem="ViewModels.Exercice" Context="exercice" Filterable="false" Sortable="false" TextAlign="SuperTextAlignment.Right" Width="90px">
-            <Template Context="exercice">
-                @if (exercice.ExerciceState != ExerciceState.Closed)
-                {
-                        <SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(exercice))" @onclick:stopPropagation="true" title="Supprimer cet exercice">
-                        </SuperButton>
-                        <SuperButton Icon="fa-pen" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Click="@(args => EditRow(exercice))" @onclick:stopPropagation="true" title="Editer cet exercice">
+    Height="500px" ActionsWidth="120">
+        <ActionsTemplate Context="exercice">
+            @if (exercice.ExerciceState != ExerciceState.Closed)
+            {
+                    <SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(exercice))" @onclick:stopPropagation="true" title="Supprimer cet exercice">
                     </SuperButton>
-                }
-            </Template>
-        </DataGridColumn>
+                    <SuperButton Icon="fa-pen" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Click="@(args => EditRow(exercice))" @onclick:stopPropagation="true" title="Editer cet exercice">
+                </SuperButton>
+            }
+        </ActionsTemplate>
+        <ChildContent>
         <DataGridColumn TItem="ViewModels.Exercice" Property="Code" Title="Code Exercice" Width="200px" Filterable="false">
         </DataGridColumn>
             <DataGridColumn TItem="ViewModels.Exercice" Title="Actif" Width="90px" Filterable="false">
@@ -86,6 +84,6 @@
                 <SuperEnumLabel Value="@exercice.ExerciceState"/>
             </Template>
         </DataGridColumn>
-
+        </ChildContent>
 </SuperDataGrid>
 </div>

@@ -50,8 +50,11 @@ public partial class DocumentListByEntity
 	protected async ValueTask<GridItemsProviderResult<ViewModels.Document>> LoadItems(GridItemsProviderRequest<ViewModels.Document> request)
 	{
 		if (documentList is null)
-			await LoadDatas();
-		IEnumerable<ViewModels.Document> rows = documentList ?? [];
+        {
+            await LoadDatas();
+        }
+
+        IEnumerable<ViewModels.Document> rows = documentList ?? [];
 		var descending = request.SortDirection == SortDirection.Descending;
 		rows = request.SortColumn switch
 		{

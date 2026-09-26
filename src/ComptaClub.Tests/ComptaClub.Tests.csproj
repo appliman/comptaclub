@@ -9,7 +9,7 @@
     <None Remove="InitialAccountingPlan.json" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\ComptaClub\appsettings.json" Link="appsettings.json">
+    <Content Include="..\ComptaClub.Blazor\appsettings.json" Link="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="..\ComptaClub.Blazor\EmailTemplates\Digicode.html" Link="EmailTemplates\Digicode.html">

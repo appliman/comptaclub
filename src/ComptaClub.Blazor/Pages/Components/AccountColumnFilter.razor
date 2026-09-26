@@ -1,0 +1,28 @@
+<div class="account-column-filter">
+    <button type="button" class="form-select account-filter-trigger" aria-label="Filtrer par compte"
+            aria-expanded="@_isOpen" @onclick="Toggle">
+        @TriggerLabel
+    </button>
+
+    @if (_isOpen)
+    {
+        <div class="account-filter-menu" @onclick:stopPropagation="true">
+            <input class="form-control form-control-sm" type="search" placeholder="Rechercher un compte"
+                   aria-label="Rechercher un compte" @bind="_search" @bind:event="oninput" />
+            <div class="account-filter-options">
+                @foreach (var account in FilteredAccounts)
+                {
+                    <label class="account-filter-option" @key="account.Id">
+                        <input type="checkbox" checked="@_selectedIds.Contains(account.Id)"
+                               @onchange="args => SetSelected(account.Id, args.Value is true)" />
+                        <span>@account.CodeAndLabel</span>
+                    </label>
+                }
+            </div>
+            <div class="account-filter-actions">
+                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="Clear">Effacer</button>
+                <button type="button" class="btn btn-sm btn-primary" @onclick="Apply">Appliquer</button>
+            </div>
+        </div>
+    }
+</div>

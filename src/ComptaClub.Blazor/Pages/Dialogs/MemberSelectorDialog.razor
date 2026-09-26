@@ -1,5 +1,4 @@
-<SuperDataGrid @ref="grid" AllowFiltering="true" AllowSorting="true" AllowColumnResize="true" ItemsProvider="LoadItems" TItem="ViewModels.MemberRow" SelectionMode="SuperDataGridSelectionMode.Single" SelectionChanged="OnSelectionChanged" DisplayRowNumberColumn="false" Height="400px">
-    <DataGridColumn TItem="ViewModels.MemberRow" Property="RowIndex" Title="#" Width="30px" Filterable="false" />
+<SuperDataGrid RowHeight="55" @ref="grid" DisplaySelectionColumn="false" DisplayColumnVisibilityToggle="false" AllowFiltering="true" AllowSorting="true" AllowColumnResize="true" ItemsProvider="LoadItems" TItem="ViewModels.MemberRow" SelectionMode="SuperDataGridSelectionMode.Single" SelectionChanged="OnSelectionChanged" DisplayRowNumberColumn="true" Height="400px">
     <DataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Name" Title="Nom" Width="120px" Filterable="true" />
     <DataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Email" Title="Email" Width="100px" Filterable="false" />
 </SuperDataGrid>

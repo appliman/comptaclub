@@ -13,24 +13,22 @@
 
 </SectionContent>
 
-<SuperDataGrid @ref="grid"
+<SuperDataGrid RowHeight="55" @ref="grid" DisplaySelectionColumn="false" DisplayColumnVisibilityToggle="false"
     AllowFiltering="false"
     AllowSorting="true"
     AllowColumnResize="true"
     ItemsProvider="LoadItems"
 
     TItem="ViewModels.IncomeStatement"
-    SelectionMode="SuperDataGridSelectionMode.None" DisplaySelectionColumn="false" DisplayRowNumberColumn="false"
+ SelectionMode="SuperDataGridSelectionMode.None" DisplayRowNumberColumn="false"
 
 
-    Height="500px">
-
-        <DataGridColumn TItem="ViewModels.IncomeStatement" Filterable="false" Sortable="false" TextAlign="SuperTextAlignment.Right" Width="80px">
-            <Template Context="incomeStatement">
-                <SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(incomeStatement))" @onclick:stopPropagation="true" title="Supprimer ce compte de résultat">
-                </SuperButton>
-            </Template>
-        </DataGridColumn>
+    Height="500px" ActionsWidth="70">
+        <ActionsTemplate Context="incomeStatement">
+            <SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(incomeStatement))" @onclick:stopPropagation="true" title="Supprimer ce compte de résultat">
+            </SuperButton>
+        </ActionsTemplate>
+        <ChildContent>
         <DataGridColumn TItem="ViewModels.IncomeStatement" Property="Description" Title="Description" Filterable="false">
             <Template Context="data">
                 <a href="/compte-de-resultat/@data.Id">@data.Description</a>
@@ -59,5 +57,5 @@
                 <PriceLabel Value="@total" />
             </Template>
         </DataGridColumn>
-
+        </ChildContent>
 </SuperDataGrid>

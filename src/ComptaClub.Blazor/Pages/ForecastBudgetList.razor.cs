@@ -89,8 +89,11 @@ public partial class ForecastBudgetList : ComponentBase
 		}
 
 		await LoadDatas();
-		if (grid is not null) await grid.ReloadAsync();
-	}
+		if (grid is not null)
+        {
+            await grid.ReloadAsync();
+        }
+    }
 
 	async Task CreateForecastBudget()
 	{

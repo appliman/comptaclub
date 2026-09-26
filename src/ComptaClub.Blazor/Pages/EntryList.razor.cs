@@ -151,28 +151,23 @@ public partial class EntryList : ComponentBase
 		await grid!.ReloadAsync();
 	}
 
-	async Task OnAccountFilterChanged(ChangeEventArgs args)
-	{
-		var values = args.Value as string[] ?? [];
-		filter.AccountIdList = values.Select(value => Guid.TryParse(value, out var id) ? id : Guid.Empty)
-			.Where(id => id != Guid.Empty).ToList();
-		await ApplyFilter();
-	}
-
 	Task InsertRow(string direction)
 	{
 		NavigationManager.NavigateTo($"/ecriture/ajout/{direction}");
 		return Task.CompletedTask;
 	}
 
-	Task EditRow(ViewModels.EntryRow entry)
+	string GetEditUrl(ViewModels.EntryRow entry)
 	{
-		QueryHelpers.ParseQuery(NavigationManager.ToAbsoluteUri(NavigationManager.Uri).Query)
-			.TryGetValue("filter", out var filterValue);
 		var editUrl = $"/ecriture/edition/{entry.Id}";
-		editUrl = QueryHelpers.AddQueryString(editUrl, "filter", $"{filterValue}");
-		NavigationManager.NavigateTo(editUrl);
-		return Task.CompletedTask;
+		if (QueryHelpers.ParseQuery(NavigationManager.ToAbsoluteUri(NavigationManager.Uri).Query)
+			.TryGetValue("filter", out var filterValue)
+			&& !string.IsNullOrWhiteSpace(filterValue))
+		{
+			return QueryHelpers.AddQueryString(editUrl, "filter", filterValue.ToString());
+		}
+
+		return editUrl;
 	}
 
 	async Task DeleteRow(ViewModels.EntryRow entry)
