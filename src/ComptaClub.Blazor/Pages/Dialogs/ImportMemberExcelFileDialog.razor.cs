@@ -1,7 +1,7 @@
 using ComptaClub.Blazor.Pages.Components;
 using ComptaClub.Datas;
 
-using MediatR;
+using ChannelMediator;
 
 using Microsoft.AspNetCore.Components.Web;
 
@@ -28,15 +28,15 @@ public partial class ImportMemberExcelFileDialog
 		if (file == null)
 		{
 			customValidator.DisplayError("Fichier invalide");
-			NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier sélectionné");
+			await NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier sï¿½lectionnï¿½");
 			return;
 		}
 	
 		var extension = Path.GetExtension(file.Name);
 		if (extension != ".xlsx")
 		{
-			customValidator.DisplayError("Le fichier doit être au format Excel (.xlsx)");
-			NotificationService.Notify(NotificationSeverity.Error, "Le fichier doit être au format Excel (.xlsx)");
+			customValidator.DisplayError("Le fichier doit ï¿½tre au format Excel (.xlsx)");
+			await NotificationService.Notify(NotificationSeverity.Error, "Le fichier doit ï¿½tre au format Excel (.xlsx)");
 			return;
 		}
 
@@ -61,8 +61,8 @@ public partial class ImportMemberExcelFileDialog
 		HoverClass = string.Empty;
 	}
 
-	void Select()
+	async Task Select()
 	{
-		DialogService.Close(tempFileName);
+		await DialogService.Close(tempFileName);
 	}
 }

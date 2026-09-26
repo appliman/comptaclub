@@ -1,4 +1,4 @@
-﻿using ComptaClub.Configuration;
+using ComptaClub.Configuration;
 using ComptaClub.Contracts.Models.Banks;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Exercices;
@@ -9,10 +9,10 @@ namespace ComptaClub.Handlers.Entries;
 internal class CreateEntryFromOfxImportRequestHandler : IRequestHandler<CreateEntryFromOfxImportRequest, EntryData>
 {
 	private readonly IMediator _mediator;
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 
 	public CreateEntryFromOfxImportRequestHandler(IMediator mediator,
-		IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+		IComptaClubDbContextFactory dbContextFactory)
 	{
 		_mediator = mediator;
 		_dbContextFactory = dbContextFactory;

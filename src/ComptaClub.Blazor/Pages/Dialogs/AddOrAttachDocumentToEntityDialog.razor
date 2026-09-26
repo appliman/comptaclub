@@ -1,26 +1,10 @@
-﻿@if (panel == "grid")
+@if (panel == "grid")
 {
-	<RadzenDataGrid @ref="grid"
-					AllowFiltering="true"
-					AllowSorting="true"
-					AllowColumnResize="true"
-					Data="@documentList"
-					LoadData="LoadDatas"
-					TItem="ViewModels.Document"
-					GridLines="DataGridGridLines.Both"
-					FilterMode="FilterMode.Simple"
-					SelectionMode="DataGridSelectionMode.Multiple"
-					@bind-Value="@selectedDocuments"
-					Style="height:400px;">
-		<Columns>
-			<RadzenDataGridColumn TItem="ViewModels.Document" Property="RowIndex" Title="#" Width="60px" Filterable="false" SortOrder="SortOrder.Ascending">
-			</RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.Document" Property="FileName" Title="Fichier" Width="120px" Filterable="true">
-			</RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.Document" Property="Description" Title="Description" Filterable="true">
-			</RadzenDataGridColumn>
-		</Columns>
-	</RadzenDataGrid>
+	<SuperDataGrid @ref="grid" AllowFiltering="true" AllowSorting="true" AllowColumnResize="true" ItemsProvider="LoadItems" TItem="ViewModels.Document" SelectionMode="SuperDataGridSelectionMode.Multiple" SelectionChanged="OnSelectionChanged" DisplayRowNumberColumn="false" Height="400px">
+    <DataGridColumn TItem="ViewModels.Document" Property="RowIndex" Title="#" Width="60px" Filterable="false" />
+    <DataGridColumn TItem="ViewModels.Document" Property="FileName" Title="Fichier" Width="120px" Filterable="true" />
+    <DataGridColumn TItem="ViewModels.Document" Property="Description" Title="Description" Filterable="true" />
+</SuperDataGrid>
 }
 else if (panel == "upload")
 {
@@ -65,12 +49,12 @@ else if (panel == "upload")
 
 <div class="row mt-2 dialog-btns justify-content-end">
 	<div class="col-auto">
-		<RadzenButton ButtonStyle="ButtonStyle.Light" Icon="cancel" Text="Annuler" Click="@((args) => DialogService.Close())" />
+		<SuperButton Style="SuperButtonStyle.Light" Icon="fa-xmark" Text="Annuler" Click="@((args) => DialogService.Close())" />
 	</div>
 	<div class="col-auto">
-		<RadzenButton ButtonStyle="ButtonStyle.Info" Icon="note_add" Text="Ajouter" Click="Upload" />
+		<SuperButton Style="SuperButtonStyle.Info" Icon="fa-file-circle-plus" Text="Ajouter" Click="Upload" />
 	</div>
 	<div class="col-auto">
-		<RadzenButton ButtonType="ButtonType.Submit" Icon="attach_file" Text="Associer" Click="@Select" />
+		<SuperButton type="submit" Icon="fa-paperclip" Text="Associer" Click="@Select" />
 	</div>
 </div>

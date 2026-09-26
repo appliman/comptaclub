@@ -1,11 +1,9 @@
 ﻿using ComptaClub.Blazor.ViewModels;
 using ComptaClub.Contracts.Models.Users;
 using ComptaClub.Contracts.Results;
+using ComptaClub.Mail;
 
-using FluentEmail.Core;
-using FluentEmail.Core.Models;
-
-using MediatR;
+using ChannelMediator;
 
 using Microsoft.Extensions.Caching.Memory;
 
@@ -22,11 +20,7 @@ public partial class LoginPartial : ComponentBase
 	[Inject]
 	IMemoryCache Cache { get; set; } = default!;
 	[Inject]
-	IFluentEmail FluentEmail { get; set; } = default!;
-	[Inject]
-	Configuration.ComptaClubSettings GlobalSettings { get; set; } = default!;
-	[Inject]
-	IWebHostEnvironment WebHostEnvironment { get; set; } = default!;
+	DigicodeEmailSender EmailSender { get; set; } = default!;
 
     LoginForm loginForm = new();
 	Components.CustomValidator? customValidator = new();
@@ -51,13 +45,16 @@ public partial class LoginPartial : ComponentBase
 			{
 				loginForm.User = user;
 				loginForm.GeneratedDigicode = CreateDigicode();
-				Cache.Set($"login:{loginForm.TokenId}", loginForm);
-				Logger.LogInformation("Digicode : {0}", loginForm.GeneratedDigicode);
-
-				var sendResult = await SendEmailConnection();
-				if (!sendResult.Successful)
+				try
 				{
-					Logger.LogError(string.Join(",", sendResult.ErrorMessages));
+					await EmailSender.SendAsync(loginForm.Email!, loginForm.GeneratedDigicode.Value);
+					Cache.Set($"login:{loginForm.TokenId}", loginForm);
+					submitMessage = "Connexion";
+					loginForm.Step = "Digicode";
+				}
+				catch (Exception ex)
+				{
+					Logger.LogError(ex, "L'envoi du code de connexion a échoué");
 					errors.Add(
 						new BrokenRule
 						{
@@ -65,11 +62,6 @@ public partial class LoginPartial : ComponentBase
 							MessageList = new List<string>() { "L'envoi du mail a échoué" }
 						}
 					);
-				}
-				else
-				{
-					submitMessage = "Connexion";
-					loginForm.Step = "Digicode";
 				}
 			}
 		}
@@ -126,35 +118,6 @@ public partial class LoginPartial : ComponentBase
 		return result;
 	}
 
-	async Task<SendResponse> SendEmailConnection()
-	{
-        var emailTemplatesFolder = Path.Combine(GlobalSettings.EmailTemplateFolder, "digicode.cshtml");
-
-		var email = FluentEmail.SetFrom(GlobalSettings.ContactEmailAdress, GlobalSettings.ContactName);
-		email.To(loginForm.Email);
-		email.Subject("Votre code d'accès");
-		email.UsingTemplateFromFile(emailTemplatesFolder, loginForm);
-		email.Tag("workaround");
-
-		var errorMessage = string.Empty;
-		try
-		{
-			var sendResult = await email.SendAsync();
-			return sendResult;
-		}
-		catch (Exception ex)
-		{
-			ex.Data["TemplateFolder"] = emailTemplatesFolder;
-			ex.Data["From"] = GlobalSettings.ContactEmailAdress;
-			ex.Data["Email"] = loginForm.Email;
-			Logger.LogError(ex, ex.Message);
-			errorMessage = ex.Message;
-		}
-		return new SendResponse()
-		{
-			ErrorMessages = new List<string>() { errorMessage }
-		};
-	}
 }
 
 

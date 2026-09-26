@@ -1,7 +1,7 @@
 using ComptaClub.Contracts.Models.Clubs;
 using ComptaClub.Contracts.Models.ForecastBudget;
 
-using MediatR;
+using ChannelMediator;
 
 namespace ComptaClub.Blazor.Pages.Reports;
 

@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Accounts;
 using ComptaClub.Contracts.Models.Entries;
 
@@ -8,7 +8,7 @@ internal class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandle
 {
 	private readonly IMediator _mediator;
 
-	public GetPagedEntryListRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+	public GetPagedEntryListRequestHandler(IComptaClubDbContextFactory dbContextFactory,
 		IMediator mediator)
 		: base(dbContextFactory)
 	{
@@ -21,7 +21,7 @@ internal class GetPagedEntryListRequestHandler : GetEntityPagedListRequestHandle
 
 		filter.EnsureGoodFilter();
 
-		var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
 
 		var query = from entry in db.Entries
 					select entry;

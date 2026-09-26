@@ -1,49 +1,49 @@
-﻿@page "/banques"
+@page "/banques"
 
 <PageTitle>Banques</PageTitle>
 
 <SectionContent SectionName="toolbar">
-	<RadzenButton Text="Banque"
+	<SuperButton Text="Banque"
 				  Click="InsertRow"
-				  Icon="add_circle_outline"
-				  ButtonStyle="ButtonStyle.Success"
+				  Icon="fa-circle-plus"
+				  Style="SuperButtonStyle.Success"
 				  class="btn btn-primary m-1"
 				  title="Ajouter une banque" />
 
 </SectionContent>
 
 <div style="height:100%">
-	<RadzenDataGrid @ref="grid"
+	<SuperDataGrid @ref="grid"
 					AllowFiltering="true"
 					AllowSorting="true"
 					AllowColumnResize="true"
-					Data="@bankList"
-					LoadData="LoadDatas"
+					ItemsProvider="LoadItems"
+
 					TItem="ViewModels.BankRow"
-					EditMode="DataGridEditMode.Single"
-					Style="height:100%">
-		<Columns>
-			<RadzenDataGridColumn TItem="ViewModels.BankRow" Context="bank" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="100px">
+					DisplayRowNumberColumn="false"
+					Height="500px">
+
+			<DataGridColumn TItem="ViewModels.BankRow" Context="bank" Filterable="false" Sortable="false" TextAlign="SuperTextAlignment.Right" Width="100px">
 				<Template Context="bank">
-					<RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(bank))" @onclick:stopPropagation="true" title="Supprimer cette banque">
-					</RadzenButton>
-					<RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(bank))" @onclick:stopPropagation="true" title="Editer cette banque">
-					</RadzenButton>
+					<SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(bank))" @onclick:stopPropagation="true" title="Supprimer cette banque">
+					</SuperButton>
+					<SuperButton Icon="fa-pen" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Click="@(args => EditRow(bank))" @onclick:stopPropagation="true" title="Editer cette banque">
+					</SuperButton>
 				</Template>
 				<EditTemplate Context="bank">
-					<RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(bank))">
-					</RadzenButton>
-					<RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelEdit(bank))">
-					</RadzenButton>
+					<SuperButton Icon="fa-check" Style="SuperButtonStyle.Success"  Size="SuperButtonSize.Default" Click="@((args) => SaveRow(bank))">
+					</SuperButton>
+					<SuperButton Icon="fa-xmark" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Class="my-1 ms-1" Click="@((args) => CancelEdit(bank))">
+					</SuperButton>
 				</EditTemplate>
-			</RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.BankRow" Property="Entity.Code" Title="Code Banque" Width="220px" Filterable="false">
+			</DataGridColumn>
+			<DataGridColumn TItem="ViewModels.BankRow" Property="Entity.Code" Title="Code Banque" Width="220px" Filterable="false">
 				<EditTemplate Context="bank">
-					<RadzenTextBox @bind-Value="bank.Entity.Code" Style="width:100%" />
+					<input class="form-control w-100" @bind="bank.Entity.Code" />
 					<BrokenRuleMessage For="() => bank.Entity.Code" BrokenRuleList="brokenRules" />
 				</EditTemplate>
-			</RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.BankRow" Title="Actif" Width="90px" Filterable="false">
+			</DataGridColumn>
+			<DataGridColumn TItem="ViewModels.BankRow" Title="Actif" Width="90px" Filterable="false">
 				<Template Context="bank">
 					@if (bank.Entity.Active)
 					{
@@ -54,14 +54,14 @@
 						<input type="radio" @onchange="@((args) => ChangeActiveBank(args, bank))" />
 					}
 				</Template>
-			</RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.BankRow" Property="Entity.Label" Title="Libellé" Filterable="false">
+			</DataGridColumn>
+			<DataGridColumn TItem="ViewModels.BankRow" Property="Entity.Label" Title="Libellé" Filterable="false">
 				<EditTemplate Context="bank">
-					<RadzenTextBox @bind-Value="bank.Entity.Label" Style="width:100%" />
+					<input class="form-control w-100" @bind="bank.Entity.Label" />
 					<BrokenRuleMessage For="() => bank.Entity.Label" BrokenRuleList="brokenRules" />
 				</EditTemplate>
-			</RadzenDataGridColumn>
-		</Columns>
-	</RadzenDataGrid>
+			</DataGridColumn>
+
+	</SuperDataGrid>
 </div>
 

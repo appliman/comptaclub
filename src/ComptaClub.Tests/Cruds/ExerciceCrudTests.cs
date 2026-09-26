@@ -15,7 +15,7 @@ namespace ComptaClub.Tests.Cruds
 		public async Task Exercice_Crud()
 		{
 			var app = await TestHelper.CreateWebApplication();
-			var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
+			var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 			var exercice = await mediator.Send(new GetExerciceByFilterRequest(f => f.Code == "fake"));
 			exercice.Should().BeNull();
@@ -57,7 +57,7 @@ namespace ComptaClub.Tests.Cruds
 		public async Task Change_Active_Exercice()
 		{
 			var app = await TestHelper.CreateWebApplication();
-			var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
+			var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 			var exercice1 = await mediator.Send(new CreateExerciceRequest($"Ex{Guid.NewGuid()}",
 				"Exercice1",

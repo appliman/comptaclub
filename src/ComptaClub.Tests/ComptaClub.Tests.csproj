@@ -12,6 +12,9 @@
     <Content Include="..\ComptaClub\appsettings.json" Link="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\ComptaClub.Blazor\EmailTemplates\Digicode.html" Link="EmailTemplates\Digicode.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="InitialAccountingPlan.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
@@ -29,8 +32,11 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ComptaClub.Blazor\ComptaClub.Blazor.csproj" />
     <ProjectReference Include="..\ComptaClub.Contracts\ComptaClub.Contracts.csproj" />
     <ProjectReference Include="..\ComptaClub.Core\ComptaClub.Core.csproj" />
+    <ProjectReference Include="..\ComptaClub.Datas.MsSql\ComptaClub.Datas.MsSql.csproj" />
+    <ProjectReference Include="..\ComptaClub.Datas.Sqlite\ComptaClub.Datas.Sqlite.csproj" />
     <ProjectReference Include="..\ComptaClub.Import\ComptaClub.Import.csproj" />
   </ItemGroup>
   <ItemGroup>

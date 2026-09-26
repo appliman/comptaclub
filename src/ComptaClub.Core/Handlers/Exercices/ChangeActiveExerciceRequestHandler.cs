@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models.Exercices;
+using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Exercices;
@@ -6,10 +6,10 @@ namespace ComptaClub.Handlers.Exercices;
 internal class ChangeActiveExerciceRequestHandler : IRequestHandler<ChangeActiveExerciceRequest, CommandResult>
 {
     private readonly IMediator _mediator;
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IComptaClubDbContextFactory _dbContextFactory;
 
     public ChangeActiveExerciceRequestHandler(IMediator mediator,
-        IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+        IComptaClubDbContextFactory dbContextFactory)
     {
         _mediator = mediator;
         _dbContextFactory = dbContextFactory;
@@ -17,7 +17,7 @@ internal class ChangeActiveExerciceRequestHandler : IRequestHandler<ChangeActive
 
     public async Task<CommandResult> Handle(ChangeActiveExerciceRequest request, CancellationToken cancellationToken)
     {
-        var db = await _dbContextFactory.CreateDbContextAsync();
+        await using var db = await _dbContextFactory.CreateDbContextAsync();
         var exerciceList = await db.Exercices.ToListAsync();
 
         if (!exerciceList.Any())

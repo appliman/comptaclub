@@ -23,7 +23,7 @@ public class AssociateMemberToEntryTests
 	public async Task Associate_Entry()
 	{
 		var app = await TestHelper.CreateWebApplication();
-		var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
+		var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 		var exercice = await mediator.GetOrCreateExercice($"{Guid.NewGuid()}");
 		var bank = await mediator.GetOrCreateBank($"{Guid.NewGuid()}");

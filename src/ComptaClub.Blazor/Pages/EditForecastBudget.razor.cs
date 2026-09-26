@@ -9,7 +9,7 @@ public partial class EditForecastBudget
 	MainLayout MainLayout { get; set; } = default!;
 
 	[Inject]
-	MediatR.IMediator Mediator { get; set; } = default!;
+	ChannelMediator.IMediator Mediator { get; set; } = default!;
 
 	[Inject]
 	NotificationService NotificationService { get; set; } = default!;
@@ -53,11 +53,11 @@ public partial class EditForecastBudget
 		var result = await Mediator.Send(new SaveForecastBudgetRequest(forecastBudget));
 		if (result != null)
 		{
-			NotificationService.Notify(NotificationSeverity.Success, "Sauvegarde", "Le bilan prévisionnel a été mis à jour avec succès");
+			await NotificationService.Notify(NotificationSeverity.Success, "Sauvegarde", "Le bilan prï¿½visionnel a ï¿½tï¿½ mis ï¿½ jour avec succï¿½s");
 		}
 		else
 		{
-			NotificationService.Notify(NotificationSeverity.Error, "Sauvegarde", "Une erreur est survenue lors de la mise à jour du bilan prévisionnel");
+			await NotificationService.Notify(NotificationSeverity.Error, "Sauvegarde", "Une erreur est survenue lors de la mise ï¿½ jour du bilan prï¿½visionnel");
 		}
 	}
 }

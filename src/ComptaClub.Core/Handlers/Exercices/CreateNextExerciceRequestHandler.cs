@@ -1,18 +1,18 @@
-﻿using ComptaClub.Contracts.Models.Exercices;
+using ComptaClub.Contracts.Models.Exercices;
 
 namespace ComptaClub.Handlers.Exercices;
 internal class CreateNextExerciceRequestHandler : IRequestHandler<CreateNextExerciceRequest, ExerciceData?>
 {
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 
-	public CreateNextExerciceRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+	public CreateNextExerciceRequestHandler(IComptaClubDbContextFactory dbContextFactory)
 	{
 		_dbContextFactory = dbContextFactory;
 	}
 
 	public async Task<ExerciceData?> Handle(CreateNextExerciceRequest request, CancellationToken cancellationToken)
 	{
-		var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
 		var exercice = await db.Exercices.FindAsync(request.ExerciceId);
 		if (exercice == null)

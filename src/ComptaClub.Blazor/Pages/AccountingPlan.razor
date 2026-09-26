@@ -1,4 +1,4 @@
-﻿@page "/plan"
+@page "/plan"
 
 <PageTitle>Plan</PageTitle>
 
@@ -16,32 +16,32 @@
 
 <SectionContent SectionName="toolbar">
 
-	<RadzenButton Text="Compte"
+	<SuperButton Text="Compte"
 				  Click="InsertRow"
-				  Icon="add_circle_outline"
-				  ButtonStyle="ButtonStyle.Success"
+				  Icon="fa-circle-plus"
+				  Style="SuperButtonStyle.Success"
 				  Disabled="@(accountToInsert != null || accountToUpdate != null)"
 				  class="btn btn-primary m-1"
 				  title="Ajouter un compte" />
 
-	<RadzenButton Text="Exporter"
+	<SuperButton Text="Exporter"
 				  Click="ExportToJson"
-				  Icon="file_download"
-				  ButtonStyle="ButtonStyle.Success"
+				  Icon="fa-file-arrow-down"
+				  Style="SuperButtonStyle.Success"
 				  class="btn btn-primary m-1"
 				  title="Exporter" />
 
-	<RadzenButton Text="Importer"
+	<SuperButton Text="Importer"
 				  Click="Import"
-				  Icon="upload_file"
-				  ButtonStyle="ButtonStyle.Success"
+				  Icon="fa-file-arrow-up"
+				  Style="SuperButtonStyle.Success"
 				  class="btn btn-primary m-1"
 				  title="Importer" />
 
-	<RadzenButton Text="Déployer"
+	<SuperButton Text="Déployer"
 				  Click="DeployAll"
-				  Icon="expand_content"
-				  ButtonStyle="ButtonStyle.Success"
+				  Icon="fa-expand"
+				  Style="SuperButtonStyle.Success"
 				  class="btn btn-primary m-1"
 				  title="Voir tous les comptes" />
 
@@ -52,59 +52,59 @@
 	<div class="success m-4">@uploadError</div>
 }
 <div style="height:100%">
-	<RadzenDataGrid @ref="grid"
+	<SuperDataGrid @ref="grid"
 					AllowFiltering="false"
 					AllowSorting="false"
 					AllowColumnResize="true"
-					ExpandMode="DataGridExpandMode.Multiple"
-					Data="@accountList"
+					Hierarchical="true" HierarchyKeySelector="@(account => account.Id)"
+					ItemsProvider="LoadItems"
 					TItem="ViewModels.Account"
-					RowRender="@RowRender"
-					LoadChildData="@LoadChildData"
-					GridLines="DataGridGridLines.Both"
-					Style="height:100%">
-		<Columns>
-			<RadzenDataGridColumn TItem="ViewModels.Account" Context="account" Width="230px" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
+
+
+					DisplayRowNumberColumn="false"
+					Height="500px">
+
+			<DataGridColumn TItem="ViewModels.Account" Context="account" Width="230px" Filterable="false" Sortable="false" TextAlign="SuperTextAlignment.Right">
 				<Template Context="account">
-					<RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DeleteRow(account))" @onclick:stopPropagation="true" title="Supprimer ce compte">
-					</RadzenButton>
-					<RadzenButton Icon="add_circle_outline" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => InsertRow(account))" @onclick:stopPropagation="true" title="Ajouter un sous-compte">
-					</RadzenButton>
-					<RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(account))" @onclick:stopPropagation="true" title="Editer ce compte">
-					</RadzenButton>
+					<SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(account))" @onclick:stopPropagation="true" title="Supprimer ce compte">
+					</SuperButton>
+					<SuperButton Icon="fa-circle-plus" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Click="@(args => InsertRow(account))" @onclick:stopPropagation="true" title="Ajouter un sous-compte">
+					</SuperButton>
+					<SuperButton Icon="fa-pen" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Click="@(args => EditRow(account))" @onclick:stopPropagation="true" title="Editer ce compte">
+					</SuperButton>
 				</Template>
 				<EditTemplate Context="account">
-					<RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(account))">
-					</RadzenButton>
-					<RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelEdit(account))">
-					</RadzenButton>
+					<SuperButton Icon="fa-check" Style="SuperButtonStyle.Success"  Size="SuperButtonSize.Default" Click="@((args) => SaveRow(account))">
+					</SuperButton>
+					<SuperButton Icon="fa-xmark" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Class="my-1 ms-1" Click="@((args) => CancelEdit(account))">
+					</SuperButton>
 				</EditTemplate>
-			</RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.Account" Property="Direction" Title="Débit / Crédit" Width="150px">
+			</DataGridColumn>
+			<DataGridColumn TItem="ViewModels.Account" Property="Direction" Title="Débit / Crédit" Width="150px">
 				<EditTemplate Context="account">
 					@if (!account.ParentAccountId.HasValue)
 					{
-						<RadzenDropDown @bind-Value="account.Direction"
-										Data="ComptaClub.Extensions.EnumExtensions.GetEnumExtensions<Enums.AccountDirection>()"
-										ValueProperty="Key"
-										TextProperty="Name"
-										Style="width:100%; display: block;">
-						</RadzenDropDown>
+						<select class="form-select" @bind="account.Direction">
+                            @foreach (var direction in Enum.GetValues<Enums.AccountDirection>())
+                            {
+                                <option value="@direction">@direction</option>
+                            }
+                        </select>
 					}
 				</EditTemplate>
-			</RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.Account" Property="Code" Title="Code Compta" Width="120px" Filterable="false">
+			</DataGridColumn>
+			<DataGridColumn TItem="ViewModels.Account" Property="Code" Title="Code Compta" Width="120px" Filterable="false">
 				<EditTemplate Context="account">
-					<RadzenTextBox @bind-Value="account.Code" Style="width:100%" />
+					<input class="form-control w-100" @bind="account.Code" />
 					<BrokenRuleMessage For="() => account.Code" BrokenRuleList="brokenRules" />
 				</EditTemplate>
-			</RadzenDataGridColumn>
-			<RadzenDataGridColumn TItem="ViewModels.Account" Property="Label" Title="Libellé du code compta" Filterable="false">
+			</DataGridColumn>
+			<DataGridColumn TItem="ViewModels.Account" Property="Label" Title="Libellé du code compta" Filterable="false">
 				<EditTemplate Context="account">
-					<RadzenTextBox @bind-Value="account.Label" Style="width:100%" />
+					<input class="form-control w-100" @bind="account.Label" />
 					<BrokenRuleMessage For="() => account.Label" BrokenRuleList="brokenRules" />
 				</EditTemplate>
-			</RadzenDataGridColumn>
-		</Columns>
-	</RadzenDataGrid>
+			</DataGridColumn>
+
+	</SuperDataGrid>
 </div>

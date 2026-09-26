@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models.Exercices;
+using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Contracts.Models.Stats;
 
 namespace ComptaClub.Handlers.Stats;
@@ -6,10 +6,10 @@ namespace ComptaClub.Handlers.Stats;
 internal class GetBalanceByDayRequestHandler : IRequestHandler<GetBalanceByDayRequest, IEnumerable<BalanceByDay>>
 {
 	private readonly IMediator _mediator;
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 
 	public GetBalanceByDayRequestHandler(IMediator mediator,
-		IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+		IComptaClubDbContextFactory dbContextFactory)
 	{
 		_mediator = mediator;
 		_dbContextFactory = dbContextFactory;
@@ -23,7 +23,7 @@ internal class GetBalanceByDayRequestHandler : IRequestHandler<GetBalanceByDayRe
 			return new List<BalanceByDay>();
 		}
 
-		var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
 		var query = from entry in db.Entries
 					where entry.ValueDate >= currentExercice.StartDate

@@ -1,19 +1,19 @@
-﻿using ComptaClub.Contracts.Models.Documents;
+using ComptaClub.Contracts.Models.Documents;
 
 namespace ComptaClub.Handlers.Documents;
 
 internal class GetDocumentContentRequestHandler : IRequestHandler<GetDocumentContentRequest, DocumentData?>
 {
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IComptaClubDbContextFactory _dbContextFactory;
 
-    public GetDocumentContentRequestHandler(IDbContextFactory<Datas.ComptaClubDbContext> dbContextFactory)
+    public GetDocumentContentRequestHandler(IComptaClubDbContextFactory dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;
     }
 
     public async Task<DocumentData?> Handle(GetDocumentContentRequest request, CancellationToken cancellationToken)
     {
-        var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+        await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
         var query = from dc in db.DocumentsContents
                       where dc.DocumentId == request.DocumentId

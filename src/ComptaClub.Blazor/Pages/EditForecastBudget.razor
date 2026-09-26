@@ -4,17 +4,17 @@
 
 <SectionContent SectionName="toolbar">
 
-	<RadzenButton Text="Sauvegarder"
+	<SuperButton Text="Sauvegarder"
 				  Click="Save"
-				  Icon="save"
-				  ButtonStyle="ButtonStyle.Success"
+				  Icon="fa-floppy-disk"
+				  Style="SuperButtonStyle.Success"
 				  class="btn btn-primary m-1" />
 
-	<RadzenLink Text="Imprimer"
-				  Path="@($"/reports/bilan-previsionnel/{ForecastBudgetId}")"
-				  Icon="print"
+	<SuperLinkButton Text="Imprimer"
+				  Href="@($"/reports/bilan-previsionnel/{ForecastBudgetId}")"
+				  Icon="fa-print"
 				  Target="_blank"
-				  ButtonStyle="ButtonStyle.Success"
+				  Style="SuperButtonStyle.Success"
 				  class="btn btn-primary m-1"
 				  title="Imprimer le bilan prévisionnel" />
 

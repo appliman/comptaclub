@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Banks;
@@ -6,11 +6,11 @@ namespace ComptaClub.Handlers.Banks;
 internal class SaveBankRequestHandler : SaveRequestHandlerBase, IRequestHandler<SaveEntityRequest<BankData>, PersistResult>
 {
     private readonly IValidator<BankData> _validator;
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IComptaClubDbContextFactory _dbContextFactory;
 
     public SaveBankRequestHandler(
         IValidator<BankData> validator,
-        IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+        IComptaClubDbContextFactory dbContextFactory,
         ILogger<SaveBankRequestHandler> logger)
         : base(dbContextFactory, logger)
     {
@@ -26,7 +26,7 @@ internal class SaveBankRequestHandler : SaveRequestHandlerBase, IRequestHandler<
             return result.ToPersistResult()!;
         }
 
-        var db = await _dbContextFactory.CreateDbContextAsync();
+        await using var db = await _dbContextFactory.CreateDbContextAsync();
         var bankCount = await db.Banks.CountAsync();
 
         // S'il n'y a aucun exercice, le nouveau doit etre actif

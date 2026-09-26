@@ -1,10 +1,10 @@
-﻿using AutoMapper;
 
 using ComptaClub.Contracts.Models.Documents;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Results;
 
-using MediatR;
+using ChannelMediator;
+using SuperBlazorComponents.Components.SuperDataGrid;
 
 namespace ComptaClub.Blazor.Pages.Shared;
 
@@ -16,8 +16,6 @@ public partial class DocumentListByEntity
 	[Parameter]
 	public Guid EntityId { get; set; }
 
-	[Inject]
-	IMapper Mapper { get; set; } = default!;
 
 	[Inject]
 	DialogService DialogService { get; set; } = default!;
@@ -29,17 +27,17 @@ public partial class DocumentListByEntity
 	NotificationService NotificationService { get; set; } = default!;
 
 	protected List<ViewModels.Document>? documentList;
-	protected RadzenDataGrid<ViewModels.Document> grid = default!;
+	protected SuperDataGrid<ViewModels.Document> grid = default!;
 	protected DocumentListFilter filter = new();
 	protected ViewModels.Document? documentToUpdate;
 	protected List<BrokenRule> brokenRules = new();
 
-	protected async Task LoadDatas(LoadDataArgs args)
+	protected async Task LoadDatas()
 	{
 		filter.MetaEntityIdList = new MetaEntityIdList(MetaEntity, new List<Guid> { EntityId });
 		filter.PageSize = int.MaxValue;
 		var page = await Mediator.Send(new GetPagedEntityListRequest<DocumentListFilter, Datas.DocumentData>(filter));
-		var vmList = Mapper.Map<List<ViewModels.Document>>(page.List);
+		var vmList = Mapping.Profile.ToViewModels(page.List);
 
 		int rowIndex = 1;
 		foreach (var item in vmList)
@@ -49,17 +47,39 @@ public partial class DocumentListByEntity
 		documentList = vmList;
 	}
 
+	protected async ValueTask<GridItemsProviderResult<ViewModels.Document>> LoadItems(GridItemsProviderRequest<ViewModels.Document> request)
+	{
+		if (documentList is null)
+			await LoadDatas();
+		IEnumerable<ViewModels.Document> rows = documentList ?? [];
+		var descending = request.SortDirection == SortDirection.Descending;
+		rows = request.SortColumn switch
+		{
+			"FileName" => descending ? rows.OrderByDescending(x => x.FileName) : rows.OrderBy(x => x.FileName),
+			"Description" => descending ? rows.OrderByDescending(x => x.Description) : rows.OrderBy(x => x.Description),
+			"LastUpdate" => descending ? rows.OrderByDescending(x => x.LastUpdate) : rows.OrderBy(x => x.LastUpdate),
+			"Size" => descending ? rows.OrderByDescending(x => x.Size) : rows.OrderBy(x => x.Size),
+			_ => rows.OrderBy(x => x.RowIndex)
+		};
+		var items = rows.ToList();
+		return GridItemsProviderResult<ViewModels.Document>.From(items.Skip(request.StartIndex).Take(request.Count ?? items.Count).ToList(), items.Count);
+	}
+
+	protected async Task ReloadItems()
+	{
+		documentList = null;
+		await grid.ReloadAsync();
+	}
+
 	protected async Task EditRow(ViewModels.Document doc)
 	{
 		documentToUpdate = doc;
-		await grid!.EditRow(doc);
+		await grid.BeginEditAsync(doc);
 	}
 
 	protected async Task SaveRow(ViewModels.Document doc)
 	{
-		documentToUpdate = null;
-
-		var data = Mapper!.Map<Datas.DocumentData>(doc);
+		var data = Mapping.Profile.ToData(doc);
 		var saveResult = await Mediator.Send(new SaveDocumentRequest(data));
 		if (saveResult.HasError)
 		{
@@ -67,19 +87,22 @@ public partial class DocumentListByEntity
 			return;
 		}
 
-		await grid!.UpdateRow(doc);
+		documentToUpdate = null;
+		await grid.EndEditAsync(doc);
+		await ReloadItems();
 	}
 
-	protected void CancelEdit(ViewModels.Document doc)
+	protected async Task CancelEdit(ViewModels.Document doc)
 	{
 		documentToUpdate = null;
-		grid!.CancelEditRow(doc);
+		await grid.CancelEditAsync(doc);
+		await ReloadItems();
 	}
 
 	protected async Task DeleteRow(ViewModels.Document doc)
 	{
-		var dialogResult = await DialogService.Confirm("Confirmez-vous le détachement de ce document à cette entrée ?", "Détachement");
-		if (dialogResult.Value == false)
+		var dialogResult = await DialogService.Confirm("Détachement", "Confirmez-vous le détachement de ce document à cette entrée ?");
+		if (!dialogResult)
 		{
 			return;
 		}
@@ -87,9 +110,9 @@ public partial class DocumentListByEntity
 		var removeResult = await Mediator.Send(new RemoveDocumentFromEntryRequest(EntityId, doc.Id));
 		if (removeResult.HasError)
 		{
-			NotificationService.NotifyError(removeResult);
+			await NotificationService.NotifyError(removeResult);
 		}
-		await grid!.Reload();
+		await ReloadItems();
 	}
 
 	public async Task InsertRow()
@@ -97,7 +120,7 @@ public partial class DocumentListByEntity
 		var result = await DialogService.OpenAsync<Dialogs.AddOrAttachDocumentToEntityDialog>("Ajouter ou selectionner un document",
 			options: new DialogOptions
 			{
-				CloseDialogOnEsc = true,
+
 				Width = "800px"
 			});
 
@@ -116,16 +139,16 @@ public partial class DocumentListByEntity
 		{
 			if (MetaEntity == MetaEntity.Entry)
 			{
-				var documentData = Mapper.Map<Datas.DocumentData>(item);
+				var documentData = Mapping.Profile.ToData(item);
 				var attachResult = await Mediator.Send(new AttachDocumentToEntryRequest(EntityId, documentData));
 				if (attachResult.HasError)
 				{
-					NotificationService.NotifyError(attachResult);
+					await NotificationService.NotifyError(attachResult);
 					break;
 				}
 			}
 		}
 
-		await grid.Reload();
+		await ReloadItems();
 	}
 }

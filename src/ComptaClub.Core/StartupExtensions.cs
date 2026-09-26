@@ -1,12 +1,9 @@
-﻿using Azure.Core;
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 
 using ComptaClub.Datas;
 
 using FluentValidation;
 
-using MediatR;
+using ChannelMediator;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -17,64 +14,31 @@ namespace ComptaClub;
 
 public static class StartupExtensions
 {
-    public static async Task<Configuration.ComptaClubSettings> ConfigureComptaClub(this WebApplicationBuilder builder, params string[] args)
+    public static Configuration.ComptaClubSettings ConfigureComptaClub(this WebApplicationBuilder builder, params string[] args)
     {
-		var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "development";
-		builder.Environment.EnvironmentName = env;
-
-        var currentFolder = System.IO.Path.GetDirectoryName(typeof(StartupExtensions).Assembly.Location);
-        builder.Configuration
-            .AddJsonFile("appsettings.json")
-            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json")
-            .AddJsonFile($"appsettings.local.json", true)
-            .AddEnvironmentVariables()
-            .SetBasePath(currentFolder!);
+        builder.Configuration.SetBasePath(builder.Environment.ContentRootPath);
+        if (builder.Environment.IsDevelopment())
+        {
+            builder.Configuration.AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: false);
+        }
+        builder.Configuration.AddEnvironmentVariables();
 
         var section = builder.Configuration.GetSection("ComptaClub");
         var settings = new Configuration.ComptaClubSettings();
         section.Bind(settings);
         builder.Services.AddSingleton(settings);
 
-        var vaultUri = new Uri($"https://{settings.KeyVaultName}.vault.azure.net");
-        var credential = new ClientCertificateCredential(settings.KeyVaultTenantId, settings.KeyVaultClientId, settings.KeyVaultCertificatePath);
-        var client = new SecretClient(vaultUri,credential);
-
-        var csSecret = await client.GetSecretAsync("AzureStorageConnectionString");
-        settings.SetAzureStorageConnectionString(csSecret.Value.Value);
-
-        var sqlConnectionString = args.GetParameterValue("cs");
-        if (string.IsNullOrWhiteSpace(sqlConnectionString))
+        if (settings.DatabaseProvider.Equals("MsSql", StringComparison.OrdinalIgnoreCase))
         {
-            var cs = await client.GetSecretAsync("SqlConnectionString");
-            settings.SetSqlConnectionString(cs.Value.Value);
-        }
-        else
-        {
-            settings.SetSqlConnectionString(sqlConnectionString);
+            var sqlConnectionString = args.GetParameterValue("cs");
+            settings.ConnectionString = string.IsNullOrWhiteSpace(sqlConnectionString)
+                ? settings.ConnectionString
+                : sqlConnectionString;
+            if (string.IsNullOrWhiteSpace(settings.ConnectionString))
+                throw new InvalidOperationException("ComptaClub:ConnectionString is required for MsSql.");
         }
 
-        var azureStorageAccountKey = await client.GetSecretAsync("AzureStorageAccountKey");
-        settings.SetAzureStorageAccountKey(azureStorageAccountKey.Value.Value);
-
-        var smtpPassword = await client.GetSecretAsync("SmtpPassword");
-        settings.SetSmtpPassword(smtpPassword.Value.Value);
-
-        builder.Services.AddComptaClubDbContext(cfg =>
-        {
-            cfg.EnvironmentName = builder.Environment.EnvironmentName;
-            cfg.ConnectionString = settings.SqlConnectionString;
-        });
-
-        builder.Services.AddMediatR(typeof(StartupExtensions));
-
-        builder.Services.AddTransient<IValidator<Datas.BankData>, Validators.BankValidator>();
-        builder.Services.AddTransient<IValidator<Datas.AccountData>, Validators.AccountValidator>();
-        builder.Services.AddTransient<IValidator<Datas.ExerciceData>, Validators.ExerciceValidator>();
-        builder.Services.AddTransient<IValidator<Datas.EntryData>, Validators.EntryValidator>();
-        builder.Services.AddTransient<IValidator<Datas.UserData>, Validators.UserValidator>();
-        builder.Services.AddTransient<IValidator<Datas.MemberData>, Validators.MemberValidator>();
-        builder.Services.AddTransient<IValidator<Datas.AssociatedMemberListByEntryData>, Validators.AssociatedMemberListByEntryValidator>();
-        builder.Services.AddTransient<IValidator<Datas.DocumentData>, Validators.DocumentValidator>();
+        builder.Services.AddComptaClubCore();
 
         builder.Services.AddMemoryCache();
 
@@ -85,6 +49,22 @@ public static class StartupExtensions
 		}
 
 		return settings;
+    }
+
+    public static IServiceCollection AddComptaClubCore(this IServiceCollection services)
+    {
+        services.AddChannelMediator(
+            config => config.Strategy = NotificationPublishStrategy.Sequential,
+            typeof(StartupExtensions).Assembly);
+        services.AddTransient<IValidator<Datas.BankData>, Validators.BankValidator>();
+        services.AddTransient<IValidator<Datas.AccountData>, Validators.AccountValidator>();
+        services.AddTransient<IValidator<Datas.ExerciceData>, Validators.ExerciceValidator>();
+        services.AddTransient<IValidator<Datas.EntryData>, Validators.EntryValidator>();
+        services.AddTransient<IValidator<Datas.UserData>, Validators.UserValidator>();
+        services.AddTransient<IValidator<Datas.MemberData>, Validators.MemberValidator>();
+        services.AddTransient<IValidator<Datas.AssociatedMemberListByEntryData>, Validators.AssociatedMemberListByEntryValidator>();
+        services.AddTransient<IValidator<Datas.DocumentData>, Validators.DocumentValidator>();
+        return services;
     }
 
 

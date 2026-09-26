@@ -1,19 +1,19 @@
-﻿using ComptaClub.Contracts.Models.IncomeStatements;
+using ComptaClub.Contracts.Models.IncomeStatements;
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.IncomeStatements;
 internal class DeleteIncomeStatementRequestHandler : IRequestHandler<DeleteIncomeStatementRequest, CommandResult>
 {
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 
-	public DeleteIncomeStatementRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+	public DeleteIncomeStatementRequestHandler(IComptaClubDbContextFactory dbContextFactory)
 	{
 		_dbContextFactory = dbContextFactory;
 	}
 
 	public async Task<CommandResult> Handle(DeleteIncomeStatementRequest request, CancellationToken cancellationToken)
 	{
-		var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
 		var incomeStatement = await db.IncomeStatements.FirstOrDefaultAsync(i => i.Id == request.IncomeStatementId, cancellationToken);
 		if (incomeStatement == null)

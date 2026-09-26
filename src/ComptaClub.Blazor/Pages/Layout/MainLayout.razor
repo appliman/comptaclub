@@ -1,75 +1,62 @@
-﻿@inherits LayoutComponentBase
-@inject NavigationManager NavigationManager
+@inherits LayoutComponentBase
+@using SuperBlazorComponents.Components
+@using SuperBlazorComponents.Components.SuperLayout
 
-<RadzenDialog />
-<RadzenNotification />
-<RadzenTooltip />
-<RadzenContextMenu />
+<SuperDialog />
+<SuperNotification />
+<SuperConfirmDialog />
+
 
 <PageTitle>ComptaClub</PageTitle>
 
-<RadzenLayout>
-    <RadzenHeader>
+<SuperLayout>
+    <SuperHeader BrandText="Compta Club" ShowToggle="@(user?.IsAuthenticated == true)">
         <ChildContent>
-            <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start" Gap="0px">
-                <RadzenColumn Size="2">
-                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
-                        <RadzenSidebarToggle Click="@(args => { sidebarExpanded = !sidebarExpanded; })">
-                        </RadzenSidebarToggle>
-                        <RadzenLabel Text="Compta Club" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis" />
-                    </RadzenStack>
-                </RadzenColumn>
-                <RadzenColumn Size="7">
-                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start">
-                        <SectionOutlet SectionName="toolbar" />
-                        <SectionOutlet SectionName="toolbar-context" />
-                    </RadzenStack>
-                </RadzenColumn>
-                <RadzenColumn Size="3">
-                    <RadzenStack  Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
-                        @if (loaderVisible)
-                        {
-                            <div class="spinner-border mx-2" role="status">
-                                <span class="sr-only">Chargement...</span>
-                            </div>
-                        }
-                        <UserInfo/>
-                        <ConnectionButton/>
-                    </RadzenStack>
-                </RadzenColumn>
-            </RadzenRow>
+            <SectionOutlet SectionName="toolbar" />
+            <SectionOutlet SectionName="toolbar-context" />
         </ChildContent>
-    </RadzenHeader>
-    <RadzenSidebar @bind-Expanded="sidebarExpanded" Visible="@user!.IsAuthenticated">
-        <RadzenPanelMenu Match="NavLinkMatch.Prefix">
-            <RadzenPanelMenuItem Text="Accueil" Path="/" Icon="assessment" />
-            <RadzenPanelMenuItem Text="Ecritures" Path="/ecritures" Icon="receipt" />
-            <RadzenPanelMenuItem Text="Comptes de résultats" Path="/comptes-resultats" Icon="workspace_premium" />
-            <RadzenPanelMenuItem Text="Bilans prévisionnels" Path="/bilans-previsionnels" Icon="query_stats" />
-            <RadzenPanelMenuItem Text="Membres" Path="/membres" Icon="diversity_1" />
-            <RadzenPanelMenuItem Text="Documents" Path="/documents" Icon="document_scanner" />
-            <RadzenPanelMenuItem Text="Configuration" Icon="settings">
-                <RadzenPanelMenuItem Text="Utilisateurs" Path="/utilisateurs" Icon="group" />
-                <RadzenPanelMenuItem Text="Plan comptable" Path="/plan" Icon="dynamic_feed" />
-                <RadzenPanelMenuItem Text="Exercices" Path="/exercices" Icon="cases" />
-                <RadzenPanelMenuItem Text="Banques" Path="/banques" Icon="account_balance" />
-                <RadzenPanelMenuItem Text="Club" Path="/club" Icon="favorite" />
-            </RadzenPanelMenuItem>
-        </RadzenPanelMenu>
-        <div class="text-center d-none d-sm-block">
-            <small>Version : @version</small><br />
-        </div>
-    </RadzenSidebar>
-    <RadzenBody @bind-Expanded="sidebarExpanded">
+        <EndContent>
+            @if (loaderVisible)
+            {
+                <div class="spinner-border mx-2" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+            }
+            <UserInfo />
+            <ConnectionButton />
+        </EndContent>
+    </SuperHeader>
+    @if (user?.IsAuthenticated == true)
+    {
+        <SuperSidebar>
+            <ChildContent>
+            <SuperMenuItem Href="/" Text="Accueil" Icon="fa-chart-column" Match="NavLinkMatch.All" />
+            <SuperMenuItem Href="/ecritures" Text="Ecritures" Icon="fa-receipt" />
+            <SuperMenuItem Href="/comptes-resultats" Text="Comptes de résultats" Icon="fa-award" />
+            <SuperMenuItem Href="/bilans-previsionnels" Text="Bilans prévisionnels" Icon="fa-chart-line" />
+            <SuperMenuItem Href="/membres" Text="Membres" Icon="fa-users" />
+            <SuperMenuItem Href="/documents" Text="Documents" Icon="fa-file-lines" />
+            <SuperMenuItem Text="Configuration" Icon="fa-gear">
+                <Items>
+                    <SuperMenuItem Href="/utilisateurs" Text="Utilisateurs" Icon="fa-users" />
+                    <SuperMenuItem Href="/plan" Text="Plan comptable" Icon="fa-list" />
+                    <SuperMenuItem Href="/exercices" Text="Exercices" Icon="fa-calendar-days" />
+                    <SuperMenuItem Href="/banques" Text="Banques" Icon="fa-landmark" />
+                    <SuperMenuItem Href="/club" Text="Club" Icon="fa-heart" />
+                </Items>
+            </SuperMenuItem>
+            </ChildContent>
+            <Footer><small>Version : @version</small></Footer>
+        </SuperSidebar>
+    }
+    <SuperBody>
         <AuthorizeView>
             <Authorized>
-                <CascadingValue Value="this">
-                    @Body   
-                </CascadingValue>
+                <CascadingValue Value="this">@Body</CascadingValue>
             </Authorized>
             <NotAuthorized>
                 <LoginPartial />
             </NotAuthorized>
         </AuthorizeView>
-    </RadzenBody>
-</RadzenLayout>
+    </SuperBody>
+</SuperLayout>

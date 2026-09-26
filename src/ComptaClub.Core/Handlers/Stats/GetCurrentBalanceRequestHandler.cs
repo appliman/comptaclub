@@ -1,14 +1,14 @@
-﻿using ComptaClub.Contracts.Models.Stats;
+using ComptaClub.Contracts.Models.Stats;
 
 namespace ComptaClub.Handlers.Stats;
 
 internal class GetCurrentBalanceRequestHandler : IRequestHandler<GetCurrentBalanceRequest, long>
 {
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IComptaClubDbContextFactory _dbContextFactory;
     private readonly IMediator _mediator;
 
     public GetCurrentBalanceRequestHandler(
-        IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+        IComptaClubDbContextFactory dbContextFactory,
         IMediator mediator)
     {
         _dbContextFactory = dbContextFactory;
@@ -17,7 +17,7 @@ internal class GetCurrentBalanceRequestHandler : IRequestHandler<GetCurrentBalan
 
     public async Task<long> Handle(GetCurrentBalanceRequest request, CancellationToken cancellationToken)
     {
-        var db = await _dbContextFactory.CreateDbContextAsync();
+        await using var db = await _dbContextFactory.CreateDbContextAsync();
         var exercice = await db.Exercices.FirstOrDefaultAsync(i => i.Active);
         if (exercice is null)
         {

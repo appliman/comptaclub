@@ -1,20 +1,20 @@
-﻿using ComptaClub.Contracts.Models.Exercices;
+using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Contracts.Results;
 using ComptaClub.Enums;
 
 namespace ComptaClub.Handlers.Exercices;
 internal class CloseExerciceRequestHandler : IRequestHandler<CloseExerciceRequest, CommandResult>
 {
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IComptaClubDbContextFactory _dbContextFactory;
 
-    public CloseExerciceRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+    public CloseExerciceRequestHandler(IComptaClubDbContextFactory dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;
     }
 
     public async Task<CommandResult> Handle(CloseExerciceRequest request, CancellationToken cancellationToken)
     {
-        var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+        await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
         
         var exercice = await db.Exercices.FindAsync(request.ExerciceId);
         if (exercice == null)

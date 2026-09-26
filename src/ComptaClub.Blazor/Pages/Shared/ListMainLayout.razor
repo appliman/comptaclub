@@ -1,11 +1,12 @@
 ﻿@inherits LayoutComponentBase
 @layout MainLayout
+@using SuperBlazorComponents.Components.SuperSplitter
 
-<RadzenSplitter Orientation="Orientation.Vertical" style="height: 100%;">
-	<RadzenSplitterPane Size="60%">
+<SuperSplitter Orientation="SuperSplitterOrientation.Vertical" FirstPaneSize="60" PersistenceKey="comptaclub-list-context">
+	<SplitPane CssClass="overflow-auto">
 		@Body
-	</RadzenSplitterPane>
-	<RadzenSplitterPane Size="40%">
+	</SplitPane>
+	<SplitPane CssClass="overflow-auto">
 		<SectionOutlet SectionName="EntityContext"/>
-	</RadzenSplitterPane>
-</RadzenSplitter>
+	</SplitPane>
+</SuperSplitter>

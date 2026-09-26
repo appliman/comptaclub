@@ -1,8 +1,8 @@
-using AutoMapper;
 
 using ComptaClub.Contracts.Models.Accounts;
 
-using MediatR;
+using ChannelMediator;
+using SuperBlazorComponents.Components.SuperDataGrid;
 
 namespace ComptaClub.Blazor.Pages.Dialogs;
 
@@ -20,11 +20,9 @@ public partial class AccountSelectorDialog
     [Inject]
     public DialogService DialogService { get; set; } = default!;
 
-    [Inject]
-    IMapper Mapper { get; set; } = default!;
 
     List<ViewModels.Account>? accountList;
-    RadzenDataGrid<ViewModels.Account> grid = default!;
+    SuperDataGrid<ViewModels.Account> grid = default!;
     ViewModels.Account? selectedRow;
 
     protected override async Task OnInitializedAsync()
@@ -32,21 +30,27 @@ public partial class AccountSelectorDialog
         await LoadDatas();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await grid.ExpandAllAsync();
+    }
+
     async Task LoadDatas()
     {
         var datas = await Mediator!.Send(new GetPlanRequest());
         var list = MapPlan(datas);
         accountList = list;
-        ExpandAll(accountList);
     }
 
-    void ExpandAll(IEnumerable<ViewModels.Account> accountList)
-    { 
-        foreach (var item in accountList)
-        {
-            grid.ExpandRow(item);
-            ExpandAll(item.Children);
-        }
+    async ValueTask<GridItemsProviderResult<ViewModels.Account>> LoadItems(GridItemsProviderRequest<ViewModels.Account> request)
+    {
+        if (accountList is null)
+            await LoadDatas();
+
+        var source = request.ParentItem?.Children ?? accountList ?? [];
+        return GridItemsProviderResult<ViewModels.Account>.From(
+            source.Skip(request.StartIndex).Take(request.Count ?? source.Count).ToList(), source.Count);
     }
 
     List<ViewModels.Account> MapPlan(List<Datas.AccountData> list)
@@ -58,20 +62,21 @@ public partial class AccountSelectorDialog
             {
                 continue;
             }
-            var account = Mapper.Map<ViewModels.Account>(item);
+            var account = Mapping.Profile.ToViewModel(item);
             account.Children = MapPlan(item.Children);
             result.Add(account);
         }
         return result;
     }
 
-    void LoadChildData(DataGridLoadChildDataEventArgs<ViewModels.Account> args)
+    void OnSelectionChanged(IEnumerable<ViewModels.Account> selected)
     {
-        args.Data = args.Item.Children;
-    }
-
-    void AccountSelected(ViewModels.Account account)
-    {
+        var account = selected.FirstOrDefault();
+        if (account is null)
+        {
+            selectedRow = null;
+            return;
+        }
         if (account.Children is null
             || account.Children.Count == 0)
         {
@@ -84,22 +89,16 @@ public partial class AccountSelectorDialog
         }
     }
 
-    Task Select()
+    async Task Select()
     {
         if (selectedRow is not null)
         {
-            DialogService.Close(selectedRow);
+            await DialogService.Close(selectedRow);
         }
         else
         {
-            DialogService.Close();
+            await DialogService.Close();
         }
-        return Task.CompletedTask;
-    }
-
-    void RowRender(RowRenderEventArgs<ViewModels.Account> args)
-    {
-        args.Expandable = args.Data.Children.Any();
     }
 
 }

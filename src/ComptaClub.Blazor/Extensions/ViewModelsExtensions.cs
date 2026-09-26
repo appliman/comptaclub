@@ -1,7 +1,5 @@
 ﻿using System.Linq.Expressions;
 
-using AutoMapper;
-
 namespace ComptaClub.Blazor.Extensions;
 
 public static class ViewModelsExtensions
@@ -37,18 +35,6 @@ public static class ViewModelsExtensions
         }
         return result;
 	}
-
-    public static List<ViewModels.Account> MapToAccountList(this IEnumerable<Datas.AccountData> list, AutoMapper.IMapper mapper)
-    {
-        var result = new List<ViewModels.Account>();
-        foreach (var item in list)
-        {
-            var account = mapper.Map<ViewModels.Account>(item);
-            account.Children = MapToAccountList(item.Children, mapper);
-            result.Add(account);
-        }
-        return result;
-    }
 
     public static ViewModels.Account? DeepFirstOrDefault(this IEnumerable<ViewModels.Account> list, Func<ViewModels.Account, bool> predicate)
     {

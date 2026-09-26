@@ -24,7 +24,7 @@ public class CreateIncomeStatementTests
 	public async Task Create_Income_Statement_From_Closed_Exercice()
 	{
 		var app = await TestHelper.CreateWebApplication();
-		var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
+		var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 		var exercice = await mediator.GetOrCreateExercice($"{Guid.NewGuid()}");
 		var bank = await mediator.GetOrCreateBank($"{Guid.NewGuid()}");

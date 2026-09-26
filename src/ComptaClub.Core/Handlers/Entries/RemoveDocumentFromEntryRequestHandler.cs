@@ -1,15 +1,15 @@
-﻿using ComptaClub.Contracts.Models.Entries;
+using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Entries;
 internal class RemoveDocumentFromEntryRequestHandler : IRequestHandler<RemoveDocumentFromEntryRequest, CommandResult>
 {
 	private readonly IMediator _mediator;
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 	private readonly ILogger<RemoveDocumentFromEntryRequestHandler> _logger;
 
 	public RemoveDocumentFromEntryRequestHandler(IMediator mediator,
-		IDbContextFactory<Datas.ComptaClubDbContext> dbContextFactory,
+		IComptaClubDbContextFactory dbContextFactory,
 		ILogger<RemoveDocumentFromEntryRequestHandler> logger)
 	{
 		_mediator = mediator;
@@ -19,7 +19,7 @@ internal class RemoveDocumentFromEntryRequestHandler : IRequestHandler<RemoveDoc
 
 	public async Task<CommandResult> Handle(RemoveDocumentFromEntryRequest request, CancellationToken cancellationToken)
 	{
-		var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
 		var existingRelationQry = from dbe in db.DocumentsByEntities
 								  where dbe.EntityId == request.EntryId

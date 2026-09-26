@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Members;
@@ -10,7 +10,7 @@ internal class SaveMemberRequestHandler : SaveRequestHandlerBase,
 
 	public SaveMemberRequestHandler(
 		IValidator<MemberData> validator,
-		IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+		IComptaClubDbContextFactory dbContextFactory,
 		ILogger<SaveMemberRequestHandler> logger,
 		IMediator mediator)
 		: base(dbContextFactory, logger)

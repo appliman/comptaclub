@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models.Banks;
+using ComptaClub.Contracts.Models.Banks;
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Banks;
@@ -6,10 +6,10 @@ namespace ComptaClub.Handlers.Banks;
 internal class ChangeActiveBankRequestHandler : IRequestHandler<ChangeActiveBankRequest, CommandResult>
 {
     private readonly IMediator _mediator;
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IComptaClubDbContextFactory _dbContextFactory;
 
     public ChangeActiveBankRequestHandler(IMediator mediator,
-        IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+        IComptaClubDbContextFactory dbContextFactory)
     {
         _mediator = mediator;
         _dbContextFactory = dbContextFactory;
@@ -17,7 +17,7 @@ internal class ChangeActiveBankRequestHandler : IRequestHandler<ChangeActiveBank
 
     public async Task<CommandResult> Handle(ChangeActiveBankRequest request, CancellationToken cancellationToken)
     {
-        var db = await _dbContextFactory.CreateDbContextAsync();
+        await using var db = await _dbContextFactory.CreateDbContextAsync();
         var bankList = await db.Banks.ToListAsync();
 
         if (!bankList.Any())

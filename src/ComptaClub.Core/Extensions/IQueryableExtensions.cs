@@ -1,7 +1,6 @@
 ﻿
 using System.Linq.Expressions;
 using ComptaClub.Contracts.Models;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ComptaClub.Extensions;
 

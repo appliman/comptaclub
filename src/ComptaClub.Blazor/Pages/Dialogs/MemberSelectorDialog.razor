@@ -1,32 +1,15 @@
-﻿<RadzenDataGrid @ref="grid"
-                AllowFiltering="true"
-                AllowSorting="true"
-                AllowColumnResize="true"
-                Data="@memberList"
-                LoadData="LoadDatas"
-                TItem="ViewModels.MemberRow"
-                ColumnWidth="100px"
-                GridLines="DataGridGridLines.Both"
-                FilterMode="FilterMode.Simple"
-                SelectionMode="DataGridSelectionMode.Single"
-                @bind-Value="@selectedMembers"
-                Style="height:400px;">
-    <Columns>
-        <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="RowIndex" Title="#" Width="30px" Filterable="false" SortOrder="SortOrder.Ascending" >
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Name" Title="Nom" Width="120px" Filterable="true" >
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Email" Title="Email" Width="100px" Filterable="false">
-        </RadzenDataGridColumn>
-    </Columns>
-</RadzenDataGrid>
+<SuperDataGrid @ref="grid" AllowFiltering="true" AllowSorting="true" AllowColumnResize="true" ItemsProvider="LoadItems" TItem="ViewModels.MemberRow" SelectionMode="SuperDataGridSelectionMode.Single" SelectionChanged="OnSelectionChanged" DisplayRowNumberColumn="false" Height="400px">
+    <DataGridColumn TItem="ViewModels.MemberRow" Property="RowIndex" Title="#" Width="30px" Filterable="false" />
+    <DataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Name" Title="Nom" Width="120px" Filterable="true" />
+    <DataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Email" Title="Email" Width="100px" Filterable="false" />
+</SuperDataGrid>
 
 <div class="row mt-2 dialog-btns justify-content-end">
     <div class="col-auto">
-        <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="cancel" Text="Annuler" Click="@((args) => DialogService.Close())" />
+        <SuperButton Style="SuperButtonStyle.Info" Icon="fa-xmark" Text="Annuler" Click="@((args) => DialogService.Close())" />
     </div>
     <div class="col-auto">
-        <RadzenButton ButtonType="ButtonType.Submit" Icon="person_add" Text="Associer" Click="@Select" Disabled="@(selectedMembers?.Count != 1)" />
+        <SuperButton type="submit" Icon="fa-user-plus" Text="Associer" Click="@Select" Disabled="@(selectedMembers?.Count != 1)" />
     </div>
 </div>
 

@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Accounts;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Results;
@@ -8,10 +8,10 @@ namespace ComptaClub.Handlers.Accounts;
 internal class DeleteAccountRequestHandler : IRequestHandler<DeleteAccountRequest, CommandResult>
 {
 	private readonly IMediator _mediator;
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 
 	public DeleteAccountRequestHandler(IMediator mediator,
-		IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+		IComptaClubDbContextFactory dbContextFactory)
 	{
 		_mediator = mediator;
 		_dbContextFactory = dbContextFactory;
@@ -45,7 +45,7 @@ internal class DeleteAccountRequestHandler : IRequestHandler<DeleteAccountReques
 			return CommandResult.CreateInvalidResult("Ce compte contient d'autres comptes");
 		}
 
-		var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
 		var data = await db.Accounts.FindAsync(request.AccountId, cancellationToken);
 		db.Accounts.Remove(data!);

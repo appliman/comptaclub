@@ -41,9 +41,9 @@
 
 <div class="row mt-2 dialog-btns justify-content-end">
 	<div class="col-auto">
-		<RadzenButton ButtonStyle="ButtonStyle.Info" Icon="cancel" Text="Annuler" Click="@((args) => DialogService.Close())" />
+		<SuperButton Style="SuperButtonStyle.Info" Icon="fa-xmark" Text="Annuler" Click="@((args) => DialogService.Close())" />
 	</div>
 	<div class="col-auto">
-		<RadzenButton ButtonType="ButtonType.Submit" Icon="add_circle" Text="Importer" Click="@Select" Disabled="@(fileSize == 0)" />
+		<SuperButton type="submit" Icon="fa-circle-plus" Text="Importer" Click="@Select" Disabled="@(fileSize == 0)" />
 	</div>
 </div>

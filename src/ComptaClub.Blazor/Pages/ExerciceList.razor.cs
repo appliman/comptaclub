@@ -1,5 +1,6 @@
 using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Contracts.Results;
+using SuperBlazorComponents.Components.SuperDataGrid;
 
 namespace ComptaClub.Blazor.Pages;
 
@@ -9,10 +10,8 @@ public partial class ExerciceList : ComponentBase
 	MainLayout MainLayout { get; set; } = default!;
 
 	[Inject]
-	MediatR.IMediator Mediator { get; set; } = default!;
+	ChannelMediator.IMediator Mediator { get; set; } = default!;
 
-	[Inject]
-	AutoMapper.IMapper Mapper { get; set; } = default!;
 
 	[Inject]
 	NotificationService NotificationService { get; set; } = default!;
@@ -22,15 +21,45 @@ public partial class ExerciceList : ComponentBase
 
 
 	List<ViewModels.Exercice>? exerciceList;
-	RadzenDataGrid<ViewModels.Exercice>? grid;
+	SuperDataGrid<ViewModels.Exercice>? grid;
 	List<BrokenRule> brokenRules = new();
 	IList<ViewModels.Exercice>? selectedExercices;
 
 	async Task LoadDatas()
 	{
 		var datas = await Mediator!.Send(new GetAllExercicesRequest());
-		exerciceList = Mapper.Map<List<ViewModels.Exercice>>(datas);
-		StateHasChanged();
+		exerciceList = Mapping.Profile.ToViewModels(datas);
+	}
+
+	void OnSelectionChanged(IEnumerable<ViewModels.Exercice> selected) => selectedExercices = selected.ToList();
+
+	async ValueTask<GridItemsProviderResult<ViewModels.Exercice>> LoadItems(GridItemsProviderRequest<ViewModels.Exercice> request)
+	{
+		if (exerciceList is null)
+			await LoadDatas();
+
+		IEnumerable<ViewModels.Exercice> rows = exerciceList ?? [];
+		var descending = request.SortDirection == SortDirection.Descending;
+		rows = request.SortColumn switch
+		{
+			"Code" => descending ? rows.OrderByDescending(x => x.Code) : rows.OrderBy(x => x.Code),
+			"Label" => descending ? rows.OrderByDescending(x => x.Label) : rows.OrderBy(x => x.Label),
+			"InitialAmount" => descending ? rows.OrderByDescending(x => x.InitialAmount) : rows.OrderBy(x => x.InitialAmount),
+			"BalanceAmount" => descending ? rows.OrderByDescending(x => x.BalanceAmount) : rows.OrderBy(x => x.BalanceAmount),
+			"StartDate" => descending ? rows.OrderByDescending(x => x.StartDate) : rows.OrderBy(x => x.StartDate),
+			"EndDate" => descending ? rows.OrderByDescending(x => x.EndDate) : rows.OrderBy(x => x.EndDate),
+			"ExerciceState" => descending ? rows.OrderByDescending(x => x.ExerciceState) : rows.OrderBy(x => x.ExerciceState),
+			_ => rows.OrderBy(x => x.Code)
+		};
+		var items = rows.ToList();
+		return GridItemsProviderResult<ViewModels.Exercice>.From(items.Skip(request.StartIndex).Take(request.Count ?? items.Count).ToList(), items.Count);
+	}
+
+	async Task RefreshAsync()
+	{
+		await LoadDatas();
+		if (grid is not null)
+			await grid.ReloadAsync();
 	}
 
 	void EditRow(ViewModels.Exercice exercice)
@@ -43,13 +72,13 @@ public partial class ExerciceList : ComponentBase
 		var deleteResult = await Mediator.Send(new DeleteExerciceRequest(exercice.Id));
 		if (deleteResult.HasError)
 		{
-			NotificationService.NotifyError(deleteResult);
+			await NotificationService.NotifyError(deleteResult);
 		}
 		else if (deleteResult.HasWarning)
 		{
-			NotificationService.NotifyWarning(deleteResult);
+			await NotificationService.NotifyWarning(deleteResult);
 		}
-		await LoadDatas();
+		await RefreshAsync();
 	}
 
 	async Task ChangeActiveExercice(ChangeEventArgs args, ViewModels.Exercice exercice)
@@ -57,13 +86,13 @@ public partial class ExerciceList : ComponentBase
 		var changeResult = await Mediator.Send(new ChangeActiveExerciceRequest($"{args.Value}" == "on", exercice.Id));
 		if (changeResult.HasError)
 		{
-			NotificationService.NotifyError(changeResult);
+			await NotificationService.NotifyError(changeResult);
 		}
 		else if (changeResult.HasWarning)
 		{
-			NotificationService.NotifyWarning(changeResult);
+			await NotificationService.NotifyWarning(changeResult);
 		}
-		await LoadDatas();
+		await RefreshAsync();
 	}
 
 	async Task CloseExercice()
@@ -71,7 +100,7 @@ public partial class ExerciceList : ComponentBase
 		var selectedExercice = selectedExercices?.FirstOrDefault();
 		if (selectedExercice is null)
 		{
-			NotificationService.Notify(new NotificationMessage()
+			await NotificationService.Notify(new NotificationMessage()
 			{
 				Severity = NotificationSeverity.Info,
 				Summary = "Vous devez cliquer sur un exercice pour le clore"
@@ -79,8 +108,8 @@ public partial class ExerciceList : ComponentBase
 			return;
 		}
 
-		var confirm = await MainLayout.DialogService.Confirm("Confirmez vous la clôture de cet exercice", "Clôture");
-		if (!confirm.GetValueOrDefault(false))
+		var confirm = await MainLayout.DialogService.Confirm("Clï¿½ture", "Confirmez vous la clï¿½ture de cet exercice");
+		if (!confirm)
 		{
 			return;
 		}
@@ -88,13 +117,13 @@ public partial class ExerciceList : ComponentBase
 		var closeResult = await Mediator.Send(new CloseExerciceRequest(selectedExercice.Id));
 		if (closeResult.HasError)
 		{
-			NotificationService.NotifyError(closeResult);
+			await NotificationService.NotifyError(closeResult);
 		}
 		else if (closeResult.HasWarning)
 		{
-			NotificationService.NotifyWarning(closeResult);
+			await NotificationService.NotifyWarning(closeResult);
 		}
-		await LoadDatas();
+		await RefreshAsync();
 	}
 
 }

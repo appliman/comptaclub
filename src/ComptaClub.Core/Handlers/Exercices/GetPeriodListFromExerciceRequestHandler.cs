@@ -1,19 +1,19 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Exercices;
 
 namespace ComptaClub.Handlers.Exercices;
 internal class GetPeriodListFromExerciceRequestHandler : IRequestHandler<GetPeriodListFromExerciceRequest, List<PeriodFilter>>
 {
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IComptaClubDbContextFactory _dbContextFactory;
 
-    public GetPeriodListFromExerciceRequestHandler(IDbContextFactory<Datas.ComptaClubDbContext> dbContextFactory)
+    public GetPeriodListFromExerciceRequestHandler(IComptaClubDbContextFactory dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;
     }
 
     public async Task<List<PeriodFilter>> Handle(GetPeriodListFromExerciceRequest request, CancellationToken cancellationToken)
     {
-        var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+        await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
         var result = new List<PeriodFilter>();
         var exercice = await db.Exercices.FindAsync(request.ExerciceId);

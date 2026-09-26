@@ -22,7 +22,7 @@ namespace ComptaClub.Tests.Cruds
 		public async Task Account_Crud()
 		{
 			var app = await TestHelper.CreateWebApplication();
-			var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
+			var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 			var account = await mediator.Send(new GetAccountByFilterRequest(i => i.Code = "fake"));
 			account.Should().BeNull();

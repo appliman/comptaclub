@@ -4,55 +4,57 @@
 
 <InputFile OnChange="LoadFile" />
 
-<RadzenDataGrid @ref="grid"
-    AllowFiltering="true" 
-    AllowSorting="true" 
+<SuperDataGrid @ref="grid"
+    AllowFiltering="false"
+    AllowSorting="true"
     AllowColumnResize="true"
-    Data="@entryList" 
+    ItemsProvider="LoadItems"
     TItem="ViewModels.EntryRow"
-    GridLines="DataGridGridLines.Both">
-    <Columns>
-        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Property="RowIndex" Title="#" Width="50px" Filterable="false" FormatString="" Frozen="true">
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Context="entry" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="70px">
+    Height="500px"
+    DisplaySelectionColumn="false"
+    DisplayRowNumberColumn="false"
+    SelectionMode="SuperDataGridSelectionMode.None"
+    FreezeLeftColumns="1">
+        <DataGridColumn TItem="ViewModels.EntryRow" Property="RowIndex" Title="#" Width="50px" Filterable="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.EntryRow" Filterable="false" Sortable="false" TextAlign="SuperTextAlignment.Right" Width="70px">
             <Template Context="entry">
-                <RadzenButton Icon="save" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => SaveRow(entry))" @onclick:stopPropagation="true" title="Editer cette ecriture">
-                </RadzenButton>
+                <SuperButton Icon="fa-floppy-disk" Style="SuperButtonStyle.Success"  Size="SuperButtonSize.Default" Click="@(args => SaveRow(entry))" @onclick:stopPropagation="true" title="Editer cette ecriture">
+                </SuperButton>
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Property="CreationDate" Title="Date" Width="150px" Filterable="false" Frozen="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.EntryRow" Property="CreationDate" Title="Date" Width="150px" Filterable="false">
             <Template Context="data">
                 <DateIdLabel Value="data.Entity.CreationDate"/>
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Title="Compte" Filterable="false" Width="300px">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.EntryRow" Title="Compte" Filterable="false" Sortable="false" Width="300px">
             <Template Context="entry">
                 <AccountLinkSelector @bind-AccountId="entry.Entity.AccountId" AccountDirection="entry.Entity.AccountDirection" />
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Property="PartNumber" Title="N°" Filterable="false" Frozen="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.EntryRow" Property="PartNumber" Title="N°" Filterable="false">
             <Template Context="data">
                 <div class="w-100">
                     @data.Entity.PartNumber<br />
                     @data.Entity.Label
                 </div>
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Title="Débit" Width="120px" Filterable="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.EntryRow" Title="Débit" Width="120px" Filterable="false" Sortable="false">
             <Template Context="entry">
                 @if (entry.Entity.AccountDirection == Enums.AccountDirection.Debit)
                 {
                     <PriceLabel Value="@entry.Entity.Amount" />
                 }
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ViewModels.EntryRow" Title="Crédit" Width="120px" Filterable="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="ViewModels.EntryRow" Title="Crédit" Width="120px" Filterable="false" Sortable="false">
             <Template Context="entry">
                 @if (entry.Entity.AccountDirection == Enums.AccountDirection.Credit)
                 {
                     <PriceLabel Value="@entry.Entity.Amount" />
                 }
             </Template>
-        </RadzenDataGridColumn>
-    </Columns>
-</RadzenDataGrid>
+        </DataGridColumn>
+</SuperDataGrid>

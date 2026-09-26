@@ -2,9 +2,10 @@ using ComptaClub.Blazor.Pages.Components;
 using ComptaClub.Contracts.Models.Documents;
 using ComptaClub.Datas;
 
-using MediatR;
+using ChannelMediator;
 
 using Microsoft.AspNetCore.Components.Web;
+using SuperBlazorComponents.Components.SuperDataGrid;
 
 namespace ComptaClub.Blazor.Pages.Dialogs;
 
@@ -16,8 +17,6 @@ public partial class AddOrAttachDocumentToEntityDialog
 	NotificationService NotificationService { get; set; } = default!;
 	[Inject]
 	DialogService DialogService { get; set; } = default!;
-	[Inject]
-	AutoMapper.IMapper Mapper { get; set; } = default!;
 
 	[Parameter]
 	public MetaEntityId MetaEntityId { get; set; } = default!;
@@ -30,7 +29,7 @@ public partial class AddOrAttachDocumentToEntityDialog
 	IEnumerable<ViewModels.Document>? documentList;
 	DocumentListFilter documentFilter = new();
 	IList<ViewModels.Document>? selectedDocuments;
-	RadzenDataGrid<ViewModels.Document> grid = default!;
+	SuperDataGrid<ViewModels.Document> grid = default!;
 	string panel = "grid";
 	DocumentData? document;
 
@@ -39,11 +38,40 @@ public partial class AddOrAttachDocumentToEntityDialog
 		documentFilter.PageSize = int.MaxValue;
 	}
 
-	async Task LoadDatas(LoadDataArgs args)
+	async Task LoadDatas()
 	{
-		// Recupération de la liste des documents
+		// Recupï¿½ration de la liste des documents
 		var page = await Mediator.Send(new GetPagedEntityListRequest<DocumentListFilter, Datas.DocumentData>(documentFilter));
-		documentList = Mapper.Map<IEnumerable<ViewModels.Document>>(page.List);
+		documentList = Mapping.Profile.ToViewModels(page.List);
+	}
+
+	void OnSelectionChanged(IEnumerable<ViewModels.Document> selected) => selectedDocuments = selected.ToList();
+
+	async ValueTask<GridItemsProviderResult<ViewModels.Document>> LoadItems(GridItemsProviderRequest<ViewModels.Document> request)
+	{
+		if (documentList is null)
+			await LoadDatas();
+
+		IEnumerable<ViewModels.Document> rows = documentList ?? [];
+		foreach (var filter in request.Filters)
+		{
+			if (string.IsNullOrWhiteSpace(filter.PropertyValue)) continue;
+			rows = filter.PropertyName switch
+			{
+				"FileName" => rows.Where(x => x.FileName.Contains(filter.PropertyValue, StringComparison.OrdinalIgnoreCase)),
+				"Description" => rows.Where(x => x.Description.Contains(filter.PropertyValue, StringComparison.OrdinalIgnoreCase)),
+				_ => rows
+			};
+		}
+		var descending = request.SortDirection == SortDirection.Descending;
+		rows = request.SortColumn switch
+		{
+			"FileName" => descending ? rows.OrderByDescending(x => x.FileName) : rows.OrderBy(x => x.FileName),
+			"Description" => descending ? rows.OrderByDescending(x => x.Description) : rows.OrderBy(x => x.Description),
+			_ => rows.OrderBy(x => x.RowIndex)
+		};
+		var items = rows.ToList();
+		return GridItemsProviderResult<ViewModels.Document>.From(items.Skip(request.StartIndex).Take(request.Count ?? items.Count).ToList(), items.Count);
 	}
 
 	void OnDragEnter(DragEventArgs e)
@@ -68,14 +96,14 @@ public partial class AddOrAttachDocumentToEntityDialog
 			var saveDocumentResult = await Mediator.Send(new SaveDocumentRequest(document, documentContent));
 			if (saveDocumentResult.HasError)
 			{
-				NotificationService.NotifyError(saveDocumentResult);
+				await NotificationService.NotifyError(saveDocumentResult);
 				return;
 			}
 
-			selectedDocuments.Add(Mapper.Map<ViewModels.Document>(document));
+			selectedDocuments.Add(Mapping.Profile.ToViewModel(document));
 		}
 
-		DialogService.Close(selectedDocuments);
+		await DialogService.Close(selectedDocuments);
 	}
 
 	async Task Upload()
@@ -90,7 +118,7 @@ public partial class AddOrAttachDocumentToEntityDialog
 		IBrowserFile file = e.File;
 		if (file == null)
 		{
-			NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier sélectionné");
+			await NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier sï¿½lectionnï¿½");
 			return;
 		}
 		document!.FileName = file.Name;

@@ -1,19 +1,19 @@
-﻿using ComptaClub.Contracts.Models.ForecastBudget;
+using ComptaClub.Contracts.Models.ForecastBudget;
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.ForecastBudget;
 internal class DeleteForecastBudgetRequestHandler : IRequestHandler<DeleteForecastBudgetRequest, CommandResult>
 {
-    private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+    private readonly IComptaClubDbContextFactory _dbContextFactory;
 
-    public DeleteForecastBudgetRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+    public DeleteForecastBudgetRequestHandler(IComptaClubDbContextFactory dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;
     }
 
     public async Task<CommandResult> Handle(DeleteForecastBudgetRequest request, CancellationToken cancellationToken)
     {
-        var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+        await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
         var forecastBudget = await db.ForecastBudgets.FirstOrDefaultAsync(i => i.Id == request.ForecastBudgetId, cancellationToken);
         if (forecastBudget is null)

@@ -15,7 +15,7 @@ namespace ComptaClub.Tests.Cruds
 		public async Task User_Crud()
 		{
 			var app = await TestHelper.CreateWebApplication();
-			var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
+			var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 			var user = await mediator.Send(new GetUserByFilterRequest(i => i.Email = "fake"));
 			user.Should().BeNull();

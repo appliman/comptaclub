@@ -4,7 +4,7 @@ namespace ComptaClub.Validators;
 
 internal class MemberValidator : FluentValidation.AbstractValidator<Datas.MemberData>
 {
-	public MemberValidator(MediatR.IMediator mediator)
+	public MemberValidator(ChannelMediator.IMediator mediator)
 	{
 		RuleFor(i => i.Id).ValidGuid();
 		RuleFor(i => i.Email).EmailAddress().WithMessage("L'adresse email indiquée n'est pas valide");

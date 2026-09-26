@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models.Documents;
+using ComptaClub.Contracts.Models.Documents;
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Banks;
@@ -6,12 +6,12 @@ namespace ComptaClub.Handlers.Banks;
 internal class SaveDocumentRequestHandler : SaveRequestHandlerBase, IRequestHandler<SaveDocumentRequest, PersistResult>
 {
 	private readonly IValidator<DocumentData> _validator;
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 	private readonly ILogger<SaveDocumentRequestHandler> _logger;
 
 	public SaveDocumentRequestHandler(
 		IValidator<DocumentData> validator,
-		IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+		IComptaClubDbContextFactory dbContextFactory,
 		ILogger<SaveDocumentRequestHandler> logger)
 		: base(dbContextFactory, logger)
 	{

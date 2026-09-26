@@ -1,11 +1,11 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Accounts;
 
 namespace ComptaClub.Handlers.Accounts;
 
 internal class GetPagedAccountListRequestHandler : GetEntityPagedListRequestHandlerBase<AccountListFilter, AccountData>
 {
-    public GetPagedAccountListRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+    public GetPagedAccountListRequestHandler(IComptaClubDbContextFactory dbContextFactory)
         : base(dbContextFactory)
     {
 
@@ -15,7 +15,7 @@ internal class GetPagedAccountListRequestHandler : GetEntityPagedListRequestHand
     {
         var filter = request.GetFilter(new AccountListFilter());
 
-        var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
+        await using var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
 
         var query = from account in db.Accounts
                     select account;

@@ -2,7 +2,7 @@ using ComptaClub;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var settings = await builder.ConfigureComptaClub();
+var settings = builder.ConfigureComptaClub();
 
 // Add services to the container.
 builder.Services.AddRazorPages();

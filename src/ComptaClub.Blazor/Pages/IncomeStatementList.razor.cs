@@ -1,5 +1,6 @@
-﻿using ComptaClub.Contracts.Models.IncomeStatements;
+using ComptaClub.Contracts.Models.IncomeStatements;
 using ComptaClub.Datas;
+using SuperBlazorComponents.Components.SuperDataGrid;
 
 namespace ComptaClub.Blazor.Pages;
 
@@ -9,10 +10,8 @@ public partial class IncomeStatementList : ComponentBase
 	MainLayout MainLayout { get; set; } = default!;
 
 	[Inject]
-	MediatR.IMediator Mediator { get; set; } = default!;
+	ChannelMediator.IMediator Mediator { get; set; } = default!;
 
-	[Inject]
-	AutoMapper.IMapper Mapper { get; set; } = default!;
 
 	[Inject]
 	NotificationService NotificationService { get; set; } = default!;
@@ -25,8 +24,22 @@ public partial class IncomeStatementList : ComponentBase
 
 
 	List<ViewModels.IncomeStatement>? incomeStatementList;
-	RadzenDataGrid<ViewModels.IncomeStatement>? grid;
-	IList<ViewModels.IncomeStatement>? selectedRow;
+	SuperDataGrid<ViewModels.IncomeStatement>? grid;
+
+	ValueTask<GridItemsProviderResult<ViewModels.IncomeStatement>> LoadItems(GridItemsProviderRequest<ViewModels.IncomeStatement> request)
+	{
+		IEnumerable<ViewModels.IncomeStatement> rows = incomeStatementList ?? [];
+		var descending = request.SortDirection == SortDirection.Descending;
+		rows = request.SortColumn switch
+		{
+			"Description" => descending ? rows.OrderByDescending(x => x.Description) : rows.OrderBy(x => x.Description),
+			"CreationDate" => descending ? rows.OrderByDescending(x => x.CreationDate) : rows.OrderBy(x => x.CreationDate),
+			_ => rows.OrderByDescending(x => x.CreationDate)
+		};
+		var all = rows.ToList();
+		return ValueTask.FromResult(GridItemsProviderResult<ViewModels.IncomeStatement>.From(
+			all.Skip(request.StartIndex).Take(request.Count ?? all.Count).ToList(), all.Count));
+	}
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -40,12 +53,12 @@ public partial class IncomeStatementList : ComponentBase
 		filter.SortByName = "CreationDate";
 
 		var page = await Mediator.Send(new GetPagedEntityListRequest<IncomeStatementListFilter, IncomeStatementData>(filter));
-		incomeStatementList = Mapper.Map<List<ViewModels.IncomeStatement>>(page.List);
+		incomeStatementList = Mapping.Profile.ToViewModels(page.List);
 	}
 
 	async Task DeleteRow(ViewModels.IncomeStatement item)
 	{
-		var dialog = await DialogService.Confirm("Confirmez-vous la suppression de ce compte de résultat ?", "Suppression compte de résultat", new ConfirmOptions
+		var dialog = await DialogService.Confirm("Suppression compte de résultat", "Confirmez-vous la suppression de ce compte de résultat ?", new ConfirmOptions
 		{
 			OkButtonText = "Supprimer",
 			CancelButtonText = "Annuler"
@@ -59,11 +72,12 @@ public partial class IncomeStatementList : ComponentBase
 		var deleteResult = await Mediator.Send(new DeleteIncomeStatementRequest(item.Id));
 		if (deleteResult.HasError)
 		{
-			NotificationService.NotifyError(deleteResult);
+			await NotificationService.NotifyError(deleteResult);
 			return;
 		}
 
 		await LoadDatas();
+		if (grid is not null) await grid.ReloadAsync();
 	}
 
 	async Task CreateIncomeStatement()
@@ -71,7 +85,7 @@ public partial class IncomeStatementList : ComponentBase
 		var dialog = await DialogService.OpenAsync<Dialogs.ExerciceSelectorDialog>("Selection d'un exercice",
 			options: new DialogOptions
 			{
-				CloseDialogOnEsc = true,
+
 			});
 
 		var exercice = dialog as ViewModels.Exercice;
@@ -83,7 +97,7 @@ public partial class IncomeStatementList : ComponentBase
 		var createResult = await Mediator.Send(new CreateAndSaveIncomeStatementRequest(exercice.Id));
 		if (createResult.HasError)
 		{
-			NotificationService.NotifyError(createResult);
+			await NotificationService.NotifyError(createResult);
 			return;
 		}
 

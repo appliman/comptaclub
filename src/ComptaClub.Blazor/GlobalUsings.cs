@@ -1,4 +1,4 @@
-﻿global using System;
+global using System;
 global using System.Collections.Generic;
 global using System.Linq;
 global using System.Threading.Tasks;
@@ -15,5 +15,10 @@ global using ComptaClub.Blazor.Extensions;
 global using ComptaClub.Blazor.Pages.Layout;
 global using ComptaClub.Enums;
 
-global using Radzen;
-global using Radzen.Blazor;
+
+global using DialogService = SuperBlazorComponents.Services.SuperDialogService;
+global using NotificationService = SuperBlazorComponents.Services.SuperNotificationService;
+global using NotificationSeverity = SuperBlazorComponents.Components.Notifications.NotificationSeverity;
+global using NotificationMessage = SuperBlazorComponents.Components.Notifications.NotificationMessage;
+global using DialogOptions = SuperBlazorComponents.Components.Dialogs.DialogOptions;
+global using ConfirmOptions = SuperBlazorComponents.Components.Dialogs.ConfirmOptions;

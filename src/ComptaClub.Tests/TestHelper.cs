@@ -5,11 +5,11 @@ using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Contracts.Models.Users;
 using ComptaClub.Datas;
+using ComptaClub.Datas.MsSql;
+using ComptaClub.EntityFramework;
 using ComptaClub.Extensions;
 
-using EFScriptableMigration;
-
-using MediatR;
+using ChannelMediator;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -25,14 +25,6 @@ namespace ComptaClub.Tests
 			var builder = WebApplication.CreateBuilder();
 
 			var cs = builder.Configuration.GetConnectionString("TEST");
-			var dbTest = new Datas.ComptaClubDbContext(new Datas.DbConfiguration
-			{
-				ConnectionString = cs!,
-				EnvironmentName = builder.Environment.EnvironmentName
-			});
-			await dbTest.Database.EnsureDeletedAsync();
-			await dbTest.Database.EnsureCreatedAsync();
-
 			builder.Environment.EnvironmentName = "Development";
 			var args = new string[]
 			{
@@ -40,19 +32,16 @@ namespace ComptaClub.Tests
 				"--cs", cs!
 			};
 
-			var cfg = await builder.ConfigureComptaClub(args);
-
-
-			var migration = new DbMigration()
-			{
-				ConnectionString = cfg.SqlConnectionString,
-				SchemaName = "ComptaClub",
-				EmbededTypeReference = typeof(StartupExtensions)
-			};
-
-			await migration.Start();
-
+			var cfg = builder.ConfigureComptaClub(args);
+			builder.Services.AddComptaClubMsSql(cfg.ConnectionString, builder.Environment.EnvironmentName);
 			var app = builder.Build();
+			var factory = app.Services.GetRequiredService<IComptaClubDbContextFactory>();
+			await using (var dbTest = await factory.CreateDbContextAsync())
+			{
+				await dbTest.Database.EnsureDeletedAsync();
+				await dbTest.Database.EnsureCreatedAsync();
+			}
+			await factory.MigrateAsync();
 
 			return app;
 		}
@@ -82,7 +71,7 @@ namespace ComptaClub.Tests
 			return bank;
 		}
 
-		public async static Task<Datas.ExerciceData> GetOrCreateExercice(this MediatR.IMediator mediator, string code)
+		public async static Task<Datas.ExerciceData> GetOrCreateExercice(this ChannelMediator.IMediator mediator, string code)
 		{
 			var exercice = await mediator.Send(new GetExerciceByFilterRequest(i => i.Code == code));
 			if (exercice == null)
@@ -164,8 +153,8 @@ namespace ComptaClub.Tests
 
 		public async static Task CleanupDatabase(this IServiceProvider serviceProvider)
 		{
-			var dbContextFactory = serviceProvider.GetRequiredService<IDbContextFactory<Datas.ComptaClubDbContext>>();
-			var db = await dbContextFactory.CreateDbContextAsync();
+			var dbContextFactory = serviceProvider.GetRequiredService<IComptaClubDbContextFactory>();
+			await using var db = await dbContextFactory.CreateDbContextAsync();
 
 			await db.Database.BeginTransactionAsync();
 

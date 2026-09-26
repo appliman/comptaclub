@@ -7,6 +7,7 @@ using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Exercices;
 
 using Microsoft.AspNetCore.WebUtilities;
+using SuperBlazorComponents.Components.SuperTabs;
 
 namespace ComptaClub.Blazor.Pages;
 
@@ -21,11 +22,9 @@ public partial class EditEntry : ComponentBase
 	[Parameter]
 	public string Direction { get; set; } = null!;
 
-	[Inject]
-	AutoMapper.IMapper Mapper { get; set; } = default!;
 
 	[Inject]
-	MediatR.IMediator Mediator { get; set; } = default!;
+	ChannelMediator.IMediator Mediator { get; set; } = default!;
 
 	[Inject]
 	NavigationManager NavigationManager { get; set; } = default!;
@@ -43,7 +42,7 @@ public partial class EditEntry : ComponentBase
 	AssociatedMemberByEntry associatedMembers = default!;
 	DocumentListByEntity associatedDocuments = default!;
 	int selectedTabIndex = 0;
-	RadzenTabs tabs = default!;
+	SuperTabs tabs = default!;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -115,14 +114,13 @@ public partial class EditEntry : ComponentBase
 		customValidator?.Reset();
 		entry.AccountDirection = direction;
 		entry.ValueDate = entry.CreationDate;
-		var data = Mapper.Map<Datas.EntryData>(entry);
-		var saveResult = await Mediator!.Send(new SaveEntityRequest<Datas.EntryData>(data));
+		var saveResult = await Mediator!.Send(new SaveEntityRequest<Datas.EntryData>(entry));
 		if (saveResult!.HasError)
 		{
 			customValidator!.DisplayErrors(saveResult.ErrorBrokenRuleList);
 			if (selectedTabIndex != 0)
 			{
-				NotificationService.NotifyError(saveResult);
+				await NotificationService.NotifyError(saveResult);
 			}
 			return;
 		}

@@ -1,7 +1,7 @@
 using ComptaClub.Contracts.Models.IncomeStatements;
 using ComptaClub.Datas;
 
-using MediatR;
+using ChannelMediator;
 
 namespace ComptaClub.Blazor.Pages;
 
@@ -19,8 +19,6 @@ public partial class ViewIncomeStatement
 	[Inject]
 	Services.PrintService PrintService { get; set; } = default!;
 
-	[Inject]
-	AutoMapper.IMapper Mapper { get; set; } = default!;
 
 	ViewModels.IncomeStatement incomeStatement = new();
 
@@ -30,14 +28,15 @@ public partial class ViewIncomeStatement
 		incomeStatementfilter.IdList.Add(IncomeStatementId);
 
 		var incomeStatementList = await Mediator.Send(new GetPagedEntityListRequest<IncomeStatementListFilter, IncomeStatementData>(incomeStatementfilter));
-		incomeStatement = Mapper.Map<ViewModels.IncomeStatement>(incomeStatementList.List.FirstOrDefault());
-		if (incomeStatement == null)
+		var data = incomeStatementList.List.FirstOrDefault();
+		if (data is null)
 		{
 			return;
 		}
+		incomeStatement = Mapping.Profile.ToViewModel(data);
 
 		var incomeStatementItemList = await Mediator.Send(new GetPagedEntityListRequest<IncomeStatementItemListFilter, IncomeStatementItemData>(f => f.IncomeStatementId = incomeStatement.Id));
-		incomeStatement.ItemList = Mapper.Map<List<ViewModels.IncomeStatementItem>>(incomeStatementItemList.List);
+		incomeStatement.ItemList = Mapping.Profile.ToViewModels(incomeStatementItemList.List);
 
 		foreach (var item in incomeStatement.ItemList)
 		{

@@ -1,13 +1,13 @@
-﻿using ComptaClub.Contracts.Models.Exercices;
+using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Contracts.Results;
 
 namespace ComptaClub.Handlers.Exercices;
 
 internal class DeleteExerciceRequestHandler : IRequestHandler<DeleteExerciceRequest, CommandResult>
 {
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 
-	public DeleteExerciceRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+	public DeleteExerciceRequestHandler(IComptaClubDbContextFactory dbContextFactory)
 	{
 		_dbContextFactory = dbContextFactory;
 	}
@@ -15,7 +15,7 @@ internal class DeleteExerciceRequestHandler : IRequestHandler<DeleteExerciceRequ
 	public async Task<CommandResult> Handle(DeleteExerciceRequest request, CancellationToken cancellationToken)
 	{
 		// On regarde s'il existe déjà des entrées associées à l'exercice
-		var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 		var exercice = await db.Exercices.FindAsync(request.ExerciceId);
 
 		if (exercice == null)

@@ -21,7 +21,7 @@ public class MemberCrudTests
 	public async Task Member_Crud()
 	{
 		var app = await TestHelper.CreateWebApplication();
-		var mediator = app.Services.GetRequiredService<MediatR.IMediator>();
+		var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 		var member = await mediator.Send(new GetMemberByFilterRequest(i => i.Email = "fake"));
 		member.Should().BeNull();

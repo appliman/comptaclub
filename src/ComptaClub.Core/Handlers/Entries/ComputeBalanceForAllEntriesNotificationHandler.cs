@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Exercices;
 
@@ -6,11 +6,11 @@ namespace ComptaClub.Handlers.Entries;
 internal class ComputeBalanceForAllEntriesNotificationHandler : INotificationHandler<EntrySavedNotification>
 {
 	private readonly IMediator _mediator;
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 	private readonly ILogger<ComputeBalanceForAllEntriesNotificationHandler> _logger;
 
 	public ComputeBalanceForAllEntriesNotificationHandler(IMediator mediator,
-		IDbContextFactory<Datas.ComptaClubDbContext> dbContextFactory,
+		IComptaClubDbContextFactory dbContextFactory,
 		ILogger<ComputeBalanceForAllEntriesNotificationHandler> logger)
 	{
 		_mediator = mediator;
@@ -39,7 +39,7 @@ internal class ComputeBalanceForAllEntriesNotificationHandler : INotificationHan
 
 		var balance = exercice.InitialAmount;
 
-		var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
 		while (true)
 		{

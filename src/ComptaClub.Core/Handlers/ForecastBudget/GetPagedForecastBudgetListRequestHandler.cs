@@ -1,11 +1,11 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.ForecastBudget;
 
 namespace ComptaClub.Handlers.ForecastBudget;
 
 internal class GetPagedForecastBudgetListRequestHandler : GetEntityPagedListRequestHandlerBase<ForecastBudgetListFilter, ForecastBudgetData>
 {
-    public GetPagedForecastBudgetListRequestHandler(IDbContextFactory<ComptaClubDbContext> dbContextFactory)
+    public GetPagedForecastBudgetListRequestHandler(IComptaClubDbContextFactory dbContextFactory)
         : base(dbContextFactory)
     {
 
@@ -15,7 +15,7 @@ internal class GetPagedForecastBudgetListRequestHandler : GetEntityPagedListRequ
     {
         var filter = request.GetFilter(new ForecastBudgetListFilter());
 
-        var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
+        await using var db = await DbContextFactory.CreateDbContextAsync(cancellationToken);
 
         var query = from forecastBudget in db.ForecastBudgets
                     select forecastBudget;

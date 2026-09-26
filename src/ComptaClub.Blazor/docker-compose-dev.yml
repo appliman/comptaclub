@@ -13,13 +13,11 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=development
       - ASPNETCORE_URLS=http://+:8080
-      - ComptaClub__KeyVaultCertificatePath=/app/certs/comptaclubdev-ComptaClubDev-20230204.pfx
-      - ComptaClub__EmailTemplateFolder=/app/data/email-templates
     ports:
       - "34503:8080"
     volumes:
-      - c:/Certificats:/app/certs:ro
-      - E:/S5/chouteau/ComptaClub/src/ComptaClub.Blazor/wwwroot/EmailTemplates:/app/data/email-templates:ro
+      - ./appsettings.local.json:/app/appsettings.local.json:ro
+      - comptaclub-dev-data:/app/data
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
@@ -35,3 +33,6 @@ services:
 networks:
   actuasso-network:
     driver: bridge
+
+volumes:
+  comptaclub-dev-data:

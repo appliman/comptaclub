@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Accounts;
 using ComptaClub.Contracts.Results;
 
@@ -6,11 +6,11 @@ namespace ComptaClub.Handlers.Accounts;
 
 internal class ImportAccountingPlanRequestHandler : IRequestHandler<ImportAccountingPlanRequest, CommandResult>
 {
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 	private readonly IMediator _mediator;
 
 	public ImportAccountingPlanRequestHandler(
-			IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+			IComptaClubDbContextFactory dbContextFactory,
 		IMediator mediator)
 	{
 		_dbContextFactory = dbContextFactory;

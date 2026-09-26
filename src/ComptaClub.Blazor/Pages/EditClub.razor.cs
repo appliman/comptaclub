@@ -9,7 +9,7 @@ public partial class EditClub
 	MainLayout MainLayout { get; set; } = default!;
 
 	[Inject]
-	MediatR.IMediator Mediator { get; set; } = default!;
+	ChannelMediator.IMediator Mediator { get; set; } = default!;
 
 	[Inject]
 	NotificationService NotificationService { get; set; } = default!;
@@ -37,14 +37,14 @@ public partial class EditClub
 		IBrowserFile file = args.File;
 		if (file == null)
 		{
-			NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier sélectionné");
+			await NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier sï¿½lectionnï¿½");
 			return;
 		}
 
 		// Verifier s'il s'agit bien d'une image
 		if (!file.ContentType.StartsWith("image/"))
 		{
-			NotificationService.Notify(NotificationSeverity.Error, "Le fichier sélectionné n'est pas une image");
+			await NotificationService.Notify(NotificationSeverity.Error, "Le fichier sï¿½lectionnï¿½ n'est pas une image");
 			return;
 		}
 

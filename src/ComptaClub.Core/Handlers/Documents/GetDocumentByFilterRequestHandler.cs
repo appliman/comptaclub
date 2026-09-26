@@ -1,15 +1,15 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Documents;
 
 namespace ComptaClub.Handlers.Documents;
 
 internal class GetDocumentByFilterRequestHandler : IRequestHandler<GetDocumentByFilterRequest, DocumentData?>
 {
-	private readonly IDbContextFactory<ComptaClubDbContext> _dbContextFactory;
+	private readonly IComptaClubDbContextFactory _dbContextFactory;
 	private readonly IMediator _mediator;
 
 	public GetDocumentByFilterRequestHandler(
-		IDbContextFactory<ComptaClubDbContext> dbContextFactory,
+		IComptaClubDbContextFactory dbContextFactory,
 		IMediator mediator)
 	{
 		_dbContextFactory = dbContextFactory;
