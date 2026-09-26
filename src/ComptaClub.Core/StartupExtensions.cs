@@ -35,7 +35,9 @@ public static class StartupExtensions
                 ? settings.ConnectionString
                 : sqlConnectionString;
             if (string.IsNullOrWhiteSpace(settings.ConnectionString))
+            {
                 throw new InvalidOperationException("ComptaClub:ConnectionString is required for MsSql.");
+            }
         }
 
         builder.Services.AddComptaClubCore();

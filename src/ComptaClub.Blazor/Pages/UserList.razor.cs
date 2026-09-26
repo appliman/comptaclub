@@ -48,8 +48,11 @@ public partial class UserList
 	async ValueTask<GridItemsProviderResult<ViewModels.User>> LoadItems(GridItemsProviderRequest<ViewModels.User> request)
 	{
 		if (userList is null)
-			await LoadDatas();
-		IEnumerable<ViewModels.User> rows = userList ?? [];
+        {
+            await LoadDatas();
+        }
+
+        IEnumerable<ViewModels.User> rows = userList ?? [];
 		var descending = request.SortDirection == SortDirection.Descending;
 		rows = request.SortColumn switch
 		{
@@ -65,8 +68,11 @@ public partial class UserList
 	async Task ReloadItems()
 	{
 		userList = null;
-		if (grid is not null) await grid.ReloadAsync();
-	}
+		if (grid is not null)
+        {
+            await grid.ReloadAsync();
+        }
+    }
 
 	async Task InsertRow()
 	{

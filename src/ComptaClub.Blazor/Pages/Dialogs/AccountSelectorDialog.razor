@@ -1,4 +1,4 @@
-<SuperDataGrid @ref="grid" AllowFiltering="false" AllowSorting="false" AllowColumnResize="true" Hierarchical="true" HierarchyKeySelector="@(account => account.Id)" ItemsProvider="LoadItems" TItem="ViewModels.Account" SelectionMode="SuperDataGridSelectionMode.Single" SelectionChanged="OnSelectionChanged" DisplayRowNumberColumn="false" Height="500px">
+<SuperDataGrid RowHeight="55" @ref="grid" DisplaySelectionColumn="false" DisplayColumnVisibilityToggle="false" AllowFiltering="false" AllowSorting="false" AllowColumnResize="true" Hierarchical="true" HierarchyKeySelector="@(account => account.Id)" ItemsProvider="LoadItems" TItem="ViewModels.Account" SelectionMode="SuperDataGridSelectionMode.Single" SelectionChanged="OnSelectionChanged" DisplayRowNumberColumn="false" Height="500px">
     <DataGridColumn TItem="ViewModels.Account" Property="Code" Title="Code Compta" Width="180px" Filterable="false" />
     <DataGridColumn TItem="ViewModels.Account" Property="Label" Title="Libellé du code compta" Filterable="false" />
 </SuperDataGrid>

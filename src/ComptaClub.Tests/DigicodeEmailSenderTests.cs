@@ -3,12 +3,55 @@ using System.Net.Sockets;
 using System.Text;
 using ComptaClub.Configuration;
 using ComptaClub.Mail;
+using MimeKit;
 
 namespace ComptaClub.Tests;
 
 [TestClass]
 public class DigicodeEmailSenderTests
 {
+    [TestMethod]
+    public async Task Saves_rendered_message_in_temp_when_smtp_host_is_local()
+    {
+        var directory = Path.Combine(Path.GetTempPath(), "ComptaClub", "Mails");
+        Directory.CreateDirectory(directory);
+        var existingFiles = Directory.GetFiles(directory, "*.eml").ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var recipient = $"member-{Guid.NewGuid():N}@example.com";
+        var sender = new DigicodeEmailSender(new ComptaClubSettings
+        {
+            ContactName = "ComptaClub",
+            ContactEmailAdress = "noreply@example.com",
+            SmtpHost = "local"
+        });
+
+        string? savedFile = null;
+        try
+        {
+            await sender.SendAsync(recipient, 12345);
+
+            foreach (var path in Directory.GetFiles(directory, "*.eml").Where(path => !existingFiles.Contains(path)))
+            {
+                var message = MimeMessage.Load(path);
+                if (message.To.Mailboxes.Any(mailbox => mailbox.Address == recipient))
+                {
+                    savedFile = path;
+                    StringAssert.Contains(message.HtmlBody, "12345");
+                    StringAssert.Contains(message.TextBody, "12345");
+                    break;
+                }
+            }
+
+            Assert.IsNotNull(savedFile, "Le message local n'a pas été enregistré dans le répertoire temporaire.");
+        }
+        finally
+        {
+            if (savedFile is not null)
+            {
+                File.Delete(savedFile);
+            }
+        }
+    }
+
     [TestMethod]
     public async Task Sends_rendered_code_immediately_over_smtp()
     {
@@ -69,10 +112,14 @@ public class DigicodeEmailSenderTests
             }
 
             if (line.StartsWith("EHLO", StringComparison.OrdinalIgnoreCase))
+            {
                 await writer.WriteLineAsync("250 localhost");
+            }
             else if (line.StartsWith("MAIL FROM", StringComparison.OrdinalIgnoreCase)
                 || line.StartsWith("RCPT TO", StringComparison.OrdinalIgnoreCase))
+            {
                 await writer.WriteLineAsync("250 accepted");
+            }
             else if (line.Equals("DATA", StringComparison.OrdinalIgnoreCase))
             {
                 inData = true;
@@ -84,7 +131,9 @@ public class DigicodeEmailSenderTests
                 break;
             }
             else
+            {
                 await writer.WriteLineAsync("250 accepted");
+            }
         }
 
         return message.ToString();

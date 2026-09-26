@@ -70,8 +70,11 @@ public partial class AssociatedMemberByEntry
 	protected async ValueTask<GridItemsProviderResult<AssociatedMemberToEntryRow>> LoadItems(GridItemsProviderRequest<AssociatedMemberToEntryRow> request)
 	{
 		if (associatedMemberList is null)
-			await LoadDatas();
-		var rows = associatedMemberList ?? [];
+        {
+            await LoadDatas();
+        }
+
+        var rows = associatedMemberList ?? [];
 		return GridItemsProviderResult<AssociatedMemberToEntryRow>.From(
 			rows.Skip(request.StartIndex).Take(request.Count ?? rows.Count).ToList(), rows.Count);
 	}

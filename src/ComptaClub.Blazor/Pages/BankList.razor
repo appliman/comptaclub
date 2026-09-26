@@ -13,7 +13,7 @@
 </SectionContent>
 
 <div style="height:100%">
-	<SuperDataGrid @ref="grid"
+	<SuperDataGrid RowHeight="55" @ref="grid" DisplaySelectionColumn="false" DisplayColumnVisibilityToggle="false"
 					AllowFiltering="true"
 					AllowSorting="true"
 					AllowColumnResize="true"
@@ -21,23 +21,26 @@
 
 					TItem="ViewModels.BankRow"
 					DisplayRowNumberColumn="false"
-					Height="500px">
-
-			<DataGridColumn TItem="ViewModels.BankRow" Context="bank" Filterable="false" Sortable="false" TextAlign="SuperTextAlignment.Right" Width="100px">
-				<Template Context="bank">
-					<SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(bank))" @onclick:stopPropagation="true" title="Supprimer cette banque">
-					</SuperButton>
-					<SuperButton Icon="fa-pen" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Click="@(args => EditRow(bank))" @onclick:stopPropagation="true" title="Editer cette banque">
-					</SuperButton>
-				</Template>
-				<EditTemplate Context="bank">
+					Height="500px" ActionsWidth="120">
+			<ActionsTemplate Context="bank">
+				@if (grid.IsRowInEditMode(bank))
+				{
 					<SuperButton Icon="fa-check" Style="SuperButtonStyle.Success"  Size="SuperButtonSize.Default" Click="@((args) => SaveRow(bank))">
 					</SuperButton>
 					<SuperButton Icon="fa-xmark" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Class="my-1 ms-1" Click="@((args) => CancelEdit(bank))">
 					</SuperButton>
-				</EditTemplate>
-			</DataGridColumn>
+				}
+				else
+				{
+					<SuperButton Icon="fa-trash" Style="SuperButtonStyle.Warning"  Size="SuperButtonSize.Default" Click="@(args => DeleteRow(bank))" @onclick:stopPropagation="true" title="Supprimer cette banque">
+					</SuperButton>
+					<SuperButton Icon="fa-pen" Style="SuperButtonStyle.Light"  Size="SuperButtonSize.Default" Click="@(args => EditRow(bank))" @onclick:stopPropagation="true" title="Editer cette banque">
+					</SuperButton>
+				}
+			</ActionsTemplate>
+			<ChildContent>
 			<DataGridColumn TItem="ViewModels.BankRow" Property="Entity.Code" Title="Code Banque" Width="220px" Filterable="false">
+				<Template Context="bank">@bank.Entity.Code</Template>
 				<EditTemplate Context="bank">
 					<input class="form-control w-100" @bind="bank.Entity.Code" />
 					<BrokenRuleMessage For="() => bank.Entity.Code" BrokenRuleList="brokenRules" />
@@ -56,12 +59,13 @@
 				</Template>
 			</DataGridColumn>
 			<DataGridColumn TItem="ViewModels.BankRow" Property="Entity.Label" Title="Libellé" Filterable="false">
+				<Template Context="bank">@bank.Entity.Label</Template>
 				<EditTemplate Context="bank">
 					<input class="form-control w-100" @bind="bank.Entity.Label" />
 					<BrokenRuleMessage For="() => bank.Entity.Label" BrokenRuleList="brokenRules" />
 				</EditTemplate>
 			</DataGridColumn>
-
+			</ChildContent>
 	</SuperDataGrid>
 </div>
 

@@ -9,7 +9,9 @@ public static class StartupExtensions
     public static IServiceCollection AddComptaClubMsSql(this IServiceCollection services, string connectionString, string environmentName)
     {
         if (string.IsNullOrWhiteSpace(connectionString))
+        {
             throw new ArgumentException("SQL Server connection string is required.", nameof(connectionString));
+        }
 
         services.AddDbContextFactory<ComptaClubDbContext>(options =>
         {

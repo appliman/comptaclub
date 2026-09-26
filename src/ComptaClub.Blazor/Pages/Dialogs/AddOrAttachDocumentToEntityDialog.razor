@@ -1,7 +1,6 @@
 @if (panel == "grid")
 {
-	<SuperDataGrid @ref="grid" AllowFiltering="true" AllowSorting="true" AllowColumnResize="true" ItemsProvider="LoadItems" TItem="ViewModels.Document" SelectionMode="SuperDataGridSelectionMode.Multiple" SelectionChanged="OnSelectionChanged" DisplayRowNumberColumn="false" Height="400px">
-    <DataGridColumn TItem="ViewModels.Document" Property="RowIndex" Title="#" Width="60px" Filterable="false" />
+	<SuperDataGrid RowHeight="55" @ref="grid" DisplaySelectionColumn="false" DisplayColumnVisibilityToggle="false" AllowFiltering="true" AllowSorting="true" AllowColumnResize="true" ItemsProvider="LoadItems" TItem="ViewModels.Document" SelectionMode="SuperDataGridSelectionMode.Multiple" SelectionChanged="OnSelectionChanged" DisplayRowNumberColumn="true" Height="400px">
     <DataGridColumn TItem="ViewModels.Document" Property="FileName" Title="Fichier" Width="120px" Filterable="true" />
     <DataGridColumn TItem="ViewModels.Document" Property="Description" Title="Description" Filterable="true" />
 </SuperDataGrid>

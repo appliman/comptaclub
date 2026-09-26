@@ -9,7 +9,7 @@ using ComptaClub.Contracts.Models.Exercices;
 namespace ComptaClub.Tests.UseCases;
 
 [TestClass]
-public class CloseExerciceTest
+public class CloseExerciceTests
 {
 	[TestInitialize]
 	public async Task Initialize()

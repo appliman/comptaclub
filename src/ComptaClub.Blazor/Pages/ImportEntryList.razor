@@ -4,25 +4,21 @@
 
 <InputFile OnChange="LoadFile" />
 
-<SuperDataGrid @ref="grid"
+<SuperDataGrid RowHeight="55" @ref="grid" DisplaySelectionColumn="false" DisplayColumnVisibilityToggle="false"
     AllowFiltering="false"
     AllowSorting="true"
     AllowColumnResize="true"
     ItemsProvider="LoadItems"
     TItem="ViewModels.EntryRow"
     Height="500px"
-    DisplaySelectionColumn="false"
-    DisplayRowNumberColumn="false"
+    DisplayRowNumberColumn="true"
     SelectionMode="SuperDataGridSelectionMode.None"
-    FreezeLeftColumns="1">
-        <DataGridColumn TItem="ViewModels.EntryRow" Property="RowIndex" Title="#" Width="50px" Filterable="false">
-        </DataGridColumn>
-        <DataGridColumn TItem="ViewModels.EntryRow" Filterable="false" Sortable="false" TextAlign="SuperTextAlignment.Right" Width="70px">
-            <Template Context="entry">
-                <SuperButton Icon="fa-floppy-disk" Style="SuperButtonStyle.Success"  Size="SuperButtonSize.Default" Click="@(args => SaveRow(entry))" @onclick:stopPropagation="true" title="Editer cette ecriture">
-                </SuperButton>
-            </Template>
-        </DataGridColumn>
+    FreezeLeftColumns="1" ActionsWidth="70">
+        <ActionsTemplate Context="entry">
+            <SuperButton Icon="fa-floppy-disk" Style="SuperButtonStyle.Success"  Size="SuperButtonSize.Default" Click="@(args => SaveRow(entry))" @onclick:stopPropagation="true" title="Editer cette ecriture">
+            </SuperButton>
+        </ActionsTemplate>
+        <ChildContent>
         <DataGridColumn TItem="ViewModels.EntryRow" Property="CreationDate" Title="Date" Width="150px" Filterable="false">
             <Template Context="data">
                 <DateIdLabel Value="data.Entity.CreationDate"/>
@@ -57,4 +53,5 @@
                 }
             </Template>
         </DataGridColumn>
+        </ChildContent>
 </SuperDataGrid>

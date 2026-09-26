@@ -9,7 +9,7 @@ namespace ComptaClub.Tests.Cruds
 {
 	[TestClass]
 
-	public class UserCrud
+	public class UserCrudTests
 	{
 		[TestMethod]
 		public async Task User_Crud()

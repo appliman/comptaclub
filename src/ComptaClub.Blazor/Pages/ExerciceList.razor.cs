@@ -36,9 +36,11 @@ public partial class ExerciceList : ComponentBase
 	async ValueTask<GridItemsProviderResult<ViewModels.Exercice>> LoadItems(GridItemsProviderRequest<ViewModels.Exercice> request)
 	{
 		if (exerciceList is null)
-			await LoadDatas();
+        {
+            await LoadDatas();
+        }
 
-		IEnumerable<ViewModels.Exercice> rows = exerciceList ?? [];
+        IEnumerable<ViewModels.Exercice> rows = exerciceList ?? [];
 		var descending = request.SortDirection == SortDirection.Descending;
 		rows = request.SortColumn switch
 		{
@@ -59,8 +61,10 @@ public partial class ExerciceList : ComponentBase
 	{
 		await LoadDatas();
 		if (grid is not null)
-			await grid.ReloadAsync();
-	}
+        {
+            await grid.ReloadAsync();
+        }
+    }
 
 	void EditRow(ViewModels.Exercice exercice)
 	{

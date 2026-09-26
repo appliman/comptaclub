@@ -44,12 +44,19 @@ public partial class BankList : ComponentBase
 	async ValueTask<GridItemsProviderResult<ViewModels.BankRow>> LoadItems(GridItemsProviderRequest<ViewModels.BankRow> request)
 	{
 		if (bankList is null)
-			await LoadDatas();
-		IEnumerable<ViewModels.BankRow> rows = bankList ?? [];
+        {
+            await LoadDatas();
+        }
+
+        IEnumerable<ViewModels.BankRow> rows = bankList ?? [];
 		foreach (var filter in request.Filters)
 		{
-			if (string.IsNullOrWhiteSpace(filter.PropertyValue)) continue;
-			rows = filter.PropertyName switch
+			if (string.IsNullOrWhiteSpace(filter.PropertyValue))
+            {
+                continue;
+            }
+
+            rows = filter.PropertyName switch
 			{
 				"Entity.Code" => rows.Where(x => x.Entity.Code?.Contains(filter.PropertyValue, StringComparison.OrdinalIgnoreCase) == true),
 				"Entity.Label" => rows.Where(x => x.Entity.Label?.Contains(filter.PropertyValue, StringComparison.OrdinalIgnoreCase) == true),
@@ -111,8 +118,11 @@ public partial class BankList : ComponentBase
 			pendingBank = null;
 		}
 		else
-			await LoadDatas();
-		await grid.ReloadAsync();
+        {
+            await LoadDatas();
+        }
+
+        await grid.ReloadAsync();
 	}
 
 	Task DeleteRow(ViewModels.BankRow bank)

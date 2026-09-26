@@ -19,6 +19,9 @@ public partial class PriceLabel
 
     [Parameter]
     public string Color { get; set; } = "default";
+
+    private string DisplayColor => Value.GetValueOrDefault() == 0 ? "zero" : Color;
+
     MarkupString PriceValue
     {
         get
@@ -27,11 +30,4 @@ public partial class PriceLabel
         }
     }
 
-    protected override void OnParametersSet()
-    {
-        if (Value.GetValueOrDefault(0) == 0)
-        {
-            Color = "zero";
-        }
-    }
 }

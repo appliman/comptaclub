@@ -16,8 +16,11 @@ public sealed class DigicodeEmailSender(ComptaClubSettings settings)
 
     public async Task SendAsync(string recipient, int code, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(settings.SmtpHost) || settings.SmtpPort <= 0)
+        if (string.IsNullOrWhiteSpace(settings.SmtpHost)
+            || (!settings.SmtpHost.Equals("local", StringComparison.OrdinalIgnoreCase) && settings.SmtpPort <= 0))
+        {
             throw new InvalidOperationException("La configuration SMTP est incomplète.");
+        }
 
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress(settings.ContactName, settings.ContactEmailAdress));
@@ -29,13 +32,26 @@ public sealed class DigicodeEmailSender(ComptaClubSettings settings)
             TextBody = $"Voici le code pour se connecter : {code}\n\nComptaClub"
         }.ToMessageBody();
 
+        if (settings.SmtpHost.Equals("local", StringComparison.OrdinalIgnoreCase))
+        {
+            var directory = Path.Combine(Path.GetTempPath(), "ComptaClub", "Mails");
+            Directory.CreateDirectory(directory);
+            var path = Path.Combine(directory, $"{DateTime.UtcNow:yyyyMMddTHHmmssfff}-{Guid.NewGuid():N}.eml");
+            await using var stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, useAsync: true);
+            await message.WriteToAsync(stream, cancellationToken);
+            return;
+        }
+
         using var client = new SmtpClient();
         var security = settings.SmtpEnableSsl
             ? settings.SmtpPort == 465 ? SecureSocketOptions.SslOnConnect : SecureSocketOptions.StartTls
             : SecureSocketOptions.None;
         await client.ConnectAsync(settings.SmtpHost, settings.SmtpPort, security, cancellationToken);
         if (!string.IsNullOrWhiteSpace(settings.SmtpUserName))
+        {
             await client.AuthenticateAsync(settings.SmtpUserName, settings.SmtpPassword, cancellationToken);
+        }
+
         await client.SendAsync(message, cancellationToken);
         await client.DisconnectAsync(true, cancellationToken);
     }

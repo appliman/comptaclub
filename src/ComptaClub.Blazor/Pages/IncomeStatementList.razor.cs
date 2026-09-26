@@ -77,8 +77,11 @@ public partial class IncomeStatementList : ComponentBase
 		}
 
 		await LoadDatas();
-		if (grid is not null) await grid.ReloadAsync();
-	}
+		if (grid is not null)
+        {
+            await grid.ReloadAsync();
+        }
+    }
 
 	async Task CreateIncomeStatement()
 	{
