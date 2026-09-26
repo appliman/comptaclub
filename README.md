@@ -1,10 +1,10 @@
-# ComptaClub
+﻿# ComptaClub
 
 **La comptabilité d'un club, au même endroit que le suivi de ses membres.**
 
 ComptaClub est une application web destinée à la gestion comptable d'une association ou d'un club. Elle permet de suivre les recettes et les dépenses, de rattacher des écritures à des membres et à des justificatifs, puis de consulter les résultats et les budgets par exercice. L'interface est en français et fonctionne dans un navigateur, sans installation sur les postes des utilisateurs.
 
-## Ce que permet l'application
+## Ce que permet l'application 
 
 | Domaine | Fonctionnalités |
 | --- | --- |
