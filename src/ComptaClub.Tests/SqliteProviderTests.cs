@@ -21,9 +21,17 @@ namespace ComptaClub.Tests;
 public class SqliteProviderTests
 {
     [TestMethod]
-    public void MsSql_remains_the_default_provider()
+    public void Sqlite_is_the_default_provider_and_MsSql_remains_available()
     {
-        Assert.AreEqual("MsSql", new ComptaClubSettings().DatabaseProvider);
+        var settings = new ComptaClubSettings();
+        Assert.AreEqual("Sqlite", settings.DatabaseProvider);
+        Assert.AreEqual("Data Source=comptaclub.db", settings.SqliteConnectionString);
+        var sqliteServices = new ServiceCollection();
+        sqliteServices.AddComptaClubSqlite(settings.SqliteConnectionString!, "Production");
+        using var sqliteProvider = sqliteServices.BuildServiceProvider();
+        using var sqliteDb = sqliteProvider.GetRequiredService<IComptaClubDbContextFactory>().CreateDbContext();
+        Assert.AreEqual("Microsoft.EntityFrameworkCore.Sqlite", sqliteDb.Database.ProviderName);
+
         var services = new ServiceCollection();
         services.AddComptaClubMsSql("Server=localhost;Database=ComptaClubTest;User Id=test;Password=test;TrustServerCertificate=true", "Production");
         using var provider = services.BuildServiceProvider();

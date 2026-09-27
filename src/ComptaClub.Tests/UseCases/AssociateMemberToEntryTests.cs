@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Members;
 using ComptaClub.Extensions;
@@ -12,17 +12,10 @@ namespace ComptaClub.Tests.UseCases;
 [TestClass]
 public class AssociateMemberToEntryTests
 {
-	[TestInitialize]
-	public async Task Initialize()
-	{
-		var app = await TestHelper.CreateWebApplication();
-		await TestHelper.CleanupDatabase(app.Services);
-	}
-
 	[TestMethod]
 	public async Task Associate_Entry()
 	{
-		var app = await TestHelper.CreateWebApplication();
+		await using var app = await TestHelper.CreateWebApplication();
 		var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 		var exercice = await mediator.GetOrCreateExercice($"{Guid.NewGuid()}");

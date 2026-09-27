@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 
 using ComptaClub.Extensions;
 
@@ -11,13 +11,6 @@ namespace ComptaClub.Tests.UseCases;
 [TestClass]
 public class CloseExerciceTests
 {
-	[TestInitialize]
-	public async Task Initialize()
-	{
-		var app = await TestHelper.CreateWebApplication();
-		await TestHelper.CleanupDatabase(app.Services);
-	}
-
 	/// <summary>
 	/// Ajouter des entrées dans un exercice
 	/// Le clore 
@@ -27,7 +20,7 @@ public class CloseExerciceTests
 	[TestMethod]
 	public async Task Close_Exercice()
 	{
-		var app = await TestHelper.CreateWebApplication();
+		await using var app = await TestHelper.CreateWebApplication();
 		var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 		var exercice = await mediator.GetOrCreateExercice($"{Guid.NewGuid()}");

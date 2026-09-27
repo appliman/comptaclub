@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Documents;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Extensions;
@@ -15,7 +15,7 @@ public class AttachDocumentTests
 	[TestMethod]
 	public async Task Attach_Document_To_Entry()
 	{
-		var app = await TestHelper.CreateWebApplication();
+		await using var app = await TestHelper.CreateWebApplication();
 		var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 		var user = await mediator.GetOrCreateUser($"{Guid.NewGuid()}@email.com");

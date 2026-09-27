@@ -4,6 +4,7 @@ using ComptaClub.Contracts.Models.Banks;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Contracts.Models.Users;
+using ComptaClub.Configuration;
 using ComptaClub.Datas;
 using ComptaClub.Datas.Sqlite;
 using ComptaClub.EntityFramework;
@@ -157,25 +158,5 @@ namespace ComptaClub.Tests
 			return saveEntryResult.HasError ? null : entry;
 		}
 
-
-		public async static Task CleanupDatabase(this IServiceProvider serviceProvider)
-		{
-			var dbContextFactory = serviceProvider.GetRequiredService<IComptaClubDbContextFactory>();
-			await using var db = await dbContextFactory.CreateDbContextAsync();
-
-			await db.Database.BeginTransactionAsync();
-
-			await db.Accounts.ExecuteDeleteAsync();
-			await db.Banks.ExecuteDeleteAsync();
-			await db.DocumentsByEntities.ExecuteDeleteAsync();
-			await db.Documents.ExecuteDeleteAsync();
-			await db.Exercices.ExecuteDeleteAsync();
-			await db.Members.ExecuteDeleteAsync();
-			await db.RolesByUsers.ExecuteDeleteAsync();
-			await db.Users.ExecuteDeleteAsync();
-			await db.AssociatedMemberListByEntries.ExecuteDeleteAsync();
-
-			await db.Database.CommitTransactionAsync();
-		}
 	}
 }

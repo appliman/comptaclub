@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Extensions;
 
@@ -14,7 +14,7 @@ namespace ComptaClub.Tests.Cruds
 		[TestMethod]
 		public async Task Exercice_Crud()
 		{
-			var app = await TestHelper.CreateWebApplication();
+			await using var app = await TestHelper.CreateWebApplication();
 			var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 			var exercice = await mediator.Send(new GetExerciceByFilterRequest(f => f.Code == "fake"));
@@ -56,7 +56,7 @@ namespace ComptaClub.Tests.Cruds
 		[TestMethod]
 		public async Task Change_Active_Exercice()
 		{
-			var app = await TestHelper.CreateWebApplication();
+			await using var app = await TestHelper.CreateWebApplication();
 			var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 			var exercice1 = await mediator.Send(new CreateExerciceRequest($"Ex{Guid.NewGuid()}",

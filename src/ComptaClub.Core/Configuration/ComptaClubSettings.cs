@@ -21,7 +21,7 @@ public class ComptaClubSettings
     public string AzureStorageConnectionString { get; set; } = null!;
 
 
-    public string DatabaseProvider { get; set; } = "MsSql";
+    public string DatabaseProvider { get; set; } = "Sqlite";
     public string ConnectionString { get; set; } = null!;
 
     public System.Globalization.CultureInfo CultureInfo { get; init; } 

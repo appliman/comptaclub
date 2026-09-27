@@ -1,6 +1,7 @@
 using ComptaClub.EntityFramework;
 using EFScriptableMigration;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 
 namespace ComptaClub.Datas.MsSql;
 
@@ -18,10 +19,28 @@ public sealed class MsSqlDbContextFactory(
         cancellationToken.ThrowIfCancellationRequested();
         var migration = new DbMigration
         {
-            ConnectionString = connectionString,
+            ConnectionString = NormalizeLegacyConnectionString(connectionString),
             SchemaName = "ComptaClub",
             EmbededTypeReference = typeof(StartupExtensions)
         };
         return migration.Start();
+    }
+
+    private static string NormalizeLegacyConnectionString(string value)
+    {
+        var parsed = new DbConnectionStringBuilder { ConnectionString = value };
+        var legacy = new DbConnectionStringBuilder();
+        foreach (string originalKey in parsed.Keys)
+        {
+            var key = originalKey;
+            if (key.Equals("Trust Server Certificate", StringComparison.OrdinalIgnoreCase))
+            {
+                key = "TrustServerCertificate";
+            }
+
+            legacy[key] = parsed[originalKey];
+        }
+
+        return legacy.ConnectionString;
     }
 }

@@ -38,15 +38,13 @@
     <ProjectReference Include="..\ComptaClub.Datas.MsSql\ComptaClub.Datas.MsSql.csproj" />
     <ProjectReference Include="..\ComptaClub.Datas.Sqlite\ComptaClub.Datas.Sqlite.csproj" />
     <ProjectReference Include="..\ComptaClub.Import\ComptaClub.Import.csproj" />
+    <ProjectReference Include="..\..\tools\ComptaClub.DatabaseConverter\ComptaClub.DatabaseConverter.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.local.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-    </None>
-    <None Update="appsettings.test.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Docs\test.pdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

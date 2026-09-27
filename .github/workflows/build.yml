@@ -25,8 +25,8 @@ jobs:
       - name: Build
         run: dotnet build ComptaClub.slnx --configuration Release --no-restore
 
-      - name: Test SQLite provider
-        run: dotnet test src/ComptaClub.Tests/ComptaClub.Tests.csproj --configuration Release --no-build --filter FullyQualifiedName~SqliteProviderTests
+      - name: Test
+        run: dotnet test src/ComptaClub.Tests/ComptaClub.Tests.csproj --configuration Release --no-build
 
       - name: Publish Blazor
         run: dotnet publish src/ComptaClub.Blazor/ComptaClub.Blazor.csproj --configuration Release --no-restore --output artifacts/publish
@@ -43,4 +43,3 @@ jobs:
           name: ComptaClub
           path: artifacts/ComptaClub.zip
           if-no-files-found: error
-
