@@ -112,7 +112,7 @@ public partial class ExerciceList : ComponentBase
 			return;
 		}
 
-		var confirm = await MainLayout.DialogService.Confirm("Cl�ture", "Confirmez vous la cl�ture de cet exercice");
+        var confirm = await MainLayout.DialogService.Confirm("Clôture", "Confirmez-vous la clôture de cet exercice ?");
 		if (!confirm)
 		{
 			return;

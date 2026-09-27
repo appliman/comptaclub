@@ -28,15 +28,15 @@ public partial class ImportMemberExcelFileDialog
 		if (file == null)
 		{
 			customValidator.DisplayError("Fichier invalide");
-			await NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier s�lectionn�");
+			await NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier sélectionné");
 			return;
 		}
 	
 		var extension = Path.GetExtension(file.Name);
 		if (extension != ".xlsx")
 		{
-			customValidator.DisplayError("Le fichier doit �tre au format Excel (.xlsx)");
-			await NotificationService.Notify(NotificationSeverity.Error, "Le fichier doit �tre au format Excel (.xlsx)");
+			customValidator.DisplayError("Le fichier doit être au format Excel (.xlsx)");
+			await NotificationService.Notify(NotificationSeverity.Error, "Le fichier doit être au format Excel (.xlsx)");
 			return;
 		}
 

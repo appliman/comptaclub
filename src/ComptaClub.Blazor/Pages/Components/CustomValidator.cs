@@ -61,5 +61,6 @@ public class CustomValidator : ComponentBase
     public void Reset()
     {
         _messageStore?.Clear();
+        CurrentEditContext?.NotifyValidationStateChanged();
     }
 }

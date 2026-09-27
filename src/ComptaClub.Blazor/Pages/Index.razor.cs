@@ -23,10 +23,11 @@ public partial class Index
 	readonly ChartOptions balanceChartOptions = new()
 	{
 		Title = "Solde",
-		YAxisTitle = "Solde",
+		YAxisTitle = string.Empty,
 		Height = 350,
 		ValueFormat = ValueFormat.Currency,
-		MinValue = 0
+		MinValue = 0,
+		Padding = new ChartPadding { Bottom = 30 }
 	};
 	IEnumerable<AmountTotalByAccount> amountTotalByAccountList = new List<AmountTotalByAccount>();
 	IEnumerable<ViewModels.Account> plan = new List<ViewModels.Account>();

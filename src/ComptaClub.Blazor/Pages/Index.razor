@@ -35,7 +35,9 @@
 @if (balanceByDayList is not null
     && balanceByDayList.Any())
 {
-    <TimeSeriesChart Data="balanceSeries" Options="balanceChartOptions" />
+    <div class="home-balance-chart">
+        <TimeSeriesChart Data="balanceSeries" Options="balanceChartOptions" />
+    </div>
 }
 <div class="row mt-4">
     <div class="col-6">

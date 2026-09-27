@@ -116,7 +116,7 @@ public partial class MemberList : ComponentBase
 		}
 		catch (Exception ex)
 		{
-			await NotificationService.Notify(NotificationSeverity.Error, $"La lecture de ce fichier a �chou� pour la raison suivante : {ex.Message}");
+			await NotificationService.Notify(NotificationSeverity.Error, $"La lecture de ce fichier a échoué pour la raison suivante : {ex.Message}");
 		}
 	}
 

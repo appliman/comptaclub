@@ -1,0 +1,173 @@
+@inherits InputBase<Guid>
+
+@code {
+    [Parameter]
+    public IReadOnlyList<ComptaClub.Datas.AccountData> Accounts { get; set; } = [];
+
+    [Parameter]
+    public string Label { get; set; } = "Compte :";
+
+    private readonly HashSet<Guid> _expandedAccounts = [];
+    private readonly string _treeId = $"account-tree-{Guid.NewGuid():N}";
+    private Guid _lastValue;
+    private bool _isOpen;
+
+    private string SelectedLabel
+    {
+        get
+        {
+            var _account = FindAccount(Accounts, Value);
+            return _account is null ? "Sélectionnez un compte" : $"({_account.Code}) {_account.Label}";
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (Value != _lastValue)
+        {
+            _expandedAccounts.Clear();
+            ExpandSelectedPath(Accounts, Value);
+            _lastValue = Value;
+        }
+    }
+
+    private void ToggleAccount(Guid accountId)
+    {
+        if (!_expandedAccounts.Add(accountId))
+        {
+            _expandedAccounts.Remove(accountId);
+        }
+    }
+
+    private void SelectAccount(ComptaClub.Datas.AccountData account)
+    {
+        if (account.Children.Count > 0)
+        {
+            return;
+        }
+
+        CurrentValue = account.Id;
+        _isOpen = false;
+    }
+
+    private List<(ComptaClub.Datas.AccountData Account, int Level)> GetVisibleAccounts()
+    {
+        var _visibleAccounts = new List<(ComptaClub.Datas.AccountData Account, int Level)>();
+        AddVisibleAccounts(Accounts, 0, _visibleAccounts);
+        return _visibleAccounts;
+    }
+
+    private void AddVisibleAccounts(
+        IEnumerable<ComptaClub.Datas.AccountData> accounts,
+        int level,
+        List<(ComptaClub.Datas.AccountData Account, int Level)> visibleAccounts)
+    {
+        foreach (var _account in accounts)
+        {
+            visibleAccounts.Add((_account, level));
+            if (_expandedAccounts.Contains(_account.Id))
+            {
+                AddVisibleAccounts(_account.Children, level + 1, visibleAccounts);
+            }
+        }
+    }
+
+    private bool ExpandSelectedPath(IEnumerable<ComptaClub.Datas.AccountData> accounts, Guid selectedId)
+    {
+        foreach (var _account in accounts)
+        {
+            if (_account.Id == selectedId)
+            {
+                return true;
+            }
+
+            if (ExpandSelectedPath(_account.Children, selectedId))
+            {
+                _expandedAccounts.Add(_account.Id);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static ComptaClub.Datas.AccountData? FindAccount(
+        IEnumerable<ComptaClub.Datas.AccountData> accounts,
+        Guid accountId)
+    {
+        foreach (var _account in accounts)
+        {
+            if (_account.Id == accountId)
+            {
+                return _account;
+            }
+
+            var _child = FindAccount(_account.Children, accountId);
+            if (_child is not null)
+            {
+                return _child;
+            }
+        }
+
+        return null;
+    }
+
+    protected override bool TryParseValueFromString(
+        string? value,
+        out Guid result,
+        out string validationErrorMessage)
+    {
+        if (Guid.TryParse(value, out result))
+        {
+            validationErrorMessage = string.Empty;
+            return true;
+        }
+
+        validationErrorMessage = "Le compte sélectionné est invalide.";
+        return false;
+    }
+}
+
+<div class="w-100 position-relative mb-3">
+    <span class="form-label d-block">@Label</span>
+    <button type="button"
+            class="form-select text-start @CssClass"
+            aria-expanded="@_isOpen"
+            aria-controls="@_treeId"
+            @onclick="() => _isOpen = !_isOpen">
+        @SelectedLabel
+    </button>
+    @if (_isOpen)
+    {
+        <div id="@_treeId"
+             class="position-absolute top-100 start-0 w-100 bg-body border rounded shadow-sm overflow-auto"
+             style="z-index: 1050; max-height: 24rem;">
+            @foreach (var _item in GetVisibleAccounts())
+            {
+                <div style="padding-left: @(_item.Level * 1.25)rem;">
+                    @if (_item.Account.Children.Count > 0)
+                    {
+                        <button type="button"
+                                class="btn btn-link text-body text-start text-decoration-none w-100"
+                                aria-expanded="@_expandedAccounts.Contains(_item.Account.Id)"
+                                @onclick="() => ToggleAccount(_item.Account.Id)">
+                            <i class="fa-solid @(_expandedAccounts.Contains(_item.Account.Id) ? "fa-chevron-down" : "fa-chevron-right") me-2" aria-hidden="true"></i>
+                            (@_item.Account.Code) @_item.Account.Label
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="button"
+                                class="btn btn-link text-body text-start text-decoration-none w-100 @(_item.Account.Id == Value ? "fw-bold" : "")"
+                                aria-current="@(_item.Account.Id == Value ? "true" : null)"
+                                @onclick="() => SelectAccount(_item.Account)">
+                            <i class="fa-solid fa-file-lines me-2" aria-hidden="true"></i>
+                            (@_item.Account.Code) @_item.Account.Label
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
