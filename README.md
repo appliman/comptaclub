@@ -33,6 +33,8 @@ Le dépôt fournit un [Compose de production](src/ComptaClub.Blazor/docker-compo
 > [!IMPORTANT]
 > L'image GHCR est publiée par le workflow GitHub Actions **Publish Docker image**, lancé manuellement. Assurez-vous que le tag `latest` existe avant l'installation. Si le package est privé, connectez Docker à GHCR avec un compte autorisé à lire les packages : `docker login ghcr.io`.
 
+Le workflow [Clean up old Docker images](.github/workflows/cleanup-ghcr.yml) nettoie chaque jour les versions GHCR de plus d'un mois. Il conserve toujours l'image portant le tag `latest`. Un lancement manuel simule le nettoyage par défaut ; désactivez `dry_run` pour appliquer les suppressions.
+
 ### 1. Préparer les fichiers
 
 Copiez sur le serveur, dans un même dossier, les fichiers suivants :

@@ -1,0 +1,32 @@
+name: Clean up old Docker images
+
+on:
+  schedule:
+    - cron: '23 3 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Simuler le nettoyage sans supprimer les images'
+        type: boolean
+        default: true
+
+jobs:
+  cleanup:
+    if: github.repository == 'appliman/comptaclub' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: cleanup-comptaclub-ghcr
+      cancel-in-progress: false
+    permissions:
+      packages: write
+    steps:
+      - name: Remove images older than one month except latest
+        uses: dataaxiom/ghcr-cleanup-action@d52806a0dc70b430571a37da1fde39733ffd640f # v1.2.2
+        with:
+          owner: ${{ github.repository_owner }}
+          package: comptaclub
+          delete-tags: '*'
+          delete-untagged: true
+          exclude-tags: latest
+          older-than: 1 month
+          dry-run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
