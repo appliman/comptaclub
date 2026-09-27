@@ -13,7 +13,9 @@
   <Folder Name="/3.Clients/">
     <Project Path="src/ComptaClub.Blazor/ComptaClub.Blazor.csproj" />
   </Folder>
-  <Folder Name="/4.Tools/" />
+  <Folder Name="/4.Tools/">
+    <Project Path="tools/ComptaClub.DatabaseConverter/ComptaClub.DatabaseConverter.csproj" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
     <File Path="build-publish-docker-dev.cmd" />

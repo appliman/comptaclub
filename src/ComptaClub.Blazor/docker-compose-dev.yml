@@ -13,6 +13,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=development
       - ASPNETCORE_URLS=http://+:8080
+      - ComptaClub__SqliteConnectionString=${COMPTACLUB_SQLITE_CONNECTION_STRING:-Data Source=/app/data/comptaclub.db}
     ports:
       - "34503:8080"
     volumes:

@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models.Exercices;
+using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Contracts.Models.ForecastBudget;
 using ComptaClub.Contracts.Models.IncomeStatements;
 using ComptaClub.Extensions;
@@ -12,17 +12,10 @@ namespace ComptaClub.Tests.UseCases;
 [TestClass]
 public class CreateForecastBudgetTests
 {
-	[TestInitialize]
-	public async Task Initialize()
-	{
-		var app = await TestHelper.CreateWebApplication();
-		await TestHelper.CleanupDatabase(app.Services);
-	}
-
 	[TestMethod]
 	public async Task Create_Forecast_Budget_From_Income_Statement()
 	{
-		var app = await TestHelper.CreateWebApplication();
+		await using var app = await TestHelper.CreateWebApplication();
 		var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 		var exercice = await mediator.GetOrCreateExercice($"{Guid.NewGuid()}");

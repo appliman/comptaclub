@@ -15,7 +15,7 @@ ComptaClub aide les responsables de clubs et d'associations à garder une vue cl
 | Pilotage | Comptes de résultat, budgets prévisionnels et tableau de bord. |
 | Administration | Gestion du club, des exercices et des utilisateurs ; connexion par code envoyé par courriel. |
 
-L'application est construite avec **.NET 10**, **ASP.NET Core Blazor Server** et **Entity Framework Core**. Elle accepte **SQL Server** ou **SQLite** pour ses données relationnelles. Le choix du fournisseur se fait au démarrage : passer de l'un à l'autre ne copie pas les données.
+L'application est construite avec **.NET 10**, **ASP.NET Core Blazor Server** et **Entity Framework Core**. Elle utilise **SQLite par défaut** et accepte aussi **SQL Server** pour ses données relationnelles. Le choix du fournisseur se fait au démarrage : passer de l'un à l'autre ne copie pas les données.
 
 ## Installer l'image sur un serveur Docker
 
@@ -26,7 +26,7 @@ Le dépôt fournit un [Compose de production](src/ComptaClub.Blazor/docker-compo
 - Docker Engine et le plugin `docker compose` sur le serveur.
 - Un réseau Docker externe nommé `traefik-public`, avec Traefik configuré sur les points d'entrée `web` et `websecure` et le résolveur de certificats `letsencrypt`.
 - Un nom de domaine pointant vers le serveur. Le Compose fourni utilise `compta.andernos-triathlon.club` : remplacer cette valeur dans les deux règles `Host(...)` si vous utilisez un autre domaine.
-- Une base **SQL Server accessible depuis le conteneur**, ou le volume persistant fourni par Compose pour **SQLite**.
+- Le volume persistant fourni par Compose pour **SQLite**. Si vous choisissez SQL Server, une instance accessible depuis le conteneur est nécessaire.
 - Un serveur SMTP fonctionnel pour les codes de connexion, un compte Azure Storage correspondant à la configuration de l'application, et un collecteur OpenTelemetry accessible en gRPC pour l'export des journaux.
 - Une adresse de premier administrateur. L'application crée cet utilisateur au premier démarrage ; la personne doit pouvoir recevoir son code de connexion à cette adresse.
 
@@ -52,23 +52,35 @@ chmod 600 .env
 
 ### 2. Choisir la base de données
 
-**SQL Server** est le fournisseur par défaut. Dans `.env`, renseignez :
-
-```dotenv
-COMPTACLUB_DATABASE_PROVIDER=MsSql
-COMPTACLUB_CONNECTION_STRING="Server=sql.example.org;Database=ComptaClub;User Id=comptaclub;Password=VOTRE_MOT_DE_PASSE;Encrypt=True;TrustServerCertificate=False"
-```
-
-Le serveur SQL doit être joignable depuis le réseau du conteneur et le compte doit permettre l'application des migrations Entity Framework au démarrage.
-
-Pour une installation sur **SQLite** :
+**SQLite** est le fournisseur par défaut. Le fichier `.env.example` propose déjà :
 
 ```dotenv
 COMPTACLUB_DATABASE_PROVIDER=Sqlite
 COMPTACLUB_SQLITE_CONNECTION_STRING="Data Source=/app/data/comptaclub.db"
 ```
 
-Le fichier SQLite est alors conservé dans le volume Docker `comptaclub-data`. Déployez une seule instance de l'application sur ce fichier. Une base SQLite neuve ne reprend aucune donnée de SQL Server.
+Le fichier SQLite est conservé dans le volume Docker `comptaclub-data`. Déployez une seule instance de l'application sur ce fichier. En développement local, la base par défaut est `comptaclub.db` dans le répertoire de travail de l'application.
+
+Pour utiliser **SQL Server** à la place, renseignez :
+
+```dotenv
+COMPTACLUB_DATABASE_PROVIDER=MsSql
+COMPTACLUB_CONNECTION_STRING="Server=sql.example.org;Database=ComptaClub;User Id=comptaclub;Password=VOTRE_MOT_DE_PASSE;Encrypt=True;TrustServerCertificate=False"
+```
+
+Le serveur SQL doit être joignable depuis le réseau du conteneur et le compte doit permettre l'application des migrations Entity Framework au démarrage. Changer de fournisseur ne copie pas les données ; utilisez l'outil de conversion ci-dessous pour conserver une base existante.
+
+### Convertir une base existante
+
+L'outil console du dépôt copie les données entre SQL Server et SQLite. **Arrêtez l'application et toute autre écriture sur la base source** pendant la conversion, puis sauvegardez la base avant de commencer.
+
+```bash
+dotnet run --project tools/ComptaClub.DatabaseConverter/ComptaClub.DatabaseConverter.csproj --configuration Release
+```
+
+Choisissez `1 - MSSql vers Sqlite` ou `2 - Sqlite vers MSSql`, puis collez la chaîne de connexion SQL Server. Pour le choix 1, l'outil propose le dossier de son exécutable et le nom `comptaclub.db` ; vous pouvez modifier chacun des deux et devez valider le chemin complet. Un fichier existant n'est remplacé qu'après une seconde confirmation. Pour le choix 2, indiquez le chemin du fichier SQLite source. La chaîne SQL Server doit contenir le nom de la base cible ; le compte utilisé doit pouvoir créer cette base si elle n'existe pas. Une base cible existante est acceptée seulement si toutes ses tables ComptaClub sont vides.
+
+L'outil affiche la progression table par table, contrôle les nombres de lignes copiées et présente un récapitulatif. En cas d'erreur, il arrête la conversion et affiche sa cause. Après une conversion vers SQLite, copiez le fichier `.db` produit vers le volume persistant de l'application. Pour le sens inverse, configurez `COMPTACLUB_DATABASE_PROVIDER=MsSql` et la chaîne de connexion de la base produite avant de redémarrer l'application.
 
 ### 3. Renseigner les autres paramètres
 
@@ -121,10 +133,10 @@ Le dépôt contient la solution [`ComptaClub.slnx`](ComptaClub.slnx) et un [Comp
 ```bash
 dotnet restore ComptaClub.slnx
 dotnet build ComptaClub.slnx
-dotnet test src/ComptaClub.Tests/ComptaClub.Tests.csproj --filter FullyQualifiedName~SqliteProviderTests
+dotnet test src/ComptaClub.Tests/ComptaClub.Tests.csproj
 ```
 
-Pour la configuration locale, copiez [`appsettings.local.example.json`](src/ComptaClub.Blazor/appsettings.local.example.json) vers `src/ComptaClub.Blazor/appsettings.local.json`, puis renseignez vos valeurs. Ce fichier local est ignoré par Git et chargé seulement en environnement `Development`.
+Pour la configuration locale, créez `src/ComptaClub.Blazor/appsettings.local.json` avec les valeurs que vous souhaitez remplacer. SQLite est déjà configuré par défaut. Ce fichier local est ignoré par Git et chargé seulement en environnement `Development`.
 
 ## Repères dans le code
 

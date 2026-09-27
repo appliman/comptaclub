@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models.Exercices;
+using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Extensions;
 
 using FluentAssertions;
@@ -10,17 +10,10 @@ namespace ComptaClub.Tests.UseCases;
 [TestClass]
 public class CreateNewExerciceAfterExistingTests
 {
-	[TestInitialize]
-	public async Task Initialize()
-	{
-		var app = await TestHelper.CreateWebApplication();
-		await TestHelper.CleanupDatabase(app.Services);
-	}
-
 	[TestMethod]
 	public async Task Create_Exercice_And_Create_New_Exercice()
 	{
-		var app = await TestHelper.CreateWebApplication();
+		await using var app = await TestHelper.CreateWebApplication();
 		var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 		var exerciceCode = $"{Guid.NewGuid()}";
