@@ -361,6 +361,12 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 appsettings.local.json
+tools/**/*.db
+tools/**/*.db-wal
+tools/**/*.db-shm
+comptaclub.db
+comptaclub.db-wal
+comptaclub.db-shm
 **/.env
 **/.env.*
 !**/.env.example

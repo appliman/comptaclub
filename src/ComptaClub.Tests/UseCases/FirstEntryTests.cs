@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Accounts;
 using ComptaClub.Contracts.Models.Banks;
 using ComptaClub.Contracts.Models.Entries;
@@ -29,7 +29,7 @@ public class FirstEntryTests
 	[TestMethod]
 	public async Task Write_First_Entry()
 	{
-		var app = await TestHelper.CreateWebApplication();
+		await using var app = await TestHelper.CreateWebApplication();
 		var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 		var user = await mediator.GetOrCreateUser($"{Guid.NewGuid()}@email.com");

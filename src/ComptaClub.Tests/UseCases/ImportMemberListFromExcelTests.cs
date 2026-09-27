@@ -1,5 +1,6 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Members;
+using ClosedXML.Excel;
 
 using FluentAssertions;
 
@@ -12,28 +13,35 @@ namespace ComptaClub.Tests.UseCases;
 [TestClass]
 public class ImportMemberListFromExcelTests
 {
-	[TestInitialize]
-	public async Task Initialize()
-	{
-		var app = await TestHelper.CreateWebApplication();
-		await TestHelper.CleanupDatabase(app.Services);
-	}
-
 	[TestMethod]
 	public async Task Import_From_File()
 	{
-		var app = await TestHelper.CreateWebApplication();
+		await using var app = await TestHelper.CreateWebApplication();
 		var mediator = app.Services.GetRequiredService<IMediator>();
 
-		var fileName = System.IO.Path.Combine(System.Environment.CurrentDirectory, @"..\..\..\..\..\Doc\export_excel_saison.xlsx");
-		var import = await mediator.Send(new ImportExcelMemberListRequest(fileName));
+		using var workbook = new XLWorkbook();
+		var worksheet = workbook.AddWorksheet("Membres");
+		worksheet.Cell(1, 1).Value = "Numéro de licence";
+		worksheet.Cell(1, 2).Value = "Prénom";
+		worksheet.Cell(1, 3).Value = "Nom";
+		worksheet.Cell(1, 4).Value = "Email";
+		worksheet.Cell(1, 5).Value = "Type de licence";
+		worksheet.Cell(2, 1).Value = "LIC-001";
+		worksheet.Cell(2, 2).Value = "Alice";
+		worksheet.Cell(2, 3).Value = "Martin";
+		worksheet.Cell(2, 4).Value = "alice@example.com";
+		worksheet.Cell(2, 5).Value = "Compétition";
+		using var content = new MemoryStream();
+		workbook.SaveAs(content);
+		content.Position = 0;
+		var import = await mediator.Send(new ImportExcelMemberListRequest(content));
 
 		import.Should().NotBeNull();
 
 		var memberList = await mediator.Send(new GetPagedEntityListRequest<MemberListFilter, Datas.MemberData>(f => f.PageSize = int.MaxValue));
 		memberList.Should().NotBeNull();
 		memberList.List.Should().NotBeNull();
-		memberList.List.Any().Should().BeTrue();
+		memberList.List.Should().ContainSingle(i => i.LicenseNumber == "LIC-001" && i.Name == "Alice Martin");
 
 	}
 }

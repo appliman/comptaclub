@@ -3,14 +3,14 @@ Begin
 
 CREATE TABLE [ForecastBudgets] (
     [Id] uniqueidentifier not NULL,
-    [IncomeStatementId] uniqueidentifier not NULL,
+    [IncomeStatementId] uniqueidentifier NULL,
     [Name] nvarchar(200) not NULL,
     [Description] nvarchar(max) NULL,
     [CreationDate] int not null,
     [CreditTotal] bigint not null,
     [DebitTotal] bigint not null,
     [IncomeStatementCreditTotal] bigint not null,
-    [IncomeStatementDebitTotal] bigint not null
+    [IncomeStatementDebitTotal] bigint not null,
     CONSTRAINT [PK_ForecastBudgets] PRIMARY KEY ([Id])
 );
 End
@@ -28,7 +28,7 @@ CREATE TABLE [ForecastBudgetItems] (
     [AccountLabel] nvarchar(1024) not NULL,
     [IncomeStatementAmount] bigint null,
     [Amount] bigint not null,
-    [Direction] int NOT NULL
+    [Direction] int NOT NULL,
     CONSTRAINT [PK_ForecastBudgetItems] PRIMARY KEY ([Id])
 );
 End

@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Users;
 
 using FluentAssertions;
@@ -14,7 +14,7 @@ namespace ComptaClub.Tests.Cruds
 		[TestMethod]
 		public async Task User_Crud()
 		{
-			var app = await TestHelper.CreateWebApplication();
+			await using var app = await TestHelper.CreateWebApplication();
 			var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 			var user = await mediator.Send(new GetUserByFilterRequest(i => i.Email = "fake"));

@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Accounts;
 
 using FluentAssertions;
@@ -11,17 +11,10 @@ namespace ComptaClub.Tests.Cruds
 
 	public class AccountCrudTests
 	{
-		[TestInitialize]
-		public async Task Initialize()
-		{
-			var app = await TestHelper.CreateWebApplication();
-			await TestHelper.CleanupDatabase(app.Services);
-		}
-
 		[TestMethod]
 		public async Task Account_Crud()
 		{
-			var app = await TestHelper.CreateWebApplication();
+			await using var app = await TestHelper.CreateWebApplication();
 			var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 			var account = await mediator.Send(new GetAccountByFilterRequest(i => i.Code = "fake"));

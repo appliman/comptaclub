@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using ComptaClub;
@@ -28,7 +28,7 @@ switch (globalSettings.DatabaseProvider.Trim().ToLowerInvariant())
         builder.Services.AddComptaClubMsSql(globalSettings.ConnectionString, builder.Environment.EnvironmentName);
         break;
     case "sqlite":
-        builder.Services.AddComptaClubSqlite(globalSettings.SqliteConnectionString ?? "", builder.Environment.EnvironmentName);
+        builder.Services.AddComptaClubSqlite(globalSettings.ConnectionString, builder.Environment.EnvironmentName);
         break;
     default:
         throw new InvalidOperationException($"Unsupported database provider: {globalSettings.DatabaseProvider}");

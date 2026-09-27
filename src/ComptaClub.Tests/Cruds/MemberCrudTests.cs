@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Members;
 
 using FluentAssertions;
@@ -10,17 +10,10 @@ namespace ComptaClub.Tests.Cruds;
 [TestClass]
 public class MemberCrudTests
 {
-	[TestInitialize]
-	public async Task Initialize()
-	{
-		var app = await TestHelper.CreateWebApplication();
-		await TestHelper.CleanupDatabase(app.Services);
-	}
-
 	[TestMethod]
 	public async Task Member_Crud()
 	{
-		var app = await TestHelper.CreateWebApplication();
+		await using var app = await TestHelper.CreateWebApplication();
 		var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 		var member = await mediator.Send(new GetMemberByFilterRequest(i => i.Email = "fake"));

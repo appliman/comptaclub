@@ -13,7 +13,7 @@ CREATE TABLE [Clubs] (
     [Email] nvarchar(255) NULL,
     [WebSite] nvarchar(512) NULL,
     [PhoneNumber] nvarchar(20) NULL,
-    [ContactName] nvarchar(255) NULL
+    [ContactName] nvarchar(255) NULL,
     CONSTRAINT [PK_Clubs] PRIMARY KEY ([Id])
 );
 End

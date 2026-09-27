@@ -4,16 +4,16 @@ using ComptaClub.Contracts.Models.Banks;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Contracts.Models.Users;
+using ComptaClub.Configuration;
 using ComptaClub.Datas;
-using ComptaClub.Datas.MsSql;
+using ComptaClub.Datas.Sqlite;
 using ComptaClub.EntityFramework;
 using ComptaClub.Extensions;
 
 using ChannelMediator;
 
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ComptaClub.Tests
@@ -23,27 +23,29 @@ namespace ComptaClub.Tests
 		public async static Task<WebApplication> CreateWebApplication()
 		{
 			var builder = WebApplication.CreateBuilder();
-
-			var cs = builder.Configuration.GetConnectionString("TEST");
-			builder.Environment.EnvironmentName = "Development";
-			var args = new string[]
+			builder.Environment.EnvironmentName = "Test";
+			var connectionString = $"Data Source=ComptaClubTest-{Guid.NewGuid():N};Mode=Memory;Cache=Shared;Pooling=False";
+			builder.Services.AddSingleton(new ComptaClubSettings
 			{
-				"--env", "test",
-				"--cs", cs!
-			};
-
-			var cfg = builder.ConfigureComptaClub(args);
-			builder.Services.AddComptaClubMsSql(cfg.ConnectionString, builder.Environment.EnvironmentName);
+				DatabaseProvider = "Sqlite",
+				SqliteConnectionString = connectionString
+			});
+			builder.Services.AddComptaClubCore();
+			builder.Services.AddMemoryCache();
+			builder.Services.AddSingleton(_ => new SqliteConnection(connectionString));
+			builder.Services.AddComptaClubSqlite(connectionString, builder.Environment.EnvironmentName);
 			var app = builder.Build();
-			var factory = app.Services.GetRequiredService<IComptaClubDbContextFactory>();
-			await using (var dbTest = await factory.CreateDbContextAsync())
+			try
 			{
-				await dbTest.Database.EnsureDeletedAsync();
-				await dbTest.Database.EnsureCreatedAsync();
+				await app.Services.GetRequiredService<SqliteConnection>().OpenAsync();
+				await app.Services.GetRequiredService<IComptaClubDbContextFactory>().MigrateAsync();
+				return app;
 			}
-			await factory.MigrateAsync();
-
-			return app;
+			catch
+			{
+				await app.DisposeAsync();
+				throw;
+			}
 		}
 
 		public async static Task<List<Datas.AccountData>> GetOrCreatePlan(this IMediator mediator)
@@ -150,25 +152,5 @@ namespace ComptaClub.Tests
 			return saveEntryResult.HasError ? null : entry;
 		}
 
-
-		public async static Task CleanupDatabase(this IServiceProvider serviceProvider)
-		{
-			var dbContextFactory = serviceProvider.GetRequiredService<IComptaClubDbContextFactory>();
-			await using var db = await dbContextFactory.CreateDbContextAsync();
-
-			await db.Database.BeginTransactionAsync();
-
-			await db.Accounts.ExecuteDeleteAsync();
-			await db.Banks.ExecuteDeleteAsync();
-			await db.DocumentsByEntities.ExecuteDeleteAsync();
-			await db.Documents.ExecuteDeleteAsync();
-			await db.Exercices.ExecuteDeleteAsync();
-			await db.Members.ExecuteDeleteAsync();
-			await db.RolesByUsers.ExecuteDeleteAsync();
-			await db.Users.ExecuteDeleteAsync();
-			await db.AssociatedMemberListByEntries.ExecuteDeleteAsync();
-
-			await db.Database.CommitTransactionAsync();
-		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Contracts.Models.IncomeStatements;
 using ComptaClub.Datas;
@@ -13,17 +13,10 @@ namespace ComptaClub.Tests.UseCases;
 [TestClass]
 public class CreateIncomeStatementTests
 {
-	[TestInitialize]
-	public async Task Initialize()
-	{
-		var app = await TestHelper.CreateWebApplication();
-		await TestHelper.CleanupDatabase(app.Services);
-	}
-
 	[TestMethod]
 	public async Task Create_Income_Statement_From_Closed_Exercice()
 	{
-		var app = await TestHelper.CreateWebApplication();
+		await using var app = await TestHelper.CreateWebApplication();
 		var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 
 		var exercice = await mediator.GetOrCreateExercice($"{Guid.NewGuid()}");

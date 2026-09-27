@@ -1,8 +1,9 @@
-﻿using ComptaClub.Contracts.Models;
+using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Accounts;
 using ComptaClub.Contracts.Models.Banks;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Exercices;
+using System.Text;
 
 using FluentAssertions;
 
@@ -15,17 +16,10 @@ namespace ComptaClub.Tests.UseCases;
 [TestClass]
 public class OfxImportTests
 {
-	[TestInitialize]
-	public async Task Initialize()
-	{
-		var app = await TestHelper.CreateWebApplication();
-		await TestHelper.CleanupDatabase(app.Services);
-	}
-
 	[TestMethod]
 	public async Task Import_From_File()
 	{
-		var app = await TestHelper.CreateWebApplication();
+		await using var app = await TestHelper.CreateWebApplication();
 		var mediator = app.Services.GetRequiredService<IMediator>();
 
 		var user = await mediator.GetOrCreateUser($"{Guid.NewGuid()}@email.com");
@@ -52,14 +46,37 @@ public class OfxImportTests
 		var saveBankResult = await mediator.Send(new SaveEntityRequest<Datas.BankData>(bank));
 		saveBankResult.HasError.Should().BeFalse();
 
-		var fileName = System.IO.Path.Combine(System.Environment.CurrentDirectory, @"..\..\..\..\..\Doc\2022-11-11_14h53-releve_COMPTE_CHEQUES_1.ofx");
-		var sr = System.IO.File.OpenRead(fileName);
-		var ms = new MemoryStream();
-		await sr.CopyToAsync(ms);
+		const string OFX_CONTENT = """
+OFXHEADER:100
+DATA:OFXSGML
+VERSION:102
+SECURITY:NONE
+ENCODING:USASCII
+CHARSET:1252
+COMPRESSION:NONE
+OLDFILEUID:NONE
+NEWFILEUID:NONE
+
+<OFX>
+<SIGNONMSGSRSV1><SONRS><STATUS><CODE>0<SEVERITY>INFO</STATUS><DTSERVER>20221111145300<LANGUAGE>ENG</SONRS></SIGNONMSGSRSV1>
+<BANKMSGSRSV1><STMTTRNRS><TRNUID>1<STATUS><CODE>0<SEVERITY>INFO</STATUS><STMTRS>
+<CURDEF>EUR
+<BANKACCTFROM><BANKID>12345<ACCTID>123456789<ACCTTYPE>CHECKING</BANKACCTFROM>
+<BANKTRANLIST><DTSTART>20221101000000<DTEND>20221111000000
+<STMTTRN><TRNTYPE>DEBIT<DTPOSTED>20221111120000<TRNAMT>-12.34<FITID>TEST-OFX-001<NAME>Cotisation<MEMO>Import de test</STMTTRN>
+</BANKTRANLIST>
+<LEDGERBAL><BALAMT>0.00<DTASOF>20221111145300</LEDGERBAL>
+</STMTRS></STMTTRNRS></BANKMSGSRSV1>
+</OFX>
+""";
+		using var ms = new MemoryStream();
+		await ms.WriteAsync(Encoding.UTF8.GetBytes(OFX_CONTENT));
+		ms.Position = 0;
 
 		var importedTransactionList = await mediator.Send(new ImportEntryListFromStreamRequest(ms));
 
 		var importCount = importedTransactionList.Count();
+		importCount.Should().Be(1);
 
 		foreach (var import in importedTransactionList)
 		{
