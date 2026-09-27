@@ -1,4 +1,4 @@
-
+﻿
 using ComptaClub.Blazor.ViewModels;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Members;
@@ -87,13 +87,19 @@ public partial class AssociatedMemberByEntry
 
 	public async Task SaveAssociations()
 	{
-		foreach (var association in associatedMemberList!)
+		if (associatedMemberList is not null)
 		{
-			await Mediator.Send(new LinkMemberToEntryRequest(EntryId!.Value, association.Member.Id, association.Amount));
+			foreach (var association in associatedMemberList!)
+			{
+				await Mediator.Send(new LinkMemberToEntryRequest(EntryId!.Value, association.Member.Id, association.Amount));
+			}
 		}
-		foreach (var association in unlinkedAssociationList)
+		if (unlinkedAssociationList is not null)
 		{
-			await Mediator.Send(new UnlinkMemberToEntryRequest(association.Id));
+			foreach (var association in unlinkedAssociationList)
+			{
+				await Mediator.Send(new UnlinkMemberToEntryRequest(association.Id));
+			}
 		}
 	}
 
@@ -112,10 +118,10 @@ public partial class AssociatedMemberByEntry
 
 	public async Task InsertRow()
 	{
-		var result = await DialogService.OpenAsync<Dialogs.MemberSelectorDialog>("Selection d'un membre",
+		var result = await DialogService.OpenAsync<Dialogs.MemberSelectorDialog>("Sélection d'un membre",
 			options: new DialogOptions
 			{
-
+				Width = "min(900px, 95vw)"
 			});
 
 		var member = result as MemberRow;

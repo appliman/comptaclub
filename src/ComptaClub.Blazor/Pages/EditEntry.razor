@@ -38,12 +38,12 @@
 				<ValidationSummary></ValidationSummary>
 				<DataAnnotationsValidator />
 				<CustomValidator @ref="customValidator"></CustomValidator>
-				<div class="row">
-					<SuperInputDayId class="w-25" @bind-DayId="entry.CreationDate" PlaceHoder="Date" Required="true" Label="Date :" />
+				<div class="row mx-1">
+					<SuperInputDayId class="w-25" @bind-DayId="entry.CreationDate" PlaceHoder="Date" Required="true" Label="@(_dateRangeLabel is null ? "Date :" : $"Date : {_dateRangeLabel}")" />
 					<SuperInputText @bind-Value="entry.PartNumber" PlaceHoder="Code" Required="true" Label="N° Pièce :" />
 					<SuperInputText @bind-Value="entry.Label" PlaceHoder="Libellé" Required="true" Label="Libellé :" />
 					<SuperInputSelect @bind-Value="entry.BankId" ItemList="@bankOptionList" Required="true" Label="Banque :" />
-					<SuperInputSelect @bind-Value="entry.AccountId" ItemList="@accountOptionList" Required="true" Label="Compte :" />
+					<AccountTreeSelector @bind-Value="entry.AccountId" Accounts="@_accountTree" Label="Compte :" />
 					<SuperEnumInputSelect @bind-Value="entry.PaymentType" Required="true" Label="Mode de règlement :" />
 					<SuperInputCurrency @bind-Value="entry.Amount" PlaceHoder="Montant" Label="Montant :" style="width:200px;" />
 					<SuperInputArea @bind-Value="entry.ExtraInfos" PlaceHoder="Informations supplémentaires" Label="Informations supplémentaires :" />

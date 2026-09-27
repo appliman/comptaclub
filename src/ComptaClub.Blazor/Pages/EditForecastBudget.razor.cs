@@ -53,11 +53,11 @@ public partial class EditForecastBudget
 		var result = await Mediator.Send(new SaveForecastBudgetRequest(forecastBudget));
 		if (result != null)
 		{
-			await NotificationService.Notify(NotificationSeverity.Success, "Sauvegarde", "Le bilan pr�visionnel a �t� mis � jour avec succ�s");
+			await NotificationService.Notify(NotificationSeverity.Success, "Sauvegarde", "Le bilan prévisionnel a été mis à jour avec succès");
 		}
 		else
 		{
-			await NotificationService.Notify(NotificationSeverity.Error, "Sauvegarde", "Une erreur est survenue lors de la mise � jour du bilan pr�visionnel");
+			await NotificationService.Notify(NotificationSeverity.Error, "Sauvegarde", "Une erreur est survenue lors de la mise à jour du bilan prévisionnel");
 		}
 	}
 }

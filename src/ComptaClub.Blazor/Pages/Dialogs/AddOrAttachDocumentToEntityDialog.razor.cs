@@ -40,7 +40,7 @@ public partial class AddOrAttachDocumentToEntityDialog
 
 	async Task LoadDatas()
 	{
-		// Recup�ration de la liste des documents
+		// Récupération de la liste des documents
 		var page = await Mediator.Send(new GetPagedEntityListRequest<DocumentListFilter, Datas.DocumentData>(documentFilter));
 		documentList = Mapping.Profile.ToViewModels(page.List);
 	}
@@ -124,7 +124,7 @@ public partial class AddOrAttachDocumentToEntityDialog
 		IBrowserFile file = e.File;
 		if (file == null)
 		{
-			await NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier s�lectionn�");
+			await NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier sélectionné");
 			return;
 		}
 		document!.FileName = file.Name;
