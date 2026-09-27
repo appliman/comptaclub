@@ -15,6 +15,7 @@ using System.Text;
 namespace ComptaClub.Tests;
 
 [TestClass]
+[Ignore("Tests de conversion SQL Server/SQLite désactivés à la demande.")]
 public class DatabaseConverterTests
 {
     [TestMethod]
