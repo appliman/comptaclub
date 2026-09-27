@@ -172,7 +172,7 @@ public partial class EntryList : ComponentBase
 
 	async Task DeleteRow(ViewModels.EntryRow entry)
 	{
-		var confirm = await DialogService.Confirm("Suppression", "Confirmez-vous la suppression de cette �criture");
+		var confirm = await DialogService.Confirm("Suppression", "Confirmez-vous la suppression de cette écriture ?");
 		if (!confirm)
 		{
 			return;
@@ -185,7 +185,7 @@ public partial class EntryList : ComponentBase
 			return;
 		}
 
-		await NotificationService.Notify(NotificationSeverity.Success, "L'ecriture est maintenant supprim�e");
+		await NotificationService.Notify(NotificationSeverity.Success, "L'écriture est maintenant supprimée");
 		await grid!.ReloadAsync();
 	}
 

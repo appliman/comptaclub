@@ -1,8 +1,8 @@
 ﻿# ComptaClub
 
-**La comptabilité d'un club, au même endroit que le suivi de ses membres.**
+**Une comptabilité claire pour les clubs et associations, au même endroit que le suivi de leurs membres.**
 
-ComptaClub est une application web destinée à la gestion comptable d'une association ou d'un club. Elle permet de suivre les recettes et les dépenses, de rattacher des écritures à des membres et à des justificatifs, puis de consulter les résultats et les budgets par exercice. L'interface est en français et fonctionne dans un navigateur, sans installation sur les postes des utilisateurs.
+ComptaClub aide les responsables de clubs et d'associations à garder une vue claire sur leurs finances. Depuis une interface web en français, ils suivent les recettes et les dépenses, relient les écritures aux membres et aux justificatifs, puis consultent les résultats et les budgets de chaque exercice. Aucune installation n'est nécessaire sur les postes des utilisateurs.
 
 ## Ce que permet l'application 
 
@@ -136,3 +136,7 @@ Pour la configuration locale, copiez [`appsettings.local.example.json`](src/Comp
 | `ComptaClub.Datas` et `ComptaClub.EntityFramework` | Modèle de données et contexte EF partagé. |
 | `ComptaClub.Datas.MsSql` et `ComptaClub.Datas.Sqlite` | Fournisseurs et migrations SQL. |
 | `ComptaClub.Tests` | Tests automatisés. |
+
+## Licence
+
+ComptaClub est distribué sous [licence MIT](LICENSE).

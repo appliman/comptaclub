@@ -31,7 +31,7 @@ public partial class IncomeStatementSelectorDialog
 		list.Add(new ViewModels.IncomeStatement()
 		{
 			Id = Guid.Empty,
-			Description = "Sans compte de r�sultat"
+			Description = "Sans compte de résultat"
 		});
 		foreach (var item in page.List)
 		{

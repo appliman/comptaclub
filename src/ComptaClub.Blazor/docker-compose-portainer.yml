@@ -31,12 +31,12 @@ services:
       - "traefik.enable=true"
 
       # Route HTTP -> HTTPS
-      - "traefik.http.routers.comptaclub-http.rule=Host(`compta.andernos-triathlon.club`)"
+      - "traefik.http.routers.comptaclub-http.rule=Host(`${COMPTACLUB_DOMAIN:?Define COMPTACLUB_DOMAIN in .env}`)"
       - "traefik.http.routers.comptaclub-http.entrypoints=web"
       - "traefik.http.routers.comptaclub-http.middlewares=comptaclub-redirect@docker"
 
       # Route HTTPS
-      - "traefik.http.routers.comptaclub.rule=Host(`compta.andernos-triathlon.club`)"
+      - "traefik.http.routers.comptaclub.rule=Host(`${COMPTACLUB_DOMAIN:?Define COMPTACLUB_DOMAIN in .env}`)"
       - "traefik.http.routers.comptaclub.entrypoints=websecure"
       - "traefik.http.routers.comptaclub.tls=true"
       - "traefik.http.routers.comptaclub.tls.certresolver=letsencrypt"

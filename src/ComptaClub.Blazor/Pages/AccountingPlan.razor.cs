@@ -126,7 +126,7 @@ public partial class AccountingPlan : ComponentBase
 			await MainLayout.NotificationService.Notify(new NotificationMessage
 			{
 				Severity = NotificationSeverity.Info,
-				Summary = $"Ce compte ({account.Code}) vient d'etre supprim�"
+				Summary = $"Ce compte ({account.Code}) vient d'être supprimé"
 			});
 		}
 	}
@@ -164,7 +164,7 @@ public partial class AccountingPlan : ComponentBase
 		}
 
 		uploadEnabled = false;
-		uploadSuccess = "Import termin�";
+		uploadSuccess = "Import terminé";
 
 		await LoadDatas();
 		await grid!.ReloadAsync();

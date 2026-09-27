@@ -21,9 +21,26 @@ public partial class MemberSelectorDialog
 
 	void OnSelectionChanged(IEnumerable<ViewModels.MemberRow> selected) => selectedMembers = selected.ToList();
 
+	async Task OnNameFilterChanged(SuperDataGridFilterInfo filterInfo)
+	{
+		filter.Name = filterInfo.PropertyValue;
+		if (grid is not null)
+		{
+			await grid.ReloadAsync();
+		}
+	}
+
+	async Task OnEmailFilterChanged(SuperDataGridFilterInfo filterInfo)
+	{
+		filter.Email = filterInfo.PropertyValue;
+		if (grid is not null)
+		{
+			await grid.ReloadAsync();
+		}
+	}
+
 	async ValueTask<GridItemsProviderResult<ViewModels.MemberRow>> LoadItems(GridItemsProviderRequest<ViewModels.MemberRow> request)
 	{
-		filter.Search = request.Filters.FirstOrDefault(i => i.PropertyName == "Entity.Name")?.PropertyValue;
 		var page = await Mediator.Send(new GetPagedEntityListRequest<MemberListFilter, Datas.MemberData>(filter));
 		memberList = new();
 		int rowIndex = 1;
