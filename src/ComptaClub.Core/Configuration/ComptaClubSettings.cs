@@ -41,7 +41,6 @@ namespace ComptaClub.Configuration
         // Keyvault
         public string KeyVaultTenantId { get; set; } = null!;
         public string KeyVaultClientId { get; set; } = null!;
-        public string KeyVaultClientSecret { get; set; } = null!;
         public string KeyVaultName { get; set; } = null!;
         public string KeyVaultCertificatePath { get; set; } = null!;
 
