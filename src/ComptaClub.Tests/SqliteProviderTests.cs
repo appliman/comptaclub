@@ -1,4 +1,4 @@
-using ComptaClub.Configuration;
+﻿using ComptaClub.Configuration;
 using ComptaClub.Contracts.Models;
 using ComptaClub.Contracts.Models.Documents;
 using ComptaClub.Contracts.Models.ForecastBudget;
@@ -25,9 +25,9 @@ public class SqliteProviderTests
     {
         var settings = new ComptaClubSettings();
         Assert.AreEqual("Sqlite", settings.DatabaseProvider);
-        Assert.AreEqual("Data Source=comptaclub.db", settings.SqliteConnectionString);
+        Assert.AreEqual("Data Source=comptaclub.db", settings.ConnectionString);
         var sqliteServices = new ServiceCollection();
-        sqliteServices.AddComptaClubSqlite(settings.SqliteConnectionString!, "Production");
+        sqliteServices.AddComptaClubSqlite(settings.ConnectionString!, "Production");
         using var sqliteProvider = sqliteServices.BuildServiceProvider();
         using var sqliteDb = sqliteProvider.GetRequiredService<IComptaClubDbContextFactory>().CreateDbContext();
         Assert.AreEqual("Microsoft.EntityFrameworkCore.Sqlite", sqliteDb.Database.ProviderName);
