@@ -5,13 +5,14 @@ using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Exercices;
 using ComptaClub.Contracts.Models.Users;
 using ComptaClub.Datas;
-using ComptaClub.Datas.MsSql;
+using ComptaClub.Datas.Sqlite;
 using ComptaClub.EntityFramework;
 using ComptaClub.Extensions;
 
 using ChannelMediator;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,27 +24,33 @@ namespace ComptaClub.Tests
 		public async static Task<WebApplication> CreateWebApplication()
 		{
 			var builder = WebApplication.CreateBuilder();
+			builder.Environment.EnvironmentName = "Test";
+			builder.Configuration.AddJsonFile("appsettings.test.json", optional: false);
 
-			var cs = builder.Configuration.GetConnectionString("TEST");
-			builder.Environment.EnvironmentName = "Development";
-			var args = new string[]
+			var configuredConnectionString = builder.Configuration.GetConnectionString("TEST")
+				?? throw new InvalidOperationException("ConnectionStrings:TEST is required.");
+			var sqliteConnectionString = new SqliteConnectionStringBuilder(configuredConnectionString)
 			{
-				"--env", "test",
-				"--cs", cs!
-			};
+				DataSource = $"ComptaClubTest-{Guid.NewGuid():N}"
+			}.ConnectionString;
 
-			var cfg = builder.ConfigureComptaClub(args);
-			builder.Services.AddComptaClubMsSql(cfg.ConnectionString, builder.Environment.EnvironmentName);
+			var settings = builder.ConfigureComptaClub();
+			settings.DatabaseProvider = "Sqlite";
+			settings.ConnectionString = sqliteConnectionString;
+			builder.Services.AddSingleton(_ => new SqliteConnection(sqliteConnectionString));
+			builder.Services.AddComptaClubSqlite(sqliteConnectionString, builder.Environment.EnvironmentName);
 			var app = builder.Build();
-			var factory = app.Services.GetRequiredService<IComptaClubDbContextFactory>();
-			await using (var dbTest = await factory.CreateDbContextAsync())
+			try
 			{
-				await dbTest.Database.EnsureDeletedAsync();
-				await dbTest.Database.EnsureCreatedAsync();
+				await app.Services.GetRequiredService<SqliteConnection>().OpenAsync();
+				await app.Services.GetRequiredService<IComptaClubDbContextFactory>().MigrateAsync();
+				return app;
 			}
-			await factory.MigrateAsync();
-
-			return app;
+			catch
+			{
+				await app.DisposeAsync();
+				throw;
+			}
 		}
 
 		public async static Task<List<Datas.AccountData>> GetOrCreatePlan(this IMediator mediator)

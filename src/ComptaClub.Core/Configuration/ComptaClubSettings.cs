@@ -22,7 +22,6 @@ public class ComptaClubSettings
 
 
     public string DatabaseProvider { get; set; } = "MsSql";
-    public string? SqliteConnectionString { get; set; }
     public string ConnectionString { get; set; } = null!;
 
     public System.Globalization.CultureInfo CultureInfo { get; init; } 
