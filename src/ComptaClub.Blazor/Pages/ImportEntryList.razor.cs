@@ -84,7 +84,7 @@ public partial class ImportEntryList : ComponentBase
         }
         (entryList as List<EntryRow>)!.Remove(entry);
         await grid.ReloadAsync();
-        await NotificationService.Notify(NotificationSeverity.Success, "Sauvegarde", "Cette �criture est bien import�e");
+        await NotificationService.Notify(NotificationSeverity.Success, "Sauvegarde", "Cette écriture est bien importée");
         StateHasChanged();
     }
 

@@ -37,14 +37,14 @@ public partial class EditClub
 		IBrowserFile file = args.File;
 		if (file == null)
 		{
-			await NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier s�lectionn�");
+			await NotificationService.Notify(NotificationSeverity.Error, "Aucun fichier sélectionné");
 			return;
 		}
 
 		// Verifier s'il s'agit bien d'une image
 		if (!file.ContentType.StartsWith("image/"))
 		{
-			await NotificationService.Notify(NotificationSeverity.Error, "Le fichier s�lectionn� n'est pas une image");
+			await NotificationService.Notify(NotificationSeverity.Error, "Le fichier sélectionné n'est pas une image");
 			return;
 		}
 

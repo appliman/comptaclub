@@ -1,6 +1,18 @@
+@using SuperBlazorComponents.Components.SuperDataGrid.Filters
+
 <SuperDataGrid RowHeight="55" @ref="grid" DisplaySelectionColumn="false" DisplayColumnVisibilityToggle="false" AllowFiltering="true" AllowSorting="true" AllowColumnResize="true" ItemsProvider="LoadItems" TItem="ViewModels.MemberRow" SelectionMode="SuperDataGridSelectionMode.Single" SelectionChanged="OnSelectionChanged" DisplayRowNumberColumn="true" Height="400px">
-    <DataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Name" Title="Nom" Width="120px" Filterable="true" />
-    <DataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Email" Title="Email" Width="100px" Filterable="false" />
+    <DataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Name" Title="Nom" Width="280px" Filterable="true">
+        <FilterTemplate>
+            <SuperDataGridStringFilter PropertyName="Entity.Name" Placeholder="Rechercher un nom..." DelayMilliseconds="300" ApplyFilter="OnNameFilterChanged" />
+        </FilterTemplate>
+        <Template Context="item">@item.Entity.Name</Template>
+    </DataGridColumn>
+    <DataGridColumn TItem="ViewModels.MemberRow" Property="Entity.Email" Title="Email" Width="400px" Filterable="true">
+        <FilterTemplate>
+            <SuperDataGridStringFilter PropertyName="Entity.Email" Placeholder="Rechercher un email..." DelayMilliseconds="300" ApplyFilter="OnEmailFilterChanged" />
+        </FilterTemplate>
+        <Template Context="item">@item.Entity.Email</Template>
+    </DataGridColumn>
 </SuperDataGrid>
 
 <div class="row mt-2 dialog-btns justify-content-end">

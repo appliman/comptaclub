@@ -39,11 +39,11 @@ public partial class AccountLinkSelector
         var title = "Selection d'un compte";
         if (AccountDirection == AccountDirection.Debit)
         {
-            title += " de D�bit";
+            title += " de Débit";
         }
         else if (AccountDirection == AccountDirection.Credit)
         {
-            title += " de Cr�dit";
+            title += " de Crédit";
         }
         var dialog = await DialogService.OpenAsync<Dialogs.AccountSelectorDialog>(title,
             parameters: new Dictionary<string, object>

@@ -11,3 +11,7 @@
     height: 150px; 
     background-color: red;
 }
+
+.home-balance-chart ::deep .axis-label-x {
+    display: none;
+}

@@ -36,8 +36,9 @@ public partial class EditEntry : ComponentBase
 	Datas.EntryData entry = new();
 	CustomValidator? customValidator;
 	List<SelectOption<Guid>> bankOptionList = new();
-	List<SelectOption<Guid>> accountOptionList = new();
+	List<Datas.AccountData> _accountTree = new();
 	List<SelectOption<Guid>> exerciceOptionList = new();
+	string? _dateRangeLabel;
 	Enums.AccountDirection direction;
 	AssociatedMemberByEntry associatedMembers = default!;
 	DocumentListByEntity associatedDocuments = default!;
@@ -83,16 +84,7 @@ public partial class EditEntry : ComponentBase
 		}
 
 		var accountList = await Mediator.Send(new GetPlanRequest());
-		accountList = accountList.GetLeafList().ToList();
-		if (direction == Enums.AccountDirection.Debit)
-		{
-			accountList.RemoveAll(i => i.Direction == Enums.AccountDirection.Credit);
-		}
-		else
-		{
-			accountList.RemoveAll(i => i.Direction == Enums.AccountDirection.Debit);
-		}
-		accountOptionList = accountList.ToSelectOptionList(i => i.Id, t => $"({t.Code}) {t.Label}", i => i.Id == entry.AccountId);
+		_accountTree = FilterAccountTree(accountList);
 
 		var exercices = await Mediator.Send(new GetAllExercicesRequest());
 		exerciceOptionList = exercices.ToSelectOptionList(i => i.Id, t => $"({t.Code}) {t.Label}", i => i.Id == entry.ExerciceId);
@@ -100,6 +92,11 @@ public partial class EditEntry : ComponentBase
 			&& entry.ExerciceId == Guid.Empty)
 		{
 			entry.ExerciceId = exercices.Single(i => i.Active).Id;
+		}
+		var _selectedExercice = exercices.FirstOrDefault(i => i.Id == entry.ExerciceId);
+		if (_selectedExercice is not null)
+		{
+			_dateRangeLabel = $"(du {_selectedExercice.StartDate.FromDayId():dd/MM/yy} au {_selectedExercice.EndDate.FromDayId():dd/MM/yy})";
 		}
 
 		var user = MainLayout.GetCurrentUser();
@@ -131,6 +128,31 @@ public partial class EditEntry : ComponentBase
 		}
 
 		NavigationManager.NavigateTo("/ecritures");
+	}
+
+	List<Datas.AccountData> FilterAccountTree(IEnumerable<Datas.AccountData> accounts)
+	{
+		var _result = new List<Datas.AccountData>();
+		foreach (var _account in accounts)
+		{
+			var _children = FilterAccountTree(_account.Children);
+			if (_account.Children.Count > 0 && _children.Count == 0)
+			{
+				continue;
+			}
+
+			if (_account.Children.Count == 0 &&
+				((direction == Enums.AccountDirection.Debit && _account.Direction == Enums.AccountDirection.Credit) ||
+				 (direction == Enums.AccountDirection.Credit && _account.Direction == Enums.AccountDirection.Debit)))
+			{
+				continue;
+			}
+
+			var _filteredAccount = (Datas.AccountData)_account.Clone();
+			_filteredAccount.Children = _children;
+			_result.Add(_filteredAccount);
+		}
+		return _result;
 	}
 
 	void RefreshToolbar(int tabId)
