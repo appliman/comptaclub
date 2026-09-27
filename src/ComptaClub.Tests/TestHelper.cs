@@ -14,6 +14,8 @@ using ChannelMediator;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ComptaClub.Tests
@@ -24,16 +26,20 @@ namespace ComptaClub.Tests
 		{
 			var builder = WebApplication.CreateBuilder();
 			builder.Environment.EnvironmentName = "Test";
-			var connectionString = $"Data Source=ComptaClubTest-{Guid.NewGuid():N};Mode=Memory;Cache=Shared;Pooling=False";
-			builder.Services.AddSingleton(new ComptaClubSettings
+			builder.Configuration.AddJsonFile("appsettings.test.json", optional: false);
+
+			var configuredConnectionString = builder.Configuration.GetConnectionString("TEST")
+				?? throw new InvalidOperationException("ConnectionStrings:TEST is required.");
+			var sqliteConnectionString = new SqliteConnectionStringBuilder(configuredConnectionString)
 			{
-				DatabaseProvider = "Sqlite",
-				SqliteConnectionString = connectionString
-			});
-			builder.Services.AddComptaClubCore();
-			builder.Services.AddMemoryCache();
-			builder.Services.AddSingleton(_ => new SqliteConnection(connectionString));
-			builder.Services.AddComptaClubSqlite(connectionString, builder.Environment.EnvironmentName);
+				DataSource = $"ComptaClubTest-{Guid.NewGuid():N}"
+			}.ConnectionString;
+
+			var settings = builder.ConfigureComptaClub();
+			settings.DatabaseProvider = "Sqlite";
+			settings.ConnectionString = sqliteConnectionString;
+			builder.Services.AddSingleton(_ => new SqliteConnection(sqliteConnectionString));
+			builder.Services.AddComptaClubSqlite(sqliteConnectionString, builder.Environment.EnvironmentName);
 			var app = builder.Build();
 			try
 			{
