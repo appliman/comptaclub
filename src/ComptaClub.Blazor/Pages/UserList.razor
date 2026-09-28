@@ -1,4 +1,4 @@
-@page "/utilisateurs"
+﻿@page "/utilisateurs"
 
 <PageTitle>Liste des utilisateurs</PageTitle>
 
@@ -24,7 +24,7 @@
                 DisplayRowNumberColumn="true"
                 Height="500px" ActionsWidth="120">
         <ActionsTemplate Context="user">
-            @if (grid.IsRowInEditMode(user))
+            @if (grid!.IsRowInEditMode(user))
             {
                 <SuperButton Icon="fa-xmark" Style="SuperButtonStyle.Secondary"  Size="SuperButtonSize.Default" Click="@(args => CancelEdit(user))" title="Annuler">
                 </SuperButton>

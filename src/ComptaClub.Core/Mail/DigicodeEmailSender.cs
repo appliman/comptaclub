@@ -22,7 +22,8 @@ public sealed class DigicodeEmailSender(
         if (string.IsNullOrWhiteSpace(settings.SmtpHost)
             || (!settings.SmtpHost.Equals("local", StringComparison.OrdinalIgnoreCase) && settings.SmtpPort <= 0))
         {
-            throw new InvalidOperationException("La configuration SMTP est incomplète.");
+            logger.LogError("La configuration SMTP est incomplète. SmtpHost: {SmtpHost}, SmtpPort: {SmtpPort}", settings.SmtpHost, settings.SmtpPort);
+			throw new InvalidOperationException("La configuration SMTP est incomplète.");
         }
 
         var message = new MimeMessage();

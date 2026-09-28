@@ -28,9 +28,13 @@ public partial class LoginPartial : ComponentBase
 
 	public async Task Validate()
 	{
+		Logger.LogInformation("Validation du formulaire de connexion");
+
 		var errors = new List<BrokenRule>();
 		if (loginForm.Step == "Email")
 		{
+			Logger.LogInformation("Vérification de l'adresse email : {Email}", loginForm.Email);
+
 			var user = await Mediator.Send(new GetUserByFilterRequest(i => i.Email = loginForm.Email)) ;
 			if (user == null)
 			{
