@@ -21,7 +21,7 @@ public class AttachDocumentTests
 		var user = await mediator.GetOrCreateUser($"{Guid.NewGuid()}@email.com");
 
 		var currentFolder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!;
-		var pdftest = System.IO.Path.Combine(currentFolder, "docs", "test.pdf");
+		var pdftest = System.IO.Path.Combine(currentFolder, "Docs", "test.pdf");
 
 		var document = await mediator.Send(new CreateDocumentRequest());
 		document.FileName = System.IO.Path.GetFileName(pdftest);

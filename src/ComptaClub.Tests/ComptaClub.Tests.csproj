@@ -41,6 +41,9 @@
     <ProjectReference Include="..\..\tools\ComptaClub.DatabaseConverter\ComptaClub.DatabaseConverter.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="appsettings.test.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="appsettings.local.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
