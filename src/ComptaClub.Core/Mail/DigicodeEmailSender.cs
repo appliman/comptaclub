@@ -1,4 +1,4 @@
-using ComptaClub.Configuration;
+﻿using ComptaClub.Configuration;
 using HandlebarsDotNet;
 using MailKit.Net.Smtp;
 using MailKit.Security;
@@ -6,7 +6,10 @@ using MimeKit;
 
 namespace ComptaClub.Mail;
 
-public sealed class DigicodeEmailSender(ComptaClubSettings settings)
+public sealed class DigicodeEmailSender(
+    ComptaClubSettings settings,
+    ILogger<DigicodeEmailSender> logger
+    )
 {
     private static readonly Lazy<HandlebarsTemplate<object, object>> Template = new(() =>
     {
@@ -32,7 +35,9 @@ public sealed class DigicodeEmailSender(ComptaClubSettings settings)
             TextBody = $"Voici le code pour se connecter : {code}\n\nComptaClub"
         }.ToMessageBody();
 
-        if (settings.SmtpHost.Equals("local", StringComparison.OrdinalIgnoreCase))
+        logger.LogInformation("Envoi d'un email à {Recipient} avec le code {Code}", recipient, code);
+
+		if (settings.SmtpHost.Equals("local", StringComparison.OrdinalIgnoreCase))
         {
             var directory = Path.Combine(Path.GetTempPath(), "ComptaClub", "Mails");
             Directory.CreateDirectory(directory);

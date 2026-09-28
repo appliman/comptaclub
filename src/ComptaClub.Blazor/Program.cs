@@ -76,24 +76,38 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services.AddSingleton<DigicodeEmailSender>();
 
-builder.Logging.AddOpenTelemetry(options =>
+if (!string.IsNullOrWhiteSpace(globalSettings.OtlpEndpoint))
 {
-	options.IncludeScopes = true;
-	options.IncludeFormattedMessage = true;
-	options.ParseStateValues = true;
-	options.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService($"{builder.Environment.EnvironmentName}.ComptaClub"));
-	options.AddOtlpExporter(opt =>
+	builder.Logging.AddOpenTelemetry(options =>
 	{
-		opt.Endpoint = new Uri($"{globalSettings.OtlpEndpoint}");
-		// opt.Headers = settings.OltpHeaders;
-		opt.Protocol = OtlpExportProtocol.Grpc;
+		options.IncludeScopes = true;
+		options.IncludeFormattedMessage = true;
+		options.ParseStateValues = true;
+		options.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService($"{builder.Environment.EnvironmentName}.ComptaClub"));
+		options.AddOtlpExporter(opt =>
+		{
+			opt.Endpoint = new Uri($"{globalSettings.OtlpEndpoint}");
+			// opt.Headers = settings.OltpHeaders;
+			opt.Protocol = OtlpExportProtocol.Grpc;
+		});
 	});
-});
+}
 
 
 /* ----------------------------------------------------------------------- */
 
 var app = builder.Build();
+
+app.Use(async (context, next) =>
+{
+    context.Response.OnStarting(() =>
+    {
+        context.Response.Headers["X-Robots-Tag"] = "noindex, nofollow";
+        return Task.CompletedTask;
+    });
+
+    await next(context);
+});
 
 if (!app.Environment.IsDevelopment())
 {
