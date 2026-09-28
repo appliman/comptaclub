@@ -138,4 +138,10 @@ await app.Services.GetRequiredService<IComptaClubDbContextFactory>().MigrateAsyn
 var mediator = app.Services.GetRequiredService<ChannelMediator.IMediator>();
 await mediator.Send(new WarmupRequest());
 
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+logger.LogInformation("Application started in {Environment} environment.", app.Environment.EnvironmentName);
+logger.LogInformation("Database provider: {DatabaseProvider}", globalSettings.DatabaseProvider);
+logger.LogInformation("Connection string: {ConnectionString}", globalSettings.ConnectionString);
+
 await app.RunAsync();
