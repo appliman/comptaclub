@@ -1,4 +1,4 @@
-
+﻿
 using ComptaClub.Datas;
 
 using FluentValidation;
@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ComptaClub.Configuration;
 
 namespace ComptaClub;
 
@@ -28,7 +29,7 @@ public static class StartupExtensions
         section.Bind(settings);
         builder.Services.AddSingleton(settings);
 
-        if (settings.DatabaseProvider.Equals("MsSql", StringComparison.OrdinalIgnoreCase))
+		if (settings.DatabaseProvider.Equals("MsSql", StringComparison.OrdinalIgnoreCase))
         {
             var sqlConnectionString = args.GetParameterValue("cs");
             settings.ConnectionString = string.IsNullOrWhiteSpace(sqlConnectionString)
@@ -55,20 +56,19 @@ public static class StartupExtensions
 
     public static IServiceCollection AddComptaClubCore(this IServiceCollection services)
     {
-        services.AddChannelMediator(
+		var rootNs = typeof(StartupExtensions).Namespace!.Split('.')[0];
+		var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies()
+				.Where(a => a.FullName!.StartsWith(rootNs))
+				.ToArray();
+
+		services.AddChannelMediator(
             config => config.Strategy = NotificationPublishStrategy.Sequential,
-            typeof(StartupExtensions).Assembly);
-        services.AddTransient<IValidator<Datas.BankData>, Validators.BankValidator>();
-        services.AddTransient<IValidator<Datas.AccountData>, Validators.AccountValidator>();
-        services.AddTransient<IValidator<Datas.ExerciceData>, Validators.ExerciceValidator>();
-        services.AddTransient<IValidator<Datas.EntryData>, Validators.EntryValidator>();
-        services.AddTransient<IValidator<Datas.UserData>, Validators.UserValidator>();
-        services.AddTransient<IValidator<Datas.MemberData>, Validators.MemberValidator>();
-        services.AddTransient<IValidator<Datas.AssociatedMemberListByEntryData>, Validators.AssociatedMemberListByEntryValidator>();
-        services.AddTransient<IValidator<Datas.DocumentData>, Validators.DocumentValidator>();
+			currentAssemblies);
+
+		services.AddValidatorsFromAssemblies(currentAssemblies, includeInternalTypes: true, lifetime: ServiceLifetime.Singleton);
+
         return services;
     }
-
 
     public static string GetParameterValue(this string[] args, string parameterName)
     {
