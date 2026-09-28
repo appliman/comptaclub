@@ -26,13 +26,11 @@ namespace ComptaClub.Tests
 		{
 			var builder = WebApplication.CreateBuilder();
 			builder.Environment.EnvironmentName = "Test";
-			builder.Configuration.AddJsonFile("appsettings.test.json", optional: false);
-
-			var configuredConnectionString = builder.Configuration.GetConnectionString("TEST")
-				?? throw new InvalidOperationException("ConnectionStrings:TEST is required.");
-			var sqliteConnectionString = new SqliteConnectionStringBuilder(configuredConnectionString)
+			var sqliteConnectionString = new SqliteConnectionStringBuilder
 			{
-				DataSource = $"ComptaClubTest-{Guid.NewGuid():N}"
+				DataSource = $"ComptaClubTest-{Guid.NewGuid():N}",
+				Mode = SqliteOpenMode.Memory,
+				Cache = SqliteCacheMode.Shared
 			}.ConnectionString;
 
 			var settings = builder.ConfigureComptaClub();

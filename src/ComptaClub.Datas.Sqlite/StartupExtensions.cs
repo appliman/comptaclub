@@ -14,20 +14,26 @@ public static class StartupExtensions
         }
 
         var sqliteConnectionStringBuilder = new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder(connectionString);
-        var dataSource = sqliteConnectionStringBuilder.DataSource;
-        var folder = Path.GetDirectoryName(dataSource)!;
+        if (sqliteConnectionStringBuilder.Mode != Microsoft.Data.Sqlite.SqliteOpenMode.Memory)
+        {
+            var dataSource = sqliteConnectionStringBuilder.DataSource;
+            var folder = Path.GetDirectoryName(dataSource);
 
-		var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
-		var currentFolder = Path.GetDirectoryName(entryAssembly!.Location)!;
-		if (folder.StartsWith("/")
-	        || folder.StartsWith(@"\"))
-		{
-			folder = Path.Combine(currentFolder, folder.Trim('/').Trim('\\'));
-		}
+            var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
+            var currentFolder = Path.GetDirectoryName(entryAssembly!.Location)!;
+            if (string.IsNullOrEmpty(folder))
+            {
+                folder = currentFolder;
+            }
+            else if (folder.StartsWith("/") || folder.StartsWith(@"\"))
+            {
+                folder = Path.Combine(currentFolder, folder.Trim('/').Trim('\\'));
+            }
 
-		System.IO.Directory.CreateDirectory(folder);
-        sqliteConnectionStringBuilder.DataSource = Path.Combine(folder, Path.GetFileName(dataSource));
-        connectionString = sqliteConnectionStringBuilder.ToString();
+            Directory.CreateDirectory(folder);
+            sqliteConnectionStringBuilder.DataSource = Path.Combine(folder, Path.GetFileName(dataSource));
+            connectionString = sqliteConnectionStringBuilder.ToString();
+        }
 
 		services.AddDbContextFactory<ComptaClubDbContext>(options =>
         {

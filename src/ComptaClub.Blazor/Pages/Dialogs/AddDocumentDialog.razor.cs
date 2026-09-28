@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
 
 using ComptaClub.Blazor.Pages.Components;
@@ -30,7 +30,6 @@ public partial class AddDocumentDialog
 	CustomValidator customValidator = default!;
 	string HoverClass = null!;
 	MemoryStream? documentContent = null;
-	string? imageDataBase64;
 	string? frameUri;
 
 	async Task OnInputFileChange(InputFileChangeEventArgs e)
