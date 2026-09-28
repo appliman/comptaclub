@@ -25,9 +25,10 @@ public class SqliteProviderTests
     {
         var settings = new ComptaClubSettings();
         Assert.AreEqual("Sqlite", settings.DatabaseProvider);
-        Assert.AreEqual("Data Source=comptaclub.db", settings.ConnectionString);
+        Assert.IsTrue(string.IsNullOrWhiteSpace(settings.ConnectionString));
         var sqliteServices = new ServiceCollection();
-        sqliteServices.AddComptaClubSqlite(settings.ConnectionString!, "Production");
+        Assert.ThrowsExactly<ArgumentException>(() => sqliteServices.AddComptaClubSqlite(settings.ConnectionString, "Production"));
+        sqliteServices.AddComptaClubSqlite("Data Source=comptaclub.db", "Production");
         using var sqliteProvider = sqliteServices.BuildServiceProvider();
         using var sqliteDb = sqliteProvider.GetRequiredService<IComptaClubDbContextFactory>().CreateDbContext();
         Assert.AreEqual("Microsoft.EntityFrameworkCore.Sqlite", sqliteDb.Database.ProviderName);
