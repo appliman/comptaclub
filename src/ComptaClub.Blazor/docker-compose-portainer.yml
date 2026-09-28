@@ -10,7 +10,6 @@ services:
       - ASPNETCORE_URLS=http://0.0.0.0:33001
       - ComptaClub__DatabaseProvider=${COMPTACLUB_DATABASE_PROVIDER:-Sqlite}
       - ComptaClub__ConnectionString=${COMPTACLUB_CONNECTION_STRING-}
-      - ComptaClub__AzureStorageConnectionString=${COMPTACLUB_AZURE_STORAGE_CONNECTION_STRING:?Define COMPTACLUB_AZURE_STORAGE_CONNECTION_STRING in .env}
       - ComptaClub__SmtpPassword=${COMPTACLUB_SMTP_PASSWORD:?Define COMPTACLUB_SMTP_PASSWORD in .env}
       - ComptaClub__AdminUserEmail=${COMPTACLUB_ADMIN_USER_EMAIL:?Define COMPTACLUB_ADMIN_USER_EMAIL in .env}
       - ComptaClub__ContactEmailAdress=${COMPTACLUB_CONTACT_EMAIL_ADDRESS:?Define COMPTACLUB_CONTACT_EMAIL_ADDRESS in .env}
@@ -21,7 +20,7 @@ services:
       - ComptaClub__SmtpEnableSsl=${COMPTACLUB_SMTP_ENABLE_SSL:-true}
       - ComptaClub__OtlpEndpoint=${COMPTACLUB_OTLP_ENDPOINT:?Define COMPTACLUB_OTLP_ENDPOINT in .env}
     volumes:
-      - comptaclub-data:/app/data
+      - ${COMPTACLUB_STOREFOLDER}:/app/data
 
     networks:
       - traefik-public

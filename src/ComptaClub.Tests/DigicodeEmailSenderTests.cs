@@ -1,8 +1,12 @@
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using ComptaClub.Configuration;
 using ComptaClub.Mail;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
 using MimeKit;
 
 namespace ComptaClub.Tests;
@@ -17,12 +21,16 @@ public class DigicodeEmailSenderTests
         Directory.CreateDirectory(directory);
         var existingFiles = Directory.GetFiles(directory, "*.eml").ToHashSet(StringComparer.OrdinalIgnoreCase);
         var recipient = $"member-{Guid.NewGuid():N}@example.com";
-        var sender = new DigicodeEmailSender(new ComptaClubSettings
+
+        var app = await TestHelper.CreateWebApplication();
+        var logger = app.Services.GetRequiredService<ILogger<DigicodeEmailSender>>();
+
+		var sender = new DigicodeEmailSender(new ComptaClubSettings
         {
             ContactName = "ComptaClub",
             ContactEmailAdress = "noreply@example.com",
             SmtpHost = "local"
-        });
+        }, logger);
 
         string? savedFile = null;
         try
@@ -59,8 +67,11 @@ public class DigicodeEmailSenderTests
         listener.Start();
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
 
-        try
-        {
+		var app = await TestHelper.CreateWebApplication();
+		var logger = app.Services.GetRequiredService<ILogger<DigicodeEmailSender>>();
+
+		try
+		{
             var port = ((IPEndPoint)listener.LocalEndpoint).Port;
             var receiveTask = ReceiveMessageAsync(listener, timeout.Token);
             var sender = new DigicodeEmailSender(new ComptaClubSettings
@@ -70,7 +81,7 @@ public class DigicodeEmailSenderTests
                 SmtpHost = "127.0.0.1",
                 SmtpPort = port,
                 SmtpEnableSsl = false
-            });
+            }, logger);
 
             await sender.SendAsync("member@example.com", 12345, timeout.Token);
             var message = await receiveTask;

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 
 namespace ComptaClub.Tests;
@@ -33,7 +33,6 @@ public class LocalConfigurationTests
             var settings = builder.ConfigureComptaClub();
 
             Assert.AreEqual("Server=localhost;Database=LocalTest", settings.ConnectionString);
-            Assert.AreEqual("UseDevelopmentStorage=true", settings.AzureStorageConnectionString);
             Assert.AreEqual("local-password", settings.SmtpPassword);
         }
         finally
