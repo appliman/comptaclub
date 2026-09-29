@@ -4,6 +4,10 @@
 
 ComptaClub aide les responsables de clubs et d'associations à garder une vue claire sur leurs finances. Depuis une interface web en français, ils suivent les recettes et les dépenses, relient les écritures aux membres et aux justificatifs, puis consultent les résultats et les budgets de chaque exercice. Aucune installation n'est nécessaire sur les postes des utilisateurs.
 
+## Aperçu
+
+![Tableau de bord de ComptaClub](docs/images/tableau-de-bord.png)
+
 ## Ce que permet l'application 
 
 | Domaine | Fonctionnalités |
