@@ -364,6 +364,9 @@ appsettings.local.json
 tools/**/*.db
 tools/**/*.db-wal
 tools/**/*.db-shm
+src/ComptaClub.DatabaseConverter/**/*.db
+src/ComptaClub.DatabaseConverter/**/*.db-wal
+src/ComptaClub.DatabaseConverter/**/*.db-shm
 comptaclub.db
 comptaclub.db-wal
 comptaclub.db-shm

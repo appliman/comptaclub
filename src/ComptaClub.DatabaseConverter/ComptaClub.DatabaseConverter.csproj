@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../src/ComptaClub.Datas.MsSql/ComptaClub.Datas.MsSql.csproj" />
-    <ProjectReference Include="../../src/ComptaClub.Datas.Sqlite/ComptaClub.Datas.Sqlite.csproj" />
+    <ProjectReference Include="../ComptaClub.Datas.MsSql/ComptaClub.Datas.MsSql.csproj" />
+    <ProjectReference Include="../ComptaClub.Datas.Sqlite/ComptaClub.Datas.Sqlite.csproj" />
   </ItemGroup>
 </Project>
