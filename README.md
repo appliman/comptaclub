@@ -81,7 +81,7 @@ Le serveur SQL doit être joignable depuis le réseau du conteneur et le compte 
 L'outil console du dépôt copie les données entre SQL Server et SQLite. **Arrêtez l'application et toute autre écriture sur la base source** pendant la conversion, puis sauvegardez la base avant de commencer.
 
 ```bash
-dotnet run --project tools/ComptaClub.DatabaseConverter/ComptaClub.DatabaseConverter.csproj --configuration Release
+dotnet run --project src/ComptaClub.DatabaseConverter/ComptaClub.DatabaseConverter.csproj --configuration Release
 ```
 
 Choisissez `1 - MSSql vers Sqlite` ou `2 - Sqlite vers MSSql`, puis collez la chaîne de connexion SQL Server. Pour le choix 1, l'outil propose le dossier de son exécutable et le nom `comptaclub.db` ; vous pouvez modifier chacun des deux et devez valider le chemin complet. Un fichier existant n'est remplacé qu'après une seconde confirmation. Pour le choix 2, indiquez le chemin du fichier SQLite source. La chaîne SQL Server doit contenir le nom de la base cible ; le compte utilisé doit pouvoir créer cette base si elle n'existe pas. Une base cible existante est acceptée seulement si toutes ses tables ComptaClub sont vides.

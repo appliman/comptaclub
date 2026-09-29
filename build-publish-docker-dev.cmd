@@ -3,7 +3,7 @@
 SETLOCAL EnableDelayedExpansion
  
 echo ===================================================================
-echo Building StockAssoPro Docker Images with Base Image
+echo Building ComptaClub Docker Images with Base Image
 echo ===================================================================
 
 docker compose -f ./src/ComptaClub.Blazor/docker-compose-dev.yml build
