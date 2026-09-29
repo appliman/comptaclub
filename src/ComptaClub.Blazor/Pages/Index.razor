@@ -1,4 +1,3 @@
-@using SuperBlazorComponents.Components.GoogleCharts
 @page "/"
 <PageTitle>Accueil</PageTitle>
 
@@ -32,13 +31,21 @@
         </div>
     </div>
 </div>
-@if (balanceByDayList is not null
-    && balanceByDayList.Any())
-{
-    <div class="home-balance-chart">
-        <TimeSeriesChart Data="balanceSeries" Options="balanceChartOptions" />
+<div class="row g-3 align-items-start mt-2">
+    <div class="col-12 col-lg-8">
+        @if (balanceByDayList.Any())
+        {
+            <div class="home-balance-chart">
+                <BalanceChart Data="balanceByDayList" />
+            </div>
+        }
     </div>
-}
+    <div class="col-12 col-lg-4">
+        <div class="home-breakdown-chart">
+            <ChargesProduitsPieChart Charges="_chargesAmount" Produits="_produitsAmount" />
+        </div>
+    </div>
+</div>
 <div class="row mt-4">
     <div class="col-6">
         <AccountingPlanTotal Plan="plan" Direction="Enums.AccountDirection.Debit" Title="Charges" />

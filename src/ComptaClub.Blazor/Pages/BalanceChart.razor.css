@@ -1,0 +1,51 @@
+.balance-chart {
+    width: 100%;
+}
+
+.balance-chart h4 {
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.balance-chart-scroll {
+    overflow-x: auto;
+}
+
+.balance-chart svg {
+    display: block;
+    width: 100%;
+    min-width: 620px;
+    max-width: 1100px;
+    height: auto;
+    margin: auto;
+}
+
+.grid-line {
+    stroke: #e3e8ef;
+    stroke-width: 1;
+}
+
+.month-boundary {
+    stroke: #a9bfd7;
+    stroke-width: 1.5;
+    stroke-dasharray: 4 4;
+}
+
+.axis-line {
+    stroke: #495057;
+    stroke-width: 1.5;
+}
+
+.balance-line {
+    fill: none;
+    stroke: #2176d2;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.month-label,
+.y-label {
+    fill: #495057;
+    font-size: 12px;
+}

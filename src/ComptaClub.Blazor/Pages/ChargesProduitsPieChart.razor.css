@@ -1,0 +1,51 @@
+.charges-produits-pie {
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.375rem;
+    padding: 0.75rem;
+}
+
+.charges-produits-pie h4 {
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.charges-produits-pie svg {
+    display: block;
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    margin: auto;
+}
+
+.pie-value {
+    fill: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    pointer-events: none;
+}
+
+.pie-legend {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.pie-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.pie-swatch {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+}
+
+.pie-swatch.charges {
+    background: #dc3545;
+}
+
+.pie-swatch.produits {
+    background: #198754;
+}

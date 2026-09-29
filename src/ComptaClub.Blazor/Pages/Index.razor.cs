@@ -4,7 +4,6 @@ using ComptaClub.Contracts.Models.Members;
 using ComptaClub.Contracts.Models.Stats;
 
 using ChannelMediator;
-using SuperBlazorComponents.Components.GoogleCharts;
 
 namespace ComptaClub.Blazor.Pages;
 public partial class Index
@@ -15,20 +14,8 @@ public partial class Index
 
 	ViewModels.Exercice currentExercice = new();
 	IEnumerable<BalanceByDay> balanceByDayList = new List<BalanceByDay>();
-	List<ChartDataPoint> balanceSeries => balanceByDayList.Select(x => new ChartDataPoint
-	{
-		Date = new DateTimeOffset(x.Day),
-		Value = x.BalanceAmount
-	}).ToList();
-	readonly ChartOptions balanceChartOptions = new()
-	{
-		Title = "Solde",
-		YAxisTitle = string.Empty,
-		Height = 350,
-		ValueFormat = ValueFormat.Currency,
-		MinValue = 0,
-		Padding = new ChartPadding { Bottom = 30 }
-	};
+	decimal _chargesAmount;
+	decimal _produitsAmount;
 	IEnumerable<AmountTotalByAccount> amountTotalByAccountList = new List<AmountTotalByAccount>();
 	IEnumerable<ViewModels.Account> plan = new List<ViewModels.Account>();
 	System.Globalization.CultureInfo ci = new System.Globalization.CultureInfo("fr-FR");
@@ -71,6 +58,9 @@ public partial class Index
 				account.Total = total.Total;
 			}
 		}
+
+		_chargesAmount = plan.Where(i => i.Direction == Enums.AccountDirection.Debit).Sum(i => i.DeepTotal) / 1000000m;
+		_produitsAmount = plan.Where(i => i.Direction == Enums.AccountDirection.Credit).Sum(i => i.DeepTotal) / 1000000m;
 
 		memberCount = t5.Result;
 	}

@@ -12,6 +12,6 @@
     background-color: red;
 }
 
-.home-balance-chart ::deep .axis-label-x {
-    display: none;
+.home-breakdown-chart {
+    min-width: 0;
 }
