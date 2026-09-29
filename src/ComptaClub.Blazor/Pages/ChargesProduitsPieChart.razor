@@ -1,0 +1,121 @@
+@using System.Globalization
+
+@code {
+    private const double CENTER_X = 160;
+    private const double CENTER_Y = 120;
+    private const double RADIUS = 100;
+    private static readonly CultureInfo _frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
+
+    [Parameter]
+    public decimal Charges { get; set; }
+
+    [Parameter]
+    public decimal Produits { get; set; }
+
+    private bool _hasData;
+    private bool _showChargesValue;
+    private bool _showProduitsValue;
+    private string _baseColor = "#198754";
+    private string _chargePath = string.Empty;
+    private string _chargesLabelX = string.Empty;
+    private string _chargesLabelY = string.Empty;
+    private string _produitsLabelX = string.Empty;
+    private string _produitsLabelY = string.Empty;
+    private string _description = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        _hasData = Charges >= 0 && Produits >= 0 && Charges + Produits > 0;
+        if (!_hasData)
+        {
+            return;
+        }
+
+        var total = Charges + Produits;
+        var chargeShare = Charges / total;
+        var chargeSweep = (double)chargeShare * 360;
+        _baseColor = Produits > 0 ? "#198754" : "#dc3545";
+        _description = $"Charges : {FormatAmount(Charges)} € ; Produits : {FormatAmount(Produits)} €.";
+
+        _chargePath = string.Empty;
+        if (Charges > 0 && Produits > 0)
+        {
+            var end = GetPoint(-90 + chargeSweep, RADIUS);
+            var largeArc = chargeSweep > 180 ? 1 : 0;
+            _chargePath = $"M {CENTER_X} {CENTER_Y} L {CENTER_X} {CENTER_Y - RADIUS} A {RADIUS} {RADIUS} 0 {largeArc} 1 {FormatCoordinate(end.X)} {FormatCoordinate(end.Y)} Z";
+        }
+
+        var chargesLabel = Produits == 0 ? (CENTER_X, CENTER_Y) : GetPoint(-90 + chargeSweep / 2, RADIUS * 0.6);
+        var produitsLabel = Charges == 0 ? (CENTER_X, CENTER_Y) : GetPoint(90 + chargeSweep / 2, RADIUS * 0.6);
+        _chargesLabelX = FormatCoordinate(chargesLabel.Item1);
+        _chargesLabelY = FormatCoordinate(chargesLabel.Item2);
+        _produitsLabelX = FormatCoordinate(produitsLabel.Item1);
+        _produitsLabelY = FormatCoordinate(produitsLabel.Item2);
+        _showChargesValue = Charges > 0 && (chargeShare >= 0.12m || Produits == 0);
+        _showProduitsValue = Produits > 0 && (1 - chargeShare >= 0.12m || Charges == 0);
+    }
+
+    private static (double X, double Y) GetPoint(double angleDegrees, double distance)
+    {
+        var angleRadians = angleDegrees * Math.PI / 180;
+        return (CENTER_X + Math.Cos(angleRadians) * distance, CENTER_Y + Math.Sin(angleRadians) * distance);
+    }
+
+    private static string FormatCoordinate(double value)
+    {
+        return value.ToString("0.###", CultureInfo.InvariantCulture);
+    }
+
+    private static string FormatAmount(decimal value)
+    {
+        return value.ToString("N2", _frenchCulture);
+    }
+
+    private static RenderFragment SvgValue(string x, string y, string value) => builder =>
+    {
+        builder.OpenElement(0, "text");
+        builder.AddAttribute(1, "x", x);
+        builder.AddAttribute(2, "y", y);
+        builder.AddAttribute(3, "class", "pie-value");
+        builder.AddAttribute(4, "text-anchor", "middle");
+        builder.AddAttribute(5, "dominant-baseline", "middle");
+        builder.AddContent(6, value);
+        builder.CloseElement();
+    };
+}
+
+<section class="charges-produits-pie" aria-label="Répartition Charges / Produits">
+    <h4>Répartition Charges / Produits</h4>
+    @if (_hasData)
+    {
+        <svg viewBox="0 0 320 250" role="img" aria-label="@_description">
+            <title>Répartition Charges / Produits</title>
+            <desc>@_description</desc>
+            <circle cx="@CENTER_X" cy="@CENTER_Y" r="@RADIUS" fill="@_baseColor">
+                <title>@(Produits > 0 ? $"Produits : {FormatAmount(Produits)} €" : $"Charges : {FormatAmount(Charges)} €")</title>
+            </circle>
+            @if (_chargePath.Length > 0)
+            {
+                <path d="@_chargePath" fill="#dc3545">
+                    <title>Charges : @FormatAmount(Charges) €</title>
+                </path>
+            }
+            @if (_showChargesValue)
+            {
+                @SvgValue(_chargesLabelX, _chargesLabelY, FormatAmount(Charges))
+            }
+            @if (_showProduitsValue)
+            {
+                @SvgValue(_produitsLabelX, _produitsLabelY, FormatAmount(Produits))
+            }
+        </svg>
+        <div class="pie-legend" aria-hidden="true">
+            <span><i class="pie-swatch produits"></i>Produits</span>
+            <span><i class="pie-swatch charges"></i>Charges</span>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted text-center">Aucune répartition à afficher pour cet exercice.</p>
+    }
+</section>

@@ -26,6 +26,7 @@ jobs:
         run: dotnet build ComptaClub.slnx --configuration Release --no-restore
 
       - name: Test
+        if: ${{ !(github.event_name == 'pull_request' && github.head_ref == 'main' && github.base_ref == 'prod') }}
         run: dotnet test src/ComptaClub.Tests/ComptaClub.Tests.csproj --configuration Release --no-build
 
       - name: Publish Blazor

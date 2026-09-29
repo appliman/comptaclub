@@ -1,0 +1,142 @@
+@using System.Globalization
+@using System.Text
+@using ComptaClub.Contracts.Models.Stats
+
+@code {
+    private const double CHART_LEFT = 100;
+    private const double CHART_RIGHT = 930;
+    private const double CHART_TOP = 20;
+    private const double CHART_BOTTOM = 260;
+    private static readonly CultureInfo _frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
+
+    [Parameter]
+    public IEnumerable<BalanceByDay> Data { get; set; } = [];
+
+    private string _path = string.Empty;
+    private string _description = string.Empty;
+    private readonly List<(string X, string Label, string Anchor)> _monthLabels = [];
+    private readonly List<(string Y, string Label)> _yTicks = [];
+    private readonly List<string> _monthBoundaries = [];
+
+    protected override void OnParametersSet()
+    {
+        _path = string.Empty;
+        _monthLabels.Clear();
+        _yTicks.Clear();
+        _monthBoundaries.Clear();
+
+        var points = Data.OrderBy(x => x.Day).ToArray();
+        if (points.Length == 0)
+        {
+            return;
+        }
+
+        var minimum = points.Min(x => x.BalanceAmount);
+        var maximum = points.Max(x => x.BalanceAmount);
+        var range = maximum - minimum;
+        if (range == 0)
+        {
+            range = Math.Max(1m, Math.Abs(maximum) * 0.1m);
+        }
+
+        minimum -= range * 0.1m;
+        maximum += range * 0.1m;
+        range = maximum - minimum;
+
+        var firstDate = points[0].Day;
+        var dateSpanDays = (points[^1].Day - firstDate).TotalDays;
+        var totalDays = Math.Max(1, dateSpanDays);
+        var path = new StringBuilder(points.Length * 20);
+
+        foreach (var point in points)
+        {
+            var x = CHART_LEFT + (point.Day - firstDate).TotalDays / totalDays * (CHART_RIGHT - CHART_LEFT);
+            var y = CHART_BOTTOM - (double)((point.BalanceAmount - minimum) / range) * (CHART_BOTTOM - CHART_TOP);
+            path.Append(path.Length == 0 ? "M " : " L ");
+            path.Append(FormatCoordinate(x));
+            path.Append(' ');
+            path.Append(FormatCoordinate(y));
+        }
+
+        _path = path.ToString();
+        _description = $"Du {firstDate.ToString("dd MMMM yyyy", _frenchCulture)} au {points[^1].Day.ToString("dd MMMM yyyy", _frenchCulture)}, le solde passe de {FormatAmount(points[0].BalanceAmount)} à {FormatAmount(points[^1].BalanceAmount)}.";
+
+        var monthStart = new DateTime(firstDate.Year, firstDate.Month, 1);
+        while (monthStart <= points[^1].Day)
+        {
+            var markerDate = monthStart < firstDate ? firstDate : monthStart;
+            var x = CHART_LEFT + (markerDate - firstDate).TotalDays / totalDays * (CHART_RIGHT - CHART_LEFT);
+            var xCoordinate = FormatCoordinate(x);
+            if (monthStart >= firstDate)
+            {
+                _monthBoundaries.Add(xCoordinate);
+            }
+
+            var anchor = "end";
+            _monthLabels.Add((xCoordinate, monthStart.ToString("MMM yyyy", _frenchCulture).ToUpper(_frenchCulture), anchor));
+            monthStart = monthStart.AddMonths(1);
+        }
+
+        for (var index = 0; index < 5; index++)
+        {
+            var fraction = index / 4.0;
+            var value = minimum + range * index / 4m;
+            var y = CHART_BOTTOM - fraction * (CHART_BOTTOM - CHART_TOP);
+            _yTicks.Add((FormatCoordinate(y), FormatAmount(value)));
+        }
+    }
+
+    private static string FormatCoordinate(double value)
+    {
+        return value.ToString("0.##", CultureInfo.InvariantCulture);
+    }
+
+    private static string FormatAmount(decimal value)
+    {
+        return $"{value.ToString("N2", _frenchCulture)} €";
+    }
+
+    private static RenderFragment SvgLabel(string x, string y, string cssClass, string anchor, string label, string? transform = null) => builder =>
+    {
+        builder.OpenElement(0, "text");
+        builder.AddAttribute(1, "x", x);
+        builder.AddAttribute(2, "y", y);
+        builder.AddAttribute(3, "class", cssClass);
+        builder.AddAttribute(4, "text-anchor", anchor);
+        if (transform is not null)
+        {
+            builder.AddAttribute(5, "transform", transform);
+        }
+        builder.AddContent(6, label);
+        builder.CloseElement();
+    };
+}
+
+<section class="balance-chart" aria-label="Évolution du solde">
+    <h4>Évolution du solde</h4>
+    @if (_path.Length > 0)
+    {
+        <div class="balance-chart-scroll">
+            <svg viewBox="0 0 960 350" role="img" aria-label="@_description">
+                <title>Évolution du solde</title>
+                <desc>@_description</desc>
+                @foreach (var x in _monthBoundaries)
+                {
+                    <line x1="@x" y1="@CHART_TOP" x2="@x" y2="@CHART_BOTTOM" class="month-boundary" />
+                }
+                @foreach (var tick in _yTicks)
+                {
+                    <line x1="@CHART_LEFT" y1="@tick.Y" x2="@CHART_RIGHT" y2="@tick.Y" class="grid-line" />
+                    @SvgLabel("90", tick.Y, "y-label", "end", tick.Label)
+                }
+                <line x1="@CHART_LEFT" y1="@CHART_TOP" x2="@CHART_LEFT" y2="@CHART_BOTTOM" class="axis-line" />
+                <line x1="@CHART_LEFT" y1="@CHART_BOTTOM" x2="@CHART_RIGHT" y2="@CHART_BOTTOM" class="axis-line" />
+                <path d="@_path" class="balance-line" />
+                @foreach (var tick in _monthLabels)
+                {
+                    @SvgLabel(tick.X, "285", "month-label", tick.Anchor, tick.Label, $"rotate(-45 {tick.X} 285)")
+                }
+            </svg>
+        </div>
+    }
+</section>
