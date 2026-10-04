@@ -29,8 +29,12 @@ internal class GetBalanceByMemberListRequestHandler : IRequestHandler<GetBalance
 		Guid exerciceId = request.ExerciceId.GetValueOrDefault(Guid.Empty);
 		if (exerciceId == Guid.Empty)
 		{
-			var activeExercice = await _mediator.Send(new GetActiveExerciceRequest());
-			exerciceId = activeExercice!.Id;
+            var activeExercice = await _mediator.Send(new GetActiveExerciceRequest(), cancellationToken);
+            if (activeExercice is null)
+            {
+                return [];
+            }
+            exerciceId = activeExercice.Id;
 		}
 
 		await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);

@@ -19,6 +19,8 @@ public class ComptaClubSettings
 	public string DatabaseProvider { get; set; } = "Sqlite";
 	public string ConnectionString { get; set; } = null!;
 
+    public string TempFolder { get; set; } = Path.Combine(Path.GetTempPath(), "ComptaClub");
+
 	public System.Globalization.CultureInfo CultureInfo { get; init; }
 		= new System.Globalization.CultureInfo("fr-FR");
 

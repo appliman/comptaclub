@@ -16,6 +16,7 @@ internal static class TableCatalog
         new TableDefinition<DocumentByEntityData>("DocumentsByEntities"),
         new TableDefinition<ExerciceData>("Exercices"),
         new TableDefinition<UserData>("Users"),
+        new TableDefinition<McpApiKeyData>("McpApiKeys", isOptional: true),
         new TableDefinition<RoleByUserData>("RolesByUsers"),
         new TableDefinition<MemberData>("Members"),
         new TableDefinition<EntryData>("Entries"),

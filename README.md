@@ -21,6 +21,30 @@ ComptaClub aide les responsables de clubs et d'associations à garder une vue cl
 
 L'application est construite avec **.NET 10**, **ASP.NET Core Blazor Server** et **Entity Framework Core**. Elle utilise **SQLite par défaut** et accepte aussi **SQL Server** pour ses données relationnelles. Le choix du fournisseur se fait au démarrage : passer de l'un à l'autre ne copie pas les données.
 
+## Piloter ComptaClub depuis Codex
+
+Ouvrez **Configuration → Clés API MCP**, créez une clé et copiez son secret lors de son affichage unique. Chaque clé donne accès à toutes les opérations métier. Tous les utilisateurs actifs peuvent gérer les clés.
+
+Le serveur MCP est disponible à l’adresse **`https://votre-instance/mcp`**. Ajoutez dans la configuration Codex :
+
+```toml
+[mcp_servers.comptaclub]
+url = "https://votre-instance/mcp"
+bearer_token_env_var = "COMPTACLUB_MCP_API_KEY"
+```
+
+La variable d’environnement `COMPTACLUB_MCP_API_KEY` doit contenir la clé dans le processus qui lance Codex. Le secret n’est pas conservé dans le fichier de configuration. Voir la [documentation officielle Codex](https://developers.openai.com/codex/mcp).
+
+Le MCP couvre les écritures, membres, documents, utilisateurs, club, comptes, banques, exercices, comptes de résultats, budgets, imports et clés API. Les mêmes règles métier s’appliquent : par exemple, un compte de résultats exige un exercice clos.
+
+L’import OFX suit deux étapes : `preview_ofx_import`, puis `save_ofx_entries` avec le même fichier et les écritures sélectionnées. Les fichiers entrants sont transmis en base64, avec une limite de **512 Kio**. Les documents se téléchargent par blocs de 256 Kio.
+
+Les saisies MCP utilisent des **montants en euros** et des dates ISO. Les entités retournées utilisent les unités internes : **1 euro = 1 000 000 unités**, et les dates entières comptent les jours depuis le 1er janvier 2000. Les soldes journaliers sont déjà en euros. L’outil `get_application_info` rappelle ces conventions.
+
+La révocation, la rotation et l’archivage invalident immédiatement l’ancien secret. La désactivation du créateur bloque ses clés ; une réactivation du compte rétablit les clés encore valides. Les expirations sont exprimées en UTC.
+
+Les migrations ajoutent automatiquement les tables MCP au démarrage. Le convertisseur conserve les clés et leur empreinte et accepte les bases anciennes dépourvues de table MCP. Le serveur utilise le transport HTTP de l’application et ne nécessite aucun port Docker supplémentaire.
+
 ## Installer l'image sur un serveur Docker
 
 Le dépôt fournit un [Compose de production](src/ComptaClub.Blazor/docker-compose-portainer.yml) qui utilise l'image `ghcr.io/appliman/comptaclub:latest`. Il est prévu pour un serveur équipé de **Docker Compose** et d'un **Traefik** déjà opérationnel.
@@ -118,6 +142,10 @@ Ouvrez ensuite `https://compta.andernos-triathlon.club` ou votre domaine configu
 Le Compose n'ouvre aucun port directement sur l'hôte : Traefik reçoit le trafic HTTPS et le transmet au port `33001` du conteneur. Si vous utilisez Portainer, créez une *stack* à partir du même Compose et définissez dans Portainer les variables présentes dans `.env`.
 
 ### Mettre à jour et sauvegarder
+
+Avec SQLite, le bas du formulaire **Club** permet de préparer une sauvegarde cohérente de la base en cours d'utilisation, puis de télécharger un ZIP chiffré en AES. Un email dédié transmet au demandeur le mot de passe et le lien, réservé à son compte et valable 24 heures. Utilisez un outil compatible AES, comme 7-Zip, pour extraire `ComptaClub.db`. L'envoi utilise la configuration SMTP existante ; en cas d'échec, l'archive est supprimée et le formulaire affiche une erreur.
+
+Les archives expirées sont nettoyées toutes les heures. Leur emplacement se configure avec `ComptaClub:TempFolder` (`ComptaClub__TempFolder` en variable d'environnement) ; les fichiers Docker Compose du dépôt utilisent `/app/data/temp` dans le volume persistant. Pour restaurer une sauvegarde, arrêtez l'application et remplacez le fichier SQLite configuré par le fichier extrait, en conservant une copie de l'ancienne base.
 
 Pour mettre à jour l'image :
 

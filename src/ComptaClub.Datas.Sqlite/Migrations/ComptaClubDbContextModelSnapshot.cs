@@ -15,7 +15,7 @@ namespace ComptaClub.Datas.Sqlite.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.3");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.12");
 
             modelBuilder.Entity("ComptaClub.Datas.AccountData", b =>
                 {
@@ -451,6 +451,67 @@ namespace ComptaClub.Datas.Sqlite.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("IncomeStatementItems");
+                });
+
+            modelBuilder.Entity("ComptaClub.Datas.McpApiKeyData", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("ArchivedDateUtc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreationDateUtc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("ExpirationDateUtc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("KeyIdentifier")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastUsedDateUtc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("RevokedDateUtc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SecretHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SecretLastFour")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("UsageCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("KeyIdentifier")
+                        .IsUnique();
+
+                    b.ToTable("McpApiKeys");
                 });
 
             modelBuilder.Entity("ComptaClub.Datas.MemberData", b =>

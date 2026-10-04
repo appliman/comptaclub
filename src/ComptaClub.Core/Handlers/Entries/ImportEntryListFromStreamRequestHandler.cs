@@ -20,14 +20,14 @@ internal class ImportEntryListFromStreamRequestHandler : IRequestHandler<ImportE
 
 	public async Task<IEnumerable<EntryData>> Handle(ImportEntryListFromStreamRequest request, CancellationToken cancellationToken)
 	{
-		var content = Encoding.UTF8.GetString(request.ContentStream.GetBuffer());
+        var content = Encoding.UTF8.GetString(request.ContentStream.ToArray());
 
 		var importList = Import.OfxParser.ParseFromContent(content);
 
 		var result = new List<EntryData>();
 		foreach (var import in importList)
 		{
-			var entry = await _mediator.Send(new CreateEntryFromOfxImportRequest(import));
+            var entry = await _mediator.Send(new CreateEntryFromOfxImportRequest(import), cancellationToken);
 			result.Add(entry);
 		}
 
@@ -37,7 +37,7 @@ internal class ImportEntryListFromStreamRequestHandler : IRequestHandler<ImportE
 		{
 			f.PageSize = int.MaxValue;
 			f.ImportIdList = importIdList;
-		}));
+        }), cancellationToken);
 
 		var existingImportList = existingEntries.List.Where(i => i.ImportId is not null).Select(i => i.ImportId!).Distinct().ToList();
 		var removeCount = result.RemoveAll(i => existingImportList.Contains(i.ImportId!));

@@ -1,0 +1,26 @@
+@page "/configuration/cles-api/nouvelle"
+@attribute [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)]
+
+<PageTitle>Créer une clé API MCP</PageTitle>
+<h1>Créer une clé API MCP</h1>
+<a href="/configuration/cles-api">Retour aux clés API</a>
+@if (_error is not null)
+{
+    <div class="alert alert-danger mt-3" role="alert">@_error</div>
+}
+@if (_secret is not null)
+{
+    <McpSecretReveal Secret="@_secret" Dismissed="Finish" />
+}
+else
+{
+    <EditForm Model="_model" OnValidSubmit="Create" FormName="create-mcp-key">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <SuperInputText @bind-Value="_model.Name" Label="Nom de la clé" Required="true" />
+        <SuperInputText @bind-Value="_model.ExpirationUtc" Label="Expiration en UTC (facultative)" Type="datetime-local" />
+        <p>Sans date d’expiration, la clé reste valide jusqu’à sa révocation. Elle autorise toutes les opérations.</p>
+        <SuperButton Text="Créer et révéler la clé" Click="Create" Disabled="_busy" Style="SuperButtonStyle.Success" />
+    </EditForm>
+}
+<McpConnectionHelp />

@@ -6,12 +6,18 @@ namespace ComptaClub.Validators;
 
 internal class EntryValidator : FluentValidation.AbstractValidator<Datas.EntryData>
 {
-	public EntryValidator(ChannelMediator.IMediator mediator)
+    public EntryValidator(ChannelMediator.IMediator mediator, IComptaClubDbContextFactory factory)
 	{
 		RuleFor(i => i.Id).ValidGuid();
 		RuleFor(i => i.AccountId).ValidGuid();
 		RuleFor(i => i.ExerciceId).ValidGuid();
-		RuleFor(i => i.BankId).ValidGuid();
+        RuleFor(i => i.BankId).ValidGuid();
+        RuleFor(i => i.Amount).GreaterThanOrEqualTo(0);
+        RuleFor(i => i.BankId).MustAsync(async (bankId, cancellationToken) =>
+        {
+            await using var _db = await factory.CreateDbContextAsync(cancellationToken);
+            return await _db.Banks.AnyAsync(item => item.Id == bankId, cancellationToken);
+        }).WithMessage("La banque est introuvable.");
 		RuleFor(i => i.AccountId).CustomAsync(async (accountId, ctx, cancel) =>
 		{
 			// Compte d'import

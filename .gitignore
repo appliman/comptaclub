@@ -386,3 +386,7 @@ comptaclub.db-shm
 *.sqlite3-shm
 *.ofx
 *.xlsx
+
+# Répertoires de sources : exceptions aux règles Backup*/ et *.sqlite.
+!/src/ComptaClub.Core/Backups/
+!/src/ComptaClub.Datas.Sqlite/

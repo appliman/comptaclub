@@ -6,6 +6,14 @@ namespace ComptaClub.EntityFramework;
 
 public class ComptaClubDbContext(DbContextOptions<ComptaClubDbContext> options) : DbContext(options), IDataProtectionKeyContext
 {
+    public DbSet<McpApiKeyData> McpApiKeys { get; set; } = null!;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfiguration(new McpApiKeyConfiguration());
+    }
+
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
     public DbSet<AccountData> Accounts { get; set; } = null!;
     public DbSet<BankData> Banks { get; set; } = null!;

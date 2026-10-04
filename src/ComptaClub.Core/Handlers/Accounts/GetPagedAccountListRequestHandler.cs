@@ -30,6 +30,12 @@ internal class GetPagedAccountListRequestHandler : GetEntityPagedListRequestHand
             query = query.Where(i => i.Code == filter.Code);
         }
 
+        if (!string.IsNullOrWhiteSpace(filter.Search))
+        {
+            var _pattern = $"%{filter.Search}%";
+            query = query.Where(item => EF.Functions.Like(item.Code, _pattern) || EF.Functions.Like(item.Label, _pattern));
+        }
+
         var page = await query.GetPagedDataList(i => i.CreationDate, filter, cancellationToken);
 
         var result = new PagedList<IEnumerable<AccountData>>()

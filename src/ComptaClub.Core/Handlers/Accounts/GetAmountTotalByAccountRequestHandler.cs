@@ -36,7 +36,8 @@ internal class GetAmountTotalByAccountRequestHandler : IRequestHandler<GetAmount
 
         var query = from entry in db.Entries
                     join account in db.Accounts on entry.AccountId equals account.Id
-                    where entry.ValueDate >= exercice.StartDate
+                    where entry.ExerciceId == exercice.Id
+                    && entry.ValueDate >= exercice.StartDate
                     && entry.ValueDate <= exercice.EndDate
                     && entry.DeletedDate == null
                     group new
