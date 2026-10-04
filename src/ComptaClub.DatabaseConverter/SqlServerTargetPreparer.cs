@@ -59,8 +59,9 @@ internal sealed class SqlServerTargetPreparer(string connectionString)
             }
         }
 
-        var applicationCount = TableCatalog.Tables.Count(table => applicationTables.Contains(table.Name));
-        if (applicationCount > 0 && applicationCount < TableCatalog.Tables.Count)
+        var _requiredTables = TableCatalog.Tables.Where(table => !table.IsOptional).ToList();
+        var applicationCount = _requiredTables.Count(table => applicationTables.Contains(table.Name));
+        if (applicationCount > 0 && applicationCount < _requiredTables.Count)
         {
             throw new InvalidOperationException("La base SQL Server existante possède un schéma ComptaClub incomplet.");
         }
@@ -70,7 +71,7 @@ internal sealed class SqlServerTargetPreparer(string connectionString)
             throw new InvalidOperationException("La base SQL Server existante contient des tables sans schéma ComptaClub.");
         }
 
-        HasApplicationSchema = applicationCount == TableCatalog.Tables.Count;
+        HasApplicationSchema = applicationCount == _requiredTables.Count;
     }
 
     public async Task DropCreatedDatabaseAsync()

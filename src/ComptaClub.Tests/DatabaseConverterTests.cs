@@ -240,7 +240,7 @@ public class DatabaseConverterTests
             await using (var source = await sourceFactory.CreateDbContextAsync())
             {
                 tables = await copyService.InspectSourceAsync(source, CancellationToken.None);
-                Assert.AreEqual(17, tables.Count);
+                Assert.AreEqual(18, tables.Count);
                 Assert.IsTrue(tables.All(table => table.RowCount == 1));
             }
 
@@ -322,6 +322,12 @@ public class DatabaseConverterTests
         });
         db.Exercices.Add(new ExerciceData { Id = exerciceId, Code = "2026" });
         db.Users.Add(new UserData { Id = userId, Name = "Utilisateur", Email = "user@example.org" });
+        db.McpApiKeys.Add(new McpApiKeyData
+        {
+            Id = Guid.NewGuid(), Name = "Codex", KeyIdentifier = new string('a', 24),
+            SecretHash = new string('b', 64), SecretLastFour = "1234",
+            CreatedByUserId = userId, CreationDateUtc = DateTime.UtcNow, Version = Guid.NewGuid()
+        });
         db.RolesByUsers.Add(new RoleByUserData { Id = Guid.NewGuid(), UserId = userId, RoleId = Guid.NewGuid() });
         db.Members.Add(new MemberData { Id = memberId, Name = "Membre", Email = "member@example.org" });
         db.Entries.Add(new EntryData

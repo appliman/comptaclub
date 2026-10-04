@@ -1,0 +1,46 @@
+@page "/configuration/cles-api/{Id:guid}"
+@attribute [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)]
+
+<PageTitle>Clé API MCP</PageTitle>
+<h1>Clé API MCP</h1>
+<a href="/configuration/cles-api">Retour aux clés API</a>
+@if (_error is not null)
+{
+    <div class="alert alert-danger mt-3" role="alert">@_error</div>
+}
+@if (_message is not null)
+{
+    <div class="alert alert-success mt-3" role="status">@_message</div>
+}
+@if (_secret is not null)
+{
+    <McpSecretReveal Secret="@_secret" Dismissed="@(() => _secret = null)" />
+}
+@if (_key is not null)
+{
+    <dl class="row mt-3">
+        <dt class="col-sm-3">Clé masquée</dt><dd class="col-sm-9 text-break">@_key.MaskedKey</dd>
+        <dt class="col-sm-3">État</dt><dd class="col-sm-9">@McpApiKeyList.Status(_key)</dd>
+        <dt class="col-sm-3">Créateur</dt><dd class="col-sm-9">@_key.CreatorName</dd>
+        <dt class="col-sm-3">Création (UTC)</dt><dd class="col-sm-9">@_key.CreationDateUtc.ToString("dd/MM/yyyy HH:mm")</dd>
+        <dt class="col-sm-3">Dernière utilisation (UTC)</dt><dd class="col-sm-9">@(_key.LastUsedDateUtc?.ToString("dd/MM/yyyy HH:mm") ?? "Jamais")</dd>
+        <dt class="col-sm-3">Appels d’outils</dt><dd class="col-sm-9">@_key.UsageCount</dd>
+    </dl>
+    @if (_key.RevokedDateUtc is null && _key.ArchivedDateUtc is null)
+    {
+        <EditForm Model="_model" OnValidSubmit="Save" FormName="edit-mcp-key">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <SuperInputText @bind-Value="_model.Name" Label="Nom de la clé" Required="true" />
+            <SuperInputText @bind-Value="_model.ExpirationUtc" Label="Expiration en UTC (facultative)" Type="datetime-local" />
+            <SuperButton Text="Enregistrer" Click="Save" Disabled="_busy" Style="SuperButtonStyle.Success" />
+            <SuperButton Text="Renouveler la clé" Click="Rotate" Disabled="@(_busy || _secret is not null)" Style="SuperButtonStyle.Warning" />
+            <SuperButton Text="Révoquer" Click="Revoke" Disabled="_busy" Style="SuperButtonStyle.Danger" />
+        </EditForm>
+    }
+    @if (_key.ArchivedDateUtc is null)
+    {
+        <SuperButton Text="Archiver" Click="Archive" Disabled="_busy" Style="SuperButtonStyle.Secondary" />
+    }
+}
+<McpConnectionHelp />

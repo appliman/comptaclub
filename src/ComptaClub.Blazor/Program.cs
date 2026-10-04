@@ -2,8 +2,10 @@
 using System.Text.Json.Serialization;
 
 using ComptaClub;
+using ComptaClub.Backups;
 using ComptaClub.Blazor.Pages;
 using ComptaClub.Blazor.Services;
+using ComptaClub.Blazor.Services.Mcp;
 using ComptaClub.Datas.MsSql;
 using ComptaClub.Datas.Sqlite;
 using ComptaClub.EntityFramework;
@@ -75,6 +77,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 		});
 
 builder.Services.AddSingleton<DigicodeEmailSender>();
+builder.Services.AddComptaClubDatabaseBackups();
+builder.Services.AddComptaClubMcp();
 
 if (!string.IsNullOrWhiteSpace(globalSettings.OtlpEndpoint))
 {
@@ -128,6 +132,7 @@ app.UseAntiforgery();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapComptaClubMcp();
 
 
 app.MapRazorComponents<App>()
@@ -145,3 +150,5 @@ logger.LogInformation("Database provider: {DatabaseProvider}", globalSettings.Da
 logger.LogInformation("Connection string: {ConnectionString}", globalSettings.ConnectionString);
 
 await app.RunAsync();
+
+public partial class Program;

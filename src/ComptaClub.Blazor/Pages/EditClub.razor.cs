@@ -5,6 +5,15 @@ namespace ComptaClub.Blazor.Pages;
 
 public partial class EditClub
 {
+    [Inject]
+    ComptaClub.Configuration.ComptaClubSettings Settings { get; set; } = default!;
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; } = default!;
+
+    private bool _creatingBackup;
+    private string? _backupUrl;
+
 	[CascadingParameter]
 	MainLayout MainLayout { get; set; } = default!;
 
@@ -54,4 +63,29 @@ public partial class EditClub
 		club.LogoContentType = file.ContentType;
 		StateHasChanged();
 	}
+
+    private async Task CreateDatabaseBackup()
+    {
+        if (_creatingBackup)
+        {
+            return;
+        }
+        _creatingBackup = true;
+        _backupUrl = null;
+        try
+        {
+            var _result = await Mediator.Send(new CreateZippedDatabaseRequest(MainLayout.GetCurrentUser().Id, NavigationManager.BaseUri));
+            if (_result.HasError)
+            {
+                await NotificationService.Notify(NotificationSeverity.Error, _result.GetAllBrokenRules());
+                return;
+            }
+            _backupUrl = _result.RelativeUrl;
+            await NotificationService.Notify(NotificationSeverity.Success, "Sauvegarde prête. Le mot de passe vous a été envoyé par email.");
+        }
+        finally
+        {
+            _creatingBackup = false;
+        }
+    }
 }

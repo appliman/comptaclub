@@ -14,7 +14,7 @@ public sealed class MsSqlDbContextFactory(
     public Task<ComptaClubDbContext> CreateDbContextAsync(CancellationToken cancellationToken = default) =>
         dbContextFactory.CreateDbContextAsync(cancellationToken);
 
-    public Task MigrateAsync(CancellationToken cancellationToken = default)
+    public async Task MigrateAsync(CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var migration = new DbMigration
@@ -23,7 +23,11 @@ public sealed class MsSqlDbContextFactory(
             SchemaName = "ComptaClub",
             EmbededTypeReference = typeof(StartupExtensions)
         };
-        return migration.Start();
+        await migration.Start();
+        var _options = new DbContextOptionsBuilder<McpSchemaDbContext>()
+            .UseSqlServer(connectionString, sql => sql.MigrationsHistoryTable("__McpMigrationsHistory")).Options;
+        await using var _db = new McpSchemaDbContext(_options);
+        await _db.Database.MigrateAsync(cancellationToken);
     }
 
     private static string NormalizeLegacyConnectionString(string value)

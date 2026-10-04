@@ -56,6 +56,9 @@ public static class StartupExtensions
 
     public static IServiceCollection AddComptaClubCore(this IServiceCollection services)
     {
+        services.AddSingleton(TimeProvider.System);
+        services.AddScoped<ComptaClub.Security.McpApiKeyService>();
+        Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddScoped<ComptaClub.Contracts.Models.ApiKeys.ICurrentApplicationUser, ComptaClub.Security.AnonymousApplicationUser>(services);
 		var rootNs = typeof(StartupExtensions).Namespace!.Split('.')[0];
 		var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies()
 				.Where(a => a.FullName!.StartsWith(rootNs))

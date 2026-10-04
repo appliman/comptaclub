@@ -24,6 +24,7 @@ public static class StartupExtensions
             }
         }, ServiceLifetime.Singleton);
         services.AddSingleton<IComptaClubDbContextFactory, SqliteDbContextFactory>();
+        services.AddSingleton<IDatabaseBackupService, SqliteDatabaseBackupService>();
         return services;
     }
 }

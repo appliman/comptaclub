@@ -17,7 +17,9 @@ internal class GetBalanceByDayRequestHandler : IRequestHandler<GetBalanceByDayRe
 
 	public async Task<IEnumerable<BalanceByDay>> Handle(GetBalanceByDayRequest request, CancellationToken cancellationToken)
 	{
-		var currentExercice = await _mediator.Send(new GetActiveExerciceRequest());
+        var currentExercice = request.ExerciceId.HasValue
+            ? await _mediator.Send(new GetExerciceByFilterRequest(item => item.Id == request.ExerciceId.Value), cancellationToken)
+            : await _mediator.Send(new GetActiveExerciceRequest(), cancellationToken);
 		if (currentExercice == null)
 		{
 			return new List<BalanceByDay>();
@@ -26,7 +28,8 @@ internal class GetBalanceByDayRequestHandler : IRequestHandler<GetBalanceByDayRe
 		await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
 		var query = from entry in db.Entries
-					where entry.ValueDate >= currentExercice.StartDate
+                    where entry.ExerciceId == currentExercice.Id
+                    && entry.ValueDate >= currentExercice.StartDate
 					&& entry.ValueDate <= currentExercice.EndDate
 					&& entry.DeletedDate == null
 					group entry by entry.ValueDate into g
