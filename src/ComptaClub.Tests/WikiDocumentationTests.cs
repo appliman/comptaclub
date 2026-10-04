@@ -83,6 +83,19 @@ public class WikiDocumentationTests
     }
 
     [TestMethod]
+    public void MarkdownRenderer_EnhancesImages()
+    {
+        var _markdown = """
+            ![Capture](images/codex-mcp-configuration.png)
+            """;
+
+        var _html = MarkdownRenderer.ToHtml(_markdown);
+
+        _html.Should().Contain("src=\"/images/codex-mcp-configuration.png\"");
+        _html.Should().Contain("img-fluid rounded border shadow-sm");
+    }
+
+    [TestMethod]
     public async Task WikiDocumentationService_LoadsFallbackWhenOffline()
     {
         var _cache = new MemoryCache(new MemoryCacheOptions());

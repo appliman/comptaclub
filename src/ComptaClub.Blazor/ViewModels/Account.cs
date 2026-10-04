@@ -1,4 +1,4 @@
-﻿using ComptaClub.Blazor.Extensions;
+using ComptaClub.Blazor.Extensions;
 using ComptaClub.Datas;
 
 namespace ComptaClub.Blazor.ViewModels;
@@ -17,6 +17,8 @@ public class Account : IMetaEntity
     public List<Account> Children { get; set; } = new();
     public int Level { get; set; } = -1;
     public long Total { get; set; }
+    public long PreviousTotal { get; set; }
+    public long DeepPreviousTotal => PreviousTotal + Children.Sum(i => i.DeepPreviousTotal);
     public long DeepTotal 
     {
         get
