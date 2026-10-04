@@ -46,11 +46,15 @@
         </div>
     </div>
 </div>
+@if (_previousExercice is not null)
+{
+    <p class="mt-4 mb-0">Comparaison : exercice N (@currentExercice.Label) et exercice N-1 (@_previousExercice.Label).</p>
+}
 <div class="row mt-4">
-    <div class="col-6">
-        <AccountingPlanTotal Plan="plan" Direction="Enums.AccountDirection.Debit" Title="Charges" />
+    <div class="col-12 col-xl-6">
+        <AccountingPlanTotal Plan="plan" PreviousExerciceId="@_previousExercice?.Id" Direction="Enums.AccountDirection.Debit" Title="Charges" />
     </div>
-    <div class="col-6">
-        <AccountingPlanTotal Plan="plan" Direction="Enums.AccountDirection.Credit" Title="Produits" />
+    <div class="col-12 col-xl-6">
+        <AccountingPlanTotal Plan="plan" PreviousExerciceId="@_previousExercice?.Id" Direction="Enums.AccountDirection.Credit" Title="Produits" />
     </div>
 </div>

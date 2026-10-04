@@ -6,62 +6,77 @@ using ComptaClub.Contracts.Models.Stats;
 using ChannelMediator;
 
 namespace ComptaClub.Blazor.Pages;
+
 public partial class Index
 {
-	[Inject]
-	IMediator Mediator { get; set; } = default!;
+    [Inject]
+    IMediator Mediator { get; set; } = default!;
 
+    ViewModels.Exercice currentExercice = new();
+    ViewModels.Exercice? _previousExercice;
+    IEnumerable<BalanceByDay> balanceByDayList = new List<BalanceByDay>();
+    decimal _chargesAmount;
+    decimal _produitsAmount;
+    IEnumerable<ViewModels.Account> plan = new List<ViewModels.Account>();
+    System.Globalization.CultureInfo ci = new("fr-FR");
+    int memberCount = 0;
 
-	ViewModels.Exercice currentExercice = new();
-	IEnumerable<BalanceByDay> balanceByDayList = new List<BalanceByDay>();
-	decimal _chargesAmount;
-	decimal _produitsAmount;
-	IEnumerable<AmountTotalByAccount> amountTotalByAccountList = new List<AmountTotalByAccount>();
-	IEnumerable<ViewModels.Account> plan = new List<ViewModels.Account>();
-	System.Globalization.CultureInfo ci = new System.Globalization.CultureInfo("fr-FR");
-	int memberCount = 0;
+    protected override async Task OnInitializedAsync()
+    {
+        var _exerciceTask = Mediator.Send(new GetActiveExerciceRequest());
+        var _exercicesTask = Mediator.Send(new GetAllExercicesRequest());
+        var _planTask = Mediator.Send(new GetPlanRequest());
+        var _memberCountTask = Mediator.Send(new GetMemberCountRequest());
 
-	protected override async Task OnInitializedAsync()
-	{
-		var tasks = new List<Task>();
+        await Task.WhenAll(_exerciceTask, _exercicesTask, _planTask, _memberCountTask);
 
-		var t1 = Mediator.Send(new GetActiveExerciceRequest());
-		var t2 = Mediator.Send(new GetAmountTotalByAccountRequest());
-		var t3 = Mediator.Send(new GetBalanceByDayRequest());
-		var t4 = Mediator.Send(new GetPlanRequest());
-		var t5 = Mediator.Send(new GetMemberCountRequest());
+        plan = Mapping.Profile.ToViewModels(_planTask.Result);
+        memberCount = _memberCountTask.Result;
 
-		tasks.Add(t1);
-		tasks.Add(t2);
-		tasks.Add(t3);
-		tasks.Add(t4);
-		tasks.Add(t5);
+        var _exercice = _exerciceTask.Result;
+        if (_exercice is null)
+        {
+            return;
+        }
 
-		await Task.WhenAll(tasks);
+        currentExercice = Mapping.Profile.ToViewModel(_exercice);
+        var _previous = _exercicesTask.Result
+            .Where(i => i.Id != _exercice.Id && i.EndDate < _exercice.StartDate)
+            .OrderByDescending(i => i.EndDate)
+            .ThenByDescending(i => i.StartDate)
+            .FirstOrDefault();
 
-		var exercice = t1.Result;
-		if (exercice is not null)
-		{
-			currentExercice = Mapping.Profile.ToViewModel(exercice);
-		}
+        var _totalsTask = Mediator.Send(new GetAmountTotalByAccountRequest(_exercice.Id));
+        var _balanceTask = Mediator.Send(new GetBalanceByDayRequest(_exercice.Id));
+        var _previousTotalsTask = _previous is null
+            ? Task.FromResult<IEnumerable<AmountTotalByAccount>>([])
+            : Mediator.Send(new GetAmountTotalByAccountRequest(_previous.Id));
 
-		amountTotalByAccountList = t2.Result;
-		balanceByDayList = t3.Result;
-		var planData = t4.Result;
+        await Task.WhenAll(_totalsTask, _balanceTask, _previousTotalsTask);
 
-		plan = Mapping.Profile.ToViewModels(planData);
-		foreach (var total in amountTotalByAccountList)
-		{
-			var account = plan.DeepFirstOrDefault(i => i.Id == total.Id);
-			if (account != null)
-			{
-				account.Total = total.Total;
-			}
-		}
+        if (_previous is not null)
+        {
+            _previousExercice = Mapping.Profile.ToViewModel(_previous);
+        }
 
-		_chargesAmount = plan.Where(i => i.Direction == Enums.AccountDirection.Debit).Sum(i => i.DeepTotal) / 1000000m;
-		_produitsAmount = plan.Where(i => i.Direction == Enums.AccountDirection.Credit).Sum(i => i.DeepTotal) / 1000000m;
+        var _totals = _totalsTask.Result.ToDictionary(i => i.Id, i => i.Total);
+        var _previousTotals = _previousTotalsTask.Result.ToDictionary(i => i.Id, i => i.Total);
+        ApplyTotals(plan, _totals, _previousTotals);
+        balanceByDayList = _balanceTask.Result;
 
-		memberCount = t5.Result;
-	}
+        _chargesAmount = plan.Where(i => i.Direction == Enums.AccountDirection.Debit).Sum(i => i.DeepTotal) / 1000000m;
+        _produitsAmount = plan.Where(i => i.Direction == Enums.AccountDirection.Credit).Sum(i => i.DeepTotal) / 1000000m;
+    }
+
+    private static void ApplyTotals(IEnumerable<ViewModels.Account> accounts,
+        IReadOnlyDictionary<Guid, long> totals, IReadOnlyDictionary<Guid, long> previousTotals)
+    {
+        // Le plan commun conserve aussi les comptes utilisés dans un seul des deux exercices.
+        foreach (var _account in accounts)
+        {
+            _account.Total = totals.GetValueOrDefault(_account.Id);
+            _account.PreviousTotal = previousTotals.GetValueOrDefault(_account.Id);
+            ApplyTotals(_account.Children, totals, previousTotals);
+        }
+    }
 }

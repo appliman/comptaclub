@@ -2,42 +2,52 @@ using ComptaClub.Blazor.Services;
 using ComptaClub.Blazor.ViewModels;
 using ComptaClub.Contracts.Models.Entries;
 using ComptaClub.Contracts.Models.Exercices;
-
 using ChannelMediator;
 
-namespace ComptaClub.Blazor.Pages.Shared
+namespace ComptaClub.Blazor.Pages.Shared;
+
+public partial class AccountingPlanTotal
 {
-	public partial class AccountingPlanTotal
-	{
-		[Parameter]
-		public IEnumerable<ViewModels.Account> Plan { get; set; } = new List<ViewModels.Account>();
+    [Parameter]
+    public IEnumerable<ViewModels.Account> Plan { get; set; } = new List<ViewModels.Account>();
 
-		[Parameter]
-		public Enums.AccountDirection Direction { get; set; } = Enums.AccountDirection.Credit;
+    [Parameter]
+    public Guid? PreviousExerciceId { get; set; }
 
-		[Parameter]
-		public string Title { get; set; } = null!;
+    [Parameter]
+    public Enums.AccountDirection Direction { get; set; } = Enums.AccountDirection.Credit;
 
-		[Inject]
-		ListFilterQueryStringParametersService ListFilterQueryStringParametersService { get; set; } = default!;
+    [Parameter]
+    public string Title { get; set; } = null!;
 
-		[Inject]
-		IMediator Mediator { get; set; } = default!;
+    [Inject]
+    ListFilterQueryStringParametersService ListFilterQueryStringParametersService { get; set; } = default!;
 
-		async Task DisplayEntries(Guid accountId)
-		{
-			var activeExercice = await Mediator.Send(new GetActiveExerciceRequest());
-			if (activeExercice is null)
-			{
-				return;
-			}
-			var filter = new EntryListFilter();
-			filter.ExerciceId = activeExercice.Id;
-			filter.PageSize = int.MaxValue;
-			filter.AccountIdList = new List<Guid>() { accountId };
-			filter.UseDeepAccount = true;
+    [Inject]
+    IMediator Mediator { get; set; } = default!;
 
-			ListFilterQueryStringParametersService.AddFilterToQueryString(new FilterInfo(filter), "/ecritures");
-		}
-	}
+    private async Task DisplayEntries(Guid accountId, Guid? exerciceId = null)
+    {
+        var _exerciceId = exerciceId;
+        if (!_exerciceId.HasValue)
+        {
+            var _activeExercice = await Mediator.Send(new GetActiveExerciceRequest());
+            _exerciceId = _activeExercice?.Id;
+        }
+
+        if (!_exerciceId.HasValue)
+        {
+            return;
+        }
+
+        var _filter = new EntryListFilter
+        {
+            ExerciceId = _exerciceId.Value,
+            PageSize = int.MaxValue,
+            AccountIdList = new List<Guid> { accountId },
+            UseDeepAccount = true
+        };
+
+        ListFilterQueryStringParametersService.AddFilterToQueryString(new FilterInfo(_filter), "/ecritures");
+    }
 }
