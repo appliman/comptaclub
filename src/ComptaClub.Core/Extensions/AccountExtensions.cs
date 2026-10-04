@@ -37,23 +37,41 @@ public static class AccountExtensions
 		return result;
 	}
 
-	public static void Levelize(this IEnumerable<AccountData> list, int level = 0)
-	{
-		var unlevelizedList = list.Where(i => i.Level == -1);
-		foreach (var item in unlevelizedList)
-		{
-			var parent = list.SingleOrDefault(i => i.Id == item.ParentAccountId
-													&& i.Level > -1);
-			if (parent != null)
-			{
-				item.Level = parent.Level + 1;
-			}
-		}
-		if (unlevelizedList.Any())
-		{
-			list.Levelize(level++);
-		}
-	}
+    public static void Levelize(this IEnumerable<AccountData> list, int level = 0)
+    {
+        var _items = list.ToList();
+        var _byId = _items.ToDictionary(item => item.Id);
+        var _children = _items.Where(item => item.ParentAccountId.HasValue)
+            .ToLookup(item => item.ParentAccountId!.Value);
+        var _queue = new Queue<AccountData>();
+        foreach (var _item in _items)
+        {
+            _item.Level = -1;
+            if (!_item.ParentAccountId.HasValue)
+            {
+                _item.Level = level;
+                _queue.Enqueue(_item);
+            }
+            else if (!_byId.ContainsKey(_item.ParentAccountId.Value))
+            {
+                throw new InvalidDataException("La hiérarchie contient un parent introuvable.");
+            }
+        }
+        var _visited = 0;
+        while (_queue.TryDequeue(out var _parent))
+        {
+            _visited++;
+            foreach (var _child in _children[_parent.Id])
+            {
+                _child.Level = _parent.Level + 1;
+                _queue.Enqueue(_child);
+            }
+        }
+        if (_visited != _items.Count)
+        {
+            throw new InvalidDataException("La hiérarchie contient un cycle.");
+        }
+    }
 
 	public static void Hierarchize(this IList<AccountData> list)
 	{

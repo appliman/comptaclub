@@ -1,0 +1,16 @@
+@inject NavigationManager Navigation
+
+@code {
+    private string Endpoint => $"{Navigation.BaseUri.TrimEnd('/')}/mcp";
+    private string Configuration => $"[mcp_servers.comptaclub]\nurl = \"{Endpoint}\"\nbearer_token_env_var = \"COMPTACLUB_MCP_API_KEY\"";
+}
+
+<section class="card mt-4">
+    <div class="card-body">
+        <h2 class="h5">Connexion depuis Codex</h2>
+        <p>Serveur MCP : <code class="text-break">@Endpoint</code></p>
+        <p>Enregistrez la clé dans la variable d’environnement <code>COMPTACLUB_MCP_API_KEY</code> du processus Codex, puis ajoutez cette configuration MCP.</p>
+        <pre class="bg-body-tertiary p-3 rounded overflow-auto"><code>@Configuration</code></pre>
+        <p class="mb-0">Chaque clé autorise toutes les opérations. Sa révocation prend effet dès l’appel suivant.</p>
+    </div>
+</section>

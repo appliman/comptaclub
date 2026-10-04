@@ -92,6 +92,9 @@
   <ItemGroup>
     <PackageReference Include="EFScriptableMigration" Version="8.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.3">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ComptaClub.Datas\ComptaClub.Datas.csproj" />

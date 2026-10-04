@@ -14,7 +14,7 @@
     <Project Path="src/ComptaClub.Blazor/ComptaClub.Blazor.csproj" />
   </Folder>
   <Folder Name="/4.Tools/">
-    <Project Path="tools/ComptaClub.DatabaseConverter/ComptaClub.DatabaseConverter.csproj" />
+    <Project Path="src/ComptaClub.DatabaseConverter/ComptaClub.DatabaseConverter.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />

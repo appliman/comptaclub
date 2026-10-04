@@ -7,6 +7,7 @@ internal interface ITableDefinition
     string Name { get; }
 
     bool HasIdentityKey { get; }
+    bool IsOptional { get; }
 
     Task ValidateAsync(ComptaClubDbContext db, CancellationToken cancellationToken);
 

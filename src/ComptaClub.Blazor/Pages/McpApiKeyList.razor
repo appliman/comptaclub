@@ -1,0 +1,29 @@
+@page "/configuration/cles-api"
+@attribute [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)]
+@using ComptaClub.Contracts.Models.ApiKeys
+
+<PageTitle>Clés API MCP</PageTitle>
+<h1>Clés API MCP</h1>
+<p>Ces clés donnent accès à toutes les opérations depuis Codex. Tous les utilisateurs actifs peuvent les gérer.</p>
+<SuperButton Text="Créer une clé" Icon="fa-key" Click="@(() => Navigation.NavigateTo("/configuration/cles-api/nouvelle"))" Style="SuperButtonStyle.Success" />
+@if (_error is not null)
+{
+    <div class="alert alert-danger mt-3" role="alert">@_error</div>
+}
+<SuperDataGrid TItem="McpApiKeyInfo" @ref="_grid" ItemsProvider="LoadItems" Height="430px"
+               AllowSorting="false" AllowFiltering="false" DisplaySelectionColumn="false" GridId="mcp-api-keys">
+    <ChildContent>
+        <DataGridColumn TItem="McpApiKeyInfo" Property="Name" Title="Nom">
+            <Template Context="key"><a href="@($"/configuration/cles-api/{key.Id}")">@key.Name</a></Template>
+        </DataGridColumn>
+        <DataGridColumn TItem="McpApiKeyInfo" Property="MaskedKey" Title="Clé masquée" />
+        <DataGridColumn TItem="McpApiKeyInfo" Property="CreatorName" Title="Créateur" />
+        <DataGridColumn TItem="McpApiKeyInfo" Property="CreationDateUtc" Title="Création (UTC)" FormatString="{0:dd/MM/yyyy HH:mm}" />
+        <DataGridColumn TItem="McpApiKeyInfo" Property="ExpirationDateUtc" Title="Expiration (UTC)" FormatString="{0:dd/MM/yyyy HH:mm}" />
+        <DataGridColumn TItem="McpApiKeyInfo" Title="État">
+            <Template Context="key">@Status(key)</Template>
+        </DataGridColumn>
+        <DataGridColumn TItem="McpApiKeyInfo" Property="LastUsedDateUtc" Title="Dernier appel (UTC)" FormatString="{0:dd/MM/yyyy HH:mm}" />
+    </ChildContent>
+</SuperDataGrid>
+<McpConnectionHelp />

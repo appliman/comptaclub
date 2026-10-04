@@ -1,0 +1,70 @@
+@page "/documentation"
+@page "/documentation/{Slug}"
+@attribute [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)]
+@using SuperBlazorComponents.Components
+
+<PageTitle>@(_pageContent?.Title ?? "Documentation") - ComptaClub</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="/documentation">Documentation</a></li>
+                @if (!string.IsNullOrWhiteSpace(Slug) && !Slug.Equals("Home", StringComparison.OrdinalIgnoreCase))
+                {
+                    <li class="breadcrumb-item active" aria-current="page">@(_pageContent?.Title ?? Slug)</li>
+                }
+            </ol>
+        </nav>
+        <h1 class="h3 mb-0">@(_pageContent?.Title ?? "Documentation")</h1>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        <SuperButton Text="Actualiser" Icon="fa-arrows-rotate" Style="SuperButtonStyle.Light" Click="RefreshPage" />
+        <a href="https://github.com/appliman/comptaclub/wiki" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm">
+            <i class="fa-brands fa-github me-1"></i> Voir sur GitHub
+        </a>
+    </div>
+</div>
+
+@if (_isLoading)
+{
+    <div class="card p-5 text-center my-4">
+        <div class="spinner-border text-primary mx-auto mb-3" role="status">
+            <span class="visually-hidden">Chargement de la documentation...</span>
+        </div>
+        <p class="text-secondary mb-0">Chargement de la documentation en cours...</p>
+    </div>
+}
+else if (_errorMessage is not null)
+{
+    <div class="alert alert-warning my-4" role="alert">
+        <div class="d-flex align-items-center mb-2">
+            <i class="fa-solid fa-triangle-exclamation fs-4 me-2"></i>
+            <h5 class="mb-0">Page introuvable</h5>
+        </div>
+        <p>@_errorMessage</p>
+        <hr />
+        <div class="d-flex gap-2">
+            <a href="/documentation" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-house me-1"></i> Retour à l'accueil de la documentation
+            </a>
+            <SuperButton Text="Réessayer" Icon="fa-arrows-rotate" Style="SuperButtonStyle.Secondary" Click="LoadPage" />
+        </div>
+    </div>
+}
+else if (_pageContent is not null)
+{
+    <div class="card shadow-sm p-4 p-md-5 my-3 wiki-page-card">
+        @if (_pageContent.FromFallback)
+        {
+            <div class="alert alert-light border py-2 px-3 mb-4 small text-secondary d-flex align-items-center">
+                <i class="fa-solid fa-database me-2 text-muted"></i>
+                <span>Cette page est affichée depuis la sauvegarde locale embarquée.</span>
+            </div>
+        }
+        <article class="wiki-markdown-body">
+            @((MarkupString)_pageContent.Html)
+        </article>
+    </div>
+}

@@ -8,6 +8,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=production
       - ASPNETCORE_URLS=http://0.0.0.0:33001
+      - ComptaClub__TempFolder=/app/data/temp
       - ComptaClub__DatabaseProvider=${COMPTACLUB_DATABASE_PROVIDER:-Sqlite}
       - ComptaClub__ConnectionString=${COMPTACLUB_CONNECTION_STRING-}
       - ComptaClub__SmtpPassword=${COMPTACLUB_SMTP_PASSWORD:?Define COMPTACLUB_SMTP_PASSWORD in .env}

@@ -34,19 +34,37 @@ public static class ForecastBudgetExtensions
 
     public static void Levelize(this IEnumerable<ForecastBudgetItemData> list, int level = 0)
     {
-        var unlevelizedList = list.Where(i => i.Level == -1);
-        foreach (var item in unlevelizedList)
+        var _items = list.ToList();
+        var _byId = _items.ToDictionary(item => item.Id);
+        var _children = _items.Where(item => item.ParentForecastBudgetItemId.HasValue)
+            .ToLookup(item => item.ParentForecastBudgetItemId!.Value);
+        var _queue = new Queue<ForecastBudgetItemData>();
+        foreach (var _item in _items)
         {
-            var parent = list.SingleOrDefault(i => i.Id == item.ParentForecastBudgetItemId
-                                                    && i.Level > -1);
-            if (parent != null)
+            _item.Level = -1;
+            if (!_item.ParentForecastBudgetItemId.HasValue)
             {
-                item.Level = parent.Level + 1;
+                _item.Level = level;
+                _queue.Enqueue(_item);
+            }
+            else if (!_byId.ContainsKey(_item.ParentForecastBudgetItemId.Value))
+            {
+                throw new InvalidDataException("La hiérarchie contient un parent introuvable.");
             }
         }
-        if (unlevelizedList.Any())
+        var _visited = 0;
+        while (_queue.TryDequeue(out var _parent))
         {
-            list.Levelize(level++);
+            _visited++;
+            foreach (var _child in _children[_parent.Id])
+            {
+                _child.Level = _parent.Level + 1;
+                _queue.Enqueue(_child);
+            }
+        }
+        if (_visited != _items.Count)
+        {
+            throw new InvalidDataException("La hiérarchie contient un cycle.");
         }
     }
 
@@ -137,8 +155,8 @@ public static class ForecastBudgetExtensions
         {
             if (subItem.Children.Any())
             {
-                subItem.Amount = subItem.Children.Sum(i => i.Amount);
                 ComputeSubTotal(subItem.Children);
+                subItem.Amount = subItem.Children.Sum(i => i.Amount);
             }
         }
     }
