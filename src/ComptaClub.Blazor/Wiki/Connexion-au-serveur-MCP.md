@@ -50,11 +50,30 @@ Authorization: Bearer <VOTRE_CLE_API_SECRETE>
 
 ## 3. Configuration dans OpenAI Codex
 
-OpenAI Codex gère nativement les serveurs MCP distants configurés dans son fichier de configuration TOML (`config.toml`).
+OpenAI Codex permet d'ajouter un serveur MCP directement via son interface graphique ou par fichier de configuration.
 
-### Procédure de configuration
+### Option A : Depuis l'interface graphique (Plugins / MCPs)
 
-1. Définissez la variable d'environnement contenant votre clé secrète dans votre système ou dans le profil de votre terminal :
+1. Ouvrez Codex et accédez au gestionnaire **Plugins** (Manage plugins, skills, and MCPs).
+2. Cliquez sur le bouton **Add** puis sélectionnez **Connect to a custom MCP**.
+3. Renseignez les paramètres du formulaire :
+   - **Name :** Donnez un nom à la connexion (ex. `ANDERTRI-MCP` ou `ComptaClub`).
+   - **Type :** Sélectionnez **Streamable HTTP**.
+   - **URL :** Renseignez l'URL de votre serveur MCP (ex. `https://compta.andernos-triathlon.club/mcp` ou `https://compta.club/mcp`).
+   - **Bearer token env var :** Indiquez le nom de la variable d'environnement contenant votre clé API secrète (ex. `ANDERTRI_MCP` ou `COMPTACLUB_MCP_API_KEY`).
+   - Les champs *Headers* peuvent être laissés vides, l'authentification étant gérée par la variable d'environnement du Bearer token.
+4. Cliquez sur **Save**.
+
+![Configuration du serveur MCP dans l'interface de Codex](images/codex-mcp-configuration.png)
+
+> [!NOTE]
+> Assurez-vous que la variable d'environnement renseignée dans **Bearer token env var** est bien exportée dans la session qui exécute Codex (voir ci-dessous).
+
+### Option B : Par fichier de configuration TOML (`config.toml`)
+
+Si vous utilisez la configuration par fichier (`~/.codex/config.toml` ou le fichier `config.toml` du projet) :
+
+1. Définissez la variable d'environnement contenant votre clé secrète dans votre système :
 
    **Sous Linux / macOS :**
    ```bash
@@ -68,7 +87,7 @@ OpenAI Codex gère nativement les serveurs MCP distants configurés dans son fic
    [Environment]::SetEnvironmentVariable("COMPTACLUB_MCP_API_KEY", "votre_cle_api_secrete", "User")
    ```
 
-2. Ajoutez la section suivante dans votre fichier de configuration Codex (`~/.codex/config.toml` ou le fichier `config.toml` du projet) :
+2. Ajoutez la section suivante dans votre fichier de configuration Codex (`config.toml`) :
 
 ```toml
 [mcp_servers.comptaclub]
@@ -76,7 +95,7 @@ url = "https://compta.club/mcp"
 bearer_token_env_var = "COMPTACLUB_MCP_API_KEY"
 ```
 
-3. Redémarrez Codex. Le serveur `comptaclub` sera automatiquement détecté et ses outils disponibles pour l'assistant.
+3. Redémarrez Codex. Le serveur sera automatiquement détecté et ses outils disponibles.
 
 ---
 
@@ -129,7 +148,7 @@ Pour connecter Claude Desktop à un serveur MCP HTTP distant sécurisé par un B
 > }
 > ```
 
-Après modification, quittez complètement Claude Desktop et relancez-le. L'icône des outils affichera les outils ComptaClub disponibles.
+Après modification, quittez complètement Claude Desktop et relancez-le. L'icône de marteau (outils) affichera les outils ComptaClub disponibles.
 
 ### Option B : Claude Code (CLI)
 

@@ -1,43 +1,64 @@
-﻿@using ComptaClub.Blazor.Services;
-<table class="table table-bordered table-hover">
-    <thead>
-        <tr>
-            <th colspan="3" class="text-center">@Title</th>
-            <th class="cell-total">Exercice N</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var account in Plan.Where(i => i.Direction == Direction))
-        {
-            <tr @onclick="@(() => DisplayEntries(account.Id))">
-                <td colspan="3"><b>@account.Code</b> @account.Label</td>
-                <td>
-                    <PriceLabel Value="@account.DeepTotal" />
-                </td>
-            </tr>
-            @foreach (var subAccount in account.Children)
-            {
-                <tr @onclick="@(() => DisplayEntries(subAccount.Id))">
-                    <td class="cell-indent"></td>
-                    <td colspan="2"><b>@subAccount.Code</b> @subAccount.Label</td>
-                    <td>
-                        <PriceLabel Value="@subAccount.DeepTotal" />
-                    </td>
-                </tr>
-                @foreach (var subsubAccount in subAccount.Children)
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th colspan="3" class="text-center">@Title</th>
+                <th class="cell-total">Exercice N</th>
+                @if (PreviousExerciceId.HasValue)
                 {
-                    <tr @onclick="@(() => DisplayEntries(subsubAccount.Id))">
-                        <td class="cell-indent"></td>
-                        <td class="cell-indent"></td>
-                        <td><b>@subsubAccount.Code</b> @subsubAccount.Label</td>
-                        <td>
-                            <PriceLabel Value="@subsubAccount.DeepTotal" />
+                    <th class="cell-total">Exercice N-1</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var _account in Plan.Where(i => i.Direction == Direction))
+            {
+                <tr @onclick="@(() => DisplayEntries(_account.Id))">
+                    <td colspan="3"><b>@_account.Code</b> @_account.Label</td>
+                    <td>
+                        <PriceLabel Value="@_account.DeepTotal" />
+                    </td>
+                    @if (PreviousExerciceId.HasValue)
+                    {
+                        <td @onclick="@(() => DisplayEntries(_account.Id, PreviousExerciceId))" @onclick:stopPropagation="true">
+                            <PriceLabel Value="@_account.DeepPreviousTotal" />
                         </td>
+                    }
+                </tr>
+                @foreach (var _subAccount in _account.Children)
+                {
+                    <tr @onclick="@(() => DisplayEntries(_subAccount.Id))">
+                        <td class="cell-indent"></td>
+                        <td colspan="2"><b>@_subAccount.Code</b> @_subAccount.Label</td>
+                        <td>
+                            <PriceLabel Value="@_subAccount.DeepTotal" />
+                        </td>
+                        @if (PreviousExerciceId.HasValue)
+                        {
+                            <td @onclick="@(() => DisplayEntries(_subAccount.Id, PreviousExerciceId))" @onclick:stopPropagation="true">
+                                <PriceLabel Value="@_subAccount.DeepPreviousTotal" />
+                            </td>
+                        }
                     </tr>
+                    @foreach (var _subsubAccount in _subAccount.Children)
+                    {
+                        <tr @onclick="@(() => DisplayEntries(_subsubAccount.Id))">
+                            <td class="cell-indent"></td>
+                            <td class="cell-indent"></td>
+                            <td><b>@_subsubAccount.Code</b> @_subsubAccount.Label</td>
+                            <td>
+                                <PriceLabel Value="@_subsubAccount.DeepTotal" />
+                            </td>
+                            @if (PreviousExerciceId.HasValue)
+                            {
+                                <td @onclick="@(() => DisplayEntries(_subsubAccount.Id, PreviousExerciceId))" @onclick:stopPropagation="true">
+                                    <PriceLabel Value="@_subsubAccount.DeepPreviousTotal" />
+                                </td>
+                            }
+                        </tr>
+                    }
                 }
             }
-        }
-    </tbody>
-</table>
-
-
+        </tbody>
+    </table>
+</div>

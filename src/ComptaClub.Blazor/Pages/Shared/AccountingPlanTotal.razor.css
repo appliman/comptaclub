@@ -9,3 +9,8 @@
 th {
     background-color :  lightgreen;
 }
+
+.cell-total,
+td:has(.price) {
+    white-space: nowrap;
+}
