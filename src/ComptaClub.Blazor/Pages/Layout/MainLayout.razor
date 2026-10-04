@@ -46,6 +46,14 @@
                     <SuperMenuItem Href="/configuration/cles-api" Text="Clés API MCP" Icon="fa-key" />
                 </Items>
             </SuperMenuItem>
+            <SuperMenuItem Text="Documentation" Icon="fa-book">
+                <Items>
+                    @foreach (var docItem in docMenuItems)
+                    {
+                        <SuperMenuItem Href="@($"/documentation/{docItem.Slug}")" Text="@docItem.Title" Icon="@docItem.Icon" />
+                    }
+                </Items>
+            </SuperMenuItem>
             </ChildContent>
             <Footer><small>Version : @version</small></Footer>
         </SuperSidebar>

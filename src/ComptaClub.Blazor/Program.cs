@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using ComptaClub;
@@ -76,6 +76,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 			options.Cookie.HttpOnly = true;
 		});
 
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<ComptaClub.Blazor.Services.Documentation.IWikiDocumentationService, ComptaClub.Blazor.Services.Documentation.WikiDocumentationService>();
 builder.Services.AddSingleton<DigicodeEmailSender>();
 builder.Services.AddComptaClubDatabaseBackups();
 builder.Services.AddComptaClubMcp();
