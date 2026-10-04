@@ -19,6 +19,10 @@ public static class MarkdownRenderer
         @"<div class=""markdown-alert markdown-alert-(?<type>note|tip|important|warning|caution) alert [^""]*"" role=""alert"">\s*(?<rest>.*?)\s*</div>",
         RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
+    private static readonly Regex IMAGE_REGEX = new(
+        @"<img\s+(?<pre>[^>]*?)src=""(?<src>[^""]+)""(?<post>[^>]*?)>",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
     public static string ToHtml(string markdown)
     {
         if (string.IsNullOrWhiteSpace(markdown))
@@ -30,6 +34,7 @@ public static class MarkdownRenderer
         _html = RewriteLinks(_html);
         _html = TransformAlerts(_html);
         _html = EnhanceTables(_html);
+        _html = EnhanceImages(_html);
 
         return _html;
     }
@@ -145,5 +150,28 @@ public static class MarkdownRenderer
             .Replace("<table class=\"table\">", "<div class=\"table-responsive my-3\"><table class=\"table table-striped table-hover table-bordered\">")
             .Replace("<table class=\"table", "<div class=\"table-responsive my-3\"><table class=\"table table-striped table-hover table-bordered")
             .Replace("</table>", "</table></div>");
+    }
+
+    private static string EnhanceImages(string html)
+    {
+        return IMAGE_REGEX.Replace(html, match =>
+        {
+            var _pre = match.Groups["pre"].Value;
+            var _src = match.Groups["src"].Value;
+            var _post = match.Groups["post"].Value;
+
+            if (_src.StartsWith("images/", StringComparison.OrdinalIgnoreCase))
+            {
+                _src = "/" + _src;
+            }
+            else if (_src.Contains("github.com/appliman/comptaclub/wiki/images/", StringComparison.OrdinalIgnoreCase) ||
+                     _src.Contains("raw.githubusercontent.com/wiki/appliman/comptaclub/images/", StringComparison.OrdinalIgnoreCase))
+            {
+                var _fileName = _src.Split("/images/", StringSplitOptions.None)[^1];
+                _src = $"/images/{_fileName}";
+            }
+
+            return $"<img {_pre}src=\"{_src}\" class=\"img-fluid rounded border shadow-sm my-3\"{_post}>";
+        });
     }
 }
