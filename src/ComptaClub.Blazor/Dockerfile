@@ -1,8 +1,13 @@
 ﻿# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble AS base
-RUN mkdir -p /app/data && chown $APP_UID /app/data
+# Prepare writable storage outside the shell-less runtime image.
+FROM mcr.microsoft.com/dotnet/sdk:10.0-noble AS directories
+RUN mkdir -p /app/data
+
+# This stage is used when running from VS in fast mode (Default for Debug configuration).
+# Keep ICU and time zone data for French accounting formats.
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled-extra AS base
+COPY --from=directories --chown=$APP_UID:$APP_UID /app/data /app/data
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
@@ -10,7 +15,7 @@ EXPOSE 8081
 
 
 # This stage is used to build the service project
-FROM mcr.microsoft.com/dotnet/sdk:10.0-noble AS build
+FROM directories AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/ComptaClub.Blazor/ComptaClub.Blazor.csproj", "src/ComptaClub.Blazor/"]
@@ -24,12 +29,14 @@ COPY ["src/ComptaClub.Import/ComptaClub.Import.csproj", "src/ComptaClub.Import/"
 RUN dotnet restore "./src/ComptaClub.Blazor/ComptaClub.Blazor.csproj"
 COPY . .
 WORKDIR "/src/src/ComptaClub.Blazor"
-RUN dotnet build "./ComptaClub.Blazor.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./ComptaClub.Blazor.csproj" -c $BUILD_CONFIGURATION --no-restore -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./ComptaClub.Blazor.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+# RequiresAspNetWebAssets in the project makes the initial restore include the bootstrap.
+RUN dotnet publish "./ComptaClub.Blazor.csproj" -c $BUILD_CONFIGURATION --no-restore -o /app/publish /p:UseAppHost=false
+RUN test -s /app/publish/wwwroot/_framework/blazor.web.js
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final

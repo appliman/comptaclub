@@ -23,10 +23,14 @@ jobs:
 
       - name: Build image
         run: |
-          docker build -f src/ComptaClub.Blazor/Dockerfile \
+          docker build --pull -f src/ComptaClub.Blazor/Dockerfile \
             --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
             -t "$IMAGE_NAME:${{ github.run_number }}" \
             -t "$IMAGE_NAME:latest" .
+
+      - name: Verify published Blazor assets
+        shell: pwsh
+        run: ./tools/TestDockerImage.ps1 -Image "$env:IMAGE_NAME`:${{ github.run_number }}"
 
       - name: Push image
         run: |
